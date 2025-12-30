@@ -1,6 +1,12 @@
 # UMAMUSUME AUTO TRAINER
 ![uma musume](docs/umabike.gif)
 
+## Credits
+- **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
+
+- **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
+
+
 ![UAT](docs/main.png)
 
 ---
@@ -52,7 +58,7 @@ you can edit the start and end time in `main.py` (24 hours format) to dictate wh
 Just cd into any folder and run 
 
 ```bash
-git clone https://github.com/foulism/umamusume-sweepy2
+git clone https://github.com/SweepTosher/umamusume-sweepy
 ```
 
 Then ensure python 3.10 is installed:
@@ -280,13 +286,6 @@ Maybe fix card selection breaking
 ## Planned/In progress (In order from top to bottom)
 - starting work on full auto mode gonna have no other updates for a while   
 - im going to uma my musumes 
-
-
-## Credits
-- **Original Orginal Repository**: [UmamusumeAutoTrainer](https://github.com/shiokaze/UmamusumeAutoTrainer) by [Shiokaze](https://github.com/shiokaze)
-
-- **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
-
 
 
 ## GPU Setup

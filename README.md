@@ -348,5 +348,5 @@ Reboot
 That should be all iirc if not go make a issue
 
 
-Stop shilling this shit on /vg/ with the retarded forced meme ur making me look bad
+Keep shilling this shit on /vg/ with the retarded forced meme ur making me look good
 

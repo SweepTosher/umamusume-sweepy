@@ -1,0 +1,2425 @@
+[
+  {
+    "character_name": "Agnes Tachyon",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium"
+    }
+  },
+  {
+    "character_name": "Air Groove",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct"
+        ],
+        "count": 17
+      }
+    },
+    "total_objectives": 50,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium"
+    }
+  },
+  {
+    "character_name": "Biwa Hayahide",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Curren Chan",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep"
+        ],
+        "count": 16
+      }
+    },
+    "total_objectives": 48,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Sprint"
+    }
+  },
+  {
+    "character_name": "Daiwa Scarlet",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 20
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile, Medium"
+    }
+  },
+  {
+    "character_name": "El Condor Pasa",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile, Medium"
+    }
+  },
+  {
+    "character_name": "Gold Ship",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Grass Wonder",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Early Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile, Long"
+    }
+  },
+  {
+    "character_name": "Haru Urara",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Early Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 20
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Dirt",
+      "distance": "Sprint"
+    }
+  },
+  {
+    "character_name": "King Halo",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Early Oct"
+        ],
+        "count": 17
+      }
+    },
+    "total_objectives": 50,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Sprint"
+    }
+  },
+  {
+    "character_name": "Maruzensky",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct"
+        ],
+        "count": 18
+      }
+    },
+    "total_objectives": 50,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile"
+    }
+  },
+  {
+    "character_name": "Matikanefukukitaru",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Mayano Top Gun",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 20
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Mejiro McQueen",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 23
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct"
+        ],
+        "count": 18
+      }
+    },
+    "total_objectives": 52,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Mejiro Ryan",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 20
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium"
+    }
+  },
+  {
+    "character_name": "Mihono Bourbon",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium"
+    }
+  },
+  {
+    "character_name": "Narita Taishin",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Nice Nature",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Oguri Cap",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Early Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile, Medium"
+    }
+  },
+  {
+    "character_name": "Rice Shower",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Sakura Bakushin O",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov"
+        ],
+        "count": 17
+      }
+    },
+    "total_objectives": 50,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Sprint"
+    }
+  },
+  {
+    "character_name": "Silence Suzuka",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep"
+        ],
+        "count": 17
+      }
+    },
+    "total_objectives": 51,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile, Medium"
+    }
+  },
+  {
+    "character_name": "Smart Falcon",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 20
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Late Nov"
+        ],
+        "count": 20
+      }
+    },
+    "total_objectives": 52,
+    "aptitude": {
+      "terrain": "Dirt",
+      "distance": "Mile, Medium"
+    }
+  },
+  {
+    "character_name": "Special Week",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 56,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Super Creek",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 22
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Symboli Rudolf",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "TM Opera O",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 21
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium, Long"
+    }
+  },
+  {
+    "character_name": "Taiki Shuttle",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Early Apr",
+          "Classic Late Apr",
+          "Classic Late May",
+          "Classic Early Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Late Oct",
+          "Classic Early Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov"
+        ],
+        "count": 20
+      }
+    },
+    "total_objectives": 53,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Sprint, Mile"
+    }
+  },
+  {
+    "character_name": "Tokai Teio",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec",
+          "Junior Late Dec"
+        ],
+        "count": 12
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Early Mar",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 55,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium"
+    }
+  },
+  {
+    "character_name": "Vodka",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Late Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec"
+        ],
+        "count": 20
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Late Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Late May",
+          "Senior Late Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct"
+        ],
+        "count": 18
+      }
+    },
+    "total_objectives": 49,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Mile, Medium"
+    }
+  },
+  {
+    "character_name": "Winning Ticket",
+    "objectives": {
+      "junior_year": {
+        "dates": [
+          "Junior Early Jul",
+          "Junior Late Jul",
+          "Junior Early Aug",
+          "Junior Late Aug",
+          "Junior Early Sep",
+          "Junior Late Sep",
+          "Junior Early Oct",
+          "Junior Late Oct",
+          "Junior Early Nov",
+          "Junior Late Nov",
+          "Junior Early Dec"
+        ],
+        "count": 11
+      },
+      "classic_year": {
+        "dates": [
+          "Classic Pre-Debut",
+          "Classic Early Jan",
+          "Classic Late Jan",
+          "Classic Early Feb",
+          "Classic Late Feb",
+          "Classic Late Mar",
+          "Classic Late Apr",
+          "Classic Early May",
+          "Classic Early Jun",
+          "Classic Late Jun",
+          "Classic Early Jul",
+          "Classic Late Jul",
+          "Classic Early Aug",
+          "Classic Late Aug",
+          "Classic Early Sep",
+          "Classic Late Sep",
+          "Classic Early Oct",
+          "Classic Early Nov",
+          "Classic Late Nov",
+          "Classic Early Dec",
+          "Classic Late Dec"
+        ],
+        "count": 21
+      },
+      "senior_year": {
+        "dates": [
+          "Senior Pre-Debut",
+          "Senior Early Jan",
+          "Senior Late Jan",
+          "Senior Early Feb",
+          "Senior Late Feb",
+          "Senior Early Mar",
+          "Senior Early Apr",
+          "Senior Late Apr",
+          "Senior Early May",
+          "Senior Late May",
+          "Senior Early Jun",
+          "Senior Early Jul",
+          "Senior Late Jul",
+          "Senior Early Aug",
+          "Senior Late Aug",
+          "Senior Early Sep",
+          "Senior Late Sep",
+          "Senior Early Oct",
+          "Senior Late Oct",
+          "Senior Early Nov",
+          "Senior Late Nov",
+          "Senior Early Dec"
+        ],
+        "count": 22
+      }
+    },
+    "total_objectives": 54,
+    "aptitude": {
+      "terrain": "Turf",
+      "distance": "Medium"
+    }
+  }
+]

@@ -1,0 +1,4 @@
+@import "./base.css";
+#app{font-weight:normal}
+a{text-decoration:none;color:var(--accent);transition:.2s}
+a:hover{color:var(--accent-2)}

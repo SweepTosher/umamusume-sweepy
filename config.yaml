@@ -1,0 +1,11 @@
+bot:
+  auto:
+    adb:
+      delay: 0.5
+      device_name: emulator-5554
+    cpu_alloc: 4
+  gpu:
+    device_id: 0
+    enabled: auto
+    memory_fraction: 0.3
+version: 0.0.1

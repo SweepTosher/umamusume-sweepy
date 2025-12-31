@@ -41,7 +41,12 @@ def _compute_match_cache_key(img, template):
     try:
         img_hash = hashlib.md5(img.tobytes()).hexdigest()
         template_hash = hashlib.md5(template.template_img.tobytes()).hexdigest() if hasattr(template, 'template_img') and template.template_img is not None else str(id(template))
-        return f"{img_hash}:{template_hash}"
+        area = template.image_match_config.match_area
+        if area:
+            roi_key = f"{area.x1},{area.y1},{area.x2},{area.y2}"
+        else:
+            roi_key = "full"
+        return f"{img_hash}:{template_hash}:{roi_key}"
     except:
         return None
 

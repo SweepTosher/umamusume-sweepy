@@ -1,4 +1,3 @@
-# UMAMUSUME AUTO TRAINER
 ![uma musume](docs/umabike.gif)
 
 ## Credits
@@ -11,14 +10,10 @@
 
 ---
 
-# **A automation tool for Uma Musume: Pretty Derby**
-
 # [GPU acceleration guide (click me later)](#gpu-setup)   
-  
 
-
-### Things this bot can do
-- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest card are all automated.
+### Things this can do
+- ✅ **Completely hands off**: Recover tp, Starting runs, finding the right guest cards.
   - **Everything is 100% automated you can just afk for **DAYS** until legacy umas are full**
   - **Handles everything from disconnections to the game crashing. The show will go on as long as there isn't a new update. (it handles that too now lol)**
   - **Supports background play as this runs on mobile emulators not the steam release. (You can play another game while this runs)**
@@ -33,11 +28,6 @@
 
 [demo.webm](https://github.com/user-attachments/assets/40a5c402-d154-4b02-8a61-96ba07e29319)
 
-
-## 🚨 Safety
-Question: Is this safe?  
-
-Answer: idk
 
 ### Emulator Setup
 
@@ -88,41 +78,12 @@ As single run mode is deprecated if you wish to emulated it you can enable "Manu
 3. **Support Cards**: Avoid friend cards (no specific outing strategy)
 
 ## 🔧 Troubleshooting
+- **Stuck in menu**: disable keep alive in background in emulator settings
 
-
-#### Fan Goals Fail
-
-- **Failed to the next goal races because lack of Fans**: Configure the race selection first in the UAT website to avoid lack of Fans
-
-#### ADB Device Detection
-
-- **No devices found**: Ensure emulator is running and ADB is enabled and open the umamusume app
-- **ADB server issues**: The app automatically restarts ADB server if needed
-- **Device not detected**: Check emulator's ADB settings
-
-#### PowerShell Script Issues
-
-- **Script crashes**: Open console first to see error messages
-- **Execution policy**: Reference: [PowerShell Execution Policy](https://www.jianshu.com/p/4eaad2163567)
 
 #### Connection Problems
 
 - **ADB connection fails**: Close accelerators, kill adb.exe, restart emulator
-
-## ⚠️ Known issues / Won’t fix
-100% of my testing is now done on **MuMuplaye**r, **Loop until canceled execution mode** with **auto recover TP** set to true.  
-I will only focus on fixing issues for those (which is what I use personally.) Everything else will be low priority sorry.
-
-- Bot seems to get stuck sometimes
-  - There are failsafes in place. It should break out of it within 5 minutes. If not then yeah I'll fix it.
-- Detection of supports sometimes fails (you will know this if it keeps clicking wit training/a bad training and in the logs the score is either stuck/only detecting unknown cards)  
-  - Just restart both the emulator and the bot.
-  - If it works from the start then it should not break halfway (it either breaks 100% of the time since launch or it’s fine and will never break) so it’s not really an issue. I also have no idea what’s causing this.
-- Sometimes it fails to detect the hint (!)  
-  - It’s animated, so either I kill performance and template match like 20 screenshots or we just take the L when it fails to detect like 5% of the time
-  - Could also check the general area for red pixels but it led to a bunch of false positives from my testing
-- For most issues with outdated/wrong data  
-  - https://github.com/BrayAlter/UAT-Global-Server/issues/63#issuecomment-3296260518 (you can stop at npx vite build btw it builds directly to the right folder now).  
 
 ### STAT CAPS (People keep messing this up)
 - Under normal circumstances you want to just put a large number into all of them like so this way it will always pick the best training option
@@ -136,15 +97,8 @@ I will only focus on fixing issues for those (which is what I use personally.) E
   95% or higher will now have 0 score (IF YOU SEE THIS THERE IS A ISSUE WITH YOUR DECK AND THE BOT WILL PERFORM POORLY)
  - IT IS ENCOURAGED THAT YOU RE-EVALUATE YOUR DECK INSTEAD. THIS WAY THE BOT CAN CLICK THE BEST OPTION 100% OF THE TIME INSTEAD OF ARTIFICIALLY LIMITING AND CLICKING A WORSE OPTION 
 
-## 🤝 Contributing
 
-If you ask and pinky promise you won't just nuke everything I can just give you collaborator permissions.
-
-## Disclosure
-Something Something 
-# This is for educational purposes only. Please do not misuse to break umamusume or cygames terms of service.   
 ![uma](docs/flower.gif)  
-*cough cough*
 
 
 ## Changelogs

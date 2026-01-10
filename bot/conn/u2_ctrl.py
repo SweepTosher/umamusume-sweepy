@@ -80,6 +80,7 @@ class U2AndroidController(AndroidController):
         self.recent_click_buckets = []
         self.fallback_block_until = 0.0
         self.trigger_decision_reset = False
+        self.last_recovery_time = 0
         try:
             from bot.base.runtime_state import load_persisted
             load_persisted()
@@ -323,6 +324,9 @@ class U2AndroidController(AndroidController):
         return proc
 
     def recover_home_and_reopen(self):
+        if time.time() - self.last_recovery_time < 10:
+            return
+        self.last_recovery_time = time.time()
         try:
             log.info("rannnnn")
             self.execute_adb_shell("shell input keyevent 3", True)

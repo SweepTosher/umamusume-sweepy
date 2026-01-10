@@ -124,6 +124,8 @@ def apply_rules(ctx: UmamusumeContext, img_gray):
 
 
 def before_hook(ctx: UmamusumeContext):
+    if ctx.task.task_status != TaskStatus.TASK_STATUS_RUNNING:
+        return
     img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
     if apply_rules(ctx, img):
         return
@@ -192,8 +194,11 @@ def before_hook(ctx: UmamusumeContext):
 
 
 def after_hook(ctx: UmamusumeContext):
+    if ctx.task.task_status != TaskStatus.TASK_STATUS_RUNNING:
+        return
     try:
         if getattr(ctx.ctrl, 'trigger_decision_reset', False):
+            ctx.ctrl.trigger_decision_reset = False
             log.info("failsafe triggered. restarting decision making")
             ti = getattr(ctx.cultivate_detail, 'turn_info', None)
             if ti is not None:
@@ -215,10 +220,6 @@ def after_hook(ctx: UmamusumeContext):
                             delattr(ti, attr)
                         except Exception:
                             pass
-            try:
-                ctx.ctrl.trigger_decision_reset = False
-            except Exception:
-                pass
     except Exception:
         pass
     img = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)

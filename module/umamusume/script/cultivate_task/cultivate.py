@@ -744,8 +744,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if idx == 4 and current_energy is not None:
                 log.info(f"energy={current_energy}, rest_threshold={rest_threshold}")
                 if current_energy > 90:
-                    score *= 0.90
-                    log.info("energy > 90, -10% to wit score")
+                    score *= 0.83
+                    log.info("energy > 90, -17% to wit score")
                 elif 85 > current_energy:
                     if rbc > 0:
                         log.info("85 > energy with rainbows +16% to wit score")
@@ -1672,8 +1672,10 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     # Sort by priority
     skill_list = sorted(skill_list, key=lambda x: x["priority"])
     # TODO: Temporarily no way to handle a skill that can be clicked multiple times
+    import re
+    digits_pattern = re.compile(r"\D")
     img = ctx.ctrl.get_screen()
-    total_skill_point_text = re.sub("\\D", "", ocr_line(img[400: 440, 490: 665]))
+    total_skill_point_text = digits_pattern.sub("", ocr_line(img[400: 440, 490: 665]))
     if total_skill_point_text == "":
         total_skill_point = 0
     else:

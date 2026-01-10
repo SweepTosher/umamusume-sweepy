@@ -149,5 +149,6 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
 
 
 def compare_color_equal(p: list, target: list, tolerance: int = 10) -> bool:
-    distance = np.sqrt(np.sum((np.array(target) - np.array(p)) ** 2))
-    return distance < tolerance
+    diff = np.array(target) - np.array(p)
+    distance_sq = np.sum(diff * diff)
+    return distance_sq < (tolerance * tolerance)

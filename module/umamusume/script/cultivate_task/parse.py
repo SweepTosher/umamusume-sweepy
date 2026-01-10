@@ -11,6 +11,8 @@ import os
 from functools import lru_cache
 import hashlib
 
+DIGITS_ONLY = re.compile(r"\D")
+
 from bot.base.task import TaskStatus, EndTaskReason
 from bot.recog.image_matcher import image_match, compare_color_equal
 from bot.recog.ocr import ocr_line, find_similar_text
@@ -296,7 +298,7 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
             if turn_to_race_text == "Race Day":
                 log.debug("Debut race day")
                 return 12
-            turn_to_race_text = re.sub("\\D", "", turn_to_race_text)
+            turn_to_race_text = DIGITS_ONLY.sub("", turn_to_race_text)
             if turn_to_race_text == '':
                 log.warning("Debut race date recognition exception")
                 return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
@@ -378,7 +380,7 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
             if turn_to_race_text == "Race Day":
                 log.debug("URA Debut race day")
                 return 12
-            turn_to_race_text = re.sub("\\D", "", turn_to_race_text)
+            turn_to_race_text = DIGITS_ONLY.sub("", turn_to_race_text)
             if turn_to_race_text == '':
                 log.warning("URA Debut race date recognition exception")
                 return 12 - (len(ctx.cultivate_detail.turn_info_history) + 1)
@@ -455,7 +457,7 @@ def parse_umamusume_basic_ability_value(ctx: UmamusumeContext, img):
 
 def trans_attribute_value(text: str, ctx: UmamusumeContext,
                           train_type: TrainingType = TrainingType.TRAINING_TYPE_UNKNOWN) -> int:
-    text = re.sub("\\D", "", text)
+    text = DIGITS_ONLY.sub("", text)
     if text == "":
         prev_turn_idx = len(ctx.cultivate_detail.turn_info_history)
         if prev_turn_idx != 0:
@@ -651,7 +653,7 @@ def find_support_card(ctx: UmamusumeContext, img):
             support_card_level_text = ocr_line(support_card_level_img)
             if support_card_level_text == "":
                 continue
-            cleaned_level = re.sub("\\D", "", support_card_level_text)
+            cleaned_level = DIGITS_ONLY.sub("", support_card_level_text)
             if cleaned_level == "":
                 log.info("Skipping card")
                 continue

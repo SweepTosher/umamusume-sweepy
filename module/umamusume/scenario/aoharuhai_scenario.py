@@ -1,6 +1,7 @@
 import re
 import cv2
 import time
+import numpy as np
 
 from .base_scenario import BaseScenario
 from module.umamusume.asset import *
@@ -12,6 +13,26 @@ from bot.recog.ocr import ocr_line, find_similar_text, ocr_digits
 
 import bot.base.log as logger
 log = logger.get_logger(__name__)
+
+DIGITS_ONLY = re.compile(r"\D")
+
+CARD_TYPE_MAP = (
+    (REF_SUPPORT_CARD_TYPE_SPEED, SupportCardType.SUPPORT_CARD_TYPE_SPEED),
+    (REF_SUPPORT_CARD_TYPE_STAMINA, SupportCardType.SUPPORT_CARD_TYPE_STAMINA),
+    (REF_SUPPORT_CARD_TYPE_POWER, SupportCardType.SUPPORT_CARD_TYPE_POWER),
+    (REF_SUPPORT_CARD_TYPE_WILL, SupportCardType.SUPPORT_CARD_TYPE_WILL),
+    (REF_SUPPORT_CARD_TYPE_INTELLIGENCE, SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE),
+    (REF_SUPPORT_CARD_TYPE_FRIEND, SupportCardType.SUPPORT_CARD_TYPE_FRIEND),
+)
+
+CARD_TYPE_NAMES = {
+    SupportCardType.SUPPORT_CARD_TYPE_SPEED: "support_card_type_speed",
+    SupportCardType.SUPPORT_CARD_TYPE_STAMINA: "support_card_type_stamina",
+    SupportCardType.SUPPORT_CARD_TYPE_POWER: "support_card_type_power",
+    SupportCardType.SUPPORT_CARD_TYPE_WILL: "support_card_type_will",
+    SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE: "support_card_type_intelligence",
+    SupportCardType.SUPPORT_CARD_TYPE_FRIEND: "support_card_type_friend",
+}
 
 
 class AoharuHaiScenario(BaseScenario):
@@ -35,62 +56,62 @@ class AoharuHaiScenario(BaseScenario):
         sub_img_speed_incr = img[800:830, 30:140]
         sub_img_speed_incr = cv2.copyMakeBorder(sub_img_speed_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         speed_incr_text = ocr_digits(sub_img_speed_incr)
-        speed_incr_text = re.sub("\\D", "", speed_incr_text)
+        speed_incr_text = DIGITS_ONLY.sub("", speed_incr_text)
 
         sub_img_speed_incr_extra = img[760:800, 30:140]
         sub_img_speed_incr_extra = cv2.copyMakeBorder(sub_img_speed_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         speed_incr_extra_text = ocr_digits(sub_img_speed_incr_extra)
-        speed_incr_extra_text = re.sub("\\D", "", speed_incr_extra_text)
+        speed_incr_extra_text = DIGITS_ONLY.sub("", speed_incr_extra_text)
 
         sub_img_stamina_incr = img[800:830, 140:250]
         sub_img_stamina_incr = cv2.copyMakeBorder(sub_img_stamina_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         stamina_incr_text = ocr_digits(sub_img_stamina_incr)
-        stamina_incr_text = re.sub("\\D", "", stamina_incr_text)
+        stamina_incr_text = DIGITS_ONLY.sub("", stamina_incr_text)
 
         sub_img_stamina_incr_extra = img[760:800, 140:250]
         sub_img_stamina_incr_extra = cv2.copyMakeBorder(sub_img_stamina_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         stamina_incr_extra_text = ocr_digits(sub_img_stamina_incr_extra)
-        stamina_incr_extra_text = re.sub("\\D", "", stamina_incr_extra_text)
+        stamina_incr_extra_text = DIGITS_ONLY.sub("", stamina_incr_extra_text)
 
         sub_img_power_incr = img[800:830, 250:360]
         sub_img_power_incr = cv2.copyMakeBorder(sub_img_power_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         power_incr_text = ocr_digits(sub_img_power_incr)
-        power_incr_text = re.sub("\\D", "", power_incr_text)
+        power_incr_text = DIGITS_ONLY.sub("", power_incr_text)
 
         sub_img_power_incr_extra = img[760:800, 250:360]
         sub_img_power_incr_extra = cv2.copyMakeBorder(sub_img_power_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         power_incr_extra_text = ocr_digits(sub_img_power_incr_extra)
-        power_incr_extra_text = re.sub("\\D", "", power_incr_extra_text)
+        power_incr_extra_text = DIGITS_ONLY.sub("", power_incr_extra_text)
 
         sub_img_will_incr = img[800:830, 360:470]
         sub_img_will_incr = cv2.copyMakeBorder(sub_img_will_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         will_incr_text = ocr_digits(sub_img_will_incr)
-        will_incr_text = re.sub("\\D", "", will_incr_text)
+        will_incr_text = DIGITS_ONLY.sub("", will_incr_text)
 
         sub_img_will_incr_extra = img[760:800, 360:470]
         sub_img_will_incr_extra = cv2.copyMakeBorder(sub_img_will_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         will_incr_extra_text = ocr_digits(sub_img_will_incr_extra)
-        will_incr_extra_text = re.sub("\\D", "", will_incr_extra_text)
+        will_incr_extra_text = DIGITS_ONLY.sub("", will_incr_extra_text)
 
         sub_img_intelligence_incr = img[800:830, 470:580]
         sub_img_intelligence_incr = cv2.copyMakeBorder(sub_img_intelligence_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         intelligence_incr_text = ocr_digits(sub_img_intelligence_incr)
-        intelligence_incr_text = re.sub("\\D", "", intelligence_incr_text)
+        intelligence_incr_text = DIGITS_ONLY.sub("", intelligence_incr_text)
 
         sub_img_intelligence_incr_extra = img[760:800, 470:580]
         sub_img_intelligence_incr_extra = cv2.copyMakeBorder(sub_img_intelligence_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         intelligence_incr_extra_text = ocr_digits(sub_img_intelligence_incr_extra)
-        intelligence_incr_extra_text = re.sub("\\D", "", intelligence_incr_extra_text)
+        intelligence_incr_extra_text = DIGITS_ONLY.sub("", intelligence_incr_extra_text)
 
         sub_img_skill_point_incr = img[800:830, 588:695]
         sub_img_skill_point_incr = cv2.copyMakeBorder(sub_img_skill_point_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         skill_point_incr_text = ocr_digits(sub_img_skill_point_incr)
-        skill_point_incr_text = re.sub("\\D", "", skill_point_incr_text)
+        skill_point_incr_text = DIGITS_ONLY.sub("", skill_point_incr_text)
 
         sub_img_skill_point_incr_extra = img[760:800, 588:695]
         sub_img_skill_point_incr_extra = cv2.copyMakeBorder(sub_img_skill_point_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
         skill_point_incr_extra_text = ocr_digits(sub_img_skill_point_incr_extra)
-        skill_point_incr_extra_text = re.sub("\\D", "", skill_point_incr_extra_text)
+        skill_point_incr_extra_text = DIGITS_ONLY.sub("", skill_point_incr_extra_text)
 
         speed_icr = (0 if speed_incr_text == "" else int(speed_incr_text)) + (0 if speed_incr_extra_text == "" else int(speed_incr_extra_text))
         stamina_incr = (0 if stamina_incr_text == "" else int(stamina_incr_text)) + (0 if stamina_incr_extra_text == "" else int(stamina_incr_extra_text))
@@ -152,33 +173,23 @@ class AoharuHaiScenario(BaseScenario):
                     except Exception:
                         pass
 
-            # Favor detection (color)
-            roi_rgb = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
-            favor_process_check_list = [roi_rgb[106, 56], roi_rgb[106, 60]]
+            favor_process_check_list = [roi[106, 56], roi[106, 60]]
             support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN
             for pix in favor_process_check_list:
-                if compare_color_equal(pix, [255, 235, 120]):
+                if compare_color_equal(pix, [120, 235, 255]):
                     support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4
-                elif compare_color_equal(pix, [255, 173, 30]):
+                elif compare_color_equal(pix, [30, 173, 255]):
                     support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3
-                elif compare_color_equal(pix, [162, 230, 30]):
+                elif compare_color_equal(pix, [30, 230, 162]):
                     support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2
-                elif (compare_color_equal(pix, [42, 192, 255]) or compare_color_equal(pix, [109, 108, 117])):
+                elif (compare_color_equal(pix, [255, 192, 42]) or compare_color_equal(pix, [117, 108, 109])):
                     support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1
                 if support_card_favor_process != SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
                     break
 
-            # Support card type (template match for type icon only)
             support_card_type = SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN
             match_center = None
-            for ref, t in (
-                (REF_SUPPORT_CARD_TYPE_SPEED, SupportCardType.SUPPORT_CARD_TYPE_SPEED),
-                (REF_SUPPORT_CARD_TYPE_STAMINA, SupportCardType.SUPPORT_CARD_TYPE_STAMINA),
-                (REF_SUPPORT_CARD_TYPE_POWER, SupportCardType.SUPPORT_CARD_TYPE_POWER),
-                (REF_SUPPORT_CARD_TYPE_WILL, SupportCardType.SUPPORT_CARD_TYPE_WILL),
-                (REF_SUPPORT_CARD_TYPE_INTELLIGENCE, SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE),
-                (REF_SUPPORT_CARD_TYPE_FRIEND, SupportCardType.SUPPORT_CARD_TYPE_FRIEND),
-            ):
+            for ref, t in CARD_TYPE_MAP:
                 r = image_match(roi_gray, ref)
                 if r.find_match:
                     support_card_type = t
@@ -195,16 +206,8 @@ class AoharuHaiScenario(BaseScenario):
                 cx = base_x + int(match_center[0])
                 cy = base_y + int(match_center[1])
 
-            name_map = {
-                SupportCardType.SUPPORT_CARD_TYPE_SPEED: "support_card_type_speed",
-                SupportCardType.SUPPORT_CARD_TYPE_STAMINA: "support_card_type_stamina",
-                SupportCardType.SUPPORT_CARD_TYPE_POWER: "support_card_type_power",
-                SupportCardType.SUPPORT_CARD_TYPE_WILL: "support_card_type_will",
-                SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE: "support_card_type_intelligence",
-                SupportCardType.SUPPORT_CARD_TYPE_FRIEND: "support_card_type_friend",
-            }
             info = SupportCardInfo(
-                name=name_map.get(support_card_type, "support_card"),
+                name=CARD_TYPE_NAMES.get(support_card_type, "support_card"),
                 card_type=support_card_type,
                 favor=support_card_favor_process,
                 can_incr_special_training=can_incr_special_training,
@@ -235,24 +238,11 @@ def aoharu_train_not_full(support_card_icon) -> bool:
     if total_pixels == 0:
         return False
 
-    # Detect gray
-    grey_lower = [100, 100, 100]
-    grey_upper = [150, 150, 150]
-    grey_pixels = 0
-
-    for y in range(avatar_region.shape[0]):
-        for x in range(avatar_region.shape[1]):
-            pixel = avatar_region[y, x]
-            if (grey_lower[0] <= pixel[0] <= grey_upper[0] and
-                grey_lower[1] <= pixel[1] <= grey_upper[1] and
-                grey_lower[2] <= pixel[2] <= grey_upper[2]):
-                grey_pixels += 1
+    grey_lower = np.array([100, 100, 100])
+    grey_upper = np.array([150, 150, 150])
+    grey_mask = np.all((avatar_region >= grey_lower) & (avatar_region <= grey_upper), axis=2)
+    grey_pixels = int(np.sum(grey_mask))
 
     grey_ratio = grey_pixels / total_pixels
 
-    if grey_ratio > 0.05:
-        status = True
-    else:
-        status = False
-
-    return status
+    return grey_ratio > 0.05

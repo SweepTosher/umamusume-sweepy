@@ -1,6 +1,8 @@
 import re
 import cv2
 
+DIGITS_ONLY = re.compile(r"\D")
+
 from .base_scenario import BaseScenario
 from module.umamusume.asset import *
 from module.umamusume.define import ScenarioType, SupportCardFavorLevel, SupportCardType
@@ -32,27 +34,27 @@ class URAScenario(BaseScenario):
         # NOTE: URA must use ocr_line to achieve high accuracy, cannot use ocr_digits, very strange
         sub_img_speed_incr = img[770:826, 30:140]
         speed_incr_text = ocr_line(sub_img_speed_incr)
-        speed_incr_text = re.sub("\\D", "", speed_incr_text)
+        speed_incr_text = DIGITS_ONLY.sub("", speed_incr_text)
 
         sub_img_stamina_incr = img[770:826, 140:250]
         stamina_incr_text = ocr_line(sub_img_stamina_incr)
-        stamina_incr_text = re.sub("\\D", "", stamina_incr_text)
+        stamina_incr_text = DIGITS_ONLY.sub("", stamina_incr_text)
 
         sub_img_power_incr = img[770:826, 250:360]
         power_incr_text = ocr_line(sub_img_power_incr)
-        power_incr_text = re.sub("\\D", "", power_incr_text)
+        power_incr_text = DIGITS_ONLY.sub("", power_incr_text)
 
         sub_img_will_incr = img[770:826, 360:470]
         will_incr_text = ocr_line(sub_img_will_incr)
-        will_incr_text = re.sub("\\D", "", will_incr_text)
+        will_incr_text = DIGITS_ONLY.sub("", will_incr_text)
 
         sub_img_intelligence_incr = img[770:826, 470:580]
         intelligence_incr_text = ocr_line(sub_img_intelligence_incr)
-        intelligence_incr_text = re.sub("\\D", "", intelligence_incr_text)
+        intelligence_incr_text = DIGITS_ONLY.sub("", intelligence_incr_text)
 
         sub_img_skill_point_incr = img[770:826, 588:695]
         skill_point_incr_text = ocr_line(sub_img_skill_point_incr)
-        skill_point_incr_text = re.sub("\\D", "", skill_point_incr_text)
+        skill_point_incr_text = DIGITS_ONLY.sub("", skill_point_incr_text)
 
         speed_icr = 0 if speed_incr_text == "" else int(speed_incr_text)
         stamina_incr = 0 if stamina_incr_text == "" else int(stamina_incr_text)

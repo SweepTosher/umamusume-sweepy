@@ -407,20 +407,23 @@ export default {
   color: white !important;
 }
 .auto-btn {
-  background-color: var(--accent) !important;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2)) !important;
   color: #fff !important;
   padding: 0.4rem 0.8rem !important;
   font-size: 1rem !important;
   border-radius: 0.25rem;
-  border: none;
+  border: 1px solid var(--accent);
   cursor: pointer;
   min-width: 60px;
   min-height: 30px;
-  font-weight: 500;
+  font-weight: 700;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 .auto-btn:hover {
-  background-color: var(--accent-2) !important;
+  background: linear-gradient(135deg, var(--accent-2), var(--accent)) !important;
   color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 50%, transparent), 0 0 30px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 /* 保证弹窗在遮罩层之上 */
 #support-card-select-modal.modal {

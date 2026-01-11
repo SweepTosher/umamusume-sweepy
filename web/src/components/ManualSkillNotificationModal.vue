@@ -82,8 +82,8 @@ export default {
 .notification-dialog .btn {padding:.75rem 1.5rem;font-weight:500;border-radius:8px;border:none;transition:all .2s ease}
 .notification-dialog .btn-secondary {background:#1b2332;color:white}
 .notification-dialog .btn-secondary:hover {background:#1f2940;transform: translateY(-1px)}
-.notification-dialog .btn-primary {background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);color:white}
-.notification-dialog .btn-primary:hover {filter:saturate(115%);transform: translateY(-1px);box-shadow:0 4px 12px rgba(109,94,245,.35)}
+.notification-dialog .btn-primary {background: linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;border:1px solid var(--accent);box-shadow:0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent)}
+.notification-dialog .btn-primary:hover {background: linear-gradient(135deg, var(--accent-2), var(--accent));transform: translateY(-2px);box-shadow:0 6px 20px color-mix(in srgb, var(--accent) 50%, transparent),0 0 30px color-mix(in srgb, var(--accent) 30%, transparent)}
 #manual-skill-notification-modal.modal {z-index:1070}
 #manual-skill-notification-modal .modal-dialog {z-index:1071}
 @keyframes pulse {0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}

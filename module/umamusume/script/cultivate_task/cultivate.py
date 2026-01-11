@@ -852,13 +852,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 has_extra_race_next = len([r for r in ctx.cultivate_detail.extra_race_list 
                                            if r in available_races]) > 0
                 
-                wit_score = computed_scores[4] if len(computed_scores) == 5 else 0.0
-                
-                if (wit_score < wit_race_threshold and 
+                if (max_score < wit_race_threshold and 
                     current_energy > 90 and 
                     not has_extra_race_next):
                     
-                    log.info(f"Race search: Wit {wit_score:.3f}<{wit_race_threshold}, Energy {current_energy}>90, No races next turn")
+                    log.info(f"Race search: Max score {max_score:.3f}<{wit_race_threshold}, Energy {current_energy}>90, No races next turn")
                     
                     ctx.cultivate_detail.turn_info.race_search_attempted = True
                     

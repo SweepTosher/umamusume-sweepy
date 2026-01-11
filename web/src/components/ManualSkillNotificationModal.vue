@@ -74,7 +74,7 @@ export default {
 .notification-dialog .btn-close:hover {opacity:1}
 .notification-dialog .modal-body {padding:2rem;background: transparent}
 .notification-content {display:flex;align-items:flex-start;gap:1.5rem}
-.notification-icon {flex-shrink:0;width:60px;height:60px;background: linear-gradient(135deg, var(--accent), var(--accent-2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;box-shadow:0 4px 15px rgba(34,197,94,.35);animation:pulse 2s infinite}
+.notification-icon {flex-shrink:0;width:60px;height:60px;background: linear-gradient(135deg, var(--accent), var(--accent-2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;box-shadow:0 4px 15px rgba(255,45,163,.35)}
 .notification-text {flex:1}
 .notification-message {font-size:1.1rem;color:var(--text);margin-bottom:1rem;line-height:1.5}
 .notification-hint {font-size:.95rem;color:var(--muted);margin:0;font-style:italic}

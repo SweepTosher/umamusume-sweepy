@@ -1,3 +1,6 @@
+Stuck at failed debut race award 
+fix later 
+
 ![uma musume](docs/umabike.gif)
 
 ## Credits

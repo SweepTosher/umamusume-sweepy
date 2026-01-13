@@ -1,6 +1,3 @@
-Stuck at failed debut race award 
-fix later 
-
 ![uma musume](docs/umabike.gif)
 
 ## Credits
@@ -318,6 +315,8 @@ Keep shilling this shit on /vg/ with the retarded forced meme ur making me look 
 <img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/94ea9609-54db-4322-a0f3-9168a70932e0" />
 <img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/d64d2197-217f-40c5-a57e-3ccd5c868e2d" />
 <img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/cacd2cf3-b880-4b1e-8818-af33a30bcf38" />
+<img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/3bdd80ec-cb77-4637-9f61-e3f8fab8d85d" />
+
 
 
 

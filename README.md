@@ -1,3 +1,5 @@
+usually on /uma/ during 9-11am+pm UTC
+
 ![uma musume](docs/umabike.gif)
 
 ## Credits

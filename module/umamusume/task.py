@@ -38,14 +38,11 @@ class TaskDetail:
     base_score: list
     event_weights: dict
     scenario_config: ScenarioConfig
-    fujikiseki_show_mode: bool
-    fujikiseki_show_difficulty: int
     do_tt_next: bool
 
 
 class EndTaskReason(Enum):
     TP_NOT_ENOUGH = "训练值不足"
-    DIFFICULTY_LOCKED = "难度未解锁"
 
 
 class UmamusumeTask(Task):
@@ -115,12 +112,9 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.base_score = attachment_data.get('base_score', [0.0, 0.0, 0.0, 0.0, 0.07])
     
     td.cultivate_result = {}
-    # 剧本相关设置
     td.scenario_config = ScenarioConfig(
         ura_config = None if (attachment_data['ura_config'] is None) else UraConfig(attachment_data['ura_config']),
         aoharu_config = None if (attachment_data['aoharu_config'] is None) else AoharuConfig(attachment_data['aoharu_config']))
-    # 限时: 富士奇石的表演秀
-    td.fujikiseki_show_mode = attachment_data['fujikiseki_show_mode']
     try:
         eo = attachment_data.get('event_overrides', attachment_data.get('event_choices', {}))
         td.event_overrides = eo if isinstance(eo, dict) else {}
@@ -133,7 +127,6 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     except Exception:
         td.event_weights = None
 
-    td.fujikiseki_show_difficulty = attachment_data['fujikiseki_show_difficulty']
     td.do_tt_next = attachment_data.get('do_tt_next', False)
     
     ut.detail = td

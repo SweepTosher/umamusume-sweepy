@@ -74,8 +74,7 @@ TITLE = [
     "Event Story Unlocked",          # TITLE[30]
     "Confirm", ##Recover TP Confirm button if you enable auto recover tp in UAT website # TITLE[31] - FIXED: was "Target Achievement Count Insufficient"
     "Recover TP", ##Recover TP Confirm popup dialog to buy the recover tp item # TITLE[32]
-    "Factor Confirmation", ##handles the factor confirmation popup dialog (Fujikiseki Show) # TITLE[33]
-    # Limited Time: Fujikiseki Show
+    "Factor Confirmation", # TITLE[33]
     "New Difficulty Unlocked", # TITLE[34]
     # Aoharu Cup
     "Auto Formation", # TITLE[35]
@@ -90,7 +89,7 @@ TITLE = [
     "Items Selected", #44
     "Auto Select", #45
     "Session Error", #46
-    "areer Playthrough Difficulty Se" #47
+    "Choose Career Mode" #47
 ]
 
 
@@ -596,44 +595,11 @@ def script_info(ctx: UmamusumeContext):
         #         log.warning("⚠️ No TP recovery image templates found - trying fallback")
         #         # Fallback: try to click the first "Use" button
         #         ctx.ctrl.click(600, 400, "Fallback TP recovery click")
-        if title_text == TITLE[33]:  # Factor Confirmation
-            # Limited time: Fuji Kiseki Show
-            # Currently seems only used here "Select cultivation difficulty, if there are others in the future, need to adjust code structure"
-            beijing_tz = pytz.timezone('Asia/Shanghai')
-            cutoff_time = beijing_tz.localize(datetime(2025, 7, 13, 11, 59))
-            current_time_beijing = datetime.now(beijing_tz)
-
-            if current_time_beijing <= cutoff_time:
-                if ctx.task.detail.fujikiseki_show_mode == False:
-                    ctx.ctrl.click(360, 300, "Select normal mode")
-                else :
-                    ctx.ctrl.click(360, 500, "Select Fuji Kiseki Show mode")
-                    match = False
-                    for i in range(5):
-                        screen = ctx.ctrl.get_screen(to_gray=True)
-                        if ((not image_match(screen, FUJIKISEKI_SHOW_DIFFICULTY_LOCKED).find_match) 
-                            and image_match(screen, FUJIKISEKI_SHOW_DIFFICULTY[ctx.task.detail.fujikiseki_show_difficulty-1]).find_match):
-                            log.info(f"Selected difficulty {ctx.task.detail.fujikiseki_show_difficulty}")
-                            match = True
-                            break
-                        ctx.ctrl.click(675, 800, "Switch to next difficulty")
-                        time.sleep(1)
-                    if not match:
-                        log.error(f"Selected difficulty {ctx.task.detail.fujikiseki_show_difficulty} is not unlocked yet, please play lower difficulty modes first!")
-                        ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.DIFFICULTY_LOCKED)
-                        return
-                        
-                ctx.ctrl.click(520, 1180, "")
-            else:
-                # Fallback for non-Fujikiseki Factor Confirmation
-                ctx.ctrl.click_by_point(CULTIVATE_RESULT_DIVISOR_CONFIRM)
+        if title_text == TITLE[33]:
+            ctx.ctrl.click_by_point(CULTIVATE_RESULT_DIVISOR_CONFIRM)
             
-        if title_text == TITLE[34]:  # New Difficulty Unlocked
-            # Limited time: Fuji Kiseki Show
-            ctx.ctrl.click(360, 850, "Confirm unlock new difficulty")
-            
-        if title_text == TITLE[47]:  # fuji event
-            ctx.ctrl.click(504,1176, "fuji")
+        if title_text == TITLE[47]:
+            ctx.ctrl.click(628, 1172, "test event")
 
         if title_text in (TITLE[37], TITLE[38]):
             ctx.ctrl.click_by_point(STORY_REWARDS_COLLECTED_CLOSE)

@@ -1571,12 +1571,6 @@ def script_cultivate_result(ctx: UmamusumeContext):
     ctx.ctrl.click_by_point(CULTIVATE_RESULT_CONFIRM)
 
 # 限时: 富士奇石的表演秀
-def script_fujikiseki_show_result_1(ctx: UmamusumeContext):
-    ctx.ctrl.click(360, 1180, "Confirm Fuji Kiseki Show mode result")
-
-def script_fujikiseki_show_result_2(ctx: UmamusumeContext):
-    ctx.ctrl.click(360, 1120, "Confirm Fuji Kiseki Show mode result")
-
 # 1.878s 2s 0.649s (the first one is actually correct lol i didnt test the rest)
 def script_cultivate_catch_doll(ctx: UmamusumeContext):
     ctx.ctrl.click_by_point(CULTIVATE_CATCH_DOLL_START, hold_duration=1888) 

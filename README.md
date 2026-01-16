@@ -101,9 +101,13 @@ As single run mode is deprecated if you wish to emulated it you can enable "Manu
 
 
 ## Changelogs 
+- **16/1/2025**
+scroll faster    
+trainer test event    
+
 - **11/1/2025**
-Go to races instead of wit training when low training score and energy is near full
-Base scores for training facilities
+Go to races instead of wit training when low training score and energy is near full    
+Base scores for training facilities    
 
 
 - **27/12/2025**  

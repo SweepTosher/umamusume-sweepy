@@ -1,5 +1,5 @@
 usually on /uma/ during 9-11am+pm UTC.   
-(should I make a cord)    
+(you guys act like using discord will make your sons infertile or something)    
 
 ![uma musume](docs/umabike.gif)
 

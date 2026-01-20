@@ -4,6 +4,8 @@ usually on /uma/ during 9-11am+pm UTC.
 https://umamusume.com/news/100068/
 turn this shit off for a few days. (I'll still be running this 24/7 on a alt will report back in a week)
 
+will be improving anti detection measures meanwhile. until then just play manually 
+
 ![uma musume](docs/umabike.gif)
 
 ## Credits

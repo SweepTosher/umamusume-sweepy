@@ -611,9 +611,9 @@ def script_info(ctx: UmamusumeContext):
                     ctx.ctrl.click(214, 832, "Auto Select")
             except Exception:
                 ctx.ctrl.click(214, 832, "Auto Select")
-        if title_text == TITLE[46]:
-            ctx.ctrl.execute_adb_shell("shell am force-stop com.cygames.umamusume", True)
-            time.sleep(1.0)
-            ctx.ctrl.start_app("com.cygames.umamusume", "jp.co.cygames.umamusume.activity.UmamusumeActivity")
-            time.sleep(2.0)
+        if title_text == TITLE[46]:  # Session Error
+            log.info("User login from somewhere else")
+            from bot.engine import scheduler
+            scheduler.scheduler.stop()
+            return
         time.sleep(1)

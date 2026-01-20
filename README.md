@@ -1,6 +1,9 @@
 usually on /uma/ during 9-11am+pm UTC.   
 (you guys act like using discord will make your sons infertile or something)    
 
+https://umamusume.com/news/100068/
+turn this shit off for a few days. (I'll still be running this 24/7 on a alt will report back in a week)
+
 ![uma musume](docs/umabike.gif)
 
 ## Credits

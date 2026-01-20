@@ -169,8 +169,8 @@ class U2AndroidController(AndroidController):
 
     def randomize_and_clamp(self, x, y, random_offset, max_x, max_y):
         if random_offset:
-            x += random.randint(-5, 5)
-            y += random.randint(-5, 5)
+            x += int(max(-8, min(8, random.gauss(0, 3))))
+            y += int(max(-8, min(8, random.gauss(0, 3))))
         if x >= max_x:
             x = max_x-1
         if y >= max_y:
@@ -184,15 +184,17 @@ class U2AndroidController(AndroidController):
     def wait_click_interval(self, name):
         now = time.time()
         elapsed = now - self.last_click_time if hasattr(self, "last_click_time") else now
-        min_interval = getattr(self, "min_click_interval", 0.3)
+        min_interval = random.uniform(0.12, 0.15)
         wait_needed = max(0.0, min_interval - elapsed)
         log.debug(f"click queue: elapsed={elapsed:.3f}s, min_interval={min_interval:.3f}s, wait={wait_needed:.3f}s, name={name}")
         if wait_needed > 0:
             time.sleep(wait_needed)
 
     def tap(self, x, y, hold_duration):
-        duration = random.randint(0, 166) + hold_duration
-        _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(x) + " " + str(y) + " " + str(duration), True)
+        duration = int(max(50, min(180, random.gauss(90, 30)))) + hold_duration
+        drift_x = x + random.randint(-3, 3)
+        drift_y = y + random.randint(-3, 3)
+        _ = self.execute_adb_shell("shell input swipe " + str(x) + " " + str(y) + " " + str(drift_x) + " " + str(drift_y) + " " + str(duration), True)
         self.last_click_time = time.time()
         time.sleep(self.config.delay)
 
@@ -302,15 +304,12 @@ class U2AndroidController(AndroidController):
         if name != "":
             log.debug("swipe >> " + name)
         
-        offset_x1 = random.randint(-5, 5)
-        offset_y1 = random.randint(-5, 5)
-        offset_x2 = random.randint(-5, 5)
-        offset_y2 = random.randint(-5, 5)
+        x1 += int(max(-10, min(10, random.gauss(0, 4))))
+        y1 += int(max(-10, min(10, random.gauss(0, 4))))
+        x2 += int(max(-10, min(10, random.gauss(0, 4))))
+        y2 += int(max(-10, min(10, random.gauss(0, 4))))
         
-        x1 += offset_x1
-        y1 += offset_y1
-        x2 += offset_x2
-        y2 += offset_y2
+        duration = int(duration * random.uniform(0.94, 1.06))
         
         _ = self.execute_adb_shell("shell input swipe " + str(x1) + " " + str(y1) + " " + str(x2) + " " + str(y2) + " " + str(duration), True)
         time.sleep(self.config.delay)
@@ -319,10 +318,13 @@ class U2AndroidController(AndroidController):
         if INPUT_BLOCKED:
             return
         
-        x1 += random.randint(-5, 5)
-        y1 += random.randint(-5, 5)
-        x2 += random.randint(-5, 5)
-        y2 += random.randint(-5, 5)
+        x1 += int(max(-10, min(10, random.gauss(0, 4))))
+        y1 += int(max(-10, min(10, random.gauss(0, 4))))
+        x2 += int(max(-10, min(10, random.gauss(0, 4))))
+        y2 += int(max(-10, min(10, random.gauss(0, 4))))
+        
+        swipe_duration = int(swipe_duration * random.uniform(0.94, 1.06))
+        hold_duration = int(hold_duration * random.uniform(0.94, 1.06))
         
         reverse_y = y2 - 28 if y2 > y1 else y2 + 28
         

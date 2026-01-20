@@ -125,4 +125,4 @@ def script_not_found_ui(ctx: UmamusumeContext):
     except Exception:
         pass
     log.debug("No specific UI detected - using default fallback click")
-    ctx.ctrl.click(719, random.randint(0, 216), "Default fallback click")
+    ctx.ctrl.click(719, random.randint(111, 216), "Default fallback click")

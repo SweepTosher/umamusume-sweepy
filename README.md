@@ -1,10 +1,11 @@
 usually on /uma/ during 9-11am+pm UTC.   
 (you guys act like using discord will make your sons infertile or something)    
 
-https://umamusume.com/news/100068/
-turn this shit off for a few days. (I'll still be running this 24/7 on a alt will report back in a week)
+alright seems like the ban announcement is a nothing burger i've been running the bot for over 50 hours straight now
 
-will be improving anti detection measures meanwhile. Until then just play manually. Still in theory unless you run this 27/4 it should still be undetectable.
+## Reinstall your device/emulator if you have used this bot before 22/1/2026
+This is to get rid of residual traces of uiautomator2, likewise if your emulator has ever used anything that captures the screen without ADB direct screen capture it is recommended that you reinstall.     
+(Likely uma wont even check for this but just to be safe)
 
 ![uma musume](docs/umabike.gif)
 

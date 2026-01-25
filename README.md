@@ -3,7 +3,7 @@ usually on /uma/ during 9-11am+pm UTC.
 
 # GOT RID OF RAINBOWS IN SCORING GO REDO UR PRESETS WE READING STAT GAINS DIRECTLY NOW
 
-ok apparently it only works on my machine brb 
+looping broken mb 
 
 
 ## Reinstall your device/emulator if you have used this bot before 22/1/2026

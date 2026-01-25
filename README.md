@@ -1,7 +1,9 @@
 usually on /uma/ during 9-11am+pm UTC.   
 (you guys act like using discord will make your sons infertile or something)    
 
-# GOT RID OF RAINBOWS IN SCORING GO REDO UR PRESETS WE READING STAT GAINS DIRECTLY NOW
+# If you do not see "Stats" in scoring go install/reinstall vcc+ redistributable 
+<img width="1080" height="171" alt="image" src="https://github.com/user-attachments/assets/1f68af35-cf9d-41ce-9392-c26ecf83cc70" />
+
 
 
 ## Reinstall your device/emulator if you have used this bot before 22/1/2026

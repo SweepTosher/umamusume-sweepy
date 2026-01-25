@@ -28,6 +28,7 @@ from module.umamusume.constants.timing_constants import (
 from module.umamusume.constants.game_constants import get_date_period_index
 from module.umamusume.script.cultivate_task.parse import parse_train_type, parse_failure_rates
 from module.umamusume.script.cultivate_task.helpers import should_use_pal_outing_simple
+from bot.recog.training_stat_scanner import scan_facility_stats, log_facility_stats
 
 log = logger.get_logger(__name__)
 
@@ -88,7 +89,19 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
         def detect_training_once(ctx, img, train_type):
             result = TrainingDetectionResult()
+            facility_map = {
+                TrainingType.TRAINING_TYPE_SPEED: "speed",
+                TrainingType.TRAINING_TYPE_STAMINA: "stamina",
+                TrainingType.TRAINING_TYPE_POWER: "power",
+                TrainingType.TRAINING_TYPE_WILL: "guts",
+                TrainingType.TRAINING_TYPE_INTELLIGENCE: "wits",
+            }
+            result.facility_name = facility_map.get(train_type)
+            result.scenario_name = "ura" if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_URA else "aoharuhai"
+            result.stat_results = {}
             try:
+                if result.facility_name:
+                    result.stat_results = scan_facility_stats(img, result.facility_name, result.scenario_name)
                 train_incr = ctx.cultivate_detail.scenario.parse_training_result(img)
                 result.speed_incr = train_incr[0]
                 result.stamina_incr = train_incr[1]
@@ -145,6 +158,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             return True
 
         def apply_detection_result(ctx, train_type, result):
+            if hasattr(result, 'facility_name') and hasattr(result, 'stat_results') and result.stat_results:
+                log_facility_stats(result.facility_name, result.stat_results)
             til = ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1]
             til.support_card_info_list = result.support_card_info_list
             til.has_hint = result.has_hint

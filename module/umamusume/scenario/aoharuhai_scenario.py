@@ -10,6 +10,7 @@ from module.umamusume.types import SupportCardInfo
 from bot.recog.image_matcher import image_match, compare_color_equal, multi_template_match
 from module.umamusume.asset.template import *
 from bot.recog.ocr import ocr_line, find_similar_text, ocr_digits
+from bot.recog.training_stat_scanner import parse_training_result_template, scan_facility_stats
 
 import bot.base.log as logger
 log = logger.get_logger(__name__)
@@ -52,75 +53,7 @@ class AoharuHaiScenario(BaseScenario):
         return img[70:120, 30:90]
 
     def parse_training_result(self, img: any) -> list[int]:
-        # Use digital OCR to achieve higher accuracy
-        sub_img_speed_incr = img[800:830, 30:140]
-        sub_img_speed_incr = cv2.copyMakeBorder(sub_img_speed_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        speed_incr_text = ocr_digits(sub_img_speed_incr)
-        speed_incr_text = DIGITS_ONLY.sub("", speed_incr_text)
-
-        sub_img_speed_incr_extra = img[760:800, 30:140]
-        sub_img_speed_incr_extra = cv2.copyMakeBorder(sub_img_speed_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        speed_incr_extra_text = ocr_digits(sub_img_speed_incr_extra)
-        speed_incr_extra_text = DIGITS_ONLY.sub("", speed_incr_extra_text)
-
-        sub_img_stamina_incr = img[800:830, 140:250]
-        sub_img_stamina_incr = cv2.copyMakeBorder(sub_img_stamina_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        stamina_incr_text = ocr_digits(sub_img_stamina_incr)
-        stamina_incr_text = DIGITS_ONLY.sub("", stamina_incr_text)
-
-        sub_img_stamina_incr_extra = img[760:800, 140:250]
-        sub_img_stamina_incr_extra = cv2.copyMakeBorder(sub_img_stamina_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        stamina_incr_extra_text = ocr_digits(sub_img_stamina_incr_extra)
-        stamina_incr_extra_text = DIGITS_ONLY.sub("", stamina_incr_extra_text)
-
-        sub_img_power_incr = img[800:830, 250:360]
-        sub_img_power_incr = cv2.copyMakeBorder(sub_img_power_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        power_incr_text = ocr_digits(sub_img_power_incr)
-        power_incr_text = DIGITS_ONLY.sub("", power_incr_text)
-
-        sub_img_power_incr_extra = img[760:800, 250:360]
-        sub_img_power_incr_extra = cv2.copyMakeBorder(sub_img_power_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        power_incr_extra_text = ocr_digits(sub_img_power_incr_extra)
-        power_incr_extra_text = DIGITS_ONLY.sub("", power_incr_extra_text)
-
-        sub_img_will_incr = img[800:830, 360:470]
-        sub_img_will_incr = cv2.copyMakeBorder(sub_img_will_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        will_incr_text = ocr_digits(sub_img_will_incr)
-        will_incr_text = DIGITS_ONLY.sub("", will_incr_text)
-
-        sub_img_will_incr_extra = img[760:800, 360:470]
-        sub_img_will_incr_extra = cv2.copyMakeBorder(sub_img_will_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        will_incr_extra_text = ocr_digits(sub_img_will_incr_extra)
-        will_incr_extra_text = DIGITS_ONLY.sub("", will_incr_extra_text)
-
-        sub_img_intelligence_incr = img[800:830, 470:580]
-        sub_img_intelligence_incr = cv2.copyMakeBorder(sub_img_intelligence_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        intelligence_incr_text = ocr_digits(sub_img_intelligence_incr)
-        intelligence_incr_text = DIGITS_ONLY.sub("", intelligence_incr_text)
-
-        sub_img_intelligence_incr_extra = img[760:800, 470:580]
-        sub_img_intelligence_incr_extra = cv2.copyMakeBorder(sub_img_intelligence_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        intelligence_incr_extra_text = ocr_digits(sub_img_intelligence_incr_extra)
-        intelligence_incr_extra_text = DIGITS_ONLY.sub("", intelligence_incr_extra_text)
-
-        sub_img_skill_point_incr = img[800:830, 588:695]
-        sub_img_skill_point_incr = cv2.copyMakeBorder(sub_img_skill_point_incr, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        skill_point_incr_text = ocr_digits(sub_img_skill_point_incr)
-        skill_point_incr_text = DIGITS_ONLY.sub("", skill_point_incr_text)
-
-        sub_img_skill_point_incr_extra = img[760:800, 588:695]
-        sub_img_skill_point_incr_extra = cv2.copyMakeBorder(sub_img_skill_point_incr_extra, 20, 20, 20, 20, cv2.BORDER_CONSTANT, value=(255, 255, 255))
-        skill_point_incr_extra_text = ocr_digits(sub_img_skill_point_incr_extra)
-        skill_point_incr_extra_text = DIGITS_ONLY.sub("", skill_point_incr_extra_text)
-
-        speed_icr = (0 if speed_incr_text == "" else int(speed_incr_text)) + (0 if speed_incr_extra_text == "" else int(speed_incr_extra_text))
-        stamina_incr = (0 if stamina_incr_text == "" else int(stamina_incr_text)) + (0 if stamina_incr_extra_text == "" else int(stamina_incr_extra_text))
-        power_incr = (0 if power_incr_text == "" else int(power_incr_text)) + (0 if power_incr_extra_text == "" else int(power_incr_extra_text))
-        will_incr = (0 if will_incr_text == "" else int(will_incr_text)) + (0 if will_incr_extra_text == "" else int(will_incr_extra_text))
-        intelligence_incr = (0 if intelligence_incr_text == "" else int(intelligence_incr_text)) + (0 if intelligence_incr_extra_text == "" else int(intelligence_incr_extra_text))
-        skill_point_incr = (0 if skill_point_incr_text == "" else int(skill_point_incr_text)) + (0 if skill_point_incr_extra_text == "" else int(skill_point_incr_extra_text))
-
-        return [speed_icr, stamina_incr, power_incr, will_incr, intelligence_incr, skill_point_incr]
+        return parse_training_result_template(img, scenario="aoharuhai")
 
     def parse_training_support_card(self, img: any) -> list[SupportCardInfo]:
         if img is None or getattr(img, 'size', 0) == 0:

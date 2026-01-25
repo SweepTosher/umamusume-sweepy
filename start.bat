@@ -4,6 +4,8 @@ cd /d "%~dp0"
 git pull --autostash -X ours --no-edit
 set UAT_AUTORESTART=1
 
+pip install -r requirements.txt
+
 REM Try python3 first
 where python3 >nul 2>nul
 if %ERRORLEVEL% EQU 0 (

@@ -38,14 +38,14 @@ _image_match_cache = LRUCache(maxsize=8000)
 
 def _compute_match_cache_key(img, template):
     try:
-        img_hash = hash(img.tobytes())
-        template_hash = hash(template.template_img.tobytes()) if hasattr(template, 'template_img') and template.template_img is not None else id(template)
+        img_key = (id(img), img.shape[0] if img is not None else 0, img.shape[1] if img is not None else 0)
+        template_key = id(template)
         area = template.image_match_config.match_area
         if area:
-            roi_key = f"{area.x1},{area.y1},{area.x2},{area.y2}"
+            roi_key = (area.x1, area.y1, area.x2, area.y2)
         else:
-            roi_key = "full"
-        return f"{img_hash}:{template_hash}:{roi_key}"
+            roi_key = None
+        return (img_key, template_key, roi_key)
     except:
         return None
 
@@ -63,6 +63,8 @@ class ImageMatchResult:
 
 def to_gray(img):
     if img is None or getattr(img, 'size', 0) == 0:
+        return img
+    if len(img.shape) == 2:
         return img
     if len(img.shape) == 3:
         return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -102,6 +104,8 @@ def image_match(target, template: Template) -> ImageMatchResult:
                     res.center_point = (cx + x1, cy + y1)
                     (p1, p2) = res.matched_area
                     res.matched_area = ((p1[0] + x1, p1[1] + y1), (p2[0] + x1, p2[1] + y1))
+                if cache_key:
+                    _image_match_cache.set(cache_key, res)
                 return res
             else:
                 result = template_match(tgt, template, template.image_match_config.match_accuracy)

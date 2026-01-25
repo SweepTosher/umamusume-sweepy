@@ -1,7 +1,7 @@
 bot:
   auto:
     adb:
-      delay: 0.5
+      delay: 0.17
       device_name: emulator-5554
     cpu_alloc: 4
   gpu:

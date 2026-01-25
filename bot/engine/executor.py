@@ -330,10 +330,10 @@ class Executor:
                 else:
                     break
                 try:
-                    sleep_ms = int(os.getenv("UAT_EXECUTOR_LOOP_SLEEP_MS", "200"))
+                    sleep_ms = int(os.getenv("UAT_EXECUTOR_LOOP_SLEEP_MS", "100"))
                     time.sleep(max(0.0, sleep_ms / 1000.0))
                 except Exception:
-                    time.sleep(0.5)
+                    time.sleep(0.1)
         except Exception:
             task.end_task(TaskStatus.TASK_STATUS_FAILED, EndTaskReason.SYSTEM_ERROR)
             traceback.print_exc()

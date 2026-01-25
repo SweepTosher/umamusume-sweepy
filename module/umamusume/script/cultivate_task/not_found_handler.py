@@ -124,6 +124,16 @@ def script_not_found_ui(ctx: UmamusumeContext):
             return
     except Exception:
         pass
+
+    try:
+        from module.umamusume.asset.template import REF_TP
+        img_gray = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+        tp_match = image_match(img_gray, REF_TP)
+        if tp_match.find_match:
+            return
+    except Exception:
+        pass
+
     log.debug("No specific UI detected - using default fallback click")
     x, y = random.randint(0, 111), random.randint(1, 6)
     ctx.ctrl.click(x, y, "Default fallback click")

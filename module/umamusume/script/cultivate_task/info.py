@@ -89,7 +89,8 @@ TITLE = [
     "Items Selected", #44
     "Auto Select", #45
     "Session Error", #46
-    "Choose Career Mode" #47
+    "Choose Career Mode", #47
+    "Borrow Card" #48
 ]
 
 
@@ -616,4 +617,6 @@ def script_info(ctx: UmamusumeContext):
             time.sleep(1.0)
             ctx.ctrl.start_app("com.cygames.umamusume", "jp.co.cygames.umamusume.activity.UmamusumeActivity")
             time.sleep(2.0)
+        if title_text == TITLE[48]:
+            return
         time.sleep(1)

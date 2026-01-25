@@ -425,8 +425,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"  lv2: {lv2c}")
             if idx == 4:
                 log.info(f"  Rainbows (wit): {rbc}")
-            else:
-                log.info(f"  Rainbows: {rbc}")
             
             if npc:
                 log.info(f"  NPCs: {npc}")

@@ -1,7 +1,7 @@
 usually on /uma/ during 9-11am+pm UTC.   
 (you guys act like using discord will make your sons infertile or something)    
 
-alright seems like the ban announcement is a nothing burger i've been running the bot for over 50 hours straight now
+# GOT RID OF RAINBOWS IN SCORING GO REDO UR PRESETS WE READING STAT GAINS DIRECTLY NOW
 
 ## Reinstall your device/emulator if you have used this bot before 22/1/2026
 This is to get rid of residual traces of uiautomator2, likewise if your emulator has ever used anything that captures the screen without ADB direct screen capture it is recommended that you reinstall.     

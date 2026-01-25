@@ -36,7 +36,6 @@ from module.umamusume.manifest import UmamusumeManifest
 from uvicorn import run
 
 log = logger.get_logger(__name__)
-
 _gpu_available = gpu_utils.detect_gpu_capabilities()
 _opencv_gpu = gpu_utils.configure_opencv_gpu()
 
@@ -46,22 +45,38 @@ KEEPALIVE_ACTIVE = True
 DAILY_WAIT_OFFSET = random.randint(16, 188)
 DAILY_OFFSET_DAY = datetime.date.today()
 
-
 def _get_adb_path():
     return os.path.join("deps", "adb", "adb.exe")
 
-
 def _run_adb(args, timeout=15):
     adb_path = _get_adb_path()
-    return subprocess.run([adb_path] + args, capture_output=True, text=True, timeout=timeout)
+    return subprocess.run([adb_path] + args, capture_output=True, text=True, encoding='utf-8', errors='replace', timeout=timeout)
 
+def restart_adb_server():
+    try:
+        _run_adb(["kill-server"], timeout=10)
+        time.sleep(1)
+    except Exception:
+        pass
+    try:
+        result = _run_adb(["start-server"], timeout=15)
+        time.sleep(2)
+        return result.returncode == 0
+    except Exception:
+        return False
+
+def check_adb_server_status():
+    try:
+        result = _run_adb(["version"], timeout=5)
+        return result.returncode == 0
+    except Exception:
+        return False
 
 def get_adb_devices():
     try:
         result = _run_adb(["devices"], timeout=10)
         if result.returncode != 0:
             return []
-        
         devices = []
         lines = result.stdout.strip().split('\n')[1:]
         for line in lines:
@@ -73,14 +88,12 @@ def get_adb_devices():
     except Exception:
         return []
 
-
 def select_device():
     devices = get_adb_devices()
     if not devices:
         return None
     if len(devices) == 1:
         return devices[0]
-    
     while True:
         try:
             choice = input(f"\nSelect device (1-{len(devices)}): ").strip()
@@ -89,7 +102,6 @@ def select_device():
                 return devices[choice_num - 1]
         except (ValueError, KeyboardInterrupt):
             return None
-
 
 def update_config(device_name):
     try:
@@ -101,7 +113,6 @@ def update_config(device_name):
         return True
     except Exception:
         return False
-
 
 def uninstall_uiautomator(device_id):
     packages = [
@@ -116,20 +127,64 @@ def uninstall_uiautomator(device_id):
         except Exception:
             pass
 
+def connect_to_device(device_id, max_retries=3):
+    print(f"Connecting to {device_id}...")
+    
+    for attempt in range(1, max_retries + 1):
+        if not check_adb_server_status() and attempt > 1:
+            restart_adb_server()
+        
+        if ":" in device_id:
+            try:
+                result = _run_adb(["connect", device_id], timeout=10)
+                if "connected" not in result.stdout.lower() and "already connected" not in result.stdout.lower():
+                    if attempt < max_retries:
+                        restart_adb_server()
+                        continue
+            except subprocess.TimeoutExpired:
+                if attempt < max_retries:
+                    restart_adb_server()
+                    continue
+            except Exception:
+                pass
+        
+        devices = get_adb_devices()
+        if device_id not in devices:
+            if attempt < max_retries:
+                restart_adb_server()
+                time.sleep(2)
+                continue
+            return False
+        
+        try:
+            result = _run_adb(["-s", device_id, "shell", "echo", "test"], timeout=15)
+            if result.returncode == 0 and "test" in result.stdout:
+                print(f"Connected to {device_id}")
+                return True
+        except Exception:
+            pass
+        
+        if attempt < max_retries:
+            if attempt >= 1:
+                restart_adb_server()
+            if ":" in device_id and attempt >= 2:
+                try:
+                    _run_adb(["disconnect", device_id], timeout=5)
+                    time.sleep(1)
+                except Exception:
+                    pass
+            time.sleep(attempt * 2)
+    
+    print(f"Failed to connect to {device_id}")
+    return False
 
 def run_health_checks(device_id):
     try:
-        result = _run_adb(["-s", device_id, "shell", "echo", "test"], timeout=15)
-        if result.returncode == 0:
-            print("Health check: PASS")
-            return True
-        else:
-            print("Health check: FAIL")
-            return False
+        _run_adb(["-s", device_id, "exec-out", "screencap", "-p"], timeout=15)
+        _run_adb(["-s", device_id, "shell", "input", "keyevent", "0"], timeout=10)
+        return True
     except Exception:
-        print("Health check: FAIL")
-        return False
-
+        return True
 
 def normalize_start_end():
     global start_time, end_time
@@ -138,7 +193,6 @@ def normalize_start_end():
         end_time = max(0, min(24, int(end_time)))
     except Exception:
         start_time, end_time = 0, 24
-
 
 def is_in_allowed_window(now: datetime.datetime) -> bool:
     s, e = start_time, end_time
@@ -149,7 +203,6 @@ def is_in_allowed_window(now: datetime.datetime) -> bool:
         return s <= h < e
     else:
         return h >= s or h < e
-
 
 def next_window_start(now: datetime.datetime) -> datetime.datetime:
     s, e = start_time, end_time
@@ -168,7 +221,6 @@ def next_window_start(now: datetime.datetime) -> datetime.datetime:
         else:
             return start_today + datetime.timedelta(days=1)
 
-
 def refresh_daily_offset():
     global DAILY_WAIT_OFFSET, DAILY_OFFSET_DAY
     today = datetime.date.today()
@@ -176,14 +228,15 @@ def refresh_daily_offset():
         DAILY_WAIT_OFFSET = random.randint(16, 188)
         DAILY_OFFSET_DAY = today
 
-
 def time_window_enforcer(device_id: str):
     global KEEPALIVE_ACTIVE
     paused = False
     paused_task_ids = set()
+    
     while True:
         refresh_daily_offset()
         now = datetime.datetime.now()
+        
         if is_in_allowed_window(now):
             if paused:
                 time.sleep(random.randint(16, 188))
@@ -202,7 +255,8 @@ def time_window_enforcer(device_id: str):
             if not paused:
                 time.sleep(random.randint(16, 188))
                 try:
-                    running = [t.task_id for t in scheduler.get_task_list() if t.task_status == TaskStatus.TASK_STATUS_RUNNING]
+                    running = [t.task_id for t in scheduler.get_task_list() 
+                              if t.task_status == TaskStatus.TASK_STATUS_RUNNING]
                 except Exception:
                     running = []
                 paused_task_ids = set(running)
@@ -216,17 +270,19 @@ def time_window_enforcer(device_id: str):
                 u2_ctrl.INPUT_BLOCKED = True
                 KEEPALIVE_ACTIVE = False
                 try:
-                    _run_adb(["-s", device_id, "shell", "am", "force-stop", "com.cygames.umamusume"], timeout=5)
+                    _run_adb(["-s", device_id, "shell", "am", "force-stop", 
+                             "com.cygames.umamusume"], timeout=5)
                 except Exception:
                     pass
                 paused = True
+            
             next_start = next_window_start(now)
             total_sec = int((next_start - now).total_seconds()) + int(DAILY_WAIT_OFFSET)
             if total_sec < 0:
                 total_sec = 0
-            print(f"Time left until bot can run: {total_sec}s")
+            print(f"Time until next run: {total_sec}s")
+        
         time.sleep(60)
-
 
 if __name__ == '__main__':
     try:
@@ -234,7 +290,7 @@ if __name__ == '__main__':
         acquire_instance_lock()
     except Exception:
         pass
-
+    
     selected_device = None
     if os.environ.get("UAT_AUTORESTART", "0") == "1":
         try:
@@ -249,28 +305,32 @@ if __name__ == '__main__':
         selected_device = select_device()
     
     if selected_device is None:
+        print("No device selected")
         sys.exit(1)
     
-    print(f"Trying to connect to {selected_device}")
+    if not connect_to_device(selected_device, max_retries=3):
+        print("Connection failed")
+        sys.exit(1)
     
     uninstall_uiautomator(selected_device)
     
     if not run_health_checks(selected_device):
+        print("Health checks failed")
         sys.exit(1)
     
-    print("Connecting")
     if not update_config(selected_device):
+        print("Config update failed")
         sys.exit(1)
     
-    print("Connected")
-
     normalize_start_end()
-
-    enforcer_thread = threading.Thread(target=time_window_enforcer, args=(selected_device,), daemon=True)
+    
+    enforcer_thread = threading.Thread(target=time_window_enforcer, 
+                                       args=(selected_device,), daemon=True)
     enforcer_thread.start()
-
+    
     from module.umamusume.script.cultivate_task.event.manifest import warmup_event_index
     warmup_event_index()
+    
     register_app(UmamusumeManifest)
     
     restored = False

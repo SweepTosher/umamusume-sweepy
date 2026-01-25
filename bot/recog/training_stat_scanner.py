@@ -102,7 +102,7 @@ def find_digit_regions(mask):
             regions.sort(key=lambda r: r[0])
     return regions
 
-def classify_digit_region(roi, mask, region):
+def extract_digit_mask(mask, region):
     x, y, w, h = region
     padding = 2
     x1 = max(0, x - padding)
@@ -110,29 +110,54 @@ def classify_digit_region(roi, mask, region):
     x2 = min(mask.shape[1], x + w + padding)
     y2 = min(mask.shape[0], y + h + padding)
     digit_mask = mask[y1:y2, x1:x2]
-    if digit_mask.size == 0:
-        return -1, 0.0
-    classifier = get_classifier()
-    pred, conf = classifier.predict(digit_mask)
-    return pred, conf
+    return digit_mask if digit_mask.size > 0 else None
 
-def recognize_digits_cnn(roi):
+def recognize_digits_cnn(roi, max_value=100):
     if roi is None or roi.size == 0:
         return 0
     mask = create_color_mask(roi)
     regions = find_digit_regions(mask)
     if not regions:
         return 0
-    digits = []
+    digit_masks = []
+    valid_regions = []
     for region in regions:
-        digit, conf = classify_digit_region(roi, mask, region)
-        if digit >= 0 and conf > 0.3:
-            digits.append((region[0], digit, conf))
+        dm = extract_digit_mask(mask, region)
+        if dm is not None:
+            digit_masks.append(dm)
+            valid_regions.append(region)
+    if not digit_masks:
+        return 0
+    classifier = get_classifier()
+    results = classifier.predict_batch(digit_masks)
+    digits = []
+    for i, (pred, conf) in enumerate(results):
+        if pred >= 0 and conf > 0.3:
+            digits.append((valid_regions[i][0], pred, conf))
     if not digits:
         return 0
     digits.sort(key=lambda d: d[0])
     result_str = "".join(str(d[1]) for d in digits)
-    return int(result_str) if result_str else 0
+    value = int(result_str) if result_str else 0
+    if value <= max_value:
+        return value
+    candidates = []
+    for i in range(len(digits)):
+        remaining = digits[:i] + digits[i+1:]
+        if remaining:
+            rem_str = "".join(str(d[1]) for d in remaining)
+            rem_val = int(rem_str) if rem_str else 0
+            if rem_val <= max_value:
+                removed_conf = digits[i][2]
+                candidates.append((rem_val, removed_conf))
+    if candidates:
+        candidates.sort(key=lambda c: c[1])
+        return candidates[0][0]
+    if len(result_str) >= 2:
+        last_two = int(result_str[-2:])
+        if last_two <= max_value:
+            return last_two
+    return 0
 
 def scan_stat_gain(img, stat_name, scenario="aoharuhai"):
     if scenario == "ura":

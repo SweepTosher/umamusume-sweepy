@@ -51,6 +51,17 @@ class DigitClassifier:
             conf = probs[0, pred].item()
         return pred, conf
 
+    def predict_batch(self, images):
+        if not images:
+            return []
+        with torch.no_grad():
+            batch = torch.cat([self.preprocess(img) for img in images], dim=0)
+            output = self.model(batch)
+            probs = F.softmax(output, dim=1)
+            preds = torch.argmax(probs, dim=1).cpu().numpy()
+            confs = probs[torch.arange(len(preds)), preds].cpu().numpy()
+        return list(zip(preds.tolist(), confs.tolist()))
+
     def save(self, path):
         torch.save(self.model.state_dict(), path)
 

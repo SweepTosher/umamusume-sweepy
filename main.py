@@ -7,6 +7,8 @@ import time
 import cv2
 import random
 import datetime
+import urllib.request
+import tempfile
 import bot.base.log as logger
 import bot.base.gpu_utils as gpu_utils
 
@@ -38,6 +40,48 @@ from uvicorn import run
 log = logger.get_logger(__name__)
 _gpu_available = gpu_utils.detect_gpu_capabilities()
 _opencv_gpu = gpu_utils.configure_opencv_gpu()
+
+def ensure_vcredist():
+    if sys.platform != "win32":
+        return
+    try:
+        import torch
+        return
+    except OSError as e:
+        if "127" not in str(e) and "shm.dll" not in str(e):
+            return
+    except Exception:
+        return
+    
+    log.info("VC++ Redistributable missing, attempting install...")
+    vc_url = "https://aka.ms/vs/17/release/vc_redist.x64.exe"
+    
+    try:
+        temp_dir = tempfile.gettempdir()
+        installer_path = os.path.join(temp_dir, "vc_redist.x64.exe")
+        
+        log.info(f"Downloading VC++ Redistributable to {installer_path}")
+        urllib.request.urlretrieve(vc_url, installer_path)
+        
+        log.info("Running VC++ Redistributable installer...")
+        result = subprocess.run(
+            [installer_path, "/install", "/quiet", "/norestart"],
+            capture_output=True,
+            timeout=300
+        )
+        
+        if result.returncode == 0:
+            log.info("VC++ Redistributable installed successfully")
+            log.info("Please restart the application")
+            sys.exit(0)
+        elif result.returncode == 1638:
+            log.info("VC++ Redistributable already installed")
+        else:
+            log.warning(f"VC++ installer returned code: {result.returncode}")
+            log.error("Please install manually: https://aka.ms/vs/17/release/vc_redist.x64.exe")
+    except Exception as e:
+        log.error(f"Failed to install VC++ Redistributable: {e}")
+        log.error("Please install manually: https://aka.ms/vs/17/release/vc_redist.x64.exe")
 
 start_time = 0
 end_time = 24
@@ -285,6 +329,8 @@ def time_window_enforcer(device_id: str):
         time.sleep(60)
 
 if __name__ == '__main__':
+    ensure_vcredist()
+    
     try:
         from bot.base.purge import acquire_instance_lock
         acquire_instance_lock()

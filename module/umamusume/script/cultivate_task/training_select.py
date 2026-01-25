@@ -640,7 +640,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
                     return
             
-            if date >= 61 and sum(rbc_counts) == 0:
+            if date >= 61 and max_score < 0.46:
                 chosen_idx = 4
             else:
                 if date in (35, 36, 59, 60):

@@ -206,10 +206,13 @@ def get_canonical_skill_name(skill_name: str) -> str:
         if not query or not normalized_key:
             continue
         if query in normalized_key or normalized_key in query:
-            best_key = original_key
-            best_score = 1.0
-            best_len_ratio = min(qlen, normalized_length) / max(qlen, normalized_length) if max(qlen, normalized_length) else 1.0
-            break
+            score = 1.0
+            len_ratio = min(qlen, normalized_length) / max(qlen, normalized_length) if max(qlen, normalized_length) else 1.0
+            if score > best_score or (score == best_score and len_ratio > best_len_ratio):
+                best_score = score
+                best_len_ratio = len_ratio
+                best_key = original_key
+            continue
         token_inter = len(qtokens & normalized_tokens)
         token_union = len(qtokens | normalized_tokens) or 1
         token_score = token_inter / token_union

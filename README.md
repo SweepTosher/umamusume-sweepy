@@ -115,6 +115,9 @@ As single run mode is deprecated if you wish to emulated it you can enable "Manu
 
 
 ## Changelogs 
+- **26/1/2025**
+clicking on gear icon will now stop the task and copy the task info into a new task creation popup     
+
 - **25/1/2025**
 made even less detectable     
 now relies on stat gains to make decision instead of guessing based on number of rainbows

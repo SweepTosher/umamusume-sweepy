@@ -3038,6 +3038,9 @@ export default {
       this.compensateFailure = (this.presetsUse.compensate_failure !== false)
       this.useLastParents = (this.presetsUse.use_last_parents === true)
       this.overrideInsufficientFansForcedRaces = (this.presetsUse.override_insufficient_fans_forced_races === true)
+      this.learnSkillOnlyUserProvided = !!this.presetsUse.learn_skill_only_user_provided
+      this.recoverTP = this.presetsUse.allow_recover_tp || 0
+      this.manualPurchase = !!this.presetsUse.manual_purchase_at_end
         this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
         this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
         this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
@@ -3443,7 +3446,7 @@ export default {
       }
     },
     getPresets: function () {
-      this.axios.post("/umamusume/get-presets", "").then(
+      return this.axios.post("/umamusume/get-presets", "").then(
         res => {
           // All presets now come from the server (including starter presets)
           this.cultivatePresets = res.data
@@ -3525,6 +3528,9 @@ export default {
         summer_score_threshold: this.summerScoreThreshold,
         wit_race_search_threshold: this.witRaceSearchThreshold,
         learn_skill_threshold: this.learnSkillThreshold,
+        learn_skill_only_user_provided: this.learnSkillOnlyUserProvided,
+        allow_recover_tp: this.recoverTP,
+        manual_purchase_at_end: this.manualPurchase,
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,
@@ -3590,10 +3596,16 @@ export default {
         "preset": JSON.stringify(preset)
       }
       console.log(JSON.stringify(payload))
+      const savedName = this.presetNameEdit
       this.axios.post("/umamusume/add-presets", JSON.stringify(payload)).then(
         () => {
           this.successToast.toast('show')
-          this.getPresets()
+          this.getPresets().then(() => {
+            const saved = this.cultivatePresets.find(p => p.name === savedName)
+            if (saved) {
+              this.presetsUse = saved
+            }
+          })
         }
       )
     },

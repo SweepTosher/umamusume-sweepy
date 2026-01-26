@@ -3313,6 +3313,135 @@ export default {
       }
 
     },
+    loadFromTask: function (task) {
+      const data = task.attachment_data || task.detail || {};
+      this.selectedExecuteMode = task.task_execute_mode || 3;
+      this.selectedScenario = data.scenario || 1;
+      this.cureAsapConditions = data.cure_asap_conditions || this.cureAsapConditions;
+      if (data.expect_attribute && data.expect_attribute.length >= 5) {
+        this.expectSpeedValue = data.expect_attribute[0];
+        this.expectStaminaValue = data.expect_attribute[1];
+        this.expectPowerValue = data.expect_attribute[2];
+        this.expectWillValue = data.expect_attribute[3];
+        this.expectIntelligenceValue = data.expect_attribute[4];
+      }
+      if (data.follow_support_card_name) {
+        this.selectedSupportCard = { name: data.follow_support_card_name };
+      }
+      this.supportCardLevel = data.follow_support_card_level || this.supportCardLevel;
+      this.extraRace = data.extra_race_list || [];
+      this.clockUseLimit = data.clock_use_limit !== undefined ? data.clock_use_limit : this.clockUseLimit;
+      this.restTreshold = data.rest_treshold || this.restTreshold;
+      this.compensateFailure = data.compensate_failure !== false;
+      this.summerScoreThreshold = data.summer_score_threshold !== undefined ? data.summer_score_threshold : 0.34;
+      this.witRaceSearchThreshold = data.wit_race_search_threshold !== undefined ? data.wit_race_search_threshold : 0.15;
+      this.useLastParents = data.use_last_parents === true;
+      this.overrideInsufficientFansForcedRaces = data.override_insufficient_fans_forced_races === true;
+      this.learnSkillThreshold = data.learn_skill_threshold || this.learnSkillThreshold;
+      this.recoverTP = data.allow_recover_tp || 0;
+      this.manualPurchase = data.manual_purchase_at_end || false;
+      this.learnSkillOnlyUserProvided = data.learn_skill_only_user_provided || false;
+      if (data.tactic_list && data.tactic_list.length >= 3) {
+        this.selectedRaceTactic1 = data.tactic_list[0];
+        this.selectedRaceTactic2 = data.tactic_list[1];
+        this.selectedRaceTactic3 = data.tactic_list[2];
+      }
+      this.motivationThresholdYear1 = data.motivation_threshold_year1 || 3;
+      this.motivationThresholdYear2 = data.motivation_threshold_year2 || 4;
+      this.motivationThresholdYear3 = data.motivation_threshold_year3 || 4;
+      this.prioritizeRecreation = data.prioritize_recreation || false;
+      if (data.pal_name) this.palSelected = data.pal_name;
+      if (data.pal_thresholds && this.palSelected) {
+        this.palCardStore[this.palSelected] = data.pal_thresholds;
+      }
+      if (data.pal_friendship_score) this.palFriendshipScore = [...data.pal_friendship_score];
+      if (data.pal_card_multiplier !== undefined) this.palCardMultiplier = data.pal_card_multiplier;
+      if (data.extra_weight && data.extra_weight.length >= 3) {
+        this.extraWeight1 = data.extra_weight[0].map(v => Math.max(-1, Math.min(1, v)));
+        this.extraWeight2 = data.extra_weight[1].map(v => Math.max(-1, Math.min(1, v)));
+        this.extraWeight3 = data.extra_weight[2].map(v => Math.max(-1, Math.min(1, v)));
+        if (data.extra_weight.length >= 4) {
+          this.extraWeightSummer = data.extra_weight[3].map(v => Math.max(-1, Math.min(1, v)));
+        }
+      }
+      if (data.base_score) this.baseScore = [...data.base_score];
+      if (data.spirit_explosion && data.spirit_explosion.length >= 5) {
+        this.spiritExplosionJunior = data.spirit_explosion[0].map(v => Math.max(-1, Math.min(1, v)));
+        this.spiritExplosionClassic = data.spirit_explosion[1].map(v => Math.max(-1, Math.min(1, v)));
+        this.spiritExplosionSenior = data.spirit_explosion[2].map(v => Math.max(-1, Math.min(1, v)));
+        this.spiritExplosionSeniorAfterSummer = data.spirit_explosion[3].map(v => Math.max(-1, Math.min(1, v)));
+        this.spiritExplosionFinale = data.spirit_explosion[4].map(v => Math.max(-1, Math.min(1, v)));
+      }
+      if (data.score_value && data.score_value.length >= 5) {
+        this.scoreValueJunior = [...data.score_value[0]];
+        this.scoreValueClassic = [...data.score_value[1]];
+        this.scoreValueSenior = [...data.score_value[2]];
+        this.scoreValueSeniorAfterSummer = [...data.score_value[3]];
+        this.scoreValueFinale = [...data.score_value[4]];
+        if (this.selectedScenario === 2) {
+          if (this.scoreValueJunior.length >= 5) { this.specialJunior = this.scoreValueJunior[4]; this.scoreValueJunior = this.scoreValueJunior.slice(0, 4); }
+          if (this.scoreValueClassic.length >= 5) { this.specialClassic = this.scoreValueClassic[4]; this.scoreValueClassic = this.scoreValueClassic.slice(0, 4); }
+          if (this.scoreValueSenior.length >= 5) { this.specialSenior = this.scoreValueSenior[4]; this.scoreValueSenior = this.scoreValueSenior.slice(0, 4); }
+          if (this.scoreValueSeniorAfterSummer.length >= 5) { this.specialSeniorAfterSummer = this.scoreValueSeniorAfterSummer[4]; this.scoreValueSeniorAfterSummer = this.scoreValueSeniorAfterSummer.slice(0, 4); }
+          if (this.scoreValueFinale.length >= 5) { this.specialFinale = this.scoreValueFinale[4]; this.scoreValueFinale = this.scoreValueFinale.slice(0, 4); }
+        }
+      }
+      if (data.stat_value_multiplier) this.statValueMultiplier = [...data.stat_value_multiplier];
+      if (data.learn_skill_list && data.learn_skill_list.length > 0) {
+        this.selectedSkills = [];
+        this.skillAssignments = {};
+        this.activePriorities = [0];
+        data.learn_skill_list.forEach((skills, priority) => {
+          if (skills && skills.length > 0) {
+            skills.forEach(skillName => {
+              if (skillName && !this.selectedSkills.includes(skillName)) {
+                this.selectedSkills.push(skillName);
+                this.skillAssignments[skillName] = priority;
+              }
+            });
+            if (priority > 0 && !this.activePriorities.includes(priority)) {
+              this.activePriorities.push(priority);
+            }
+          }
+        });
+      }
+      if (data.learn_skill_blacklist) this.blacklistedSkills = [...data.learn_skill_blacklist];
+      if (data.event_weights) {
+        const ew = data.event_weights;
+        if (ew.junior) {
+          this.eventWeightsJunior = {
+            Friendship: ew.junior.Friendship || 35, Speed: ew.junior.Speed || 10, Stamina: ew.junior.Stamina || 10,
+            Power: ew.junior.Power || 10, Guts: ew.junior.Guts || 20, Wits: ew.junior.Wisdom || 1,
+            Hint: ew.junior['Skill Hint'] || 100, 'Skill Points': ew.junior['Skill Pts'] || 10
+          };
+        }
+        if (ew.classic) {
+          this.eventWeightsClassic = {
+            Friendship: ew.classic.Friendship || 20, Speed: ew.classic.Speed || 10, Stamina: ew.classic.Stamina || 10,
+            Power: ew.classic.Power || 10, Guts: ew.classic.Guts || 20, Wits: ew.classic.Wisdom || 1,
+            Hint: ew.classic['Skill Hint'] || 100, 'Skill Points': ew.classic['Skill Pts'] || 10
+          };
+        }
+        if (ew.senior) {
+          this.eventWeightsSenior = {
+            Friendship: ew.senior.Friendship || 0, Speed: ew.senior.Speed || 10, Stamina: ew.senior.Stamina || 10,
+            Power: ew.senior.Power || 10, Guts: ew.senior.Guts || 20, Wits: ew.senior.Wisdom || 1,
+            Hint: ew.senior['Skill Hint'] || 100, 'Skill Points': ew.senior['Skill Pts'] || 10
+          };
+        }
+      }
+      if (data.event_choices) this.eventChoicesSelected = { ...data.event_choices };
+      if (data.ura_config) {
+        this.skillEventWeight = [...(data.ura_config.skillEventWeight || [0, 0, 0])];
+        this.resetSkillEventWeightList = Array.isArray(data.ura_config.resetSkillEventWeightList) 
+          ? data.ura_config.resetSkillEventWeightList.join(', ') 
+          : (data.ura_config.resetSkillEventWeightList || '');
+      }
+      if (data.aoharu_config) {
+        this.preliminaryRoundSelections = [...(data.aoharu_config.preliminaryRoundSelections || [2, 1, 1, 1])];
+        this.aoharuTeamNameSelection = data.aoharu_config.aoharuTeamNameSelection || 4;
+      }
+    },
     getPresets: function () {
       this.axios.post("/umamusume/get-presets", "").then(
         res => {

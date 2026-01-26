@@ -562,7 +562,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if mult_parts:
                 formula_str += " | " + " ".join(mult_parts)
             
-            log.info(f"{names[idx]}: {score:.3f} = [{formula_str}]")
+            stat_str = " | " + " ".join(stat_parts) if stat_parts else ""
+            log.info(f"{names[idx]}: {score:.3f} = [{formula_str}]{stat_str}")
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 

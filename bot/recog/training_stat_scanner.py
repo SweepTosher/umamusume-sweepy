@@ -94,14 +94,14 @@ def find_digit_regions(mask):
             continue
         if w > 28 or w < 10:
             continue
-        if h < 18 or h > 32:
+        if h < 18 or h > 40:
             continue
         aspect = w / h
         if aspect > 0.98:
             continue
         if aspect < 0.40:
             continue
-        if y > 6 or y == 0:
+        if y > 20 or y == 0:
             continue
         right_edge = x + w
         if right_edge >= w_img and x >= w_img - 20:

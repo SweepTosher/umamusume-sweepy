@@ -36,6 +36,8 @@ class Scheduler:
         for i, v in enumerate(self.task_list):
             if v.task_id == task_id:
                 remove_idx = i
+                if v.task_status == TaskStatus.TASK_STATUS_RUNNING:
+                    v.task_status = TaskStatus.TASK_STATUS_INTERRUPT
         if remove_idx != -1:
             del self.task_list[remove_idx]
             return True

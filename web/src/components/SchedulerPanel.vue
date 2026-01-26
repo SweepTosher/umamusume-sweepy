@@ -4,7 +4,7 @@
       <auto-status-panel></auto-status-panel>
     </div>
     <div class="mb-3">
-      <running-task-panel :running-task="runningTask"></running-task-panel>
+      <running-task-panel :running-task="runningTask" @edit-task="handleEditTask"></running-task-panel>
     </div>
     <div class="mb-3">
       <waiting-task-list :waiting-task-list="waitingTaskList"></waiting-task-list>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div>
-      <task-edit-modal></task-edit-modal>
+      <task-edit-modal ref="taskEditModal"></task-edit-modal>
     </div>
   </div>
 </template>
@@ -32,6 +32,7 @@ import AutoStatusPanel from "@/components/AutoStatusPanel.vue";
 import TaskEditModal from "@/components/TaskEditModal.vue";
 import HistoryTaskList from "@/components/HistoryTaskList.vue";
 import CronJobList from "@/components/CronJobList.vue";
+import axios from "axios";
 import imageBgUrl1 from "../../assets/cunny.png";
 import imageBgUrl2 from "../../assets/cunny2.png";
 export default {
@@ -50,6 +51,15 @@ export default {
     this.applyTheme();
   },
   methods: {
+    handleEditTask(task) {
+      const taskId = task.task_id;
+      axios.delete("/task", { data: { task_id: taskId } }).then(() => {
+        this.$refs.taskEditModal.loadFromTask(task);
+        $('#create-task-list-modal').modal('show');
+      }).catch(e => {
+        console.error(e);
+      });
+    },
     toggleCharacter() {
       this.activeCharacter = this.activeCharacter === 0 ? 1 : 0;
       this.imageBg = this.activeCharacter === 1 ? imageBgUrl2 : imageBgUrl1;

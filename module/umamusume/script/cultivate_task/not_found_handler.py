@@ -126,6 +126,18 @@ def script_not_found_ui(ctx: UmamusumeContext):
         pass
 
     try:
+        from module.umamusume.asset.template import REF_EDIT_TEAM
+        img_gray = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+        edit_team_match = image_match(img_gray, REF_EDIT_TEAM)
+        if edit_team_match.find_match:
+            x = random.randint(276, 452)
+            y = random.randint(1155, 1196)
+            ctx.ctrl.click(x, y, "Default fallback click")
+            return
+    except Exception:
+        pass
+
+    try:
         from module.umamusume.asset.template import REF_TP
         img_gray = cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
         tp_match = image_match(img_gray, REF_TP)

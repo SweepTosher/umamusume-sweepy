@@ -20,6 +20,7 @@ from module.umamusume.constants.timing_constants import (
 )
 from module.umamusume.script.cultivate_task.parse import parse_date, parse_cultivate_main_menu
 from module.umamusume.script.cultivate_task.helpers import should_use_pal_outing_simple, detect_pal_stage
+from bot.recog.energy_scanner import scan_energy
 
 log = logger.get_logger(__name__)
 
@@ -177,11 +178,15 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 ctx.ctrl.click_by_point(CULTIVATE_REST)
             return
         else:
+            base_energy, _, _ = scan_energy(ctx.ctrl)
+            ctx.cultivate_detail.turn_info.base_energy = base_energy
             ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
             return
 
     if turn_operation is not None:
         if turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
+            base_energy, _, _ = scan_energy(ctx.ctrl)
+            ctx.cultivate_detail.turn_info.base_energy = base_energy
             ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_REST:
             if should_use_pal_outing_simple(ctx):

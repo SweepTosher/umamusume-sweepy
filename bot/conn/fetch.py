@@ -4,6 +4,7 @@ from typing import Dict, Any, Optional
 from bot.conn.u2_ctrl import U2AndroidController
 from bot.recog.image_matcher import image_match, compare_color_equal
 from bot.recog.ocr import ocr_line
+from bot.recog.energy_scanner import scan_base_energy
 from module.umamusume.asset import MOTIVATION_LIST
 
 shared_controller: Optional[U2AndroidController] = None
@@ -32,22 +33,14 @@ def ensure_top_img(img: Optional[any]) -> any:
 
 def read_energy(img: Optional[any] = None) -> int:
     if img is None:
-        top = ensure_top_img(None)
-    else:
-        top = img
-    if top is None or top.size == 0:
-        time.sleep(0.37)
-        top = ensure_top_img(None)
-        if top is None or top.size == 0:
+        try:
+            ctrl = get_shared_controller()
+            img = ctrl.get_screen(to_gray=False)
+        except Exception:
             return 0
-    sub = top[160:161, 229:505]
-    if sub.size == 0:
+    if img is None or img.size == 0:
         return 0
-    cnt = 0
-    for c in sub[0]:
-        if not compare_color_equal(c, [117, 117, 117], tolerance=20):
-            cnt += 1
-    return int(cnt / 276 * 100)
+    return scan_base_energy(img)
 
 def read_year(img: Optional[any] = None) -> str:
     if img is None:

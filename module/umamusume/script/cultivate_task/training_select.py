@@ -29,6 +29,7 @@ from module.umamusume.constants.game_constants import get_date_period_index
 from module.umamusume.script.cultivate_task.parse import parse_train_type, parse_failure_rates
 from module.umamusume.script.cultivate_task.helpers import should_use_pal_outing_simple
 from bot.recog.training_stat_scanner import scan_facility_stats
+from bot.recog.energy_scanner import scan_training_energy_change
 
 log = logger.get_logger(__name__)
 
@@ -75,6 +76,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         return
 
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
+
         class TrainingDetectionResult:
             def __init__(self):
                 self.support_card_info_list = []
@@ -86,8 +88,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 self.will_incr = 0
                 self.intelligence_incr = 0
                 self.skill_point_incr = 0
+                self.energy_change = 0.0
 
-        def detect_training_once(ctx, img, train_type):
+        def detect_training_once(ctx, img, train_type, energy_change=None):
             result = TrainingDetectionResult()
             facility_map = {
                 TrainingType.TRAINING_TYPE_SPEED: "speed",
@@ -99,6 +102,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             result.facility_name = facility_map.get(train_type)
             result.scenario_name = "ura" if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_URA else "aoharuhai"
             result.stat_results = {}
+            result.energy_change = energy_change if energy_change is not None else 0.0
             try:
                 if result.facility_name:
                     result.stat_results = scan_facility_stats(img, result.facility_name, result.scenario_name)
@@ -169,6 +173,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             til.intelligence_incr = result.intelligence_incr
             til.skill_point_incr = result.skill_point_incr
             til.stat_results = getattr(result, 'stat_results', {})
+            til.energy_change = getattr(result, 'energy_change', 0.0)
             tt_map = {
                 TrainingType.TRAINING_TYPE_SPEED: SupportCardType.SUPPORT_CARD_TYPE_SPEED,
                 TrainingType.TRAINING_TYPE_STAMINA: SupportCardType.SUPPORT_CARD_TYPE_STAMINA,
@@ -183,11 +188,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     relevant_count += 1
             til.relevant_count = relevant_count
 
-        def parse_training_with_retry(ctx, img, train_type):
+        def parse_training_with_retry(ctx, img, train_type, energy_change=None):
             for attempt in range(MAX_DETECTION_ATTEMPTS):
-                result1 = detect_training_once(ctx, img, train_type)
+                result1 = detect_training_once(ctx, img, train_type, energy_change)
                 time.sleep(TRAINING_DETECTION_DELAY)
-                result2 = detect_training_once(ctx, img, train_type)
+                result2 = detect_training_once(ctx, img, train_type, energy_change)
                 if compare_detection_results(result1, result2):
                     apply_detection_result(ctx, train_type, result1)
                     return
@@ -230,14 +235,33 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             return
         viewed = train_type.value
 
+   
+
         if extra_weight[viewed - 1] > -1:
-            thread = threading.Thread(target=parse_training_with_retry, args=(ctx, img, train_type))
+           
+            facility_map = {
+                TrainingType.TRAINING_TYPE_SPEED: "speed",
+                TrainingType.TRAINING_TYPE_STAMINA: "stamina",
+                TrainingType.TRAINING_TYPE_POWER: "power",
+                TrainingType.TRAINING_TYPE_WILL: "guts",
+                TrainingType.TRAINING_TYPE_INTELLIGENCE: "wits",
+            }
+            facility_name = facility_map.get(train_type)
+            energy_change, settled_img = scan_training_energy_change(ctx.ctrl, facility_name)
+            thread = threading.Thread(target=parse_training_with_retry, args=(ctx, settled_img, train_type, energy_change))
             threads.append(thread)
-            time.sleep(0.1)
             thread.start()
         else:
             clear_training(ctx, train_type)
 
+        facility_map = {
+            TrainingType.TRAINING_TYPE_SPEED: "speed",
+            TrainingType.TRAINING_TYPE_STAMINA: "stamina",
+            TrainingType.TRAINING_TYPE_POWER: "power",
+            TrainingType.TRAINING_TYPE_WILL: "guts",
+            TrainingType.TRAINING_TYPE_INTELLIGENCE: "wits",
+        }
+        
         for i in range(5):
             if i != (viewed - 1):
                 if extra_weight[i] > -1:
@@ -256,9 +280,13 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         clear_training(ctx, TrainingType(i + 1))
                         continue
 
-                    thread = threading.Thread(target=parse_training_with_retry, args=(ctx, img, TrainingType(i + 1)))
+                  
+                    train_type_i = TrainingType(i + 1)
+                    facility_name = facility_map.get(train_type_i)
+                    energy_change, settled_img = scan_training_energy_change(ctx.ctrl, facility_name)
+                    
+                    thread = threading.Thread(target=parse_training_with_retry, args=(ctx, settled_img, train_type_i, energy_change))
                     threads.append(thread)
-                    time.sleep(TRAINING_DETECTION_DELAY)
                     thread.start()
                 else:
                     clear_training(ctx, TrainingType(i + 1))
@@ -330,6 +358,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             rest_threshold = DEFAULT_REST_THRESHOLD
         
         base_scores = getattr(ctx.cultivate_detail, 'base_score', DEFAULT_BASE_SCORES)
+
+        base_energy = getattr(ctx.cultivate_detail.turn_info, 'base_energy', None)
+        if base_energy is not None:
+            log.info(f"Base Energy: {base_energy:.1f}%")
 
         for idx in range(5):
             til = ctx.cultivate_detail.turn_info.training_info_list[idx]
@@ -563,7 +595,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 formula_str += " | " + " ".join(mult_parts)
             
             stat_str = " | " + " ".join(stat_parts) if stat_parts else ""
-            log.info(f"{names[idx]}: {score:.3f} = [{formula_str}]{stat_str}")
+            nrg_change = getattr(til, 'energy_change', 0.0)
+            nrg_str = f" | nrg:{nrg_change:+.1f}" if nrg_change != 0 else ""
+            log.info(f"{names[idx]}: {score:.3f} = [{formula_str}]{stat_str}{nrg_str}")
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
 
@@ -599,7 +633,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         if blocked_count == 4 and len(available_trainings) == 1:
             chosen_idx = available_trainings[0]
         else:
-            if not hasattr(ctx.cultivate_detail.turn_info, 'race_search_attempted'):
+        
+            if not hasattr(ctx.cultivate_detail.turn_info, 'race_search_attempted') and date <= 72:
                 wit_race_threshold = getattr(ctx.cultivate_detail, 'wit_race_search_threshold', 0.15)
                 
                 from bot.conn.fetch import read_energy

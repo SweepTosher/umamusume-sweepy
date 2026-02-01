@@ -19,7 +19,6 @@ This is to get rid of residual traces of uiautomator2, likewise if your emulator
 
 - **This project is a detached fork of**: [UmamusumeAutoTrainer-Global](https://github.com/BrayAlter/UAT-Global-Server) by [BrayAlter](https://github.com/BrayAlter) who first ported the orginal to the global server
 
-
 ![UAT](docs/main.png)
 
 ---

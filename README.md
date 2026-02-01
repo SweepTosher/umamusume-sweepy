@@ -2,7 +2,7 @@
 
 ### A umamusume bot that handles all aspects of gameplay including training, races, events, skill purchasing, and starting runs. 
 
-updates bricked your presets btw. go set wit base score to 0 and energy change value to 0.01-0.006
+updates bricked your presets btw. go set wit base score to 0 and energy change value to 0.01-0.006. spirit explosions weight should probably be higher too since they drain energy 
 
 ![Uma Musume Auto Trainer](docs/main.png)
 

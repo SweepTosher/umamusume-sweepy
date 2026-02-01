@@ -77,19 +77,38 @@ class U2AndroidController(AndroidController):
     last_click_time = 0.0
     min_click_interval = 0.15
 
-    _screen_width = None
-    _screen_height = None
+    screen_width = None
+    screen_height = None
+    screencap_cmd = None
+    screencap_lock = None
+    pixel_buffer = None
+    last_dims = None
 
     def __init__(self):
         self.recent_click_buckets = []
         self.fallback_block_until = 0.0
         self.trigger_decision_reset = False
         self.last_recovery_time = 0
+        self.screencap_lock = threading.Lock()
+        self.screencap_cmd = [self.path + "adb.exe", "-s", self.config.device_name, "exec-out", "screencap"]
         try:
             from bot.base.runtime_state import load_persisted
             load_persisted()
         except Exception:
             pass
+
+    def screencap(self):
+        raw = subprocess.run(self.screencap_cmd, capture_output=True, timeout=5).stdout
+        w, h, fmt = struct.unpack('<III', raw[:12])
+        pixel_size = w * h * 4
+        header_size = 16 if len(raw) >= 16 + pixel_size else 12
+        if self.last_dims != (h, w) or self.pixel_buffer is None:
+            self.pixel_buffer = np.empty((h, w, 4), dtype=np.uint8)
+            self.last_dims = (h, w)
+        np.copyto(self.pixel_buffer, np.frombuffer(raw[header_size:header_size + pixel_size], dtype=np.uint8).reshape((h, w, 4)))
+        if fmt == 5:
+            return cv2.cvtColor(self.pixel_buffer, cv2.COLOR_BGRA2BGR)
+        return cv2.cvtColor(self.pixel_buffer, cv2.COLOR_RGBA2BGR)
 
     def in_fallback_block(self, name):
         if isinstance(name, str) and name == "Default fallback click":
@@ -257,7 +276,7 @@ class U2AndroidController(AndroidController):
             pass
         return None, None
 
-    def get_screen(self, to_gray=False):
+    def _get_screen_subprocess(self):
         for attempt in range(2):
             try:
                 result = subprocess.run(
@@ -294,25 +313,21 @@ class U2AndroidController(AndroidController):
                 data = np.frombuffer(raw[header_size:header_size + pixel_size], dtype=np.uint8)
                 img = data.reshape((h, w, 4))
                 if fmt == 5:
-                    cur_screen = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+                    return cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
                 else:
-                    cur_screen = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
-                if cur_screen is None or getattr(cur_screen, 'size', 0) == 0:
-                    if attempt < 1:
-                        continue
-                    return None
-                if h < 100 or w < 100:
-                    if attempt < 1:
-                        continue
-                    return None
-                if to_gray:
-                    return cv2.cvtColor(cur_screen, cv2.COLOR_BGR2GRAY)
-                return cur_screen
+                    return cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
             except Exception:
                 if attempt < 1:
                     continue
                 return None
         return None
+
+    def get_screen(self, to_gray=False):
+        with self.screencap_lock:
+            img = self.screencap()
+        if to_gray:
+            return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return img
 
     # ===== ctrl =====
     def click_by_point(self, point: ClickPoint, random_offset=True, hold_duration=0):

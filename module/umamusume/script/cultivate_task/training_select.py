@@ -252,7 +252,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             thread = threading.Thread(target=parse_training_with_retry, args=(ctx, immediate_img, train_type, None))
             threads.append(thread)
             thread.start()
-            energy_change, _ = scan_training_energy_change(ctx.ctrl, facility_name)
+            energy_change, _ = scan_training_energy_change(ctx.ctrl, facility_name, initial_img=immediate_img)
             energy_changes.append((viewed - 1, energy_change))
         else:
             clear_training(ctx, train_type)
@@ -283,14 +283,12 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         clear_training(ctx, TrainingType(i + 1))
                         continue
 
-                  
                     train_type_i = TrainingType(i + 1)
                     facility_name = facility_map.get(train_type_i)
-                    immediate_img = ctx.ctrl.get_screen()
-                    thread = threading.Thread(target=parse_training_with_retry, args=(ctx, immediate_img, train_type_i, None))
+                    thread = threading.Thread(target=parse_training_with_retry, args=(ctx, img, train_type_i, None))
                     threads.append(thread)
                     thread.start()
-                    energy_change, _ = scan_training_energy_change(ctx.ctrl, facility_name)
+                    energy_change, _ = scan_training_energy_change(ctx.ctrl, facility_name, initial_img=img)
                     energy_changes.append((i, energy_change))
                 else:
                     clear_training(ctx, TrainingType(i + 1))

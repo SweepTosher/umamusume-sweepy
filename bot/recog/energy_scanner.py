@@ -130,9 +130,12 @@ def scan_training_energy_change_single(img, y=ENERGY_BAR_Y):
             return energy_change_pct if energy_change_pct > 0 else 0.0
 
 
-def scan_training_energy_change(ctrl, facility_name, y=ENERGY_BAR_Y):
+def scan_training_energy_change(ctrl, facility_name, y=ENERGY_BAR_Y, initial_img=None):
     prev_value = None
-    img = None
+    img = initial_img
+    if img is not None:
+        prev_value = scan_training_energy_change_single(img, y)
+        time.sleep(0.035)
     while True:
         img = ctrl.get_screen()
         current_value = scan_training_energy_change_single(img, y)

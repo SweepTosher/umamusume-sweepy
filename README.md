@@ -191,6 +191,9 @@ Install or reinstall Visual C++ Redistributable:
 ## Changelog
 
 ### 2025-01-26
+- Energy gain/loss now affects scoring.
+
+### 2025-01-26
 - Gear icon now stops task and copies task info to new task creation popup
 
 ### 2025-01-25

@@ -7,7 +7,6 @@ usually on /uma/ during 9-11am+pm UTC.
 
 
 
-
 ## Reinstall your device/emulator if you have used this bot before 22/1/2026
 This is to get rid of residual traces of uiautomator2, likewise if your emulator has ever used anything that captures the screen without ADB direct screen capture it is recommended that you reinstall.     
 (Likely uma wont even check for this but just to be safe)

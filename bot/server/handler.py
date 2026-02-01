@@ -187,8 +187,14 @@ def get_update_status():
         behind = int(parts[1]) if len(parts) > 1 else 0
         head_sha = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=repo_root, timeout=5)
         remote_sha = subprocess.run(["git", "rev-parse", revspec.split('...')[1]], capture_output=True, text=True, cwd=repo_root, timeout=5)
+        preset_redo = False
+        if behind > 0:
+            log_cmd = subprocess.run(["git", "log", "--oneline", f"HEAD..{revspec.split('...')[1]}"], capture_output=True, text=True, cwd=repo_root, timeout=10)
+            if log_cmd.returncode == 0 and "(TR)" in log_cmd.stdout:
+                preset_redo = True
         return {
             "has_update": bool(behind > 0),
+            "preset_redo": preset_redo,
             "branch": branch_name,
             "upstream": revspec.split('...')[1],
             "ahead": ahead,

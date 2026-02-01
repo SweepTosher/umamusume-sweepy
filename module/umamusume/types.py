@@ -45,7 +45,6 @@ class TrainingInfo:
     intelligence_incr: int
     skill_point_incr: int
     failure_rate: int
-    # not maxxed or rainbow
     relevant_count: int
 
     def __init__(self):

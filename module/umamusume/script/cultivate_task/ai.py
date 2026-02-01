@@ -28,13 +28,13 @@ URA_RACE_WINDOWS = [
 
 def weights_for_date(date):
     if date <= DATE_JUNIOR_END:
-        return 0.11, 0.10, 0.01
+        return 0.11, 0.10
     elif date <= DATE_CLASSIC_END:
-        return 0.11, 0.10, 0.09
+        return 0.11, 0.10
     elif date <= DATE_SPRING_END:
-        return 0.11, 0.10, 0.12
+        return 0.11, 0.10
     else:
-        return 0.03, 0.05, 0.15
+        return 0.03, 0.05
 
 def get_ura_race_id_and_template(date):
     for rng, rid, tpl in URA_RACE_WINDOWS:
@@ -151,15 +151,13 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         SupportCardType.SUPPORT_CARD_TYPE_INTELLIGENCE,
     ]
 
-    w_lv1, w_lv2, w_rainbow = weights_for_date(date)
+    w_lv1, w_lv2 = weights_for_date(date)
 
     training_score = [0.0, 0.0, 0.0, 0.0, 0.0]
-    total_rainbows_all = 0
     for idx in range(5):
         til = turn_info.training_info_list[idx]
         target_type = type_map[idx]
         score = 0.0
-        rainbow_count = 0
         for sc in (getattr(til, "support_card_info_list", []) or []):
             favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
             ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
@@ -170,22 +168,12 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
                 continue
             if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
                 continue
-            is_rb = False
-            if hasattr(sc, "is_rainbow") and bool(getattr(sc, "is_rainbow")) and (ctype == target_type):
-                is_rb = True
-            if not is_rb and (favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type):
-                is_rb = True
-            if is_rb:
-                rainbow_count += 1
-                score += w_rainbow
-                continue
-            if favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4):
+            if favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type:
                 continue
             if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
                 score += w_lv1
             elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
                 score += w_lv2
-        total_rainbows_all += rainbow_count
         training_score[idx] = score
 
     if getattr(ctx.cultivate_detail, 'compensate_failure', True):
@@ -199,23 +187,6 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             pass
 
     log.debug("Overall training score: " + str(training_score))
-
-    rainbow_counts = [0, 0, 0, 0, 0]
-    for idx in range(5):
-        til = turn_info.training_info_list[idx]
-        target_type = type_map[idx]
-        rc = 0
-        for sc in (getattr(til, "support_card_info_list", []) or []):
-            favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
-            ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
-            is_rb = False
-            if hasattr(sc, "is_rainbow") and bool(getattr(sc, "is_rainbow")) and (ctype == target_type):
-                is_rb = True
-            if not is_rb and (favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type):
-                is_rb = True
-            if is_rb:
-                rc += 1
-        rainbow_counts[idx] = rc
 
     if ctx.cultivate_detail.debut_race_win:
         from module.umamusume.asset.race_data import get_races_for_period

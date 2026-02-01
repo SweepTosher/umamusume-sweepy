@@ -314,7 +314,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 special = special_defaults[idx if 0 <= idx < len(special_defaults) else 0]
             return base + [special]
         period_idx = get_date_period_index(date)
-        w_lv1, w_lv2, w_rainbow, w_hint, w_special = resolve_weights(sv, period_idx)
+        w_lv1, w_lv2, w_energy_change, w_hint, w_special = resolve_weights(sv, period_idx)
         try:
             se_config = getattr(ctx.cultivate_detail, 'spirit_explosion', DEFAULT_SPIRIT_EXPLOSION)
             if isinstance(se_config, list) and len(se_config) > 0 and isinstance(se_config[0], list):
@@ -334,7 +334,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         names = ["Speed", "Stamina", "Power", "Guts", "Wit"]
         stat_keys = ["speed", "stamina", "power", "guts", "wits", "sp"]
         computed_scores = [0.0, 0.0, 0.0, 0.0, 0.0]
-        rbc_counts = [0, 0, 0, 0, 0]
         special_counts = [0, 0, 0, 0, 0]
         spirit_counts = [0, 0, 0, 0, 0]
 
@@ -368,7 +367,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             target_type = type_map[idx]
             lv1c = 0
             lv2c = 0
-            rbc = 0
             npc = 0
             pal_count = 0
             score = base_scores[idx] if isinstance(base_scores, (list, tuple)) and len(base_scores) > idx else 0.0
@@ -402,18 +400,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     elif favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4):
                         score += pal_scores[2]
                     continue
-                is_rb = False
-                if hasattr(sc, "is_rainbow"):
-                    is_rb = bool(getattr(sc, "is_rainbow")) and (ctype == target_type)
-                if not is_rb and (favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type):
-                    is_rb = True
-                if is_rb:
-                    rbc += 1
-                    if idx == 4:
-                        if current_energy is not None and current_energy > HIGH_ENERGY_THRESHOLD:
-                            log.info(f"energy >{HIGH_ENERGY_THRESHOLD}, wit rainbow=0")
-                        else:
-                            score += w_rainbow
+                if favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4) and ctype == target_type:
                     continue
                 if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
                     lv1c += 1
@@ -443,6 +430,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             except Exception:
                 hint_bonus = 0.0
             score += hint_bonus
+            energy_change_val = getattr(til, 'energy_change', 0.0)
+            energy_change_contrib = energy_change_val * w_energy_change
+            score += energy_change_contrib
             stc_lane = special_counts[idx]
             special_bonus = 0.0
             if stc_lane > 0:
@@ -509,10 +499,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     else:
                         energy_mult = 0.75
                 elif 85 > current_energy:
-                    if rbc > 0:
-                        energy_mult = 1.16
-                    else:
-                        energy_mult = 1.10
+                    energy_mult = 1.10
                 score *= energy_mult
 
             target_mult = 1.0
@@ -551,12 +538,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 score *= weight_mult
 
             computed_scores[idx] = score
-            rbc_counts[idx] = rbc
             
             base_val = base_scores[idx] if isinstance(base_scores, (list, tuple)) and len(base_scores) > idx else 0.0
             lv1_contrib = lv1c * w_lv1
             lv2_contrib = lv2c * w_lv2
-            rb_contrib = rbc * w_rainbow if idx == 4 and (current_energy is None or current_energy <= HIGH_ENERGY_THRESHOLD) else 0.0
             npc_contrib = npc * NPC_CARD_SCORE
             
             formula_parts = []
@@ -567,8 +552,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 formula_parts.append(f"lv1({lv1c}):+{lv1_contrib:.3f}")
             if lv2_contrib > 0:
                 formula_parts.append(f"lv2({lv2c}):+{lv2_contrib:.3f}")
-            if rb_contrib > 0:
-                formula_parts.append(f"rb({rbc}):+{rb_contrib:.3f}")
+            if energy_change_contrib != 0:
+                formula_parts.append(f"nrg({energy_change_val:+.1f}):+{energy_change_contrib:.3f}")
             if npc_contrib > 0:
                 formula_parts.append(f"npc({npc}):+{npc_contrib:.3f}")
             if hint_bonus > 0:

@@ -41,7 +41,11 @@ export default {
       axios.get('/api/update-status', null, false)
         .then(res => {
           if (res && res.data && res.data.has_update){
-            alert("There's a update available for this repo. Please run start.bat");
+            if (res.data.preset_redo) {
+              alert("The next update requires you to redo your presets");
+            } else {
+              alert("There's a update available for this repo. Please run start.bat");
+            }
           }
         })
         .catch(()=>{});

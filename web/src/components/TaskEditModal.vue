@@ -506,7 +506,7 @@
                         <input type="number" step="0.01" v-model.number="scoreValueJunior[1]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
-                        <div class="form-group mb-1"><small>Rainbow (wit)</small></div>
+                        <div class="form-group mb-1"><small>Energy Change (+/-)</small></div>
                         <input type="number" step="0.01" v-model.number="scoreValueJunior[2]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
@@ -533,7 +533,7 @@
                         <input type="number" step="0.01" v-model.number="scoreValueClassic[1]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
-                        <div class="form-group mb-1"><small>Rainbow (wit)</small></div>
+                        <div class="form-group mb-1"><small>Energy Change (+/-)</small></div>
                         <input type="number" step="0.01" v-model.number="scoreValueClassic[2]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
@@ -560,7 +560,7 @@
                         <input type="number" step="0.01" v-model.number="scoreValueSenior[1]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
-                        <div class="form-group mb-1"><small>Rainbow (wit)</small></div>
+                        <div class="form-group mb-1"><small>Energy Change (+/-)</small></div>
                         <input type="number" step="0.01" v-model.number="scoreValueSenior[2]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
@@ -587,7 +587,7 @@
                         <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[1]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
-                        <div class="form-group mb-1"><small>Rainbow (wit)</small></div>
+                        <div class="form-group mb-1"><small>Energy Change (+/-)</small></div>
                         <input type="number" step="0.01" v-model.number="scoreValueSeniorAfterSummer[2]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
@@ -614,7 +614,7 @@
                         <input type="number" step="0.01" v-model.number="scoreValueFinale[1]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
-                        <div class="form-group mb-1"><small>Rainbow (wit)</small></div>
+                        <div class="form-group mb-1"><small>Energy Change (+/-)</small></div>
                         <input type="number" step="0.01" v-model.number="scoreValueFinale[2]" class="form-control">
                       </div>
                       <div class="col-md-2 col-6">
@@ -1898,8 +1898,8 @@ export default {
       clockUseLimit: 99,
       restTreshold: 48,
       compensateFailure: true,
-      summerScoreThreshold: 0.34,
-      witRaceSearchThreshold: 0.15,
+      summerScoreThreshold: 0.17,
+      witRaceSearchThreshold: 0.08,
       learnSkillThreshold: 888,
       cureAsapConditions: 'Migraine,Night Owl,Skin Outbreak,Slacker,Slow Metabolism,(Practice poor isn\'t worth a turn to cure)',
       recoverTP: 0,
@@ -1930,7 +1930,7 @@ export default {
       palSelected: "",
       // Pal card scoring configuration
       palFriendshipScore: [0.08, 0.057, 0.018],
-      palCardMultiplier: 0.1,
+      palCardMultiplier: 0.01,
 
       // URA配置
       skillEventWeight: [0, 0, 0],
@@ -2012,12 +2012,11 @@ export default {
       eventList: [],
       eventChoicesSelected: {},
 
-      // Score Value per period [lv1, lv2, rainbow, hint] + separate Special fields
-      scoreValueJunior: [0.11, 0.10, 0.0025, 0.09],
-      scoreValueClassic: [0.11, 0.10, 0.0225, 0.09],
-      scoreValueSenior: [0.11, 0.10, 0.03, 0.09],
-      scoreValueSeniorAfterSummer: [0.03, 0.05, 0.0375, 0.09],
-      scoreValueFinale: [0, 0, 0.0675, 0],
+      scoreValueJunior: [0.11, 0.10, 0.01, 0.09],
+      scoreValueClassic: [0.11, 0.10, 0.01, 0.09],
+      scoreValueSenior: [0.11, 0.10, 0.01, 0.09],
+      scoreValueSeniorAfterSummer: [0.03, 0.05, 0.01, 0.09],
+      scoreValueFinale: [0, 0, 0.01, 0],
       specialJunior: 0.095,
       specialClassic: 0.095,
       specialSenior: 0.095,
@@ -3033,8 +3032,8 @@ export default {
         this.supportCardLevel = this.presetsUse.follow_support_card_level,
         this.clockUseLimit = this.presetsUse.clock_use_limit,
         this.restTreshold = (this.presetsUse.rest_treshold || this.presetsUse.fast_path_energy_limit || 48),
-        this.summerScoreThreshold = (this.presetsUse.summer_score_threshold !== undefined ? this.presetsUse.summer_score_threshold : 0.34),
-        this.witRaceSearchThreshold = (this.presetsUse.wit_race_search_threshold !== undefined ? this.presetsUse.wit_race_search_threshold : 0.15),
+        this.summerScoreThreshold = (this.presetsUse.summer_score_threshold !== undefined ? this.presetsUse.summer_score_threshold : 0.17),
+        this.witRaceSearchThreshold = (this.presetsUse.wit_race_search_threshold !== undefined ? this.presetsUse.wit_race_search_threshold : 0.08),
       this.compensateFailure = (this.presetsUse.compensate_failure !== false)
       this.useLastParents = (this.presetsUse.use_last_parents === true)
       this.overrideInsufficientFansForcedRaces = (this.presetsUse.override_insufficient_fans_forced_races === true)
@@ -3067,7 +3066,7 @@ export default {
       if ('pal_card_multiplier' in this.presetsUse) {
         this.palCardMultiplier = this.presetsUse.pal_card_multiplier
       } else {
-        this.palCardMultiplier = 0.1
+        this.palCardMultiplier = 0.01
       }
       if ('event_overrides' in this.presetsUse && this.presetsUse.event_overrides) {
         this.eventChoicesSelected = { ...this.presetsUse.event_overrides }
@@ -3108,7 +3107,7 @@ export default {
           }
         }
         
-        const targetLen = 4; // Always 4 for the base score values (lv1, lv2, rainbow, hint)
+        const targetLen = 4;
         const arrs = [this.scoreValueJunior, this.scoreValueClassic, this.scoreValueSenior, this.scoreValueSeniorAfterSummer, this.scoreValueFinale]
         arrs.forEach((arr, i) => {
           if (arr.length > targetLen) arr.splice(targetLen)
@@ -3336,8 +3335,8 @@ export default {
       this.clockUseLimit = data.clock_use_limit !== undefined ? data.clock_use_limit : this.clockUseLimit;
       this.restTreshold = data.rest_treshold || this.restTreshold;
       this.compensateFailure = data.compensate_failure !== false;
-      this.summerScoreThreshold = data.summer_score_threshold !== undefined ? data.summer_score_threshold : 0.34;
-      this.witRaceSearchThreshold = data.wit_race_search_threshold !== undefined ? data.wit_race_search_threshold : 0.15;
+      this.summerScoreThreshold = data.summer_score_threshold !== undefined ? data.summer_score_threshold : 0.17;
+      this.witRaceSearchThreshold = data.wit_race_search_threshold !== undefined ? data.wit_race_search_threshold : 0.08;
       this.useLastParents = data.use_last_parents === true;
       this.overrideInsufficientFansForcedRaces = data.override_insufficient_fans_forced_races === true;
       this.learnSkillThreshold = data.learn_skill_threshold || this.learnSkillThreshold;

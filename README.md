@@ -103,7 +103,6 @@ Alternatively, run `start.bat` to launch the bot.
 
 1. Set graphics to `Standard` in-game (not `Basic`)
 2. Manually select your Uma Musume, Legacy Uma, and Support Cards before starting
-3. Avoid using friend cards (no specific outing strategy implemented)
 
 ---
 

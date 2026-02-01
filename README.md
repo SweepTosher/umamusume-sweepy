@@ -5,7 +5,7 @@ usually on /uma/ during 9-11am+pm UTC.
 <img width="1080" height="171" alt="image" src="https://github.com/user-attachments/assets/1f68af35-cf9d-41ce-9392-c26ecf83cc70" />.    
    https://aka.ms/vs/17/release/vc_redist.x64.exe
 
-your presets are void again. energy change (+/-) has a big impact on scoring now
+your presets are void again. energy change (+/-) has a big impact on scoring now so things like basescore and witfallback all needs to be changed now
 
 ![uma musume](docs/umabike.gif)
 

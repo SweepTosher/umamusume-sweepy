@@ -192,8 +192,11 @@ Install or reinstall Visual C++ Redistributable:
 
 ## Changelog
 
-### 2025-01-26
-- Energy gain/loss now affects scoring.
+### 2025-02-2
+- Redid screencap method (Stale frames might cause issues but is faster)         
+
+### 2025-02-1
+- Energy gain/loss now affects scoring.    
 
 ### 2025-01-26
 - Gear icon now stops task and copies task info to new task creation popup

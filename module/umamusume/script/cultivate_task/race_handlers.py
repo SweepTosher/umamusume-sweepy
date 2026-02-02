@@ -197,14 +197,34 @@ def script_cultivate_before_race(ctx: UmamusumeContext):
     date = ctx.cultivate_detail.turn_info.date
     if date != -1:
         tactic_check_point_list = [img[668, 480], img[668, 542], img[668, 600], img[668, 670]]
-        if date <= 72:
-            p_check_tactic = tactic_check_point_list[ctx.cultivate_detail.tactic_list[int((date - 1) / 24)] - 1]
-        else:
-            p_check_tactic = tactic_check_point_list[ctx.cultivate_detail.tactic_list[2] - 1]
-        if compare_color_equal(p_check_tactic, [170, 170, 170]):
-            ctx.ctrl.click_by_point(BEFORE_RACE_CHANGE_TACTIC)
-            return
+        target_tactic = None
 
+        if hasattr(ctx.cultivate_detail, 'tactic_actions') and ctx.cultivate_detail.tactic_actions:
+            for action in ctx.cultivate_detail.tactic_actions:
+                op = action.get('op')
+                val = int(action.get('val', 0))
+                val2 = int(action.get('val2', 0))
+                tactic = int(action.get('tactic', 0))
+                
+                match = False
+                if op == '=':
+                    if date == val: match = True
+                elif op == '>':
+                    if date > val: match = True
+                elif op == '<':
+                    if date < val: match = True
+                elif op == 'range':
+                    if val < date < val2: match = True
+                
+                if match:
+                    target_tactic = tactic
+                    break
+
+        if target_tactic:
+            p_check_tactic = tactic_check_point_list[target_tactic - 1]
+            if compare_color_equal(p_check_tactic, [170, 170, 170]):
+                ctx.ctrl.click_by_point(BEFORE_RACE_CHANGE_TACTIC)
+                return
     if p_check_skip[0] < 200 and p_check_skip[1] < 200 and p_check_skip[2] < 200:
         ctx.ctrl.click_by_point(BEFORE_RACE_START)
     else:

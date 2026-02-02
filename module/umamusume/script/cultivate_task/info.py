@@ -358,7 +358,29 @@ def script_info(ctx: UmamusumeContext):
         if title_text == TITLE[18] or title_text == TITLE[19]:  # "Tactics" or "Strategy"
             date = ctx.cultivate_detail.turn_info.date
             if date != -1:
-                if date <= 72:
+                target_tactic = None
+                if hasattr(ctx.cultivate_detail, 'tactic_actions') and ctx.cultivate_detail.tactic_actions:
+                    for action in ctx.cultivate_detail.tactic_actions:
+                        op = action.get('op')
+                        val = int(action.get('val', 0))
+                        val2 = int(action.get('val2', 0))
+                        tactic = int(action.get('tactic', 0))
+                        match = False
+                        if op == '=':
+                            if date == val: match = True
+                        elif op == '>':
+                            if date > val: match = True
+                        elif op == '<':
+                            if date < val: match = True
+                        elif op == 'range':
+                            if val < date < val2: match = True
+                        if match:
+                            target_tactic = tactic
+                            break
+
+                if target_tactic:
+                    ctx.ctrl.click_by_point(TACTIC_LIST[target_tactic - 1])
+                elif date <= 72:
                     ctx.ctrl.click_by_point(TACTIC_LIST[ctx.cultivate_detail.tactic_list[int((date - 1)/ 24)] - 1])
                 else:
                     ctx.ctrl.click_by_point(TACTIC_LIST[ctx.cultivate_detail.tactic_list[2] - 1])

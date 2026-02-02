@@ -25,6 +25,7 @@ class CultivateContextDetail:
     learn_skill_selected: bool
     cultivate_finish: bool
     tactic_list: list[int]
+    tactic_actions: list
     debut_race_win: bool
     clock_use_limit: int
     clock_used: int
@@ -59,6 +60,7 @@ class CultivateContextDetail:
         self.learn_skill_selected = False
         self.cultivate_finish = False
         self.tactic_list = []
+        self.tactic_actions = []
         self.debut_race_win = False
         self.clock_use_limit = 0
         self.clock_used = 0
@@ -124,6 +126,7 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
             detail.user_provided_priority = False
         detail.learn_skill_blacklist = list(task.detail.learn_skill_blacklist or [])
         detail.tactic_list = list(task.detail.tactic_list or [])
+        detail.tactic_actions = list(getattr(task.detail, 'tactic_actions', []))
         detail.clock_use_limit = task.detail.clock_use_limit
         detail.learn_skill_threshold = task.detail.learn_skill_threshold
         detail.learn_skill_only_user_provided = task.detail.learn_skill_only_user_provided

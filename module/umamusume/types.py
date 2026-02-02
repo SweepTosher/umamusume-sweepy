@@ -160,6 +160,7 @@ class CultivateContextDetail:
     learn_skill_selected: bool
     cultivate_finish: bool
     tactic_list: list[int]
+    tactic_actions: list
     debut_race_win: bool
     clock_use_limit: int
     clock_used: int

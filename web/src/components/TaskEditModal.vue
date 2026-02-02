@@ -734,46 +734,49 @@
               <div class="form-group">
                 <div>Racing Style Selection</div>
               </div>
-              <div class="row">
-                <div class="col">
-                  <div class="form-group">
-                    <label for="selectTactic1">Year 1</label>
-                    <div class="input-group input-group-sm">
-                      <select v-model="selectedRaceTactic1" class="form-control" id="selectTactic1">
-                        <option :value=1>End-Closer</option>
-                        <option :value=2>Late-Surger</option>
-                        <option :value=3>Pace-Chaser</option>
-                        <option :value=4>Front-Runner</option>
-                      </select>
+
+              <div class="form-group mt-3" style="border-top: 1px solid var(--accent); padding-top: 15px;">
+                <label>Advanced Strategy Conditions (Evaluated top-to-bottom)</label>
+                <div v-for="(rule, idx) in raceTacticConditions" :key="idx" class="d-flex align-items-center mb-2">
+                  <select v-model="rule.op" class="form-control form-control-sm mr-2" style="width: auto;">
+                    <option value="=">Turn =</option>
+                    <option value=">">Turn &gt;</option>
+                    <option value="<">Turn &lt;</option>
+                    <option value="range">Range (exclusive)</option>
+                  </select>
+                  <input type="number" v-model.number="rule.val" class="form-control form-control-sm mr-2" style="width: 80px;" placeholder="Turn">
+                  <span v-if="rule.op === 'range'" class="mr-2">&lt; Turn &lt;</span>
+                  <input v-if="rule.op === 'range'" type="number" v-model.number="rule.val2" class="form-control form-control-sm mr-2" style="width: 80px;" placeholder="Turn">
+                  <select v-model.number="rule.tactic" class="form-control form-control-sm mr-2" style="flex: 1;">
+                    <option :value="1">End-Closer</option>
+                    <option :value="2">Late-Surger</option>
+                    <option :value="3">Pace-Chaser</option>
+                    <option :value="4">Front-Runner</option>
+                  </select>
+                  <button class="btn btn-sm btn-outline-secondary mr-1" type="button" @click="moveRuleUp(idx)" :disabled="idx===0">↑</button>
+                  <button class="btn btn-sm btn-outline-secondary mr-1" type="button" @click="moveRuleDown(idx)" :disabled="idx===raceTacticConditions.length-1">↓</button>
+                  <button class="btn btn-sm btn-outline-danger" type="button" @click="removeRule(idx)">×</button>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                  <button class="btn btn-sm btn-outline-primary mr-2" type="button" @click="addRule">+ Add Condition</button>
+                  <button class="btn btn-sm btn-outline-info" type="button" @click="showTurnInfo = !showTurnInfo">
+                    <i class="fas fa-info-circle"></i> Turn Reference
+                  </button>
+                </div>
+                
+                <div v-if="showTurnInfo" class="alert alert-info p-2 mb-2" style="font-size: 0.8em; max-height: 400px; overflow-y: auto;">
+                  <strong>Turn Reference Chart:</strong>
+                  <div class="row no-gutters mt-2">
+                    <div class="col px-1" v-for="(col, colIdx) in turnReferenceColumns" :key="colIdx">
+                      <div v-for="item in col" :key="item.turn" class="d-flex justify-content-between border-bottom border-light pb-1 mb-1">
+                        <span class="font-weight-bold" style="min-width: 25px;">{{ item.turn }}</span>
+                        <span class="text-right text-truncate" :title="item.desc">{{ item.desc }}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="form-group">
-                    <label for="selectTactic2">Year 2</label>
-                    <div class="input-group input-group-sm">
-                      <select v-model="selectedRaceTactic2" class="form-control" id="selectTactic2">
-                        <option :value=1>End-Closer</option>
-                        <option :value=2>Late-Surger</option>
-                        <option :value=3>Pace-Chaser</option>
-                        <option :value=4>Front-Runner</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col">
-                  <div class="form-group">
-                    <label for="selectTactic3">Year 3</label>
-                    <div class="input-group input-group-sm">
-                      <select v-model="selectedRaceTactic3" class="form-control" id="selectTactic3">
-                        <option :value=1>End-Closer</option>
-                        <option :value=2>Late-Surger</option>
-                        <option :value=3>Pace-Chaser</option>
-                        <option :value=4>Front-Runner</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
+
+                <small class="d-block text-muted mt-1">If no condition matches, no change is made. Conditions are evaluated from top to bottom.</small>
               </div>
               <div class="form-group">
                 <div class="row">
@@ -900,7 +903,7 @@
                                   <span v-if="race.distance === 'Long'" class="badge badge-pill"
                                     style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
                                 </div>
-                                <div class="race-details">{{ race.date }} • {{ race.venue }}</div>
+                                <div class="race-details">{{ race.date }} ({{ getTurnFromDate(race.date) }}) - {{ race.venue }}</div>
                               </div>
                             </div>
                           </div>
@@ -942,7 +945,7 @@
                                   <span v-if="race.distance === 'Long'" class="badge badge-pill"
                                     style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
                                 </div>
-                                <div class="race-details">{{ race.date }} • {{ race.venue }}</div>
+                                <div class="race-details">{{ race.date }} ({{ getTurnFromDate(race.date) }}) - {{ race.venue }}</div>
                               </div>
                             </div>
                           </div>
@@ -984,7 +987,7 @@
                                   <span v-if="race.distance === 'Long'" class="badge badge-pill"
                                     style="background-color: #17a2b8; color: white;">{{ race.distance }}</span>
                                 </div>
-                                <div class="race-details">{{ race.date }} • {{ race.venue }}</div>
+                                <div class="race-details">{{ race.date }} ({{ getTurnFromDate(race.date) }}) - {{ race.venue }}</div>
                               </div>
                             </div>
                           </div>
@@ -1871,6 +1874,7 @@ export default {
         race_tactic_1: 4,
         race_tactic_2: 4,
         race_tactic_3: 4,
+        tactic_actions: [],
         extraWeight: [],
       },
       // ===  已选择  ===
@@ -2024,6 +2028,12 @@ export default {
       specialFinale: 0,
       // Stat Value Multiplier [speed, stamina, power, guts, wits, sp]
       statValueMultiplier: [0.01, 0.01, 0.01, 0.01, 0.01, 0.005],
+      raceTacticConditions: [
+        { op: 'range', val: 0, val2: 25, tactic: 3 },
+        { op: 'range', val: 24, val2: 49, tactic: 3 },
+        { op: '>', val: 48, val2: 0, tactic: 3 }
+      ],
+      showTurnInfo: false,
           }
   },
   mounted() {
@@ -2252,6 +2262,49 @@ export default {
       });
 
       return grouped;
+    },
+    turnReferenceColumns() {
+      const columns = [[], [], [], [], [], []];
+      const years = ["Junior", "Classic", "Senior"];
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const halves = ["Early", "Late"];
+
+      for (let turn = 12; turn <= 77; turn++) {
+        let desc = "";
+        
+        if (turn === 12) {
+           desc = "Debut";
+        } else if (turn <= 72) {
+          // Calculation based on Turn 1 = Junior Jan Early (index 0)
+          // 0: Jan E, 1: Jan L
+          const absIndex = turn - 1; 
+          
+          const yearIdx = Math.floor(absIndex / 24);
+          const monthIdx = Math.floor((absIndex % 24) / 2);
+          const halfIdx = absIndex % 2;
+
+          if (yearIdx < years.length) {
+            desc = `${years[yearIdx]} ${halves[halfIdx]} ${months[monthIdx]}`;
+          } else {
+             desc = "Unknown";
+          }
+        } else {
+          // Special URA handling
+          if (turn === 73) desc = "URA Qualifiers";
+          else if (turn === 74) desc = "Training";
+          else if (turn === 75) desc = "URA Semis";
+          else if (turn === 76) desc = "Training";
+          else if (turn === 77) desc = "URA Finals";
+          else desc = "Post-Game";
+        }
+
+        // Distribute into 6 columns (66 turns total / 6 cols = 11 rows/col)
+        const colIdx = Math.floor((turn - 12) / 11);
+        if (colIdx < 6) {
+          columns[colIdx].push({ turn, desc });
+        }
+      }
+      return columns;
     }
   },
   mounted() {
@@ -2299,6 +2352,27 @@ export default {
     }
   },
     methods: {
+    getTurnFromDate(dateStr) {
+      if (!dateStr) return '?';
+      let y = 0, m = 0, h = 0;
+      if (dateStr.includes('Classic')) y = 1;
+      else if (dateStr.includes('Senior')) y = 2;
+      
+      // Avoid matching "Jun" in "Junior" by removing "Junior" before checking months
+      const monthCheckStr = dateStr.replace('Junior', '');
+      
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      for (let i = 0; i < months.length; i++) {
+        if (monthCheckStr.includes(months[i])) {
+          m = i;
+          break;
+        }
+      }
+      
+      if (dateStr.includes('Late')) h = 1;
+      
+      return (y * 24) + (m * 2) + h + 1;
+    },
     loadPalCardStore() {
       this.axios.get('/api/pal-defaults', null, false)
         .then(res => {
@@ -2864,6 +2938,26 @@ export default {
     cancelTask: function () {
       $('#create-task-list-modal').modal('hide');
     },
+    addRule() {
+      this.raceTacticConditions.push({ op: '=', val: 1, val2: 24, tactic: 4 });
+    },
+    removeRule(idx) {
+      if (idx >= 0 && idx < this.raceTacticConditions.length) {
+        this.raceTacticConditions.splice(idx, 1);
+      }
+    },
+    moveRuleUp(idx) {
+      if (idx > 0) {
+        const item = this.raceTacticConditions.splice(idx, 1)[0];
+        this.raceTacticConditions.splice(idx - 1, 0, item);
+      }
+    },
+    moveRuleDown(idx) {
+      if (idx < this.raceTacticConditions.length - 1) {
+        const item = this.raceTacticConditions.splice(idx, 1)[0];
+        this.raceTacticConditions.splice(idx + 1, 0, item);
+      }
+    },
     addTask: function () {
       // Convert new skill system to bot-expected format
       var learn_skill_list = []
@@ -2906,7 +3000,8 @@ export default {
           "extra_race_list": this.extraRace,
           "learn_skill_list": learn_skill_list,
           "learn_skill_blacklist": learn_skill_blacklist,
-          "tactic_list": [this.selectedRaceTactic1, this.selectedRaceTactic2, this.selectedRaceTactic3],
+          "tactic_list": [4, 4, 4], // Legacy dummy values
+          "tactic_actions": this.raceTacticConditions,
           "clock_use_limit": this.clockUseLimit,
           "manual_purchase_at_end": this.manualPurchase,
           "override_insufficient_fans_forced_races": this.overrideInsufficientFansForcedRaces,
@@ -3040,10 +3135,20 @@ export default {
       this.learnSkillOnlyUserProvided = !!this.presetsUse.learn_skill_only_user_provided
       this.recoverTP = this.presetsUse.allow_recover_tp || 0
       this.manualPurchase = !!this.presetsUse.manual_purchase_at_end
-        this.learnSkillThreshold = this.presetsUse.learn_skill_threshold,
-        this.selectedRaceTactic1 = this.presetsUse.race_tactic_1,
-        this.selectedRaceTactic2 = this.presetsUse.race_tactic_2,
-        this.selectedRaceTactic3 = this.presetsUse.race_tactic_3,
+        this.learnSkillThreshold = this.presetsUse.learn_skill_threshold
+        // Convert legacy race tactics to new condition system if actions not present
+        if (this.presetsUse.tactic_actions && this.presetsUse.tactic_actions.length > 0) {
+          this.raceTacticConditions = this.presetsUse.tactic_actions;
+        } else {
+          const t1 = this.presetsUse.race_tactic_1 || 3;
+          const t2 = this.presetsUse.race_tactic_2 || 3;
+          const t3 = this.presetsUse.race_tactic_3 || 3;
+          this.raceTacticConditions = [
+            { op: 'range', val: 0, val2: 25, tactic: t1 }, // Year 1: Turns 1-24
+            { op: 'range', val: 24, val2: 49, tactic: t2 }, // Year 2: Turns 25-48
+            { op: '>', val: 48, val2: 0, tactic: t3 }      // Year 3+: Turns 49+
+          ];
+        }
         this.skillLearnBlacklist = this.presetsUse.skill_blacklist
      this.cureAsapConditions = this.presetsUse.cureAsapConditions
       // Load motivation thresholds (with defaults)
@@ -3533,6 +3638,7 @@ export default {
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,
+        tactic_actions: this.raceTacticConditions,
         extraWeight: [
           this.extraWeight1.map(v => Math.max(-1, Math.min(1, v))),
           this.extraWeight2.map(v => Math.max(-1, Math.min(1, v))),

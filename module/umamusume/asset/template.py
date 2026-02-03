@@ -203,6 +203,7 @@ REF_CANT_TT = Template("cant_tt", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_CANT_TT2 = Template("cant_tt2", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_TP = Template("tp", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(162, 32, 198, 61)))
 REF_EDIT_TEAM = Template("edit_team", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(310, 630, 339, 657)))
+REF_ENERGY = Template("energy", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(163, 149, 229, 169)))
 
 REF_FULL_NRG = Template("fullNRG", UMAMUSUME_REF_TEMPLATE_PATH)
 

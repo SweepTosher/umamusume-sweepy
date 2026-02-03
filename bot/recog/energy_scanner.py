@@ -1,8 +1,17 @@
 import numpy as np
 import time
+from bot.recog.image_matcher import image_match
 
 ENERGY_BAR_Y = 161
 ENERGY_BAR_START_X = 227
+energy_template = None
+
+def get_energy_template():
+    global energy_template
+    if energy_template is None:
+        from module.umamusume.asset.template import REF_ENERGY
+        energy_template = REF_ENERGY
+    return energy_template
 
 reference_row = None
 reference_bar_length = None
@@ -91,10 +100,17 @@ def scan_energy_single(img, y=ENERGY_BAR_Y):
 def scan_energy(ctrl, y=ENERGY_BAR_Y):
     global reference_row, reference_bar_length, reference_gray_count, reference_brightness
     prev_row = None
+    prev_valid = False
     while True:
         img = ctrl.get_screen()
+        template = get_energy_template()
+        match_result = image_match(img, template)
+        if not match_result.find_match:
+            prev_row = None
+            prev_valid = False
+            continue
         current_row, gray_count, base_energy = scan_energy_single(img, y)
-        if current_row is not None and rows_match_exactly(prev_row, current_row):
+        if current_row is not None and prev_valid and rows_match_exactly(prev_row, current_row):
             bar_end = find_bar_end(img, y)
             bar_length = bar_end - ENERGY_BAR_START_X
             reference_row = current_row
@@ -103,6 +119,7 @@ def scan_energy(ctrl, y=ENERGY_BAR_Y):
             reference_brightness = float(np.mean(current_row))
             return base_energy, 0, "base_hp"
         prev_row = current_row
+        prev_valid = True
 
 
 def scan_training_energy_change_single(img, y=ENERGY_BAR_Y):

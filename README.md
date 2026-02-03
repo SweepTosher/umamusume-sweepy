@@ -2,7 +2,7 @@
 
 ### A umamusume bot that handles all aspects of gameplay including training, races, events, skill purchasing, and starting runs. 
 
-updates bricked your presets btw. go set wit base score to 0 and energy change value to 0.01-0.006. spirit explosions weight should probably be higher too since they drain energy 
+If anyone has time to kill you can help to verify and screenshot cases where the stat gain detection detects wrongly (emulator resolution) so I can fine-tune the model. The training images I used were quite limited so I'm not 100% sure it works 100% of the time.
 
 ![Uma Musume Auto Trainer](docs/main.png)
 
@@ -36,11 +36,11 @@ updates bricked your presets btw. go set wit base score to 0 and energy change v
 - URA Finals scenario
 - Unity Cup (Aoharu)
 
-
 ### Comprehensive Customization
 - Literally everything that can be detected is detected and used for customization.
-- Skill hint levels, Energy Changes, Stat gains.
+- Skill hint levels, Energy Changes, Stat gains....
 - Hundreds of settings for you to tune the bot to your liking.
+- This allows gimick cards like Fuku with energy cost reduction/training effectiveness to be utilized fully
 
 
 ---

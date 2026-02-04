@@ -13,12 +13,12 @@ from module.umamusume.asset.point import (
     TRAINING_POINT_LIST, RETURN_TO_CULTIVATE_MAIN_MENU
 )
 from module.umamusume.constants.game_constants import (
-    is_summer_camp_period, JUNIOR_YEAR_END, CLASSIC_YEAR_END
+    is_summer_camp_period, JUNIOR_YEAR_END, CLASSIC_YEAR_END, get_date_period_index
 )
 from module.umamusume.constants.scoring_constants import (
     DEFAULT_BASE_SCORES, DEFAULT_SCORE_VALUE, DEFAULT_SPIRIT_EXPLOSION,
-    DEFAULT_SPECIAL_WEIGHTS, NPC_CARD_SCORE, DEFAULT_REST_THRESHOLD,
-    HIGH_ENERGY_THRESHOLD, DEFAULT_STAT_VALUE_MULTIPLIER
+    DEFAULT_SPECIAL_WEIGHTS, DEFAULT_REST_THRESHOLD,
+    HIGH_ENERGY_THRESHOLD, DEFAULT_STAT_VALUE_MULTIPLIER, DEFAULT_NPC_SCORE_VALUE
 )
 from module.umamusume.constants.timing_constants import (
     TRAINING_CLICK_DELAY, TRAINING_WAIT_DELAY, TRAINING_RETRY_DELAY,
@@ -383,6 +383,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             lv1c = 0
             lv2c = 0
             npc = 0
+            npc_total_contrib = 0.0
             pal_count = 0
             score = base_scores[idx] if isinstance(base_scores, (list, tuple)) and len(base_scores) > idx else 0.0
             for sc in (getattr(til, "support_card_info_list", []) or []):
@@ -398,7 +399,19 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     spirit_counts[idx] += 1
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
                     npc += 1
-                    score += NPC_CARD_SCORE
+                    npc_scores = getattr(ctx.cultivate_detail, 'npc_score_value', DEFAULT_NPC_SCORE_VALUE)
+                    npc_period_idx = get_date_period_index(date)
+                    npc_add = 0.0
+                    if npc_period_idx < len(npc_scores):
+                        npc_arr = npc_scores[npc_period_idx]
+                        if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
+                            npc_add = npc_arr[0]
+                        elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
+                            npc_add = npc_arr[1]
+                        elif favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4):
+                            npc_add = npc_arr[2]
+                    score += npc_add
+                    npc_total_contrib += npc_add
                     continue
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN:
                     continue
@@ -563,7 +576,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             base_val = base_scores[idx] if isinstance(base_scores, (list, tuple)) and len(base_scores) > idx else 0.0
             lv1_contrib = lv1c * w_lv1
             lv2_contrib = lv2c * w_lv2
-            npc_contrib = npc * NPC_CARD_SCORE
             
             formula_parts = []
             formula_parts.append(f"base:{base_val:.2f}")
@@ -575,8 +587,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 formula_parts.append(f"lv2({lv2c}):+{lv2_contrib:.3f}")
             if energy_change_contrib != 0:
                 formula_parts.append(f"nrg({energy_change_val:+.1f}):{energy_change_contrib:+.3f}")
-            if npc_contrib > 0:
-                formula_parts.append(f"npc({npc}):+{npc_contrib:.3f}")
+            if npc_total_contrib > 0:
+                formula_parts.append(f"npc({npc}):+{npc_total_contrib:.3f}")
             if hint_bonus > 0:
                 formula_parts.append(f"hint:+{hint_bonus:.3f}")
             if special_bonus > 0:

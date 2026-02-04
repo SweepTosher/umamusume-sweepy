@@ -5,8 +5,8 @@ from module.umamusume.define import *
 from module.umamusume.types import TurnInfo
 from module.umamusume.constants.scoring_constants import (
     DEFAULT_BASE_SCORES, DEFAULT_SPIRIT_EXPLOSION, DEFAULT_PAL_FRIENDSHIP_SCORES,
-    DEFAULT_PAL_CARD_MULTIPLIER, DEFAULT_SUMMER_SCORE_THRESHOLD, DEFAULT_WIT_FALLBACK_THRESHOLD,
-    DEFAULT_STAT_VALUE_MULTIPLIER
+    DEFAULT_PAL_CARD_MULTIPLIER, DEFAULT_NPC_SCORE_VALUE,
+    DEFAULT_SUMMER_SCORE_THRESHOLD, DEFAULT_WIT_FALLBACK_THRESHOLD, DEFAULT_STAT_VALUE_MULTIPLIER
 )
 import bot.base.log as logger
 
@@ -44,6 +44,7 @@ class CultivateContextDetail:
     pal_name: str
     pal_friendship_score: list[float]
     pal_card_multiplier: float
+    npc_score_value: list
     base_score: list
     summer_score_threshold: float
     wit_fallback_threshold: float
@@ -77,6 +78,7 @@ class CultivateContextDetail:
         self.pal_name = ""
         self.pal_friendship_score = list(DEFAULT_PAL_FRIENDSHIP_SCORES)
         self.pal_card_multiplier = DEFAULT_PAL_CARD_MULTIPLIER
+        self.npc_score_value = [list(row) for row in DEFAULT_NPC_SCORE_VALUE]
         self.base_score = list(DEFAULT_BASE_SCORES)
         self.summer_score_threshold = DEFAULT_SUMMER_SCORE_THRESHOLD
         self.wit_fallback_threshold = DEFAULT_WIT_FALLBACK_THRESHOLD
@@ -153,6 +155,11 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
 
         detail.pal_friendship_score = list(getattr(task.detail, 'pal_friendship_score', DEFAULT_PAL_FRIENDSHIP_SCORES))
         detail.pal_card_multiplier = float(getattr(task.detail, 'pal_card_multiplier', DEFAULT_PAL_CARD_MULTIPLIER))
+        npc_sv = getattr(task.detail, 'npc_score_value', None)
+        if npc_sv and isinstance(npc_sv, list):
+            detail.npc_score_value = [list(row) for row in npc_sv]
+        else:
+            detail.npc_score_value = [list(row) for row in DEFAULT_NPC_SCORE_VALUE]
 
         detail.score_value = getattr(task.detail, 'score_value', [
             [0.11, 0.10, 0.01, 0.09],

@@ -103,6 +103,13 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
 
     td.pal_friendship_score = attachment_data.get('pal_friendship_score', [0.08, 0.057, 0.018])
     td.pal_card_multiplier = attachment_data.get('pal_card_multiplier', 0.1)
+    td.npc_score_value = attachment_data.get('npc_score_value', [
+        [0.05, 0.05, 0.05],
+        [0.05, 0.05, 0.05],
+        [0.05, 0.05, 0.05],
+        [0.03, 0.05, 0.05],
+        [0, 0, 0.05]
+    ])
 
     td.score_value = attachment_data.get('score_value', [
         [0.11, 0.10, 0.01, 0.09],

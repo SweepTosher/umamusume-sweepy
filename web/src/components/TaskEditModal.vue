@@ -625,6 +625,106 @@
                         <div class="form-group mb-1"><small>Special Training</small></div>
                         <input type="number" step="0.01" v-model.number="specialFinale" class="form-control">
                       </div>
+                </div>
+              </div>
+            </div>
+
+                <hr style="border-color: var(--accent); opacity: 0.5; margin: 12px 0;">
+                <div class="form-group" style="margin-top: 16px;">
+                  <div style="color: var(--accent);">NPC Score Value</div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-12">
+                    <label>Junior</label>
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreJunior[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreJunior[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Max</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreJunior[2]" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-12">
+                    <label>Classic</label>
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreClassic[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreClassic[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Max</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreClassic[2]" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-12">
+                    <label>Senior</label>
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreSenior[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreSenior[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Max</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreSenior[2]" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-12">
+                    <label>Senior After Summer</label>
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreSeniorAfterSummer[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreSeniorAfterSummer[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Max</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreSeniorAfterSummer[2]" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-12">
+                    <label>Finale</label>
+                    <div class="row">
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Blue</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreFinale[0]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Green</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreFinale[1]" class="form-control">
+                      </div>
+                      <div class="col-md-2 col-6">
+                        <div class="form-group mb-1"><small>Max</small></div>
+                        <input type="number" step="0.01" v-model.number="npcScoreFinale[2]" class="form-control">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1935,6 +2035,11 @@ export default {
       // Pal card scoring configuration
       palFriendshipScore: [0.08, 0.057, 0.018],
       palCardMultiplier: 0.01,
+      npcScoreJunior: [0.05, 0.05, 0.05],
+      npcScoreClassic: [0.05, 0.05, 0.05],
+      npcScoreSenior: [0.05, 0.05, 0.05],
+      npcScoreSeniorAfterSummer: [0.03, 0.05, 0.05],
+      npcScoreFinale: [0, 0, 0.05],
 
       // URA配置
       skillEventWeight: [0, 0, 0],
@@ -3106,6 +3211,13 @@ export default {
         payload.attachment_data.pal_friendship_score = [0.08, 0.057, 0.018];
         payload.attachment_data.pal_card_multiplier = 0.1;
       }
+      payload.attachment_data.npc_score_value = [
+        [...this.npcScoreJunior],
+        [...this.npcScoreClassic],
+        [...this.npcScoreSenior],
+        [...this.npcScoreSeniorAfterSummer],
+        [...this.npcScoreFinale]
+      ];
 
       this.axios.post("/task", payload).then(
         () => {
@@ -3172,6 +3284,19 @@ export default {
         this.palCardMultiplier = this.presetsUse.pal_card_multiplier
       } else {
         this.palCardMultiplier = 0.01
+      }
+      if ('npc_score_value' in this.presetsUse && Array.isArray(this.presetsUse.npc_score_value) && this.presetsUse.npc_score_value.length >= 5) {
+        this.npcScoreJunior = [...this.presetsUse.npc_score_value[0]]
+        this.npcScoreClassic = [...this.presetsUse.npc_score_value[1]]
+        this.npcScoreSenior = [...this.presetsUse.npc_score_value[2]]
+        this.npcScoreSeniorAfterSummer = [...this.presetsUse.npc_score_value[3]]
+        this.npcScoreFinale = [...this.presetsUse.npc_score_value[4]]
+      } else {
+        this.npcScoreJunior = [0.05, 0.05, 0.05]
+        this.npcScoreClassic = [0.05, 0.05, 0.05]
+        this.npcScoreSenior = [0.05, 0.05, 0.05]
+        this.npcScoreSeniorAfterSummer = [0.03, 0.05, 0.05]
+        this.npcScoreFinale = [0, 0, 0.05]
       }
       if ('event_overrides' in this.presetsUse && this.presetsUse.event_overrides) {
         this.eventChoicesSelected = { ...this.presetsUse.event_overrides }
@@ -3463,6 +3588,13 @@ export default {
       }
       if (data.pal_friendship_score) this.palFriendshipScore = [...data.pal_friendship_score];
       if (data.pal_card_multiplier !== undefined) this.palCardMultiplier = data.pal_card_multiplier;
+      if (data.npc_score_value && Array.isArray(data.npc_score_value) && data.npc_score_value.length >= 5) {
+        this.npcScoreJunior = [...data.npc_score_value[0]];
+        this.npcScoreClassic = [...data.npc_score_value[1]];
+        this.npcScoreSenior = [...data.npc_score_value[2]];
+        this.npcScoreSeniorAfterSummer = [...data.npc_score_value[3]];
+        this.npcScoreFinale = [...data.npc_score_value[4]];
+      }
       if (data.extra_weight && data.extra_weight.length >= 3) {
         this.extraWeight1 = data.extra_weight[0].map(v => Math.max(-1, Math.min(1, v)));
         this.extraWeight2 = data.extra_weight[1].map(v => Math.max(-1, Math.min(1, v)));
@@ -3679,6 +3811,13 @@ export default {
 
         pal_friendship_score: [...this.palFriendshipScore],
         pal_card_multiplier: this.palCardMultiplier,
+        npc_score_value: [
+          [...this.npcScoreJunior],
+          [...this.npcScoreClassic],
+          [...this.npcScoreSenior],
+          [...this.npcScoreSeniorAfterSummer],
+          [...this.npcScoreFinale]
+        ],
 
         selectedSkills: [...this.selectedSkills],
         blacklistedSkills: [...this.blacklistedSkills],

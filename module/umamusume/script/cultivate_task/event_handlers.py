@@ -84,7 +84,17 @@ def script_cultivate_event(ctx: UmamusumeContext):
         if isinstance(event_name, str) and event_name.strip().lower() == "tutorial":
             if isinstance(selectors, list) and len(selectors) == 5:
                 target_pt = selectors[4]
-                ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), "tutorial choice 5 override")
+                ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), "tutorial choice 5")
+                
+                time.sleep(1.0)
+                
+                img_confirm = ctx.ctrl.get_screen()
+                if img_confirm is not None and getattr(img_confirm, 'size', 0) > 0:
+                    _, confirm_selectors = parse_cultivate_event(ctx, img_confirm)
+                    if isinstance(confirm_selectors, list) and len(confirm_selectors) >= 1:
+                        confirm_pt = confirm_selectors[0]
+                        ctx.ctrl.click(int(confirm_pt[0]), int(confirm_pt[1]), "tutorial Yes")
+
                 ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
                 return
     except Exception:

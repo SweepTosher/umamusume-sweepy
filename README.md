@@ -49,7 +49,7 @@ If anyone has time to kill you can help to verify and screenshot cases where the
 
 - Python 3.10
 - Visual C++ Redistributable ([Download](https://aka.ms/vs/17/release/vc_redist.x64.exe))
-- Android emulator (BlueStacks Pie64 or MuMu Player recommended)
+- Android emulator (MuMu Player recommended) bluestacks sucks dont use it it will break screenshots for reasons i dont understand
 
 ---
 

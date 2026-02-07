@@ -339,6 +339,9 @@ class Executor:
             traceback.print_exc()
         if not self.active:
             task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
+        elif task.task_status == TaskStatus.TASK_STATUS_INTERRUPT:
+            task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
+            self.active = False
         else:
             self.active = False
         task.end_task_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))

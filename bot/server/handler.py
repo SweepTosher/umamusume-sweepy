@@ -225,6 +225,18 @@ def stop_bot():
     bot_ctrl.stop()
 
 
+@server.get("/action/bot/status")
+def get_bot_status():
+    from bot.engine.scheduler import scheduler
+    if scheduler.active:
+        running_tasks = [t for t in scheduler.task_list 
+                        if t.task_status.value == 2] 
+        if running_tasks:
+            return {"status": "running"}
+        return {"status": "active"}
+    return {"status": "idle"}
+
+
 @server.get("/api/pal-defaults")
 def get_pal_defaults():
     from module.umamusume.user_data import read_pal_defaults

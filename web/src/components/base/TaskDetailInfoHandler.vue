@@ -46,7 +46,7 @@ export default {
         task_id: this.task.task_id
       }
       console.log(JSON.stringify(payload))
-      this.axios.delete("/task", JSON.stringify(payload)).then()
+      this.axios.delete("/task", { data: payload }).then()
     },
   }
 }

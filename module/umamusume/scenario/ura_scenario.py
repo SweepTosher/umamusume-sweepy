@@ -1,20 +1,26 @@
-import re
 import cv2
 
-DIGITS_ONLY = re.compile(r"\D")
-
 from .base_scenario import BaseScenario
+from .registry import register
 from module.umamusume.asset import *
 from module.umamusume.define import ScenarioType, SupportCardFavorLevel, SupportCardType
 from module.umamusume.types import SupportCardInfo
 from bot.recog.image_matcher import image_match, compare_color_equal
-from bot.recog.ocr import ocr_line, find_similar_text
-from bot.recog.training_stat_scanner import parse_training_result_template, scan_facility_stats
+from bot.recog.training_stat_scanner import parse_training_result_template
 
 import bot.base.log as logger
 log = logger.get_logger(__name__)
 
+STAT_AREAS_URA = {
+    "speed": (30, 770, 140, 826),
+    "stamina": (140, 770, 250, 826),
+    "power": (250, 770, 360, 826),
+    "guts": (360, 770, 470, 826),
+    "wits": (470, 770, 580, 826),
+    "sp": (588, 770, 695, 826),
+}
 
+@register(ScenarioType.SCENARIO_TYPE_URA)
 class URAScenario(BaseScenario):
     def __init__(self):
         super().__init__()
@@ -25,16 +31,19 @@ class URAScenario(BaseScenario):
     def scenario_name(self) -> str:
         return "URA"
 
-    def get_date_img(self, img: any) -> any:
+    def get_date_img(self, img):
         return img[41:65, 0:219]
 
-    def get_turn_to_race_img(self, img: any) -> any:
+    def get_turn_to_race_img(self, img):
         return img[99:158, 13:140]
 
-    def parse_training_result(self, img: any) -> list[int]:
+    def get_stat_areas(self) -> dict:
+        return STAT_AREAS_URA
+
+    def parse_training_result(self, img) -> list[int]:
         return parse_training_result_template(img, scenario="ura")
 
-    def parse_training_support_card(self, img: any) -> list[SupportCardInfo]:
+    def parse_training_support_card(self, img) -> list[SupportCardInfo]:
         if img is None or getattr(img, 'size', 0) == 0:
             return []
         base_x = 590
@@ -46,7 +55,6 @@ class URAScenario(BaseScenario):
         for i in range(5):
             support_card_icon = img[base_y:base_y + h, base_x: base_x + w]
 
-            # Check favor level
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_BGR2RGB)
             favor_process_check_list = [support_card_icon[95, 16], support_card_icon[95, 20]]
             support_card_favor_process = SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN
@@ -62,7 +70,6 @@ class URAScenario(BaseScenario):
                 if support_card_favor_process != SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
                     break
 
-            # Check if there's an event
             support_card_event_pos = support_card_icon[5, 83]
             support_card_event_available = False
             if (support_card_event_pos[0] >= 250
@@ -70,7 +77,6 @@ class URAScenario(BaseScenario):
                 and 115 <= support_card_event_pos[2] <= 150):
                 support_card_event_available = True
 
-            # Check support card type
             support_card_type = SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN
             support_card_icon = cv2.cvtColor(support_card_icon, cv2.COLOR_RGB2GRAY)
             match_center = None

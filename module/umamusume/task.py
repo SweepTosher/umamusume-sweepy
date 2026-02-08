@@ -90,7 +90,8 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.override_insufficient_fans_forced_races = attachment_data.get('override_insufficient_fans_forced_races', False)
     td.use_last_parents = attachment_data.get('use_last_parents', False)
     td.cure_asap_conditions = attachment_data.get("cure_asap_conditions", "")
-    td.rest_treshold = attachment_data.get('rest_treshold', attachment_data.get('fast_path_energy_limit', 48))
+    td.rest_threshold = attachment_data.get('rest_threshold', 48)
+
     td.summer_score_threshold = attachment_data.get('summer_score_threshold', 0.34)
     td.wit_race_search_threshold = attachment_data.get('wit_race_search_threshold', 0.15)
     

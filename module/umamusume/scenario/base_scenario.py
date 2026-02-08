@@ -8,30 +8,37 @@ class BaseScenario(ABC):
     
     @abstractmethod
     def scenario_type(self) -> ScenarioType:
-        """获取剧本类型"""
         pass
 
     @abstractmethod
     def scenario_name(self) -> str:
-        """获取剧本名称"""
         pass
 
     @abstractmethod
-    def get_date_img(self, img: any) -> any:
-        """获取屏幕截图上显示日期的部分"""
+    def get_date_img(self, img):
         pass
 
     @abstractmethod
-    def get_turn_to_race_img(self, img: any) -> any:
-        """获取屏幕上距离比赛日期的部分"""
+    def get_turn_to_race_img(self, img):
         pass
 
     @abstractmethod
-    def parse_training_result(self, img: any) -> list[int]:
-        """从屏幕上获取每一种训练增加的属性值"""
+    def parse_training_result(self, img) -> list[int]:
         pass
 
     @abstractmethod
-    def parse_training_support_card(self, img: any) -> list[SupportCardInfo]:
-        """从屏幕上获取每一张支援卡的信息"""
+    def parse_training_support_card(self, img) -> list[SupportCardInfo]:
         pass
+
+    @abstractmethod
+    def get_stat_areas(self) -> dict:
+        pass
+
+    def get_ui_handlers(self) -> dict:
+        return {}
+
+    def after_hook(self, ctx, img):
+        pass
+
+    def adjust_training_score(self, ctx, idx, score, spirit_counts, current_energy):
+        return score

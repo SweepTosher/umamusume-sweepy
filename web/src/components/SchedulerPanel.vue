@@ -55,7 +55,7 @@ export default {
       const taskId = task.task_id;
       axios.delete("/task", { data: { task_id: taskId } }).then(() => {
         this.$refs.taskEditModal.loadFromTask(task);
-        $('#create-task-list-modal').modal('show');
+        this.$refs.taskEditModal.showModal();
       }).catch(e => {
         console.error(e);
       });

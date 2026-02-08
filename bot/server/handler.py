@@ -5,7 +5,7 @@ import re
 from typing import Dict, Any
 import subprocess
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
 from fastapi.middleware.cors import CORSMiddleware
 
 from bot.base.log import task_log_handler
@@ -107,7 +107,7 @@ def add_task(req: AddTaskRequest):
 
 
 @server.delete("/task")
-def delete_task(req: DeleteTaskRequest):
+def delete_task(req: DeleteTaskRequest = Body(...)):
     bot_ctrl.delete_task(req.task_id)
 
 

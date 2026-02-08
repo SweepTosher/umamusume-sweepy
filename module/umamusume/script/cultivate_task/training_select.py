@@ -55,7 +55,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
             return
 
-    limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', DEFAULT_REST_THRESHOLD)))
+    limit = int(getattr(ctx.cultivate_detail, 'rest_threshold', getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', DEFAULT_REST_THRESHOLD))))
     if limit == 0:
         energy = 100
     else:
@@ -367,7 +367,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         except Exception:
             current_energy = None
         try:
-            rest_threshold = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', DEFAULT_REST_THRESHOLD)))
+            rest_threshold = int(getattr(ctx.cultivate_detail, 'rest_threshold', getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', DEFAULT_REST_THRESHOLD))))
         except Exception:
             rest_threshold = DEFAULT_REST_THRESHOLD
         
@@ -483,31 +483,18 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 elif 40 <= current_energy <= 50:
                     se_w *= 0.9
 
-            try:
-                is_aoharu = (ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI)
-            except Exception:
-                is_aoharu = False
-            if is_aoharu and idx == 4 and se_w != 0.0 and spirit_counts[idx] > 0:
-                try:
-                    energy = int(read_energy())
-                    if energy == 0:
-                        time.sleep(0.37)
-                        energy = int(read_energy())
-                except Exception:
-                    energy = None
-                if energy is not None:
-                    if energy > 80:
-                        se_w = 0.0
-                    elif energy < 10:
-                        se_w = 0.0
-                    else:
-                        se_w = se_w * 1.37
-
             se_lane = spirit_counts[idx]
             spirit_bonus = 0.0
             if se_lane > 0 and se_w != 0.0:
                 spirit_bonus = se_w
                 score += spirit_bonus
+
+            try:
+                scenario = ctx.cultivate_detail.scenario
+                if scenario is not None:
+                    score = scenario.adjust_training_score(ctx, idx, score, spirit_counts, current_energy)
+            except Exception:
+                pass
 
             pal_mult = 1.0
             if pal_count > 0:

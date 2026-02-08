@@ -3129,7 +3129,7 @@ export default {
           "override_insufficient_fans_forced_races": this.overrideInsufficientFansForcedRaces,
           "learn_skill_threshold": this.learnSkillThreshold,
           "allow_recover_tp": this.recoverTP,
-          "rest_treshold": this.restTreshold,
+          "rest_threshold": this.restTreshold,  
           "compensate_failure": this.compensateFailure,
           "summer_score_threshold": this.summerScoreThreshold,
           "wit_race_search_threshold": this.witRaceSearchThreshold,
@@ -3562,6 +3562,12 @@ export default {
       }
 
     },
+    showModal: function () {
+      $('#create-task-list-modal').modal('show');
+    },
+    hideModal: function () {
+      $('#create-task-list-modal').modal('hide');
+    },
     loadFromTask: function (task) {
       const data = task.attachment_data || task.detail || {};
       this.selectedExecuteMode = task.task_execute_mode || 3;
@@ -3777,7 +3783,7 @@ export default {
         follow_support_card: this.selectedSupportCard,
         follow_support_card_level: this.supportCardLevel,
         clock_use_limit: this.clockUseLimit,
-        rest_treshold: this.restTreshold,
+        rest_threshold: this.restTreshold,  
         summer_score_threshold: this.summerScoreThreshold,
         wit_race_search_threshold: this.witRaceSearchThreshold,
         learn_skill_threshold: this.learnSkillThreshold,
@@ -3947,7 +3953,7 @@ export default {
         follow_support_card: this.selectedSupportCard,
         follow_support_card_level: this.supportCardLevel,
         clock_use_limit: this.clockUseLimit,
-        rest_treshold: this.restTreshold,
+        rest_threshold: this.restTreshold,
         summer_score_threshold: this.summerScoreThreshold,
         wit_race_search_threshold: this.witRaceSearchThreshold,
         learn_skill_threshold: this.learnSkillThreshold,

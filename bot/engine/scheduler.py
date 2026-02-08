@@ -67,10 +67,27 @@ class Scheduler:
             else:
                 return False
 
+    def cleanup_completed_tasks(self):
+        with self._executor_lock:
+            tasks_to_remove = []
+            for i, task in enumerate(self.task_list):
+                if task.task_execute_mode in [TaskExecuteMode.TASK_EXECUTE_MODE_ONE_TIME,
+                                               TaskExecuteMode.TASK_EXECUTE_MODE_TEAM_TRIALS]:
+                    if task.task_status in [TaskStatus.TASK_STATUS_SUCCESS, 
+                                            TaskStatus.TASK_STATUS_FAILED]:
+                        tasks_to_remove.append(i)
+            for i in reversed(tasks_to_remove):
+                del self.task_list[i]
+
     def init(self):
         task_executor = executor.Executor()
+        cleanup_counter = 0
         while True:
             if self.active:
+                cleanup_counter += 1
+                if cleanup_counter >= 60:
+                    self.cleanup_completed_tasks()
+                    cleanup_counter = 0
                 with self._executor_lock:
                     for task in self.task_list:
                         if task.task_execute_mode in [TaskExecuteMode.TASK_EXECUTE_MODE_ONE_TIME,

@@ -30,11 +30,11 @@ export default {
     }
   },
   mounted (){
-    this.setupWebSocket();
+    this.setupNotificationPolling();
     this.checkForRepoUpdate();
   },
   methods: {
-    setupWebSocket() {
+    setupNotificationPolling() {
       this.checkForManualSkillNotification();
     },
     checkForRepoUpdate(){

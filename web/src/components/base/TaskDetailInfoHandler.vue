@@ -39,14 +39,18 @@ export default {
         task_id: this.task.task_id
       }
       console.log(JSON.stringify(payload))
-      this.axios.post("/action/bot/reset-task", JSON.stringify(payload)).then()
+      this.axios.post("/action/bot/reset-task", JSON.stringify(payload)).then().catch(err => {
+        console.error("Failed to reset task:", err)
+      })
     },
     deleteTask: function (){
       let payload = {
         task_id: this.task.task_id
       }
       console.log(JSON.stringify(payload))
-      this.axios.delete("/task", { data: payload }).then()
+      this.axios.delete("/task", { data: payload }).then().catch(err => {
+        console.error("Failed to delete task:", err)
+      })
     },
   }
 }

@@ -13,7 +13,7 @@ from module.umamusume.asset.point import (
 )
 from module.umamusume.constants.game_constants import (
     is_summer_camp_period, is_ura_race, NEW_RUN_DETECTION_DATE,
-    URA_QUALIFIER_ID, URA_SEMIFINAL_ID, URA_FINAL_IDS
+    URA_QUALIFIER_ID, URA_SEMIFINAL_ID, URA_FINAL_IDS, PRE_DEBUT_END
 )
 from module.umamusume.constants.timing_constants import (
     MEDIC_CHECK_DELAY, RACE_SEARCH_TIMEOUT
@@ -35,6 +35,8 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
     if ctx.cultivate_detail.turn_info is None or current_date != ctx.cultivate_detail.turn_info.date:
         if ctx.cultivate_detail.turn_info is not None:
             ctx.cultivate_detail.turn_info_history.append(ctx.cultivate_detail.turn_info)
+            if len(ctx.cultivate_detail.turn_info_history) > 100:
+                ctx.cultivate_detail.turn_info_history = ctx.cultivate_detail.turn_info_history[-100:]
         ctx.cultivate_detail.turn_info = TurnInfo()
         ctx.cultivate_detail.turn_info.date = current_date
         
@@ -159,7 +161,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         return
 
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
-        limit = int(getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
+        limit = int(getattr(ctx.cultivate_detail, 'rest_threshold', getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48))))
         if has_extra_race:
             ctx.cultivate_detail.turn_info.parse_train_info_finish = True
             return
@@ -213,6 +215,14 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 ctx.ctrl.click_by_point(CULTIVATE_TRIP)
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_RACE:
             race_id = turn_operation.race_id
+            
+            if race_id == 0 and current_date <= PRE_DEBUT_END:
+                log.info("Pre-Debut period with race fallback - redirecting to training instead")
+                ctx.cultivate_detail.turn_info.turn_operation = None
+                base_energy, _, _ = scan_energy(ctx.ctrl)
+                ctx.cultivate_detail.turn_info.base_energy = base_energy
+                ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
+                return
             
             if race_id is None and has_extra_race:
                 available_races = get_races_for_period(ctx.cultivate_detail.turn_info.date)

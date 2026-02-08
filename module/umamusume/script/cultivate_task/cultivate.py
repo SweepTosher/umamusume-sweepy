@@ -26,15 +26,6 @@ from module.umamusume.script.cultivate_task.event_handlers import (
     script_cultivate_event,
 )
 
-from module.umamusume.script.cultivate_task.aoharuhai_handlers import (
-    script_aoharuhai_race,
-    script_aoharuhai_race_final_start,
-    script_aoharuhai_race_select_oponent,
-    script_aoharuhai_race_inrace,
-    script_aoharuhai_race_end,
-    script_aoharuhai_race_schedule,
-)
-
 from module.umamusume.script.cultivate_task.ui_handlers import (
     script_main_menu,
     script_scenario_select,
@@ -78,12 +69,6 @@ __all__ = [
     'script_cultivate_race_result',
     'script_cultivate_race_reward',
     'script_cultivate_event',
-    'script_aoharuhai_race',
-    'script_aoharuhai_race_final_start',
-    'script_aoharuhai_race_select_oponent',
-    'script_aoharuhai_race_inrace',
-    'script_aoharuhai_race_end',
-    'script_aoharuhai_race_schedule',
     'script_main_menu',
     'script_scenario_select',
     'script_umamusume_select',

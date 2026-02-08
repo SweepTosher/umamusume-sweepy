@@ -1,15 +1,34 @@
 import cv2
 
-from .base_scenario import BaseScenario
+from module.umamusume.scenario.ura_scenario import URAScenario
+from module.umamusume.scenario.registry import register
 from module.umamusume.asset import *
 from module.umamusume.define import ScenarioType, SupportCardFavorLevel, SupportCardType
 from module.umamusume.types import SupportCardInfo
 from bot.recog.image_matcher import image_match, compare_color_equal, multi_template_match
-from module.umamusume.asset.template import *
+from module.umamusume.asset.template import (
+    REF_SUPPORT_CARD_TYPE_SPEED, REF_SUPPORT_CARD_TYPE_STAMINA,
+    REF_SUPPORT_CARD_TYPE_POWER, REF_SUPPORT_CARD_TYPE_WILL,
+    REF_SUPPORT_CARD_TYPE_INTELLIGENCE, REF_SUPPORT_CARD_TYPE_FRIEND,
+    REF_AOHARU_SPECIAL_TRAIN, REF_AOHARU_SPECIAL_TRAIN2, REF_AOHARU_SPECIAL_TRAIN3,
+    REF_SPIRIT_EXPLOSION, REF_SPIRIT_EXPLOSION2, REF_SPIRIT_EXPLOSION3
+)
 from bot.recog.training_stat_scanner import parse_training_result_template
+from .handlers import get_aoharuhai_ui_handlers
+from .hooks import aoharuhai_after_hook
+from .scoring import adjust_spirit_explosion_weight
 
 import bot.base.log as logger
 log = logger.get_logger(__name__)
+
+STAT_AREAS_AOHARUHAI = {
+    "speed": (31, 798, 132, 831),
+    "stamina": (114, 798, 246, 831),
+    "power": (256, 798, 359, 831),
+    "guts": (369, 798, 471, 831),
+    "wits": (482, 798, 585, 831),
+    "sp": (595, 798, 698, 831),
+}
 
 CARD_TYPE_MAP = (
     (REF_SUPPORT_CARD_TYPE_SPEED, SupportCardType.SUPPORT_CARD_TYPE_SPEED),
@@ -30,7 +49,8 @@ CARD_TYPE_NAMES = {
 }
 
 
-class AoharuHaiScenario(BaseScenario):
+@register(ScenarioType.SCENARIO_TYPE_AOHARUHAI)
+class AoharuHaiScenario(URAScenario):
     def __init__(self):
         super().__init__()
 
@@ -40,16 +60,28 @@ class AoharuHaiScenario(BaseScenario):
     def scenario_name(self) -> str:
         return "青春杯"
 
-    def get_date_img(self, img: any) -> any:
+    def get_date_img(self, img):
         return img[40:70, 160:370]
 
-    def get_turn_to_race_img(self, img) -> any:
+    def get_turn_to_race_img(self, img):
         return img[70:120, 30:90]
 
-    def parse_training_result(self, img: any) -> list[int]:
+    def get_stat_areas(self) -> dict:
+        return STAT_AREAS_AOHARUHAI
+
+    def parse_training_result(self, img) -> list[int]:
         return parse_training_result_template(img, scenario="aoharuhai")
 
-    def parse_training_support_card(self, img: any) -> list[SupportCardInfo]:
+    def get_ui_handlers(self) -> dict:
+        return get_aoharuhai_ui_handlers()
+
+    def after_hook(self, ctx, img):
+        return aoharuhai_after_hook(ctx, img)
+
+    def adjust_training_score(self, ctx, idx, score, spirit_counts, current_energy):
+        return adjust_spirit_explosion_weight(ctx, idx, score, spirit_counts, current_energy)
+
+    def parse_training_support_card(self, img) -> list[SupportCardInfo]:
         if img is None or getattr(img, 'size', 0) == 0:
             return []
         base_x = 550
@@ -57,7 +89,6 @@ class AoharuHaiScenario(BaseScenario):
         inc = 115
         support_card_list_info_result: list[SupportCardInfo] = []
 
-        
         for i in range(5):
             roi = img[base_y:base_y + inc, base_x: base_x + 145]
             if roi is None or getattr(roi, 'size', 0) == 0:

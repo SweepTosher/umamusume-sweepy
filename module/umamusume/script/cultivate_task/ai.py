@@ -93,7 +93,7 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
             turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRIP
             return turn_operation
 
-    limit = getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48))
+    limit = getattr(ctx.cultivate_detail, 'rest_threshold', getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
     if limit == 0:
         energy = 100
     if energy <= limit:

@@ -1,5 +1,7 @@
 from bot.base.context import BotContext
-from module.umamusume.scenario import base_scenario, ura_scenario, aoharuhai_scenario
+from module.umamusume.scenario.registry import create_scenario
+from module.umamusume.scenario import ura_scenario
+from module.umamusume.scenario.aoharuhai import AoharuHaiScenario
 from module.umamusume.task import UmamusumeTask, UmamusumeTaskType
 from module.umamusume.define import *
 from module.umamusume.types import TurnInfo
@@ -14,7 +16,7 @@ log = logger.get_logger(__name__)
 class CultivateContextDetail:
     turn_info: TurnInfo | None
     turn_info_history: list[TurnInfo]
-    scenario : base_scenario.BaseScenario
+    scenario: any
     expect_attribute: list[int] | None
     follow_support_card_name: str
     follow_support_card_level: int
@@ -107,15 +109,9 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
     ctx = UmamusumeContext(task, ctrl)
     if task.task_type == UmamusumeTaskType.UMAMUSUME_TASK_TYPE_CULTIVATE:
         detail = CultivateContextDetail()
-        # Initialize corresponding inherited class based on scenario type
-        match task.detail.scenario:
-            case ScenarioType.SCENARIO_TYPE_URA:
-                detail.scenario = ura_scenario.URAScenario()
-            case ScenarioType.SCENARIO_TYPE_AOHARUHAI:
-                detail.scenario = aoharuhai_scenario.AoharuHaiScenario()
-            case _: # Placeholder, actually impossible to reach here
-                log.error("Unknown scenario")
-                detail.scenario = None
+        detail.scenario = create_scenario(task.detail.scenario)
+        if detail.scenario is None:
+            log.error("Unknown scenario")
         detail.expect_attribute = task.detail.expect_attribute
         detail.follow_support_card_name = task.detail.follow_support_card_name
         detail.follow_support_card_level = task.detail.follow_support_card_level
@@ -144,8 +140,8 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
         except Exception:
             detail.spirit_explosion = list(DEFAULT_SPIRIT_EXPLOSION)
         
-        detail.rest_treshold = getattr(task.detail, 'rest_treshold', getattr(task.detail, 'fast_path_energy_limit', 48))
-        # Load motivation thresholds from preset (with defaults) - ensure they are integers
+        # Support both spellings for backward compatibility (rest_threshold is correct)
+        detail.rest_threshold = getattr(task.detail, 'rest_threshold', getattr(task.detail, 'rest_treshold', getattr(task.detail, 'fast_path_energy_limit', 48)))
         detail.motivation_threshold_year1 = int(getattr(task.detail, 'motivation_threshold_year1', 3))
         detail.motivation_threshold_year2 = int(getattr(task.detail, 'motivation_threshold_year2', 4))
         detail.motivation_threshold_year3 = int(getattr(task.detail, 'motivation_threshold_year3', 4))
@@ -174,7 +170,6 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
         detail.summer_score_threshold = float(getattr(task.detail, 'summer_score_threshold', DEFAULT_SUMMER_SCORE_THRESHOLD))
         detail.wit_fallback_threshold = float(getattr(task.detail, 'wit_fallback_threshold', DEFAULT_WIT_FALLBACK_THRESHOLD))
         detail.stat_value_multiplier = list(getattr(task.detail, 'stat_value_multiplier', DEFAULT_STAT_VALUE_MULTIPLIER))
-        # Event overrides
         try:
             eo = getattr(task.detail, 'event_overrides', {})
             detail.event_overrides = eo if isinstance(eo, dict) else {}
@@ -183,8 +178,3 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
         
         ctx.cultivate_detail = detail
     return ctx
-
-
-
-
-

@@ -180,21 +180,35 @@ def after_hook(ctx: UmamusumeContext):
     try:
         if getattr(ctx.ctrl, 'trigger_decision_reset', False):
             ctx.ctrl.trigger_decision_reset = False
-            log.info("failsafe triggered. restarting decision making")
             ti = getattr(ctx.cultivate_detail, 'turn_info', None)
             if ti is not None:
-                try:
-                    ti.parse_main_menu_finish = False
-                except Exception:
-                    pass
-                try:
-                    ti.parse_train_info_finish = False
-                except Exception:
-                    pass
-                try:
-                    ti.turn_operation = None
-                except Exception:
-                    pass
+                cached_training = getattr(ti, 'cached_training_type', None)
+                if cached_training is not None and ti.parse_train_info_finish:
+                    log.info(f"failsafe triggered.")
+                    from module.umamusume.types import TurnOperation
+                    from module.umamusume.define import TurnOperationType
+                    op = TurnOperation()
+                    op.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_TRAINING
+                    op.training_type = cached_training
+                    ti.turn_operation = op
+                    try:
+                        ti.parse_main_menu_finish = False
+                    except Exception:
+                        pass
+                else:
+                    log.info("failsafe triggered. restarting decision making")
+                    try:
+                        ti.parse_main_menu_finish = False
+                    except Exception:
+                        pass
+                    try:
+                        ti.parse_train_info_finish = False
+                    except Exception:
+                        pass
+                    try:
+                        ti.turn_operation = None
+                    except Exception:
+                        pass
                 for attr in ("race_search_started_at", "race_search_id"):
                     if hasattr(ti, attr):
                         try:

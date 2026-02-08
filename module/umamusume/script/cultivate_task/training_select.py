@@ -605,6 +605,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"{names[idx]}: {score:.3f} = [{formula_str}]{stat_str}{nrg_str}")
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
+        
+        ctx.cultivate_detail.turn_info.cached_computed_scores = list(computed_scores)
 
         for idx in range(5):
             if extra_weight[idx] == -1:
@@ -690,6 +692,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 ties = [i for i, v in enumerate(computed_scores) if abs(v - max_score) < eps]
                 chosen_idx = 4 if 4 in ties else (min(ties) if len(ties) > 0 else int(np.argmax(computed_scores)))
         local_training_type = TrainingType(chosen_idx + 1)
+     
+        ctx.cultivate_detail.turn_info.cached_training_type = local_training_type
+       
 
     from module.umamusume.script.cultivate_task.ai import get_operation
     op_ai = get_operation(ctx)

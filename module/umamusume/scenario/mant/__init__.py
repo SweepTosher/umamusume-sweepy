@@ -1,1 +1,0 @@
-from .scenario import MANTScenario

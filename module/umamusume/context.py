@@ -2,7 +2,6 @@ from bot.base.context import BotContext
 from module.umamusume.scenario.registry import create_scenario
 from module.umamusume.scenario import ura_scenario
 from module.umamusume.scenario.aoharuhai import AoharuHaiScenario
-from module.umamusume.scenario.mant import MANTScenario
 from module.umamusume.task import UmamusumeTask, UmamusumeTaskType
 from module.umamusume.define import *
 from module.umamusume.types import TurnInfo

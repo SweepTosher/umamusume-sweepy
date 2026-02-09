@@ -5,6 +5,7 @@ class ScenarioType(Enum):
     SCENARIO_TYPE_UNKNOWN = 0
     SCENARIO_TYPE_URA = 1
     SCENARIO_TYPE_AOHARUHAI = 2
+    SCENARIO_TYPE_MANT = 3
 
 class SupportCardType(Enum):
     SUPPORT_CARD_TYPE_UNKNOWN = 0

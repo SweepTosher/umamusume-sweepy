@@ -3165,11 +3165,11 @@ export default {
             "skillEventWeight": [...this.skillEventWeight],
             "resetSkillEventWeightList": ura_reset_skill_event_weight_list
           } : null,
-          // 青春杯配置
           "aoharu_config": this.selectedScenario === 2 ? {
             "preliminaryRoundSelections": [...this.preliminaryRoundSelections],
             "aoharuTeamNameSelection": this.aoharuTeamNameSelection
-          } : null
+          } : null,
+          "mant_config": this.selectedScenario === 3 ? {} : null
         }
       }
       if (this.selectedExecuteMode === 2) {

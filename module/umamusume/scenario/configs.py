@@ -45,11 +45,18 @@ class AoharuConfig:
             raise IndexError("Round index out of range")
         return self.preliminary_round_selections[round_index]
     
+class MantConfig:
+
+    def __init__(self, config: dict):
+        pass
+
+
 class ScenarioConfig:
-    """ Configuration for all scenarios """
     ura_config: UraConfig = None
     aoharu_config: AoharuConfig = None
+    mant_config: MantConfig = None
     
-    def __init__(self, ura_config: UraConfig = None, aoharu_config: AoharuConfig = None):
+    def __init__(self, ura_config: UraConfig = None, aoharu_config: AoharuConfig = None, mant_config: MantConfig = None):
         self.ura_config = ura_config
         self.aoharu_config = aoharu_config
+        self.mant_config = mant_config

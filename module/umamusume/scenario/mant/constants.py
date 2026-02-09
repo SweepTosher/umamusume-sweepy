@@ -34,7 +34,6 @@ class MantItemType(Enum):
     REMEDY = "remedy"
 
 
-
 class MantRaceSetType(Enum):
     TRIPLE_CROWN = "triple_crown"
     TRIPLE_CROWN_PLUS = "triple_crown_plus"
@@ -188,7 +187,7 @@ MANT_SHOP_ITEMS = {
     },
     MantItemType.PRACTICE_NOTEBOOK: {
         "cost": 150,
-        "effect": {"buff": "PRACTICE_perfect"},
+        "effect": {"buff": "practice_perfect"},
         "efficiency": 0.05,
     },
     MantItemType.SCHOLAR_HAT: {
@@ -350,5 +349,3 @@ MANT_ITEM_PRIORITY = {
         MantItemType.MAX_ENERGY_LARGE,
     ],
 }
-
-

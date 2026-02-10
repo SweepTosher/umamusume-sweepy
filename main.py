@@ -192,14 +192,14 @@ def run_health_checks(device_id):
 def normalize_start_end():
     global start_time, end_time
     try:
-        start_time = max(0, min(24, int(start_time)))
-        end_time = max(0, min(24, int(end_time)))
+        start_time = max(0.0, min(24.0, float(start_time)))
+        end_time = max(0.0, min(24.0, float(end_time)))
     except Exception:
-        start_time, end_time = 0, 24
+        start_time, end_time = 0.0, 24.0
 
 def is_in_allowed_window(now: datetime.datetime) -> bool:
     s, e = start_time, end_time
-    h = now.hour
+    h = now.hour + (now.minute / 60.0) + (now.second / 3600.0)
     if s == e:
         return True
     if s < e:
@@ -212,14 +212,25 @@ def next_window_start(now: datetime.datetime) -> datetime.datetime:
     today = now.date()
     if s == e:
         return now
-    start_today = datetime.datetime.combine(today, datetime.time(hour=s))
+
+    sh = int(s)
+    sm = int(round((s - sh) * 60))
+    if sm == 60:
+        sh += 1
+        sm = 0
+    if sh >= 24:
+        sh = 0
+        sm = 0
+
+    start_today = datetime.datetime.combine(today, datetime.time(hour=sh, minute=sm))
+
     if s < e:
         if now < start_today:
             return start_today
         else:
             return start_today + datetime.timedelta(days=1)
     else:
-        if now.hour < s and now >= datetime.datetime.combine(today, datetime.time(hour=0)):
+        if now < start_today:
             return start_today
         else:
             return start_today + datetime.timedelta(days=1)

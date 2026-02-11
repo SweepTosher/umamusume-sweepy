@@ -345,6 +345,10 @@ if __name__ == '__main__':
     from module.umamusume.script.cultivate_task.event.manifest import warmup_event_index
     warmup_event_index()
     
+    from bot.recog.image_matcher import preload_templates, init_executor
+    preload_templates('resource')
+    init_executor()
+    
     register_app(UmamusumeManifest)
     
     restored = False

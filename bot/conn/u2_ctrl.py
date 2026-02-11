@@ -12,7 +12,6 @@ import bot.conn.os as os
 import bot.base.log as logger
 import threading
 
-from bot.base.common import ImageMatchMode
 from bot.base.point import ClickPoint, ClickPointType
 from bot.conn.ctrl import AndroidController
 from bot.recog.image_matcher import template_match, image_match
@@ -416,10 +415,9 @@ class U2AndroidController(AndroidController):
             self.click(point.coordinate.x, point.coordinate.y, name=point.desc, random_offset=random_offset, hold_duration=hold_duration)
         elif point.target_type == ClickPointType.CLICK_POINT_TYPE_TEMPLATE:
             cur_screen = self.get_screen(to_gray=True)
-            if point.template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
-                match_result = image_match(cur_screen, point.template)
-                if getattr(match_result, "find_match", False):
-                    self.click(match_result.center_point[0], match_result.center_point[1], name=point.desc, random_offset=random_offset, hold_duration=hold_duration)
+            match_result = image_match(cur_screen, point.template)
+            if getattr(match_result, "find_match", False):
+                self.click(match_result.center_point[0], match_result.center_point[1], name=point.desc, random_offset=random_offset, hold_duration=hold_duration)
         self.recent_point = point
         self.recent_operation_time = time.time()
 

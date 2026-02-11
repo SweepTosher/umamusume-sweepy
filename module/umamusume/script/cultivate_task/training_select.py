@@ -470,7 +470,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             stc_lane = special_counts[idx]
             special_bonus = 0.0
             if stc_lane > 0:
-                special_bonus = float(w_special)
+                special_bonus = float(w_special) * stc_lane
                 score += special_bonus
             try:
                 se_w = float(se_weights[idx]) if isinstance(se_weights, (list, tuple)) and len(se_weights) == 5 else 0.0
@@ -486,7 +486,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             se_lane = spirit_counts[idx]
             spirit_bonus = 0.0
             if se_lane > 0 and se_w != 0.0:
-                spirit_bonus = se_w
+                spirit_bonus = se_w * se_lane
                 score += spirit_bonus
 
             try:
@@ -579,9 +579,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if hint_bonus > 0:
                 formula_parts.append(f"hint:+{hint_bonus:.3f}")
             if special_bonus > 0:
-                formula_parts.append(f"special:+{special_bonus:.3f}")
+                formula_parts.append(f"special({stc_lane}):+{special_bonus:.3f}")
             if spirit_bonus > 0:
-                formula_parts.append(f"spirit:+{spirit_bonus:.3f}")
+                formula_parts.append(f"spirit({se_lane}):+{spirit_bonus:.3f}")
             
             mult_parts = []
             if pal_mult != 1.0:

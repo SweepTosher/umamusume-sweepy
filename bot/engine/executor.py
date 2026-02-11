@@ -8,7 +8,6 @@ import gc
 import bot.base.log as logger
 import cv2
 
-from bot.base.common import ImageMatchMode
 from bot.base.resource import UI, NOT_FOUND_UI
 from bot.base.task import TaskStatus, Task, EndTaskReason
 from bot.conn.os import push_system_notification
@@ -125,22 +124,16 @@ class Executor:
             sub_target = target[
                          template.image_match_config.match_area.y1:template.image_match_config.match_area.y2,
                          template.image_match_config.match_area.x1:template.image_match_config.match_area.x2]
-            if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
-                if not image_match(sub_target, template).find_match:
-                    result = False
-                    break
-            else:
-                log.error("template not set match mode")
+            if not image_match(sub_target, template).find_match:
+                result = False
+                break
         for template in ui.check_non_exist_template_list:
             sub_target = target[
                          template.image_match_config.match_area.y1:template.image_match_config.match_area.y2,
                          template.image_match_config.match_area.x1:template.image_match_config.match_area.x2]
-            if template.image_match_config.match_mode == ImageMatchMode.IMAGE_MATCH_MODE_TEMPLATE_MATCH:
-                if image_match(sub_target, template).find_match:
-                    result = False
-                    break
-            else:
-                log.error("template not set match mode")
+            if image_match(sub_target, template).find_match:
+                result = False
+                break
         if result is True:
             self.detect_ui_results_write_lock.acquire()
             self.detect_ui_results.append(ui)

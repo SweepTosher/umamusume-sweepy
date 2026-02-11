@@ -164,6 +164,7 @@ class Executor:
             def screen_watchdog():
                 last_img = None
                 unchanged = 0
+                last_restart_time = 0
 
                 def preprocess(im):
                     try:
@@ -173,6 +174,8 @@ class Executor:
 
                 while self.active and task.task_status == TaskStatus.TASK_STATUS_RUNNING:
                     time.sleep(30)
+                    if last_restart_time > 0 and (time.time() - last_restart_time) < 60:
+                        continue
                     try:
                         try:
                             from bot.base.runtime_state import update_watchdog, get_watchdog_threshold
@@ -272,6 +275,7 @@ class Executor:
                                     pass
                             unchanged = 0
                             last_img = None
+                            last_restart_time = time.time()
                             try:
                                 if update_watchdog:
                                     update_watchdog(unchanged)

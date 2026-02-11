@@ -192,6 +192,12 @@ Install or reinstall Visual C++ Redistributable:
 
 ## Changelog
 
+### 2025-02-11
+- Styles customizable by date (by ayaliz)    
+- Easier way to share presets    
+- Now no longer rechecks training after forced decision making reset
+- Fixed bug where spirit explosions and special trainings were using same logic as hints (used to be max of 1 contribution per facility)       
+
 ### 2025-02-2
 - Redid screencap method (Stale frames might cause issues but is faster)         
 

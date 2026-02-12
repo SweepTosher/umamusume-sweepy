@@ -3,10 +3,10 @@
     <div class="card">
       <div class="card-body">
         <div class="d-flex bd-highlight">
-          <h5 class="card-title">定时任务</h5>
+          <h5 class="card-title">Scheduled Tasks</h5>
         </div>
       </div>
-      <TaskList v-bind:task-list="cronJobList" v-bind:no-data-label="'无定时任务'"></TaskList>
+      <TaskList v-bind:task-list="cronJobList" v-bind:no-data-label="'No scheduled tasks'"></TaskList>
     </div>
   </div>
 </template>
@@ -30,9 +30,9 @@ export default {
   margin-bottom: 0;
 }
 .start-time{
-  color: #999;
+  color: var(--muted);
 }
 .card-body{
-  border-bottom: 1px solid rgba(0,0,0,.125);
+  border-bottom: 1px solid rgba(255,255,255,.06);
 }
 </style>

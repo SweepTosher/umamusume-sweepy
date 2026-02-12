@@ -15,7 +15,7 @@ export default {
     },
     name: {
       type: String,
-      default: '默认技能名称'
+      default: 'Skill'
     }
   },
   computed: {
@@ -39,9 +39,10 @@ export default {
 .skill-icon {
   display: inline-flex;
   align-items: center;
-  padding: 4px 6px;
-  background: linear-gradient(to right, #fbfae1, #ffeda5, #ffca4f);
-  border-radius: 4px;
+  padding: 4px 8px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 6px;
 }
 .skill-icon img {
   width: 22px;
@@ -49,7 +50,8 @@ export default {
 }
 .skill-name {
   margin-left: 4px;
-  color: #855F40;
-  font-size: 14px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
 }
 </style>

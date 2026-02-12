@@ -1613,9 +1613,9 @@
 <style scoped>
 /***** Event Settings styling *****/
 #category-event .event-choice-btn.selected {
-  background-color: #F75A86;
+  background-color: var(--accent);
   color: #000;
-  border-color: #F75A86;
+  border-color: var(--accent);
 }
 #category-event .event-choice-btn.unselected {
   background-color: transparent;
@@ -1624,12 +1624,12 @@
 #category-event .skill-list-header {
   border: 1px solid var(--accent) !important;
   border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
-  background: rgba(255,45,163,0.08) !important;
+  background: color-mix(in srgb, var(--accent) 8%, transparent) !important;
 }
 #category-event .skill-list-content {
   border: 1px solid var(--accent) !important;
   border-radius: 0 0 var(--radius-sm) var(--radius-sm) !important;
-  background: rgba(255,45,163,0.04) !important;
+  background: color-mix(in srgb, var(--accent) 4%, transparent) !important;
 }
 
 .selected-skill-item,
@@ -1646,7 +1646,7 @@
 .selected-skills-box.drop-hover,
 .blacklist-box.drop-hover {
   outline: 2px dashed var(--accent);
-  background: rgba(255,45,163,0.06);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
 }
 
 #category-skill .skill-filter-actions {
@@ -1663,12 +1663,12 @@
 .pal-config-section {
   border: 1px solid var(--accent);
   border-radius: 8px;
-  background: rgba(255, 45, 163, 0.04);
+  background: color-mix(in srgb, var(--accent) 4%, transparent);
   overflow: hidden;
 }
 
 .pal-card-config-section {
-  border: 1px solid rgba(255, 45, 163, 0.3);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.3);
   padding: 12px;
@@ -1711,14 +1711,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #000;
+  background: var(--surface-2);
   border-bottom: 1px solid var(--accent);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .pal-config-header:hover {
-  background: rgba(255, 45, 163, 0.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .pal-config-title {
@@ -1750,9 +1750,9 @@
 }
 
 .pal-card-item {
-  border: 1px solid rgba(255, 45, 163, 0.3);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   border-radius: 6px;
-  background: #000;
+  background: var(--surface-2);
   padding: 10px;
   overflow: hidden;
 }
@@ -1763,7 +1763,7 @@
   gap: 10px;
   margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 45, 163, 0.2);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .pal-card-checkbox {
@@ -1787,7 +1787,7 @@
 }
 
 .pal-checkbox:hover {
-  background: rgba(255, 45, 163, 0.1);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
 .pal-checkbox.checked {
@@ -1819,7 +1819,7 @@
 }
 
 .stage-label {
-  color: var(--accent-pink);
+  color: var(--accent);
   font-weight: 700;
   text-transform: uppercase;
   flex: 0 0 80px;
@@ -1833,7 +1833,7 @@
 
 .stage-inputs .input-group {
   flex: 1;
-  border: 1px solid var(--accent-pink);
+  border: 1px solid var(--accent);
   border-radius: 0.25rem;
   overflow: hidden;
   display: flex;
@@ -1847,15 +1847,15 @@
 }
 
 .stage-inputs .input-group .input-group-text {
-  color: var(--accent-pink);
+  color: var(--accent);
   background-color: transparent;
   border: none;
 }
 
 .input-group-text {
-  background-color: var(--b-surface-bright);
-  border-color: var(--accent-secondary);
-  color: var(--accent-secondary);
+  background-color: var(--surface);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 </style>
@@ -4804,19 +4804,20 @@ export default {
 .skill-notes-alert {
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-  border: 1px solid #ffc107;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-left: 3px solid var(--accent);
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 13px;
-  color: #856404;
+  color: var(--muted);
   font-weight: 500;
-  box-shadow: 0 2px 4px rgba(255, 193, 7, 0.1);
+  box-shadow: none;
 }
 
 .skill-notes-alert i {
   margin-right: 8px;
-  color: #ffc107;
+  color: var(--accent);
 }
 
 .section-heading {
@@ -4825,20 +4826,20 @@ export default {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 12px;
-  color: #495057;
+  color: var(--text);
   padding: 8px 0;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid rgba(255,255,255,.12);
 }
 
 .section-heading i {
   margin-right: 10px;
-  color: #007bff;
+  color: var(--accent);
 }
 
 .filter-label {
   font-weight: 600;
   margin-bottom: 5px;
-  color: #495057;
+  color: var(--accent);
   font-size: 12px;
 }
 
@@ -4859,21 +4860,21 @@ export default {
 }
 
 .strategy-tag {
-  background: #e3f2fd;
-  color: #1976d2;
-  border: 1px solid #bbdefb;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 .distance-tag {
-  background: #f3e5f5;
-  color: #7b1fa2;
-  border: 1px solid #e1bee7;
+  background: color-mix(in srgb, var(--accent-2) 10%, transparent);
+  color: var(--accent-2);
+  border: 1px solid color-mix(in srgb, var(--accent-2) 25%, transparent);
 }
 
 .tier-tag {
-  background: #fff3e0;
-  color: #f57c00;
-  border: 1px solid #ffcc02;
+  background: rgba(255,255,255,.08);
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,.15);
 }
 
 .tier-tag[data-tier="SS"] {
@@ -5079,18 +5080,19 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #007bff, #0056b3);
-  color: white;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+  box-shadow: none;
   margin-bottom: 10px;
 }
 
 .advanced-options-header:hover {
-  background: linear-gradient(135deg, #0056b3, #004085);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent) inset;
   transform: translateY(-1px);
 }
 
@@ -5131,18 +5133,19 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #0ea5e9, #0284c7);
-  color: white;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--accent);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+  box-shadow: none;
   margin-bottom: 12px;
 }
 
 .race-options-header:hover {
-  background: linear-gradient(135deg, #0056b3, #004085);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 15%, transparent) inset;
   transform: translateY(-1px);
 }
 
@@ -5250,17 +5253,17 @@ export default {
 .Cure-asap textarea {
   min-height: 60px;
 }
-.race-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important;transform:translateY(-1px)}
+.race-toggle:hover{background:color-mix(in srgb, var(--accent) 8%, transparent)!important;border-color:var(--accent)!important;transform:translateY(-1px)}
 .race-toggle.selected{background:transparent!important;border-color:var(--accent)!important}
-.skill-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important;transform:translateY(-1px)}
+.skill-toggle:hover{background:color-mix(in srgb, var(--accent) 8%, transparent)!important;border-color:var(--accent)!important;transform:translateY(-1px)}
 .skill-toggle.selected{background:transparent!important;border-color:var(--accent)!important}
 .skill-type-header,.section-heading,.skill-list-header{background:transparent!important;color:var(--text)!important}
-.blacklist-box:hover{border-color:var(--accent)!important;background:rgba(255,45,163,.08)!important}
+.blacklist-box:hover{border-color:var(--accent)!important;background:color-mix(in srgb, var(--accent) 8%, transparent)!important}
 .blacklisted-skill-item{background:transparent!important;color:#ffb3c1!important}
 .skill-list-container{border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important;padding:12px!important;background:transparent!important;max-height:500px}
 .skill-type-card{border:1px solid rgba(255,255,255,.12)!important;border-radius:12px!important}
 .skill-item{border:1px solid rgba(255,255,255,.12)!important;border-radius:10px!important;padding:10px!important;background:transparent!important;cursor:pointer}
-.skill-item:hover{border-color:var(--accent)!important;box-shadow:0 2px 6px rgba(255,45,163,.15)!important}
+.skill-item:hover{border-color:var(--accent)!important;box-shadow:0 2px 6px color-mix(in srgb, var(--accent) 15%, transparent)!important}
 .skill-item.selected{background:rgba(52,133,227,.08)!important;border-color:#3485E3!important;box-shadow:0 0 0 2px rgba(52,133,227,.2) inset!important}
 .skill-item.blacklisted{background:rgba(255,77,109,.08)!important;border-color:#ff4d6d!important}
 .skill-item.selected .skill-tag,.skill-item.blacklisted .skill-tag{background:rgba(255,255,255,.2)!important}
@@ -5275,12 +5278,12 @@ export default {
 .race-options-header,.skill-list-header,.section-heading,.skill-type-header{background:transparent!important;color:var(--text)!important;border-color:var(--accent)!important}
 .selected-skills-box,.blacklist-box{background:var(--surface-2)!important;border:1px solid var(--accent)!important;color:var(--text)!important}
 .skill-list-content,.skill-list-container,.skill-type-card,.skill-item{background:transparent!important;border:1px solid rgba(255,255,255,.12)!important}
-.skill-item:hover{border-color:var(--accent)!important;box-shadow:0 2px 6px rgba(255,45,163,.15)!important}
+.skill-item:hover{border-color:var(--accent)!important;box-shadow:0 2px 6px color-mix(in srgb, var(--accent) 15%, transparent)!important}
 .skill-item.selected{background:rgba(52,133,227,.08)!important;border-color:#3485E3!important;box-shadow:inset 0 0 0 2px rgba(52,133,227,.2)!important;color:var(--text)!important}
 .skill-item.blacklisted{background:rgba(255,77,109,.08)!important;border-color:#ff4d6d!important}
 .blacklisted-skill-item{background:transparent!important;color:#ffb3c1!important}
-.race-toggle:hover{background:rgba(255,45,163,.08)!important;border-color:var(--accent)!important}
-.race-toggle.selected{background:transparent!important;border:2px solid var(--accent)!important;box-shadow:0 0 0 2px rgba(255,45,163,.35) inset,0 0 14px rgba(255,45,163,.35)!important}
+.race-toggle:hover{background:color-mix(in srgb, var(--accent) 8%, transparent)!important;border-color:var(--accent)!important}
+.race-toggle.selected{background:transparent!important;border:2px solid var(--accent)!important;box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent) inset,0 0 14px color-mix(in srgb, var(--accent) 35%, transparent)!important}
 .btn-outline-primary.dropdown-toggle,.show>.btn-outline-primary.dropdown-toggle{border-color:var(--accent)!important;color:var(--accent)!important;background:transparent!important}
 
 .event-weights-section {
@@ -5327,7 +5330,7 @@ export default {
   background: var(--accent) !important;
   color: white !important;
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(255, 45, 163, 0.3);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .event-weights-description {
@@ -5426,7 +5429,7 @@ export default {
 .event-weights-table input.form-control:focus {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(255, 45, 163, 0.2);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
   color: var(--text);
 }
 

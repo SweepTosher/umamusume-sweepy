@@ -17,10 +17,10 @@
       </div>
       <div v-if="task.detail.cultivate_result.factor_list !== undefined && task.detail.cultivate_result.factor_list.length !== 0">
         Factor Acquisition: <span class="mr-1" v-for="factor in task.detail.cultivate_result.factor_list">
-          <span v-if="factor[0] === '速度' || factor[0] === '耐力'|| factor[0] === '力量'|| factor[0] === '毅力'|| factor[0] === '智力'"  style="background-color: #49BFF7;" class="badge badge-pill badge-secondary">{{factor[0]}}({{factor[1]}})</span>
-          <span v-if="factor[0] === '短距离' || factor[0] === '英里'|| factor[0] === '中距离'|| factor[0] === '长距离'|| factor[0] === '泥地'|| factor[0] === '草地'|| factor[0] === '领跑'|| factor[0] === '跟前'|| factor[0] === '居中'|| factor[0] === '后追'"  style="background-color: #FF78B2;" class="badge badge-pill badge-secondary">{{factor[0]}}({{factor[1]}})</span>
+          <span v-if="factor[0] === '速度' || factor[0] === '耐力'|| factor[0] === '力量'|| factor[0] === '毅力'|| factor[0] === '智力'" class="badge badge-pill badge-stat">{{factor[0]}}({{factor[1]}})</span>
+          <span v-if="factor[0] === '短距离' || factor[0] === '英里'|| factor[0] === '中距离'|| factor[0] === '长距离'|| factor[0] === '泥地'|| factor[0] === '草地'|| factor[0] === '领跑'|| factor[0] === '跟前'|| factor[0] === '居中'|| factor[0] === '后追'" class="badge badge-pill badge-aptitude">{{factor[0]}}({{factor[1]}})</span>
           <span v-if="factor[0] !== '速度' && factor[0] !== '耐力'&& factor[0] !== '力量'&& factor[0] !== '毅力'&& factor[0] !== '智力'&& factor[0] !== '短距离' && factor[0] !== '英里'&& factor[0] !== '中距离'&& factor[0] !== '长距离'&& factor[0] !== '泥地'&& factor[0] !== '草地' &&factor[0] !== '领跑'&& factor[0] !== '跟前'&& factor[0] !== '居中'&& factor[0] !== '后追'" 
-            style="background-color: #E0E0E0; color: #794016;" class="badge badge-pill badge-secondary">{{factor[0]}}({{factor[1]}})</span>
+            class="badge badge-pill badge-other">{{factor[0]}}({{factor[1]}})</span>
         </span>
       </div>
     </div>
@@ -58,6 +58,21 @@ export default {
 
 <style scoped>
 .time{
-  color: #999;
+  color: var(--muted);
+}
+.badge-stat{
+  background: color-mix(in srgb, var(--accent) 25%, transparent) !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
+}
+.badge-aptitude{
+  background: color-mix(in srgb, var(--accent-2) 20%, transparent) !important;
+  color: var(--accent-2) !important;
+  border: 1px solid var(--accent-2) !important;
+}
+.badge-other{
+  background: rgba(255,255,255,.1) !important;
+  color: var(--text) !important;
+  border: 1px solid rgba(255,255,255,.2) !important;
 }
 </style>

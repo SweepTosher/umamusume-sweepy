@@ -66,7 +66,7 @@ export default {
 <style scoped>
 .modal-overlay {position:fixed;top:0;left:0;width:100%;height:100%;background-color: rgba(0, 0, 0, 0.5);display:flex;align-items:center;justify-content:center;z-index:9999}
 .modal-dialog {max-width:500px;width:90%;margin:0}
-.notification-dialog {border-radius:12px;border:none;box-shadow: var(--elev);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)) , linear-gradient(180deg,var(--panel),var(--panel-2));color:var(--text)}
+.notification-dialog {border-radius:12px;border:none;box-shadow: var(--shadow);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)), var(--surface);color:var(--text)}
 .notification-dialog .modal-header {background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);color:#fff;border-radius:12px 12px 0 0;border:none;padding:1.5rem}
 .notification-dialog .modal-title {font-size:1.25rem;font-weight:600;margin:0}
 .notification-dialog .modal-title i {margin-right:.5rem;color:#ffd700}
@@ -74,14 +74,14 @@ export default {
 .notification-dialog .btn-close:hover {opacity:1}
 .notification-dialog .modal-body {padding:2rem;background: transparent}
 .notification-content {display:flex;align-items:flex-start;gap:1.5rem}
-.notification-icon {flex-shrink:0;width:60px;height:60px;background: linear-gradient(135deg, var(--accent), var(--accent-2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;box-shadow:0 4px 15px rgba(255,45,163,.35)}
+.notification-icon {flex-shrink:0;width:60px;height:60px;background: linear-gradient(135deg, var(--accent), var(--accent-2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;box-shadow:0 4px 15px color-mix(in srgb, var(--accent) 35%, transparent)}
 .notification-text {flex:1}
 .notification-message {font-size:1.1rem;color:var(--text);margin-bottom:1rem;line-height:1.5}
 .notification-hint {font-size:.95rem;color:var(--muted);margin:0;font-style:italic}
 .notification-dialog .modal-footer {background: transparent;border-top: 1px solid rgba(255,255,255,.06);padding:1.5rem;border-radius:0 0 12px 12px;display:flex;justify-content:flex-end;gap:.75rem}
 .notification-dialog .btn {padding:.75rem 1.5rem;font-weight:500;border-radius:8px;border:none;transition:all .2s ease}
-.notification-dialog .btn-secondary {background:#1b2332;color:white}
-.notification-dialog .btn-secondary:hover {background:#1f2940;transform: translateY(-1px)}
+.notification-dialog .btn-secondary {background:var(--surface-2);color:var(--text);border:1px solid rgba(255,255,255,.15)}
+.notification-dialog .btn-secondary:hover {background:var(--surface);transform: translateY(-1px);border-color:var(--accent)}
 .notification-dialog .btn-primary {background: linear-gradient(135deg, var(--accent), var(--accent-2));color:#fff;border:1px solid var(--accent);box-shadow:0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent)}
 .notification-dialog .btn-primary:hover {background: linear-gradient(135deg, var(--accent-2), var(--accent));transform: translateY(-2px);box-shadow:0 6px 20px color-mix(in srgb, var(--accent) 50%, transparent),0 0 30px color-mix(in srgb, var(--accent) 30%, transparent)}
 #manual-skill-notification-modal.modal {z-index:1070}

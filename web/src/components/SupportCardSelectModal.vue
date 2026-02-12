@@ -82,6 +82,7 @@
           <div v-if="activeType === 'custom'" class="mt-3">
             <input type="text" class="form-control" placeholder="Enter card name here example 'Planned Perfection' or 'Fire at My Heels'" v-model="customCardName">
           </div>
+          <p class="chinese-disclaimer">Yes I know some of the cards are in chinese and no im not gonna fix it. Just type their names in custom tab</p>
           </div>
         </div>
         <div class="modal-footer d-none"></div>
@@ -183,7 +184,7 @@ export default {
         { name: 'intelligence', img: new URL('../assets/img/support_cards/types/intelligence.png', import.meta.url).href },
         { name: 'custom', text: 'Custom' }
       ],
-      activeType: 'speed', // 默认速度
+      activeType: 'custom',
     }
   },
   computed: {
@@ -572,21 +573,21 @@ export default {
 /* remove data-text pseudo label to avoid duplicate text */
 /* Custom tab text appearance */
 .type-btn-text {
-  color: hotpink;
+  color: var(--accent);
   font-size: 14px;
   line-height: 32px;
   padding: 0 10px;
-  border: 2px solid hotpink;
+  border: 2px solid var(--accent);
   border-radius: 8px;
 }
 /* When inactive, keep transparent background with pink border and pink text */
 .type-btn.custom-btn:not(.active) .type-btn-text {
   background: transparent;
-  color: hotpink;
+  color: var(--accent);
 }
 /* When active, solid pink with black text */
 .type-btn.custom-btn.active .type-btn-text {
-  background: hotpink;
+  background: var(--accent);
   color: #000;
 }
 /* Remove default active background/border for the custom container to avoid double borders */
@@ -602,10 +603,18 @@ export default {
 .type-btn.active {
   border: 2px solid var(--accent);
   border-radius: 8px;
-  background: rgba(255,64,129,.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 /* Keep custom inactive button container without default border so only text pill shows border */
 .type-btn.custom-btn:not(.active) {
   border: none;
+}
+.chinese-disclaimer {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-style: italic;
+  text-align: center;
+  opacity: 0.85;
 }
 </style>

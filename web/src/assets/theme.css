@@ -95,7 +95,7 @@ select.form-control{-webkit-appearance:none;-moz-appearance:none;appearance:none
 select.form-control option{background:var(--surface);color:#fff;padding:8px}
 .form-control::placeholder{color:var(--muted-2);opacity:.7}
 .form-control:focus{background:linear-gradient(135deg,rgba(255,255,255,.05),transparent),var(--surface-2);color:#fff;border-color:var(--accent)!important;box-shadow:0 0 0 3px rgba(255,45,163,.15),0 0 20px rgba(255,45,163,.1)}
-.form-control:disabled{background:rgba(0,0,0,.15);color:#999;cursor:not-allowed}
+.form-control:disabled{background:rgba(0,0,0,.15);color:var(--muted-2);cursor:not-allowed}
 .input-group-text{background:#221a26;border:1px solid var(--accent);color:#fff}
 .input-group .btn{height:38px;background:linear-gradient(135deg,var(--accent),var(--accent-2))!important;border-color:var(--accent)!important;color:#fff!important;border-radius:var(--radius-sm)!important;background-image:none!important;box-shadow:0 2px 8px color-mix(in srgb, var(--accent) 30%, transparent)}
 .input-group .btn.btn-sm{height:var(--btn-sm-h)}

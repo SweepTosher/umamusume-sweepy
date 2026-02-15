@@ -16,8 +16,8 @@ from module.umamusume.constants.game_constants import (
     is_summer_camp_period, JUNIOR_YEAR_END, CLASSIC_YEAR_END, get_date_period_index
 )
 from module.umamusume.constants.scoring_constants import (
-    DEFAULT_BASE_SCORES, DEFAULT_SCORE_VALUE, DEFAULT_SPIRIT_EXPLOSION,
-    DEFAULT_SPECIAL_WEIGHTS, DEFAULT_REST_THRESHOLD,
+    DEFAULT_BASE_SCORES, DEFAULT_SCORE_VALUE,
+    DEFAULT_REST_THRESHOLD,
     DEFAULT_STAT_VALUE_MULTIPLIER, DEFAULT_NPC_SCORE_VALUE
 )
 from module.umamusume.constants.timing_constants import (
@@ -311,22 +311,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             base = list(arr[:4])
             if len(base) < 4:
                 base += [0.09] * (4 - len(base))
-            special_defaults = DEFAULT_SPECIAL_WEIGHTS
-            try:
-                special = arr[4]
-            except Exception:
-                special = special_defaults[idx if 0 <= idx < len(special_defaults) else 0]
-            return base + [special]
+            return base
         period_idx = get_date_period_index(date)
-        w_lv1, w_lv2, w_energy_change, w_hint, w_special = resolve_weights(sv, period_idx)
-        try:
-            se_config = getattr(ctx.cultivate_detail, 'spirit_explosion', DEFAULT_SPIRIT_EXPLOSION)
-            if isinstance(se_config, list) and len(se_config) > 0 and isinstance(se_config[0], list):
-                se_weights = se_config[period_idx]
-            else:
-                se_weights = se_config
-        except Exception:
-            se_weights = DEFAULT_SPIRIT_EXPLOSION
+        w_lv1, w_lv2, w_energy_change, w_hint = resolve_weights(sv, period_idx)
 
         type_map = [
             SupportCardType.SUPPORT_CARD_TYPE_SPEED,
@@ -338,8 +325,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         names = ["Speed", "Stamina", "Power", "Guts", "Wit"]
         stat_keys = ["speed", "stamina", "power", "guts", "wits", "sp"]
         computed_scores = [0.0, 0.0, 0.0, 0.0, 0.0]
-        special_counts = [0, 0, 0, 0, 0]
-        spirit_counts = [0, 0, 0, 0, 0]
         stat_contributions = [[0.0] * 6 for _ in range(5)]
 
         pre_highest_stat_idx = None
@@ -389,14 +374,6 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             for sc in (getattr(til, "support_card_info_list", []) or []):
                 favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
                 ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
-                try:
-                    stc = int(getattr(sc, 'special_training_count', 1 if getattr(sc, 'can_incr_special_training', False) else 0))
-                except Exception:
-                    stc = 1 if getattr(sc, 'can_incr_special_training', False) else 0
-                if stc > 0:
-                    special_counts[idx] += stc
-                if bool(getattr(sc, 'spirit_explosion', False)):
-                    spirit_counts[idx] += 1
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
                     npc += 1
                     npc_scores = getattr(ctx.cultivate_detail, 'npc_score_value', DEFAULT_NPC_SCORE_VALUE)
@@ -467,34 +444,18 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             if base_energy is not None and base_energy >= 80 and energy_change_val < 0:
                 energy_change_contrib *= 0.9
             score += energy_change_contrib
-            stc_lane = special_counts[idx]
-            special_bonus = 0.0
-            if stc_lane > 0:
-                special_bonus = float(w_special) * stc_lane
-                score += special_bonus
-            try:
-                se_w = float(se_weights[idx]) if isinstance(se_weights, (list, tuple)) and len(se_weights) == 5 else 0.0
-            except Exception:
-                se_w = 0.0
-
-            if current_energy is not None and se_w != 0.0 and idx != 4:
-                if current_energy >= 90:
-                    se_w *= 1.1
-                elif 40 <= current_energy <= 50:
-                    se_w *= 0.9
-
-            se_lane = spirit_counts[idx]
-            spirit_bonus = 0.0
-            if se_lane > 0 and se_w != 0.0:
-                spirit_bonus = se_w * se_lane
-                score += spirit_bonus
-
+            scenario_additive = 0.0
+            scenario_multiplier = 1.0
+            scenario_formula_parts = []
+            scenario_mult_parts = []
             try:
                 scenario = ctx.cultivate_detail.scenario
                 if scenario is not None:
-                    score = scenario.adjust_training_score(ctx, idx, score, spirit_counts, current_energy)
+                    scenario_additive, scenario_multiplier, scenario_formula_parts, scenario_mult_parts = scenario.compute_scenario_bonuses(
+                        ctx, idx, getattr(til, "support_card_info_list", []), date, period_idx, current_energy)
             except Exception:
                 pass
+            score += scenario_additive
 
             pal_mult = 1.0
             if pal_count > 0:
@@ -522,6 +483,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 elif 85 > current_energy:
                     energy_mult = 1.10
                 score *= energy_mult
+
+            if scenario_multiplier != 1.0:
+                score *= scenario_multiplier
 
             target_mult = 1.0
             try:
@@ -578,10 +542,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 formula_parts.append(f"npc({npc}):+{npc_total_contrib:.3f}")
             if hint_bonus > 0:
                 formula_parts.append(f"hint:+{hint_bonus:.3f}")
-            if special_bonus > 0:
-                formula_parts.append(f"special({stc_lane}):+{special_bonus:.3f}")
-            if spirit_bonus > 0:
-                formula_parts.append(f"spirit({se_lane}):+{spirit_bonus:.3f}")
+            formula_parts.extend(scenario_formula_parts)
             
             mult_parts = []
             if pal_mult != 1.0:
@@ -590,6 +551,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 mult_parts.append(f"fail:x{fail_mult:.2f}")
             if energy_mult != 1.0:
                 mult_parts.append(f"energy:x{energy_mult:.2f}")
+            mult_parts.extend(scenario_mult_parts)
             if target_mult != 1.0:
                 mult_parts.append(f"target:x{target_mult:.2f}")
             if weight_mult != 1.0:

@@ -179,6 +179,7 @@ class CultivateContextDetail:
     pal_thresholds: list
     pal_friendship_score: list[float]
     pal_card_multiplier: float
+    wit_special_multiplier: list
 
     def __init__(self):
         self.expect_attribute = None

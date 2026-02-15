@@ -644,6 +644,23 @@
               </div>
             </div>
 
+                <div v-if="selectedScenario === 2">
+                <hr style="border-color: var(--accent); opacity: 0.5; margin: 12px 0;">
+                <div class="form-group" style="margin-top: 16px;">
+                  <div style="color: var(--accent);">Wit Special Training Multiplier</div>
+                  <small style="color: var(--text-muted);">multiplier applied to special trainings in wit</small>
+                </div>
+                <div class="row mb-2">
+                  <div class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>Junior</small></div>
+                    <input type="number" step="0.01" v-model.number="witSpecialJunior" class="form-control">
+                  </div>
+                  <div class="col-md-2 col-6">
+                    <div class="form-group mb-1"><small>Classic</small></div>
+                    <input type="number" step="0.01" v-model.number="witSpecialClassic" class="form-control">
+                  </div>
+                </div>
+                </div>
                 <hr style="border-color: var(--accent); opacity: 0.5; margin: 12px 0;">
                 <div class="form-group" style="margin-top: 16px;">
                   <div style="color: var(--accent);">NPC Score Value</div>
@@ -855,8 +872,8 @@
                 <div v-for="(rule, idx) in raceTacticConditions" :key="idx" class="d-flex align-items-center mb-2">
                   <select v-model="rule.op" class="form-control form-control-sm mr-2" style="width: auto;">
                     <option value="=">Turn =</option>
-                    <option value=">">Turn &gt;</option>
-                    <option value="<">Turn &lt;</option>
+                    <option value="&gt;">Turn &gt;</option>
+                    <option value="&lt;">Turn &lt;</option>
                     <option value="range">Range (exclusive)</option>
                   </select>
                   <input type="number" v-model.number="rule.val" class="form-control form-control-sm mr-2" style="width: 80px;" placeholder="Turn">
@@ -2148,6 +2165,8 @@ export default {
       specialSenior: 0.095,
       specialSeniorAfterSummer: 0.095,
       specialFinale: 0,
+      witSpecialJunior: 1.57,
+      witSpecialClassic: 1.37,
       // Stat Value Multiplier [speed, stamina, power, guts, wits, sp]
       statValueMultiplier: [0.01, 0.01, 0.01, 0.01, 0.01, 0.005],
       raceTacticConditions: [
@@ -3152,6 +3171,7 @@ export default {
             (this.selectedScenario === 2 ? [...this.scoreValueFinale.slice(0,4), this.specialFinale] : this.scoreValueFinale.slice(0,4))
           ],
           "stat_value_multiplier": [...this.statValueMultiplier],
+          "wit_special_multiplier": [this.witSpecialJunior, this.witSpecialClassic],
           // Motivation thresholds for trip decisions
           "motivation_threshold_year1": this.motivationThresholdYear1,
           "motivation_threshold_year2": this.motivationThresholdYear2,
@@ -3417,6 +3437,14 @@ export default {
         this.specialFinale = this.presetsUse.specialTraining[4] !== undefined ? this.presetsUse.specialTraining[4] : 0
       }
 
+      if ('witSpecialMultiplier' in this.presetsUse && Array.isArray(this.presetsUse.witSpecialMultiplier)) {
+        this.witSpecialJunior = this.presetsUse.witSpecialMultiplier[0] !== undefined ? this.presetsUse.witSpecialMultiplier[0] : 1.57
+        this.witSpecialClassic = this.presetsUse.witSpecialMultiplier[1] !== undefined ? this.presetsUse.witSpecialMultiplier[1] : 1.37
+      } else {
+        this.witSpecialJunior = 1.57
+        this.witSpecialClassic = 1.37
+      }
+
       if ('selectedSkills' in this.presetsUse && 'blacklistedSkills' in this.presetsUse && 'skillAssignments' in this.presetsUse && 'activePriorities' in this.presetsUse) {
         // New format - load directly
         this.selectedSkills = [...this.presetsUse.selectedSkills];
@@ -3649,6 +3677,10 @@ export default {
         }
       }
       if (data.stat_value_multiplier) this.statValueMultiplier = [...data.stat_value_multiplier];
+      if (data.wit_special_multiplier && Array.isArray(data.wit_special_multiplier) && data.wit_special_multiplier.length >= 2) {
+        this.witSpecialJunior = data.wit_special_multiplier[0];
+        this.witSpecialClassic = data.wit_special_multiplier[1];
+      }
       if (data.learn_skill_list && data.learn_skill_list.length > 0) {
         this.selectedSkills = [];
         this.skillAssignments = {};
@@ -3814,6 +3846,7 @@ export default {
           this.specialSeniorAfterSummer,
           this.specialFinale
         ],
+        witSpecialMultiplier: [this.witSpecialJunior, this.witSpecialClassic],
         scoreValue: [
           this.scoreValueJunior,
           this.scoreValueClassic,
@@ -3967,6 +4000,7 @@ export default {
         extraWeight: [this.extraWeight1.map(v => Math.max(-1, Math.min(1, v))), this.extraWeight2.map(v => Math.max(-1, Math.min(1, v))), this.extraWeight3.map(v => Math.max(-1, Math.min(1, v))), this.extraWeightSummer.map(v => Math.max(-1, Math.min(1, v)))],
         spirit_explosion: [this.spiritExplosionJunior.map(v => Math.max(-1, Math.min(1, v))), this.spiritExplosionClassic.map(v => Math.max(-1, Math.min(1, v))), this.spiritExplosionSenior.map(v => Math.max(-1, Math.min(1, v))), this.spiritExplosionSeniorAfterSummer.map(v => Math.max(-1, Math.min(1, v))), this.spiritExplosionFinale.map(v => Math.max(-1, Math.min(1, v)))],
         specialTraining: [this.specialJunior, this.specialClassic, this.specialSenior, this.specialSeniorAfterSummer, this.specialFinale],
+        witSpecialMultiplier: [this.witSpecialJunior, this.witSpecialClassic],
         scoreValue: [this.scoreValueJunior, this.scoreValueClassic, this.scoreValueSenior, this.scoreValueSeniorAfterSummer, this.scoreValueFinale],
         baseScore: [...this.baseScore],
         statValueMultiplier: [...this.statValueMultiplier],

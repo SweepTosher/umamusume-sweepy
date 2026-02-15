@@ -52,5 +52,5 @@ class MANTScenario(URAScenario):
     def after_hook(self, ctx, img):
         return mant_after_hook(ctx, img)
 
-    def adjust_training_score(self, ctx, idx, score, spirit_counts, current_energy):
-        return mant_adjust_training_score(ctx, idx, score, spirit_counts, current_energy)
+    def compute_scenario_bonuses(self, ctx, idx, support_card_info_list, date, period_idx, current_energy):
+        return (0.0, 1.0, [], [])

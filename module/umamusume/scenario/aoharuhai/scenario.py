@@ -16,7 +16,7 @@ from module.umamusume.asset.template import (
 from bot.recog.training_stat_scanner import parse_training_result_template
 from .handlers import get_aoharuhai_ui_handlers
 from .hooks import aoharuhai_after_hook
-from .scoring import adjust_spirit_explosion_weight
+from .scoring import compute_aoharu_bonuses
 
 import bot.base.log as logger
 log = logger.get_logger(__name__)
@@ -78,8 +78,8 @@ class AoharuHaiScenario(URAScenario):
     def after_hook(self, ctx, img):
         return aoharuhai_after_hook(ctx, img)
 
-    def adjust_training_score(self, ctx, idx, score, spirit_counts, current_energy):
-        return adjust_spirit_explosion_weight(ctx, idx, score, spirit_counts, current_energy)
+    def compute_scenario_bonuses(self, ctx, idx, support_card_info_list, date, period_idx, current_energy):
+        return compute_aoharu_bonuses(ctx, idx, support_card_info_list, date, period_idx, current_energy)
 
     def parse_training_support_card(self, img) -> list[SupportCardInfo]:
         if img is None or getattr(img, 'size', 0) == 0:

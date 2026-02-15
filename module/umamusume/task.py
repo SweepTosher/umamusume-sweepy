@@ -41,6 +41,7 @@ class TaskDetail:
     scenario_config: ScenarioConfig
     do_tt_next: bool
     stat_value_multiplier: list
+    wit_special_multiplier: list
 
 
 class EndTaskReason(Enum):
@@ -140,6 +141,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
         td.event_weights = None
 
     td.do_tt_next = attachment_data.get('do_tt_next', False)
+    td.wit_special_multiplier = attachment_data.get('wit_special_multiplier', [1.57, 1.37])
     
     ut.detail = td
     return ut

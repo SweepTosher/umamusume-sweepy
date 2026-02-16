@@ -42,6 +42,7 @@ class TaskDetail:
     do_tt_next: bool
     stat_value_multiplier: list
     wit_special_multiplier: list
+    skip_double_circle_unless_high_hint: bool
 
 
 class EndTaskReason(Enum):
@@ -142,6 +143,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
 
     td.do_tt_next = attachment_data.get('do_tt_next', False)
     td.wit_special_multiplier = attachment_data.get('wit_special_multiplier', [1.57, 1.37])
+    td.skip_double_circle_unless_high_hint = attachment_data.get('skip_double_circle_unless_high_hint', False)
     
     ut.detail = td
     return ut

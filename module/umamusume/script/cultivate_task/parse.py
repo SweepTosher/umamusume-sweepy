@@ -202,6 +202,84 @@ def ocr_en(sub_img):
     return ocr_line(sub_img, lang="en")
 
 
+def detect_circle_type(skill_name_gray):
+    h, w = skill_name_gray.shape
+    if h < 10 or w < 30:
+        return 0
+
+    _, binary = cv2.threshold(skill_name_gray, 180, 255, cv2.THRESH_BINARY_INV)
+
+    contours, _ = cv2.findContours(binary, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    if not contours:
+        return 0
+
+    candidates = []
+    for cnt in contours:
+        x, y, cw, ch = cv2.boundingRect(cnt)
+        if cw < 12 or ch < 12 or cw > 35 or ch > 35:
+            continue
+        aspect = float(cw) / ch if ch > 0 else 0
+        if aspect < 0.65 or aspect > 1.55:
+            continue
+        perimeter = cv2.arcLength(cnt, True)
+        area = cv2.contourArea(cnt)
+        if perimeter < 1:
+            continue
+        circularity = 4 * 3.14159 * area / (perimeter * perimeter)
+        if circularity < 0.75:
+            continue
+        left_gap = 0
+        for lx in range(x - 1, max(0, x - 15), -1):
+            col = skill_name_gray[:, lx]
+            if not numpy.any(col < 180):
+                left_gap += 1
+            else:
+                break
+        if left_gap < 4:
+            continue
+        candidates.append((x, y, cw, ch, circularity, area, cnt))
+
+    if not candidates:
+        return 0
+
+    candidates.sort(key=lambda c: c[0] + c[2], reverse=True)
+    best = candidates[0]
+    bx, by, bw, bh = best[0], best[1], best[2], best[3]
+
+    cx = bx + bw // 2
+    cy = by + bh // 2
+    r = max(2, min(bw, bh) // 6)
+    y1 = max(0, cy - r)
+    y2 = min(h, cy + r + 1)
+    x1 = max(0, cx - r)
+    x2 = min(w, cx + r + 1)
+    center_region = skill_name_gray[y1:y2, x1:x2]
+    center_mean = float(numpy.mean(center_region))
+
+    ring_r = max(3, min(bw, bh) // 4)
+    ring_dark = 0
+    ring_total = 0
+    for dy in range(-ring_r, ring_r + 1):
+        for dx in range(-ring_r, ring_r + 1):
+            dist = (dx * dx + dy * dy) ** 0.5
+            if dist < r or dist > ring_r:
+                continue
+            py = cy + dy
+            px = cx + dx
+            if 0 <= py < h and 0 <= px < w:
+                ring_total += 1
+                if skill_name_gray[py, px] < 180:
+                    ring_dark += 1
+
+    ring_ratio = ring_dark / ring_total if ring_total > 0 else 0
+
+    if ring_ratio > 0.3:
+        return 2  # double circle
+    elif center_mean > 200:
+        return 1  # single circle
+    else:
+        return 0  # none
+
 def try_alt_cost_regions(skill_info_img):
     regions = [
         skill_info_img[65: 95, 520: 595],
@@ -957,7 +1035,13 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                                     hint_level = best_lvl
                     except Exception as e:
                         log.debug(f"hint level error: {e}")
-                    log.info(f"detected text='{detected_text}' matched skill='{matched_skill}'")
+                    circle_type = 0
+                    try:
+                        circle_type = detect_circle_type(skill_name_img)
+                    except Exception:
+                        pass
+                    circle_label = {0: "", 1: " ○", 2: " ◎"}[circle_type]
+                    log.info(f"detected text='{detected_text}' matched skill='{matched_skill}' Hint: lv {hint_level}{circle_label}")
                     target_match = None
                     for target in skill:
                         if (normalize_text_for_match(name_for_match) == normalize_text_for_match(target)
@@ -965,6 +1049,11 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                             target_match = target
                             break
                     
+                    if getattr(ctx.cultivate_detail, 'skip_double_circle_unless_high_hint', False):
+                        if circle_type == 2 and hint_level < 4:
+                            img[match_result.matched_area[0][1]:match_result.matched_area[1][1],
+                            match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
+                            continue
                     if target_match is not None or learn_any_skill:
                         tmp_img = ctx.ctrl.get_screen()
                         pt_text = re.sub("\\D", "", ocr_en(tmp_img[400: 440, 490: 665]))
@@ -1085,7 +1174,13 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                                 hint_level = lvl
                 except Exception as e:
                     log.debug(f"hint level error: {e}")
-                log.info(f"detected text='{detected_text}' matched skill='{matched_skill}' Hint: lv {hint_level}")
+                circle_type = 0
+                try:
+                    circle_type = detect_circle_type(skill_name_img)
+                except Exception:
+                    pass
+                circle_label = {0: "", 1: " ○", 2: " ◎"}[circle_type]
+                log.info(f"detected text='{detected_text}' matched skill='{matched_skill}' Hint: lv {hint_level}{circle_label}")
                 normalized_name = normalize_text_for_match(name_for_match)
                 in_blacklist = any(normalized_name == normalize_text_for_match(b) for b in skill_blacklist)
                 
@@ -1114,6 +1209,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                                 "subsequent_skill": "",
                                 "available": available,
                                 "hint_level": int(hint_level),
+                                "is_double_circle": circle_type == 2,
                                 "y_pos": int(pos_center[1])})
             img[match_result.matched_area[0][1]:match_result.matched_area[1][1],
                 match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0

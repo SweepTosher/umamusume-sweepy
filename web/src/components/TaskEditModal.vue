@@ -1393,7 +1393,16 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div class="row align-items-center mt-2">
+                  <div class="col-md-4">
+                    <label class="d-block mb-1">Skip double circles unless high hint</label>
+                    <div class="token-toggle" role="group" aria-label="Skip double circles unless high hint">
+                      <button type="button" class="token" :class="{ active: skipDoubleCircleUnlessHighHint }"
+                        @click="skipDoubleCircleUnlessHighHint = true">On</button>
+                      <button type="button" class="token" :class="{ active: !skipDoubleCircleUnlessHighHint }"
+                        @click="skipDoubleCircleUnlessHighHint = false">Off</button>
+                    </div>
+                  </div>
                   <div class="col-md-6">
                     <label class="d-block mb-1">Override insufficient fans forced races</label>
                     <div class="token-toggle" role="group" aria-label="Override insufficient fans forced races">
@@ -1913,6 +1922,7 @@ export default {
       ],
       activeSection: 'category-general',
       manualPurchase: false,
+      skipDoubleCircleUnlessHighHint: false,
       overrideInsufficientFansForcedRaces: false,
       showAdvanceOption: false,
       showRaceList: false,
@@ -3145,6 +3155,7 @@ export default {
           "tactic_actions": this.raceTacticConditions,
           "clock_use_limit": this.clockUseLimit,
           "manual_purchase_at_end": this.manualPurchase,
+          "skip_double_circle_unless_high_hint": this.skipDoubleCircleUnlessHighHint,
           "override_insufficient_fans_forced_races": this.overrideInsufficientFansForcedRaces,
           "learn_skill_threshold": this.learnSkillThreshold,
           "allow_recover_tp": this.recoverTP,
@@ -3284,6 +3295,7 @@ export default {
       this.learnSkillOnlyUserProvided = !!this.presetsUse.learn_skill_only_user_provided
       this.recoverTP = this.presetsUse.allow_recover_tp || 0
       this.manualPurchase = !!this.presetsUse.manual_purchase_at_end
+      this.skipDoubleCircleUnlessHighHint = !!this.presetsUse.skip_double_circle_unless_high_hint
         this.learnSkillThreshold = this.presetsUse.learn_skill_threshold
         // Convert legacy race tactics to new condition system if actions not present
         if (this.presetsUse.tactic_actions && this.presetsUse.tactic_actions.length > 0) {
@@ -3623,6 +3635,7 @@ export default {
       this.learnSkillThreshold = data.learn_skill_threshold || this.learnSkillThreshold;
       this.recoverTP = data.allow_recover_tp || 0;
       this.manualPurchase = data.manual_purchase_at_end || false;
+      this.skipDoubleCircleUnlessHighHint = data.skip_double_circle_unless_high_hint || false;
       this.learnSkillOnlyUserProvided = data.learn_skill_only_user_provided || false;
       if (data.tactic_list && data.tactic_list.length >= 3) {
         this.selectedRaceTactic1 = data.tactic_list[0];
@@ -3822,6 +3835,7 @@ export default {
         learn_skill_only_user_provided: this.learnSkillOnlyUserProvided,
         allow_recover_tp: this.recoverTP,
         manual_purchase_at_end: this.manualPurchase,
+        skip_double_circle_unless_high_hint: this.skipDoubleCircleUnlessHighHint,
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,
@@ -3993,6 +4007,7 @@ export default {
         learn_skill_only_user_provided: this.learnSkillOnlyUserProvided,
         allow_recover_tp: this.recoverTP,
         manual_purchase_at_end: this.manualPurchase,
+        skip_double_circle_unless_high_hint: this.skipDoubleCircleUnlessHighHint,
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,

@@ -147,19 +147,25 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 slot_config = ctx.cultivate_detail.scenario.get_support_card_slot_config()
                 if slot_config is not None:
                     detections = character_detector.detect_facility(img, slot_config)
-                    result.detected_characters = [(name, score) for _, name, score in detections if name is not None]
-                else:
-                    result.detected_characters = []
+                    from module.umamusume.asset.template import REF_TRAINING_HINT
+                    hint_tpl = REF_TRAINING_HINT.template_image
+                    hint_slot = -1
+                    if hint_tpl is not None:
+                        strip_y1 = slot_config["base_y"]
+                        strip_y2 = strip_y1 + slot_config["num_slots"] * slot_config["inc"]
+                        strip_gray = cv2.cvtColor(img[strip_y1:strip_y2, 655:710], cv2.COLOR_BGR2GRAY)
+                        tm_result = cv2.matchTemplate(strip_gray, hint_tpl, cv2.TM_CCOEFF_NORMED)
+                        _, max_val, _, max_loc = cv2.minMaxLoc(tm_result)
+                        if max_val >= 0.75:
+                            hint_slot = (max_loc[1] + hint_tpl.shape[0]) // slot_config["inc"]
+                    for slot_idx, name, score in detections:
+                        if name is not None:
+                            slot_has_hint = (slot_idx == hint_slot)
+                            result.detected_characters.append((name, score, slot_has_hint))
+                            if slot_has_hint:
+                                result.has_hint = True
             except Exception:
                 result.detected_characters = []
-            try:
-                from module.umamusume.asset.template import REF_TRAINING_HINT
-                import cv2 as cv2_local
-                roi = img[181:769, 666:690]
-                roi_gray = cv2_local.cvtColor(roi, cv2_local.COLOR_BGR2GRAY)
-                result.has_hint = image_match(roi_gray, REF_TRAINING_HINT).find_match
-            except Exception:
-                pass
             return result
 
         def compare_detection_results(result1, result2):
@@ -595,8 +601,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             log.info(f"{names[idx]}: {score:.3f} = [{formula_str}]{stat_str}{nrg_str}")
             char_list = getattr(til, 'detected_characters', [])
             if char_list:
-                char_str = ", ".join(f"{n}" for n, s in char_list)
-                log.info(f"{names[idx]} supports: {char_str}")
+                hint_chars = [n for n, s, h in char_list if h]
+                if hint_chars:
+                    log.info(f"{names[idx]} hints: {', '.join(hint_chars)}")
 
         ctx.cultivate_detail.turn_info.parse_train_info_finish = True
         

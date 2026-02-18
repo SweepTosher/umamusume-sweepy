@@ -5582,13 +5582,17 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 12px 16px;
   border: 1px solid var(--accent);
-  border-radius: 10px;
+  border-radius: 8px;
   background: transparent;
   cursor: pointer;
   color: var(--text);
+  box-shadow: none;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
 }
+
 .hint-boost-header:hover {
   background: rgba(255,45,163,.08);
   border-color: var(--accent);
@@ -5602,10 +5606,20 @@ export default {
   display: flex;
   align-items: center;
   gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+.hint-boost-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 .hint-boost-toggle .toggle-text {
   color: var(--muted);
 }
+
 .hint-boost-badge {
   font-size: 0.8em;
   padding: 4px 12px;

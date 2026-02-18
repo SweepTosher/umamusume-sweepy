@@ -190,6 +190,9 @@ Install or reinstall Visual C++ Redistributable:
 
 ## Changelog
 ### 2025-02-18
+- Option to boost hint score contribution from certain characters     
+
+### 2025-02-17
 - Option to avoid double cicle skills     
 - Options + ability to focus on wit arrows early game for aoharu (wit arrows raises facility levels faster)     
 

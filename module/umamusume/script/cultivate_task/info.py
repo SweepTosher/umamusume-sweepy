@@ -634,10 +634,9 @@ def script_info(ctx: UmamusumeContext):
             except Exception:
                 ctx.ctrl.click(214, 832, "Auto Select")
         if title_text == TITLE[46]:
-            ctx.ctrl.execute_adb_shell("shell am force-stop com.cygames.umamusume", True)
-            time.sleep(1.0)
-            ctx.ctrl.start_app("com.cygames.umamusume", "jp.co.cygames.umamusume.activity.UmamusumeActivity")
-            time.sleep(2.0)
+            ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.SESSION_ERROR)
+            return
+
         if title_text == TITLE[48]:
             return
         time.sleep(1)

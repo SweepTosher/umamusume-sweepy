@@ -49,6 +49,8 @@ class TaskDetail:
 
 class EndTaskReason(Enum):
     TP_NOT_ENOUGH = "训练值不足"
+    SESSION_ERROR = "Session Error"
+
 
 
 class UmamusumeTask(Task):
@@ -153,6 +155,3 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     
     ut.detail = td
     return ut
-
-
-

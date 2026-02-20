@@ -334,16 +334,13 @@ class Executor:
         except Exception:
             task.end_task(TaskStatus.TASK_STATUS_FAILED, EndTaskReason.SYSTEM_ERROR)
             traceback.print_exc()
-
-        if task.task_status == TaskStatus.TASK_STATUS_RUNNING:
         if not self.active:
-            if task.task_status != TaskStatus.TASK_STATUS_INTERRUPT:
-                task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
+            task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
         elif task.task_status == TaskStatus.TASK_STATUS_INTERRUPT:
+            task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
             self.active = False
         else:
             self.active = False
-
         task.end_task_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
         push_system_notification("任务结束", str(getattr(getattr(task, 'end_task_reason', None), 'value', '')), 10)
         controller.destroy()
@@ -360,9 +357,8 @@ class Executor:
             save_scheduler_state()
         except Exception:
             pass
-
         try:
-            if task.end_task_reason not in (EndTaskReason.MANUAL_ABORTED,):
+            if task.end_task_reason != EndTaskReason.MANUAL_ABORTED:
                 soft_process_restart()
         except Exception:
             pass

@@ -634,9 +634,8 @@ def script_info(ctx: UmamusumeContext):
             except Exception:
                 ctx.ctrl.click(214, 832, "Auto Select")
         if title_text == TITLE[46]:
-            ctx.task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
+            ctx.task.end_task(TaskStatus.TASK_STATUS_FAILED, UEndTaskReason.SESSION_ERROR)
             return
-
 
         if title_text == TITLE[48]:
             return

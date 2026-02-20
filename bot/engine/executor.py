@@ -334,7 +334,8 @@ class Executor:
         except Exception:
             task.end_task(TaskStatus.TASK_STATUS_FAILED, EndTaskReason.SYSTEM_ERROR)
             traceback.print_exc()
-        
+
+        if task.task_status == TaskStatus.TASK_STATUS_RUNNING:
         if not self.active:
             if task.task_status != TaskStatus.TASK_STATUS_INTERRUPT:
                 task.end_task(TaskStatus.TASK_STATUS_INTERRUPT, EndTaskReason.MANUAL_ABORTED)
@@ -359,6 +360,7 @@ class Executor:
             save_scheduler_state()
         except Exception:
             pass
+
         try:
             if task.end_task_reason not in (EndTaskReason.MANUAL_ABORTED,):
                 soft_process_restart()

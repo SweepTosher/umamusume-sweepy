@@ -97,10 +97,11 @@ class Scheduler:
                                 break 
                         elif task.task_execute_mode == TaskExecuteMode.TASK_EXECUTE_MODE_FULL_AUTO:
                             if not task_executor.active:
-                                if task.task_status in [TaskStatus.TASK_STATUS_SUCCESS, TaskStatus.TASK_STATUS_FAILED, TaskStatus.TASK_STATUS_INTERRUPT]:
+                                if task.task_status in [TaskStatus.TASK_STATUS_SUCCESS, TaskStatus.TASK_STATUS_FAILED]:
                                     task.task_status = TaskStatus.TASK_STATUS_PENDING
                                 if task.task_status == TaskStatus.TASK_STATUS_PENDING:
                                     self.start_executor_for(task, task_executor)
+
                         elif task.task_execute_mode == TaskExecuteMode.TASK_EXECUTE_MODE_CRON_JOB:
                             if task.task_status == TaskStatus.TASK_STATUS_SCHEDULED:
                                 if task.cron_job_config is not None:
@@ -147,7 +148,3 @@ class Scheduler:
 
 
 scheduler = Scheduler()
-
-
-
-

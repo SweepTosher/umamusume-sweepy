@@ -225,9 +225,8 @@ def save_scheduler_tasks():
                         continue
                 
                 if mode_enum == TEM.TASK_EXECUTE_MODE_FULL_AUTO:
-                    if status in (TS.TASK_STATUS_SUCCESS, TS.TASK_STATUS_FAILED, TS.TASK_STATUS_INTERRUPT):
+                    if status in (TS.TASK_STATUS_SUCCESS, TS.TASK_STATUS_FAILED):
                         continue
-
                 
                 ttype = getattr(getattr(t, 'task_type', None), 'value', None)
                 desc = getattr(t, 'task_desc', '')

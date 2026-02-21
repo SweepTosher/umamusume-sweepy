@@ -1,15 +1,90 @@
 import time
 import cv2
+import threading
+import re
 
 import bot.base.log as logger
 from bot.recog.ocr import ocr_line
 from bot.recog.image_matcher import image_match
 from module.umamusume.context import UmamusumeContext
-from module.umamusume.asset.template import Template, UMAMUSUME_REF_TEMPLATE_PATH
+from module.umamusume.asset.template import Template, UMAMUSUME_REF_TEMPLATE_PATH, REF_HINT_LEVELS_TEXT
 from module.umamusume.script.cultivate_task.event.manifest import get_event_choice
 from module.umamusume.script.cultivate_task.parse import parse_cultivate_event
 
 log = logger.get_logger(__name__)
+
+
+def parse_hint_skill(text):
+    if not text:
+        return None
+    m = re.search(r'for\s+(.+?)\.', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip()
+    idx = text.lower().find('for ')
+    if idx >= 0:
+        name = text[idx + 4:].strip().rstrip('.')
+        if name:
+            return name
+    return None
+
+
+def detect_hint_on_screen(img, event_name):
+    try:
+        tpl = REF_HINT_LEVELS_TEXT.template_image
+        if tpl is None:
+            return
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        h, w = gray.shape[:2]
+        roi = gray[935:min(h, 1132), 205:min(w, 339)]
+        if roi.shape[0] < tpl.shape[0] or roi.shape[1] < tpl.shape[1]:
+            return
+        res = cv2.matchTemplate(roi, tpl, cv2.TM_CCOEFF_NORMED)
+        _, max_val, _, max_loc = cv2.minMaxLoc(res)
+        if max_val >= 0.80:
+            match_y = 935 + max_loc[1]
+            oy1 = max(0, match_y - 5)
+            oy2 = min(img.shape[0], match_y + 30)
+            ocr_region = img[oy1:oy2, 60:min(img.shape[1], 660)]
+            text = ocr_line(ocr_region, lang='en') or ''
+            skill = parse_hint_skill(text)
+            if skill:
+                log.info("Hint: %s", skill)
+    except Exception:
+        pass
+
+
+def detect_hint_after_event(ctrl, event_name):
+    try:
+        time.sleep(1.5)
+        tpl = REF_HINT_LEVELS_TEXT.template_image
+        if tpl is None:
+            return
+        for _ in range(4):
+            img = ctrl.get_screen()
+            if img is None or getattr(img, 'size', 0) == 0:
+                time.sleep(0.4)
+                continue
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            h, w = gray.shape[:2]
+            roi = gray[935:min(h, 1132), 205:min(w, 339)]
+            if roi.shape[0] < tpl.shape[0] or roi.shape[1] < tpl.shape[1]:
+                time.sleep(0.4)
+                continue
+            res = cv2.matchTemplate(roi, tpl, cv2.TM_CCOEFF_NORMED)
+            _, max_val, _, max_loc = cv2.minMaxLoc(res)
+            if max_val >= 0.80:
+                match_y = 935 + max_loc[1]
+                oy1 = max(0, match_y - 5)
+                oy2 = min(img.shape[0], match_y + 30)
+                ocr_region = img[oy1:oy2, 60:min(img.shape[1], 660)]
+                text = ocr_line(ocr_region, lang='en') or ''
+                skill = parse_hint_skill(text)
+                if skill:
+                    log.info("Hint: %s", skill)
+                return
+            time.sleep(0.5)
+    except Exception:
+        pass
 
 
 def script_cultivate_event(ctx: UmamusumeContext):
@@ -100,6 +175,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
     except Exception:
         pass
     
+    threading.Thread(target=detect_hint_on_screen, args=(img, event_name), daemon=True).start()
     choice_index = force_choice_index if force_choice_index is not None else get_event_choice(ctx, event_name)
     if not isinstance(choice_index, int) or choice_index <= 0:
         return
@@ -117,6 +193,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
         except Exception:
             pass
         ctx.ctrl.click(int(target_pt[0]), int(target_pt[1]), f"Event option-{choice_index}")
+        threading.Thread(target=detect_hint_after_event, args=(ctx.ctrl, event_name), daemon=True).start()
         ctx.cultivate_detail.event_cooldown_until = time.time() + 2.5
         return
     try:
@@ -135,6 +212,7 @@ def script_cultivate_event(ctx: UmamusumeContext):
                 res = image_match(roi_gray, tpl)
                 if res.find_match:
                     ctx.ctrl.click(res.center_point[0] + x1, res.center_point[1] + y1, f"Event option-{choice_index}")
+                    threading.Thread(target=detect_hint_after_event, args=(ctx.ctrl, event_name), daemon=True).start()
                     clicked = True
                     ctx.cultivate_detail.event_cooldown_until = time.time() + 5
                     return

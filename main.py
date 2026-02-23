@@ -304,7 +304,7 @@ if __name__ == '__main__':
         acquire_instance_lock()
     except Exception:
         pass
-
+    restart_adb_server()
     selected_device = None
     if os.environ.get("UAT_AUTORESTART", "0") == "1":
         try:
@@ -378,4 +378,11 @@ if __name__ == '__main__':
     if os.environ.get("UAT_AUTORESTART", "0") != "1":
         threading.Thread(target=lambda: (time.sleep(1), __import__('webbrowser').open("http://127.0.0.1:8071")), daemon=True).start()
     
-    run("bot.server.handler:server", host="127.0.0.1", port=8071, log_level="error")
+    try:
+        run("bot.server.handler:server", host="127.0.0.1", port=8071, log_level="error")
+    finally:
+        if ":" in selected_device:
+            try:
+                _run_adb(["disconnect", selected_device], timeout=5)
+            except Exception:
+                pass

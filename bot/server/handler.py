@@ -243,6 +243,12 @@ def get_detected_skills():
     return list(detected_skills_log.values())
 
 
+@server.get("/api/detected-portraits")
+def get_detected_portraits():
+    from module.umamusume.context import detected_portraits_log
+    return list(detected_portraits_log.values())
+
+
 @server.get("/api/pal-defaults")
 def get_pal_defaults():
     from module.umamusume.user_data import read_pal_defaults

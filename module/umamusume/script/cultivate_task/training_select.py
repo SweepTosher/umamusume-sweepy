@@ -165,6 +165,15 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                             result.detected_characters.append((name, score, slot_has_hint))
                             if slot_has_hint:
                                 result.has_hint = True
+                            try:
+                                sc_list = result.support_card_info_list
+                                if slot_idx < len(sc_list):
+                                    favor = getattr(sc_list[slot_idx], "favor", None)
+                                    if favor is not None and favor.value != 0:
+                                        from module.umamusume.context import log_detected_portrait
+                                        log_detected_portrait(name, favor.value)
+                            except Exception:
+                                pass
             except Exception:
                 result.detected_characters = []
             return result

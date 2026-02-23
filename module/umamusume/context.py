@@ -17,6 +17,22 @@ import bot.base.log as logger
 log = logger.get_logger(__name__)
 
 detected_skills_log = {}
+detected_portraits_log = {}
+
+def log_detected_portrait(name, favor_level):
+    if not name or favor_level == 0:
+        return
+    existing = detected_portraits_log.get(name)
+    if existing:
+        existing["favor"] = favor_level
+    else:
+        detected_portraits_log[name] = {
+            "name": name,
+            "favor": favor_level,
+        }
+
+def clear_detected_portraits():
+    detected_portraits_log.clear()
 
 def log_detected_skill(name, source, hint_level=0, cost=0, gold=False):
     if not name:
@@ -140,6 +156,7 @@ def build_context(task: UmamusumeTask, ctrl) -> UmamusumeContext:
     ctx = UmamusumeContext(task, ctrl)
     if task.task_type == UmamusumeTaskType.UMAMUSUME_TASK_TYPE_CULTIVATE:
         clear_detected_skills()
+        clear_detected_portraits()
         detail = CultivateContextDetail()
         detail.scenario = create_scenario(task.detail.scenario)
         if detail.scenario is None:

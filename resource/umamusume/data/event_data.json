@@ -5825,78 +5825,6 @@
       }
     }
   },
-  "Queen's Heart": {
-    "choices": {
-      "1": "Choice 1",
-      "2": "Choice 2"
-    },
-    "stats": {
-      "1": {
-        "Friendship": 5.0,
-        "Guts": 0.0,
-        "HP": 0.0,
-        "Max Energy": 0.0,
-        "Mood": 1.0,
-        "Power": 0.0,
-        "Skill": 0.0,
-        "Skill Hint": 0.0,
-        "Skill Pts": 10.0,
-        "Speed": 0.0,
-        "Stamina": 0.0,
-        "Wisdom": 0.0
-      },
-      "2": {
-        "Friendship": 5.0,
-        "Guts": 0.0,
-        "HP": 0.0,
-        "Max Energy": 0.0,
-        "Mood": 0.0,
-        "Power": 10.0,
-        "Skill": 0.0,
-        "Skill Hint": 0.0,
-        "Skill Pts": 0.0,
-        "Speed": 0.0,
-        "Stamina": 10.0,
-        "Wisdom": 0.0
-      }
-    }
-  },
-  "Away in the Mountains": {
-    "choices": {
-      "1": "Choice 1",
-      "2": "Choice 2"
-    },
-    "stats": {
-      "1": {
-        "Friendship": 5.0,
-        "Guts": 0.0,
-        "HP": 0.0,
-        "Max Energy": 0.0,
-        "Mood": 0.0,
-        "Power": 0.0,
-        "Skill": 1.0,
-        "Skill Hint": 0.0,
-        "Skill Pts": 0.0,
-        "Speed": 0.0,
-        "Stamina": 0.0,
-        "Wisdom": 0.0
-      },
-      "2": {
-        "Friendship": 5.0,
-        "Guts": 15.0,
-        "HP": 0.0,
-        "Max Energy": 0.0,
-        "Mood": 0.0,
-        "Power": 0.0,
-        "Skill": 0.0,
-        "Skill Hint": 0.0,
-        "Skill Pts": 0.0,
-        "Speed": 0.0,
-        "Stamina": 0.0,
-        "Wisdom": 0.0
-      }
-    }
-  },
   "I'm Not a Cyborg": {
     "choices": {
       "1": "Choice 1",
@@ -7097,6 +7025,78 @@
         "Speed": 0.0,
         "Stamina": 0.0,
         "Wisdom": 10.0
+      }
+    }
+  },
+  "Queen's Heart": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 10.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 10.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 10.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Away in the Mountains": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 15.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
       }
     }
   },
@@ -10961,6 +10961,201 @@
         "Speed": 0.0,
         "Stamina": 35.0,
         "Wisdom": 0.0
+      }
+    }
+  },
+  "Look at me": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 20.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 5.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 10.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 5.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Present “CHOI”": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2",
+      "3": "Choice 3"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 10.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 15.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 10.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 5.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 15.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "3": {
+        "Friendship": 20.0,
+        "Guts": 0.0,
+        "HP": 15.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      }
+    }
+  },
+  "Young & Unstoppable": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 20.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 10.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 1.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 5.0
+      }
+    }
+  },
+  "Only Thing That Matters": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 25.0,
+        "Max Energy": 0.0,
+        "Mood": 1.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 20.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 0.0,
+        "Skill Hint": 0.0,
+        "Skill Pts": 10.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 35.0
+      }
+    }
+  },
+  "Dreams are Forever": {
+    "choices": {
+      "1": "Choice 1",
+      "2": "Choice 2"
+    },
+    "stats": {
+      "1": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 0.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 2.2,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 0.0,
+        "Stamina": 0.0,
+        "Wisdom": 0.0
+      },
+      "2": {
+        "Friendship": 5.0,
+        "Guts": 0.0,
+        "HP": 10.0,
+        "Max Energy": 0.0,
+        "Mood": 0.0,
+        "Power": 0.0,
+        "Skill": 1.5,
+        "Skill Hint": 0.0,
+        "Skill Pts": 0.0,
+        "Speed": 7.5,
+        "Stamina": 0.0,
+        "Wisdom": 17.5
       }
     }
   },

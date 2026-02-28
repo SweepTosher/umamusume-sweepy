@@ -1,5 +1,7 @@
 # Sweepy — /vg/'s Uma Musume Bot (UAT REHASHED)
 
+hiatus; gonna work on https://github.com/SweepTosher/Icarus for a while
+
 ### A umamusume bot that handles all aspects of gameplay including training, races, events, skill purchasing, and starting runs. 
 
 If anyone has time to kill you can help to verify and screenshot cases where the stat gain detection detects wrongly (emulator resolution) so I can fine-tune the model. The training images I used were quite limited so I'm not 100% sure it works 100% of the time.

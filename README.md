@@ -190,6 +190,10 @@ Install or reinstall Visual C++ Redistributable:
 ---
 
 ## Changelog
+### 2025-03-4
+- Option to boost friendship contrib of certain cards     
+- A bunch more stuff i dont remeber i forgot to update this          
+
 ### 2025-02-18
 - Option to boost hint score contribution from certain characters     
 

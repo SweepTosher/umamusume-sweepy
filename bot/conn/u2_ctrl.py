@@ -90,6 +90,7 @@ class U2AndroidController(AndroidController):
         self.fallback_block_until = 0.0
         self.trigger_decision_reset = False
         self.last_recovery_time = 0
+        self.recovery_grace_until = 0.0
         self.screencap_lock = threading.Lock()
         
         self._cached_frame = None
@@ -245,6 +246,12 @@ class U2AndroidController(AndroidController):
                 update_repetitive(self.repetitive_click_count, self.repetitive_other_clicks)
         except Exception:
             pass
+
+        if time.time() < getattr(self, 'recovery_grace_until', 0.0):
+            self.repetitive_click_name = None
+            self.repetitive_click_count = 0
+            self.repetitive_other_clicks = 0
+            return False
 
         if self.repetitive_click_name == click_key and self.repetitive_click_count >= repetitive_threshold:
             try:
@@ -510,6 +517,7 @@ class U2AndroidController(AndroidController):
         if time.time() - self.last_recovery_time < 10:
             return
         self.last_recovery_time = time.time()
+        self.recovery_grace_until = time.time() + 60
         try:
             log.info("rannnnn")
             self.execute_adb_shell("shell input keyevent 3", True)

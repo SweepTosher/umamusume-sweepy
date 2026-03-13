@@ -221,6 +221,7 @@ UMA_ICON_FRIEND_1 = Template("FRIEND_1", UMAMUSUME_UMA_ICON_TEMPLATE_PATH)
 
 
 REF_MANT_ON_SALE = Template("mant_on_sale", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(392, 1062, 432, 1087)))
+REF_MANT_FINAL_END = Template("mant_final_end", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(280, 10, 450, 90)))
 
 UMAMUSUME_REF_MANT_SHOP_PATH = "/umamusume/ref/mantShop"
 

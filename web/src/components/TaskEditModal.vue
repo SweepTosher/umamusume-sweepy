@@ -172,6 +172,21 @@
                           </div>
                         </div>
                       </div>
+                      <div class="mant-thresholds mt-3">
+                        <label>Friendship</label>
+                        <div class="mant-threshold-group">
+                          <div class="mant-threshold-row">
+                            <img :src="getMantItemImg('bbq')" class="mant-threshold-img" />
+                            <div class="mant-threshold-controls">
+                              <span class="mant-threshold-label">Number of unmaxxed cards</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantBbqUnmaxxedCards" min="1" max="6" />
+                                <span class="mant-threshold-val">{{ mantBbqUnmaxxedCards }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2213,6 +2228,7 @@ export default {
       mantMegaMediumThreshold: 70,
       mantMegaLargeThreshold: 80,
       mantTrainingWeightsThreshold: 60,
+      mantBbqUnmaxxedCards: 3,
       levelDataList: [],
       umamusumeTaskTypeList: [
         {
@@ -3590,7 +3606,8 @@ export default {
             "mega_small_threshold": this.mantMegaSmallThreshold,
             "mega_medium_threshold": this.mantMegaMediumThreshold,
             "mega_large_threshold": this.mantMegaLargeThreshold,
-            "training_weights_threshold": this.mantTrainingWeightsThreshold
+            "training_weights_threshold": this.mantTrainingWeightsThreshold,
+            "bbq_unmaxxed_cards": this.mantBbqUnmaxxedCards
           } : null
         }
       }
@@ -4016,6 +4033,7 @@ export default {
         this.mantMegaMediumThreshold = this.presetsUse.mant_config.mega_medium_threshold ?? 70;
         this.mantMegaLargeThreshold = this.presetsUse.mant_config.mega_large_threshold ?? 80;
         this.mantTrainingWeightsThreshold = this.presetsUse.mant_config.training_weights_threshold ?? 60;
+        this.mantBbqUnmaxxedCards = this.presetsUse.mant_config.bbq_unmaxxed_cards ?? 3;
       } else {
         this.mantItemTiers = this.mantGetDefaultTiers();
         this.mantTierCount = 2;
@@ -4025,6 +4043,7 @@ export default {
         this.mantMegaMediumThreshold = 70;
         this.mantMegaLargeThreshold = 80;
         this.mantTrainingWeightsThreshold = 60;
+        this.mantBbqUnmaxxedCards = 3;
       }
 
     },
@@ -4196,6 +4215,7 @@ export default {
         this.mantMegaMediumThreshold = data.mant_config.mega_medium_threshold ?? 70;
         this.mantMegaLargeThreshold = data.mant_config.mega_large_threshold ?? 80;
         this.mantTrainingWeightsThreshold = data.mant_config.training_weights_threshold ?? 60;
+        this.mantBbqUnmaxxedCards = data.mant_config.bbq_unmaxxed_cards ?? 3;
       }
     },
     getPresets: function () {
@@ -4362,7 +4382,8 @@ export default {
           mega_small_threshold: this.mantMegaSmallThreshold,
           mega_medium_threshold: this.mantMegaMediumThreshold,
           mega_large_threshold: this.mantMegaLargeThreshold,
-          training_weights_threshold: this.mantTrainingWeightsThreshold
+          training_weights_threshold: this.mantTrainingWeightsThreshold,
+          bbq_unmaxxed_cards: this.mantBbqUnmaxxedCards
         };
       }
       let payload = {

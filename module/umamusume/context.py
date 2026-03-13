@@ -19,7 +19,7 @@ log = logger.get_logger(__name__)
 detected_skills_log = {}
 detected_portraits_log = {}
 
-def log_detected_portrait(name, favor_level):
+def log_detected_portrait(name, favor_level, is_npc=False):
     if not name or favor_level == 0:
         return
     existing = detected_portraits_log.get(name)
@@ -29,6 +29,7 @@ def log_detected_portrait(name, favor_level):
         detected_portraits_log[name] = {
             "name": name,
             "favor": favor_level,
+            "is_npc": is_npc,
         }
 
 def clear_detected_portraits():

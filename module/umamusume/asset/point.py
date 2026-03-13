@@ -25,6 +25,7 @@ CULTIVATE_MEDIC_MANT = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, No
 CULTIVATE_TRIP_MANT = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(270, 1125), "recreation - MANT", None)
 CULTIVATE_RACE_MANT = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(620, 1125), "race - MANT", None)
 INSUFFICIENT_RESULT_PTS_CANCEL = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(200, 895), "Insufficient Result Pts", None)
+MANT_CLIMAX_NEXT = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(360, 1110), "MANT Climax Next", None)
 
 RETURN_TO_CULTIVATE_MAIN_MENU = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(90, 1230), "Return to Training Main Menu", None)
 CULTIVATE_GOAL_RACE_INTER_1 = ClickPoint(ClickPointType.CLICK_POINT_TYPE_COORDINATE, None, Coordinate(391, 1081), "Enter Career Race Detail Interface", None)

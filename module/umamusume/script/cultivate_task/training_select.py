@@ -183,7 +183,9 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                                     favor = getattr(sc_list[slot_idx], "favor", None)
                                     if favor is not None and favor.value != 0:
                                         from module.umamusume.context import log_detected_portrait
-                                        log_detected_portrait(name, favor.value)
+                                        ctype = getattr(sc_list[slot_idx], "card_type", None)
+                                        is_npc = (ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC)
+                                        log_detected_portrait(name, favor.value, is_npc=is_npc)
                             except Exception:
                                 pass
             except Exception:

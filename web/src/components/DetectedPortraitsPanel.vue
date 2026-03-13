@@ -8,11 +8,12 @@
       <div v-if="expanded" class="portraits-body">
         <div v-if="portraits.length === 0" class="empty-state">No characters detected yet</div>
         <div v-else class="portraits-grid">
-          <div v-for="p in portraits" :key="p.name" class="portrait-item">
+          <div v-for="p in portraits" :key="p.name" class="portrait-item" :class="{ 'portrait-npc': p.is_npc }">
             <div class="portrait-img-wrap">
               <img :src="'/training-icon/' + p.name" :alt="p.name" class="portrait-img" @error="onImgError">
             </div>
             <div class="portrait-name">{{ formatName(p.name) }}</div>
+            <div class="portrait-type-badge" :class="p.is_npc ? 'badge-npc' : 'badge-deck'">{{ p.is_npc ? 'NPC' : 'Deck' }}</div>
             <div class="favor-bar">
               <div class="favor-pip" v-for="i in 4" :key="i" :class="{ filled: i <= p.favor, ['lv' + p.favor]: i <= p.favor }"></div>
             </div>
@@ -88,6 +89,10 @@ export default {
   border-color: var(--accent);
   background: rgba(255,255,255,.04);
 }
+.portrait-npc {
+  border-color: rgba(255,255,255,.05);
+  opacity: .75;
+}
 .portrait-img-wrap {
   width: 52px;
   height: 52px;
@@ -111,6 +116,23 @@ export default {
   text-overflow: ellipsis;
   max-width: 80px;
   margin-bottom: 4px;
+}
+.portrait-type-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.badge-deck {
+  background: rgba(42, 192, 255, .2);
+  color: #2ac0ff;
+}
+.badge-npc {
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.45);
 }
 .favor-bar {
   display: flex;

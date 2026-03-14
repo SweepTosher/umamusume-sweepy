@@ -12,7 +12,6 @@ from module.umamusume.asset.point import (
     CULTIVATE_MEDIC, CULTIVATE_MEDIC_SUMMER,
     CULTIVATE_MEDIC_MANT, CULTIVATE_TRIP_MANT, CULTIVATE_RACE_MANT
 )
-from module.umamusume.asset.template import REF_MANT_ON_SALE
 from module.umamusume.define import ScenarioType
 from module.umamusume.constants.game_constants import (
     is_summer_camp_period, is_ura_race, NEW_RUN_DETECTION_DATE,
@@ -70,9 +69,8 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         ctx.cultivate_detail.mant_shop_scanned_this_turn = False
 
         if is_mant(ctx):
-            from module.umamusume.scenario.mant.shop import is_shop_scan_turn
-            if is_shop_scan_turn(current_date):
-                ctx.cultivate_detail.mant_shop_items = []
+            from module.umamusume.scenario.mant.main_menu import handle_mant_turn_start
+            handle_mant_turn_start(ctx, current_date)
 
         if current_date == NEW_RUN_DETECTION_DATE:
             log.info("new run detected resetting manual purchase state")
@@ -80,32 +78,15 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
             if hasattr(ctx.cultivate_detail, 'manual_purchase_initiated'):
                 delattr(ctx.cultivate_detail, 'manual_purchase_initiated')
 
-    if is_mant(ctx) and not ctx.cultivate_detail.mant_shop_scanned_this_turn:
-        from module.umamusume.scenario.mant.shop import is_shop_scan_turn, scan_mant_shop
-        if is_shop_scan_turn(current_date):
-            items = scan_mant_shop(ctx)
-            ctx.cultivate_detail.mant_shop_items = items
-            ctx.cultivate_detail.mant_shop_scanned_this_turn = True
-            ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
+    if is_mant(ctx):
+        from module.umamusume.scenario.mant.main_menu import (
+            handle_mant_shop_scan, handle_mant_on_sale,
+            handle_mant_afflictions, handle_mant_rival_race
+        )
+        if handle_mant_shop_scan(ctx, current_date):
             return
-
-    if is_mant(ctx):
-        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        sale_result = image_match(img_gray, REF_MANT_ON_SALE)
-        if sale_result.find_match:
-            log.info("shop on sale")
-
-    if is_mant(ctx):
-        img_rgb_check = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        medic_px = img_rgb_check[1125, 40]
-        medic_lit = medic_px[0] > 200 and medic_px[1] > 200 and medic_px[2] > 200
-        if not medic_lit:
-            ctx.cultivate_detail.mant_afflictions = []
-        elif medic_lit and not ctx.cultivate_detail.mant_afflictions:
-            from module.umamusume.scenario.mant.afflictions import detect_afflictions
-            afflictions = detect_afflictions(ctx)
-            ctx.cultivate_detail.mant_afflictions = afflictions
-            ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
+        handle_mant_on_sale(img)
+        if handle_mant_afflictions(ctx, img):
             return
 
     if not ctx.cultivate_detail.turn_info.parse_main_menu_finish:
@@ -225,6 +206,9 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         else:
             ctx.ctrl.click_by_point(get_trip(ctx))
         return
+
+    if is_mant(ctx):
+        handle_mant_rival_race(ctx, img)
 
     if not ctx.cultivate_detail.turn_info.parse_train_info_finish:
         limit = int(getattr(ctx.cultivate_detail, 'rest_threshold', getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48))))

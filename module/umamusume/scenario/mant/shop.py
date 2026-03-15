@@ -21,7 +21,7 @@ CONTENT_X2 = 640
 PURCHASED_CHECK_X1 = 200
 PURCHASED_CHECK_X2 = 600
 PURCHASED_BRIGHTNESS_THRESHOLD = 180
-MANT_SHOP_SCAN_START = 14
+MANT_SHOP_SCAN_START = 13
 MANT_SHOP_SCAN_INTERVAL = 6
 
 SHOP_OPEN_X = 412
@@ -61,6 +61,33 @@ SHOP_ITEM_NAMES = [
     "Glow Sticks",
 ]
 
+SHOP_ITEM_COSTS = {
+    "Speed Notepad": 10, "Stamina Notepad": 10, "Power Notepad": 10, "Guts Notepad": 10, "Wit Notepad": 10,
+    "Speed Manual": 15, "Stamina Manual": 15, "Power Manual": 15, "Guts Manual": 15, "Wit Manual": 15,
+    "Speed Scroll": 30, "Stamina Scroll": 30, "Power Scroll": 30, "Guts Scroll": 30, "Wit Scroll": 30,
+    "Vita 20": 35, "Vita 40": 55, "Vita 65": 75,
+    "Royal Kale Juice": 70,
+    "Energy Drink MAX": 30, "Energy Drink MAX EX": 50,
+    "Plain Cupcake": 30, "Berry Sweet Cupcake": 55,
+    "Yummy Cat Food": 10, "Grilled Carrots": 40,
+    "Pretty Mirror": 150, "Reporter's Binoculars": 150, "Master Practice Guide": 150, "Scholar's Hat": 280,
+    "Fluffy Pillow": 15, "Pocket Planner": 15, "Rich Hand Cream": 15, "Smart Scale": 15,
+    "Aroma Diffuser": 15, "Practice Drills DVD": 15, "Miracle Cure": 40,
+    "Speed Training Application": 150, "Stamina Training Application": 150,
+    "Power Training Application": 150, "Guts Training Application": 150, "Wit Training Application": 150,
+    "Reset Whistle": 20,
+    "Coaching Megaphone": 40, "Motivating Megaphone": 55, "Empowering Megaphone": 70,
+    "Speed Ankle Weights": 50, "Stamina Ankle Weights": 50, "Power Ankle Weights": 50, "Guts Ankle Weights": 50,
+    "Good-Luck Charm": 40,
+    "Artisan Cleat Hammer": 25, "Master Cleat Hammer": 40,
+    "Glow Sticks": 15,
+}
+
+SLUG_TO_DISPLAY = {}
+for _n in SHOP_ITEM_NAMES:
+    SLUG_TO_DISPLAY[_n.lower().replace("'", '').replace(' ', '_')] = _n
+
+
 def display_to_slug(display_name):
     return display_name.lower().replace("'", '').replace(' ', '_')
 
@@ -72,8 +99,14 @@ EFFECT_PREFIXES = (
 )
 
 
+def current_shop_chunk(date):
+    if date < MANT_SHOP_SCAN_START:
+        return -1
+    return (date - MANT_SHOP_SCAN_START) // MANT_SHOP_SCAN_INTERVAL
+
+
 def is_shop_scan_turn(date):
-    return date >= MANT_SHOP_SCAN_START and (date - MANT_SHOP_SCAN_START) % MANT_SHOP_SCAN_INTERVAL == 0
+    return date >= MANT_SHOP_SCAN_START
 
 
 def is_thumb(r, g, b):
@@ -335,11 +368,9 @@ def scan_mant_shop(ctx):
 
     if thumb is None:
         results, _ = classify_items_in_frame(img)
-        items_list = [(key, conf) for key, conf, _ in results]
-        log.info("shop items: %s", [n for n, _ in items_list])
-        ctx.ctrl.click(95, 1228)
-        time.sleep(1)
-        return [n for n, _ in items_list]
+        items_list = [(key, conf, abs_y) for key, conf, abs_y in results]
+        log.info("shop items: %s", [n for n, _, _ in items_list])
+        return items_list, 14.0, 1.1, items_list[0][2] if items_list else 0
 
     thumb_h = thumb[1] - thumb[0]
     thumb_center = (thumb[0] + thumb[1]) // 2
@@ -443,9 +474,6 @@ def scan_mant_shop(ctx):
 
     first_item_gy = items_list[0][2] if items_list else 0
 
-    ctx.ctrl.click(95, 1228)
-    time.sleep(1)
-
     return items_list, ratio, drag_ratio, first_item_gy
 
 
@@ -458,25 +486,39 @@ BACK_BTN_X = 95
 BACK_BTN_Y = 1228
 
 
-def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_gy):
-    from module.umamusume.constants.game_constants import is_summer_camp_period
-    current_date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
-    shop_x = SHOP_OPEN_X_SUMMER if is_summer_camp_period(current_date) else SHOP_OPEN_X
-    ctx.ctrl.click(shop_x, SHOP_OPEN_Y, "MANT shop open")
-    time.sleep(1.5)
+RESET_BTN_X = 615
+RESET_BTN_Y = 1050
 
+
+def estimate_screen_y(target_gy, first_item_gy, thumb_pos, ratio):
+    content_at_top = first_item_gy - (CONTENT_TOP + 40)
+    thumb_offset = (thumb_pos - TRACK_TOP) * ratio if thumb_pos else 0
+    scroll_offset = content_at_top + thumb_offset
+    return target_gy - scroll_offset
+
+
+def pick_best_match(matches, target_gy, first_item_gy, thumb_pos, ratio):
+    if len(matches) <= 1:
+        return matches[0] if matches else None
+    expected_y = estimate_screen_y(target_gy, first_item_gy, thumb_pos, ratio)
+    return min(matches, key=lambda m: abs(m[2] - expected_y))
+
+
+def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_gy):
     targets = [(name, conf, gy) for name, conf, gy in items_list if name in target_names]
     if not targets:
-        log.info("no target items found in shop inventory")
         ctx.ctrl.click(BACK_BTN_X, BACK_BTN_Y)
         time.sleep(1)
         return False
 
+    targets.sort(key=lambda t: t[2])
     viewport_center = (CONTENT_TOP + CONTENT_BOT) / 2
     selected = 0
+    done_gys = set()
+
+    scroll_to_top(ctx)
 
     for name, conf, target_gy in targets:
-        scroll_to_top(ctx)
         trigger_scrollbar(ctx)
         img = ctx.ctrl.get_screen()
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -492,11 +534,12 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
             current_thumb = (thumb[0] + thumb[1]) // 2
             adjusted_target = int(TRACK_TOP + (thumb_target - TRACK_TOP) * drag_ratio)
             adjusted_target = min(adjusted_target, TRACK_BOT - 10)
-            if adjusted_target > current_thumb + 5:
+            if abs(adjusted_target - current_thumb) > 5:
                 sb_drag(ctx, current_thumb, adjusted_target)
                 trigger_scrollbar(ctx)
                 time.sleep(0.3)
 
+        thumb_pos = thumb[0] if thumb else TRACK_TOP
         frame = ctx.ctrl.get_screen()
         results, _ = classify_items_in_frame(frame)
         matches = [(k, c, y) for k, c, y in results if k == name]
@@ -511,6 +554,7 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
                     sb_drag(ctx, (t[0] + t[1]) // 2, (t[0] + t[1]) // 2 + adj)
                     trigger_scrollbar(ctx)
                     time.sleep(0.3)
+                    thumb_pos = t[0]
                 frame = ctx.ctrl.get_screen()
                 results, _ = classify_items_in_frame(frame)
                 matches = [(k, c, y) for k, c, y in results if k == name]
@@ -518,21 +562,20 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
                     break
 
         if not matches:
-            log.warning("could not find %s in viewport, aborting buy", name)
-            ctx.ctrl.click(BACK_BTN_X, BACK_BTN_Y)
-            time.sleep(1)
-            return False
+            continue
 
-        click_y = int(matches[0][2]) + 20
-        ctx.ctrl.click(CHECKBOX_X, click_y, "select " + name)
+        best = pick_best_match(matches, target_gy, first_item_gy, thumb_pos, ratio)
+        click_y = int(best[2]) + 20
+        ctx.ctrl.click(CHECKBOX_X, click_y)
         time.sleep(0.3)
         selected += 1
-        log.info("selected %s (%d/%d)", name, selected, len(targets))
+        done_gys.add(target_gy)
 
-    ctx.ctrl.click(CONFIRM_BTN_X, CONFIRM_BTN_Y, "shop confirm")
+    if selected == 0:
+        ctx.ctrl.click(BACK_BTN_X, BACK_BTN_Y)
+        time.sleep(1)
+        return False
+
+    ctx.ctrl.click(CONFIRM_BTN_X, CONFIRM_BTN_Y)
     time.sleep(2)
-    log.info("bought %d items", selected)
-
-    ctx.ctrl.click(BACK_BTN_X, BACK_BTN_Y)
-    time.sleep(1)
     return True

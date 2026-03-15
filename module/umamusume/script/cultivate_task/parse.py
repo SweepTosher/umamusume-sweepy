@@ -645,7 +645,7 @@ def parse_cultivate_event(ctx: UmamusumeContext, img) -> tuple[str, list[int]]:
     else:
         event_name = ocr_line(event_name_img)
     
-    if not isinstance(event_name, str) or event_name.strip() == "":
+    if not isinstance(event_name, str) or len(event_name.strip()) <= 1:
         if img_hash:
             _parse_event_cache.set(img_hash, ("", []))
         return "", []

@@ -126,6 +126,7 @@ class CultivateContextDetail:
         self.final_skill_sweep_active = False
         self.mant_shop_items = []
         self.mant_shop_scanned_this_turn = False
+        self.mant_shop_last_chunk = -1
         self.mant_afflictions = []
         self.mant_coins = 0
         self.user_provided_priority = False

@@ -264,7 +264,7 @@
     "filename": "reporters_binoculars.png",
     "section": "Get Good Conditions",
     "jpName": "名物記者の双眼鏡",
-    "effect": "Get Rising Star status effect",
+    "effect": "Get Hot Topic status effect",
     "cost": 150,
     "iconId": "scenario_free_item_icon_04002",
     "displayName": "Reporter's Binoculars"
@@ -274,7 +274,7 @@
     "filename": "master_practice_guide.png",
     "section": "Get Good Conditions",
     "jpName": "効率練習のススメ",
-    "effect": "Get Good Practice ○ status effect",
+    "effect": "Get Practice Perfect ○ status effect",
     "cost": 150,
     "iconId": "scenario_free_item_icon_04003",
     "displayName": "Master Practice Guide"
@@ -284,7 +284,7 @@
     "filename": "scholars_hat.png",
     "section": "Get Good Conditions",
     "jpName": "博学帽子",
-    "effect": "Get Sharp status effect",
+    "effect": "Get Fast Learner status effect",
     "cost": 280,
     "iconId": "scenario_free_item_icon_04004",
     "displayName": "Scholar's Hat"
@@ -294,7 +294,7 @@
     "filename": "fluffy_pillow.png",
     "section": "Heal Bad Conditions",
     "jpName": "すやすや安眠枕",
-    "effect": "Heal Insomnia",
+    "effect": "Heal Night Owl",
     "cost": 15,
     "iconId": "scenario_free_item_icon_04101",
     "displayName": "Fluffy Pillow"
@@ -304,7 +304,7 @@
     "filename": "pocket_planner.png",
     "section": "Heal Bad Conditions",
     "jpName": "ポケットスケジュール帳",
-    "effect": "Heal Lazy Habit",
+    "effect": "Heal Slacker",
     "cost": 15,
     "iconId": "scenario_free_item_icon_04102",
     "displayName": "Pocket Planner"
@@ -314,7 +314,7 @@
     "filename": "rich_hand_cream.png",
     "section": "Heal Bad Conditions",
     "jpName": "うるおいハンドクリーム",
-    "effect": "Heal Rough Skin",
+    "effect": "Heal Skin Outbreak",
     "cost": 15,
     "iconId": "scenario_free_item_icon_04103",
     "displayName": "Rich Hand Cream"
@@ -324,7 +324,7 @@
     "filename": "smart_scale.png",
     "section": "Heal Bad Conditions",
     "jpName": "スリムスキャナー",
-    "effect": "Heal Overweight",
+    "effect": "Heal Slow Metabolism",
     "cost": 15,
     "iconId": "scenario_free_item_icon_04104",
     "displayName": "Smart Scale"
@@ -344,7 +344,7 @@
     "filename": "practice_drills_dvd.png",
     "section": "Heal Bad Conditions",
     "jpName": "練習改善DVD",
-    "effect": "Heal Bad Practice",
+    "effect": "Heal Practice Poor",
     "cost": 15,
     "iconId": "scenario_free_item_icon_04106",
     "displayName": "Practice Drills DVD"

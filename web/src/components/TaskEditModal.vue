@@ -87,6 +87,7 @@
                       <div class="mant-controls mb-2">
                         <button type="button" class="btn btn-sm btn--outline me-1" @click="mantAddTier">+ Add Tier</button>
                         <button type="button" class="btn btn-sm btn--outline me-1" @click="mantRemoveTier" :disabled="!mantCanRemoveTier">- Remove Tier</button>
+                        <span class="mant-coin-label">Number is Min coins to consider buying (per tier)</span>
                       </div>
                       <div class="mant-tierlist">
                         <div v-for="t in mantTierCount" :key="'tier-' + t"
@@ -95,7 +96,10 @@
                              @dragover.prevent="mantDragOverTier = t"
                              @dragleave="mantDragOverTier = null"
                              @drop.prevent="mantDropOnTier(t, $event)">
-                          <div class="mant-tier-label mant-tier-label--prio">Tier {{ t }}</div>
+                          <div class="mant-tier-label mant-tier-label--prio">
+                            <div>Tier {{ t }}</div>
+                            <input v-if="t > 1" type="number" class="mant-coin-input" v-model.number="mantTierThresholds[t]" min="0" :placeholder="String((t - 1) * 50)" />
+                          </div>
                           <div class="mant-tier-items">
                             <div v-for="id in mantGetItemsInTier(t)" :key="id"
                                  class="mant-item-cell"
@@ -2160,6 +2164,7 @@ export default {
     }
         this.mantItemTiers = this.mantGetDefaultTiers();
         this.mantTierCount = 6;
+        this.mantTierThresholds = {2: 50, 3: 100, 4: 150, 5: 200, 6: 250};
   },
   data: function () {
     return {
@@ -2229,6 +2234,7 @@ export default {
       mantMegaLargeThreshold: 80,
       mantTrainingWeightsThreshold: 60,
       mantBbqUnmaxxedCards: 3,
+      mantTierThresholds: {2: 50, 3: 100, 4: 150, 5: 200, 6: 250},
       levelDataList: [],
       umamusumeTaskTypeList: [
         {
@@ -3498,6 +3504,7 @@ export default {
           }
         });
         this.mantTierCount--;
+        delete this.mantTierThresholds[removedTier];
       }
     },
     cancelTask: function () {
@@ -3623,7 +3630,8 @@ export default {
             "mega_medium_threshold": this.mantMegaMediumThreshold,
             "mega_large_threshold": this.mantMegaLargeThreshold,
             "training_weights_threshold": this.mantTrainingWeightsThreshold,
-            "bbq_unmaxxed_cards": this.mantBbqUnmaxxedCards
+            "bbq_unmaxxed_cards": this.mantBbqUnmaxxedCards,
+            "tier_thresholds": { ...this.mantTierThresholds }
           } : null
         }
       }
@@ -4050,9 +4058,11 @@ export default {
         this.mantMegaLargeThreshold = this.presetsUse.mant_config.mega_large_threshold ?? 80;
         this.mantTrainingWeightsThreshold = this.presetsUse.mant_config.training_weights_threshold ?? 60;
         this.mantBbqUnmaxxedCards = this.presetsUse.mant_config.bbq_unmaxxed_cards ?? 3;
+        this.mantTierThresholds = this.presetsUse.mant_config.tier_thresholds ?? {};
       } else {
         this.mantItemTiers = this.mantGetDefaultTiers();
         this.mantTierCount = 6;
+        this.mantTierThresholds = {2: 50, 3: 100, 4: 150, 5: 200, 6: 250};
         this.mantWhistleThreshold = 20;
         this.mantWhistleFocusSummer = true;
         this.mantMegaSmallThreshold = 60;
@@ -4232,6 +4242,7 @@ export default {
         this.mantMegaLargeThreshold = data.mant_config.mega_large_threshold ?? 80;
         this.mantTrainingWeightsThreshold = data.mant_config.training_weights_threshold ?? 60;
         this.mantBbqUnmaxxedCards = data.mant_config.bbq_unmaxxed_cards ?? 3;
+        this.mantTierThresholds = data.mant_config.tier_thresholds ?? {};
       }
     },
     getPresets: function () {
@@ -4399,7 +4410,8 @@ export default {
           mega_medium_threshold: this.mantMegaMediumThreshold,
           mega_large_threshold: this.mantMegaLargeThreshold,
           training_weights_threshold: this.mantTrainingWeightsThreshold,
-          bbq_unmaxxed_cards: this.mantBbqUnmaxxedCards
+          bbq_unmaxxed_cards: this.mantBbqUnmaxxedCards,
+          tier_thresholds: { ...this.mantTierThresholds }
         };
       }
       let payload = {
@@ -6186,6 +6198,31 @@ export default {
   background: rgba(59,130,246,.15);
   color: #60a5fa;
   border-right: 2px solid rgba(59,130,246,.3);
+  flex-direction: column;
+  gap: 4px;
+}
+.mant-coin-label {
+  font-size: 11px;
+  color: rgba(255,255,255,.4);
+  margin-left: auto;
+}
+.mant-coin-input {
+  width: 52px;
+  padding: 1px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(0,0,0,.25);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 4px;
+  color: #fff;
+  outline: none;
+}
+.mant-coin-input:focus {
+  border-color: var(--accent);
+}
+.mant-coin-input::placeholder {
+  color: rgba(255,255,255,.3);
 }
 
 .mant-tier-items {

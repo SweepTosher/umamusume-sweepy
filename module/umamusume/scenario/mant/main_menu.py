@@ -41,17 +41,68 @@ def handle_mant_turn_start(ctx, current_date):
 def handle_mant_shop_scan(ctx, current_date):
     if ctx.cultivate_detail.mant_shop_scanned_this_turn:
         return False
-    from module.umamusume.scenario.mant.shop import is_shop_scan_turn, scan_mant_shop
-    if is_shop_scan_turn(current_date):
-        items_list, ratio, drag_ratio, first_item_gy = scan_mant_shop(ctx)
-        ctx.cultivate_detail.mant_shop_items = items_list
-        ctx.cultivate_detail.mant_shop_ratio = ratio
-        ctx.cultivate_detail.mant_shop_drag_ratio = drag_ratio
-        ctx.cultivate_detail.mant_shop_first_gy = first_item_gy
-        ctx.cultivate_detail.mant_shop_scanned_this_turn = True
-        ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
-        return True
-    return False
+    from module.umamusume.scenario.mant.shop import (
+        is_shop_scan_turn, scan_mant_shop, buy_shop_items,
+        SHOP_ITEM_COSTS, SLUG_TO_DISPLAY, display_to_slug,
+        current_shop_chunk
+    )
+    from module.umamusume.scenario.mant.constants import AILMENT_CURE_MAP, AILMENT_CURE_ALL
+    if not is_shop_scan_turn(current_date):
+        return False
+    chunk = current_shop_chunk(current_date)
+    last_chunk = getattr(ctx.cultivate_detail, 'mant_shop_last_chunk', -1)
+    if chunk == last_chunk:
+        return False
+    items_list, ratio, drag_ratio, first_item_gy = scan_mant_shop(ctx)
+    ctx.cultivate_detail.mant_shop_items = items_list
+    ctx.cultivate_detail.mant_shop_ratio = ratio
+    ctx.cultivate_detail.mant_shop_drag_ratio = drag_ratio
+    ctx.cultivate_detail.mant_shop_first_gy = first_item_gy
+    ctx.cultivate_detail.mant_shop_scanned_this_turn = True
+    ctx.cultivate_detail.mant_shop_last_chunk = chunk
+
+    bought = False
+    mant_cfg = getattr(ctx.task.detail.scenario_config, 'mant_config', None)
+    if mant_cfg and mant_cfg.item_tiers:
+        budget = ctx.cultivate_detail.mant_coins
+        shop_names = [name for name, _, _ in items_list]
+        shop_slugs = [display_to_slug(n) for n in shop_names]
+        targets = []
+        for tier in range(1, mant_cfg.tier_count + 1):
+            if tier > 1:
+                threshold = mant_cfg.tier_thresholds.get(tier, 0)
+                if budget < threshold:
+                    continue
+            tier_slugs = [slug for slug, t in mant_cfg.item_tiers.items() if t == tier]
+            for slug in tier_slugs:
+                if slug in shop_slugs:
+                    display = SLUG_TO_DISPLAY.get(slug)
+                    if display:
+                        cost = SHOP_ITEM_COSTS.get(display, 9999)
+                        if cost <= budget:
+                            targets.append(display)
+                            budget -= cost
+        active_ailments = getattr(ctx.cultivate_detail, 'mant_afflictions', [])
+        cure_always_ok = {"Rich Hand Cream", AILMENT_CURE_ALL}
+        needed_cures = set()
+        for ailment, cure in AILMENT_CURE_MAP.items():
+            for active in active_ailments:
+                if ailment.lower() in active.lower():
+                    needed_cures.add(cure)
+        all_cures = set(AILMENT_CURE_MAP.values())
+        conditional_cures = all_cures - cure_always_ok
+        targets = [t for t in targets if t not in conditional_cures or t in needed_cures]
+        if targets:
+            bought = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
+
+    if not bought:
+        from module.umamusume.scenario.mant.shop import BACK_BTN_X, BACK_BTN_Y
+        import time as t
+        ctx.ctrl.click(BACK_BTN_X, BACK_BTN_Y)
+        t.sleep(1)
+
+    ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
+    return True
 
 
 def handle_mant_on_sale(img):

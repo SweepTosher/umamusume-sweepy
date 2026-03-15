@@ -182,22 +182,22 @@ MANT_SHOP_ITEMS = {
     },
     MantItemType.HAND_MIRROR: {
         "cost": 150,
-        "effect": {"buff": "charming"},
+        "effect": {"buff": "Charming"},
         "efficiency": 0.15,
     },
     MantItemType.PRACTICE_NOTEBOOK: {
         "cost": 150,
-        "effect": {"buff": "practice_perfect"},
+        "effect": {"buff": "Practice Perfect"},
         "efficiency": 0.05,
     },
     MantItemType.SCHOLAR_HAT: {
         "cost": 280,
-        "effect": {"buff": "fast_learner"},
+        "effect": {"buff": "Fast Learner"},
         "efficiency": 0.24,
     },
     MantItemType.GLASSES: {
         "cost": 150,
-        "effect": {"buff": "hot_topic"},
+        "effect": {"buff": "Hot Topic"},
         "efficiency": 0.05,
     },
     MantItemType.PANACEA: {
@@ -287,6 +287,18 @@ MANT_FIXED_EVENTS = {
     "senior_late_october": {"turn": 52, "effect": {"mood": 1}},
     "senior_late_december": {"turn": 56, "effect": {"energy": 30}},
 }
+
+
+AILMENT_CURE_MAP = {
+    "Night Owl": "Fluffy Pillow",
+    "Slacker": "Pocket Planner",
+    "Skin Outbreak": "Rich Hand Cream",
+    "Slow Metabolism": "Smart Scale",
+    "Migraine": "Aroma Diffuser",
+    "Practice Poor": "Practice Drills DVD",
+}
+
+AILMENT_CURE_ALL = "Miracle Cure"
 
 
 MANT_SHOP_REFRESH_TURNS = [1, 7, 13, 19, 25, 31, 37, 43, 49, 55]

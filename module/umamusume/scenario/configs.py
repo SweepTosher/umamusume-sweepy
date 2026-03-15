@@ -27,6 +27,7 @@ class MantConfig:
     mega_large_threshold: int
     training_weights_threshold: int
     bbq_unmaxxed_cards: int
+    tier_thresholds: dict
 
     def __init__(self, config: dict):
         self.item_tiers = config.get("item_tiers", {})
@@ -38,6 +39,8 @@ class MantConfig:
         self.mega_large_threshold = config.get("mega_large_threshold", 80)
         self.training_weights_threshold = config.get("training_weights_threshold", 60)
         self.bbq_unmaxxed_cards = config.get("bbq_unmaxxed_cards", 3)
+        raw_thresholds = config.get("tier_thresholds", {})
+        self.tier_thresholds = {int(k): v for k, v in raw_thresholds.items()}
 
 
 class ScenarioConfig:

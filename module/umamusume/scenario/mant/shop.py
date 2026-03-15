@@ -3,29 +3,21 @@ import time
 import random
 import cv2
 import numpy as np
-import torch
-import torch.nn as nn
-from collections import defaultdict
+from collections import defaultdict, Counter
 from concurrent.futures import ThreadPoolExecutor
 
 import bot.base.log as logger
+from bot.recog.ocr import ocr
+from rapidfuzz import process, fuzz
 
 log = logger.get_logger(__name__)
 
-ICON_X1 = 53
-ICON_X2 = 133
-CROP_H = 54
-CROP_W = 80
 SHOP_ROI_Y1 = 440
 SHOP_ROI_Y2 = 920
-EDGE_MARGIN = 26
 CONTENT_TOP = 440
 CONTENT_BOT = 920
 CONTENT_X1 = 30
 CONTENT_X2 = 640
-BORDER_INSET = 6
-INNER_TRAIN_SIZE = 48
-CNN_CONFIDENCE_THRESHOLD = 0.5
 PURCHASED_CHECK_X1 = 200
 PURCHASED_CHECK_X2 = 600
 PURCHASED_BRIGHTNESS_THRESHOLD = 180
@@ -43,96 +35,41 @@ TRACK_TOP = 480
 TRACK_BOT = 938
 SCREEN_WIDTH = 720
 
-PRIMARY_MODEL_PATH = os.path.join("resource", "umamusume", "ref", "mantShop", "shop_cnn.pt")
-INNER_MODEL_PATH = os.path.join("resource", "umamusume", "ref", "mantShop", "shop_cnn_inner.pt")
+OCR_NAME_X1 = 135
+OCR_NAME_X2 = 560
+OCR_FUZZY_THRESHOLD = 65
 
-CONFUSABLE_GROUPS = [
-    {"megasmall", "megamedium", "megalarge"},
-    {"speedsmall", "powersmall", "staminasmall", "gutssmall", "witsmall", "maxsmall"},
-    {"speedmedium", "powermedium", "staminamedium", "gutsmedium", "witmedium"},
-    {"speedlarge", "powerlarge", "staminalarge", "gutslarge", "witlarge", "maxlarge"},
-    {"speedweights", "powerweights", "staminaweights", "gutsweights"},
-    {"speedpet", "powerpet", "staminapet", "gutspet", "witpet"},
-    {"energydrinksmall", "energydrinkmedium", "energydrinklarge"},
-    {"moodsmall", "moodlarge"},
-    {"rb", "rbex"},
+SHOP_ITEM_NAMES = [
+    "Speed Notepad", "Stamina Notepad", "Power Notepad", "Guts Notepad", "Wit Notepad",
+    "Speed Manual", "Stamina Manual", "Power Manual", "Guts Manual", "Wit Manual",
+    "Speed Scroll", "Stamina Scroll", "Power Scroll", "Guts Scroll", "Wit Scroll",
+    "Vita 20", "Vita 40", "Vita 65",
+    "Royal Kale Juice",
+    "Energy Drink MAX", "Energy Drink MAX EX",
+    "Plain Cupcake", "Berry Sweet Cupcake",
+    "Yummy Cat Food", "Grilled Carrots",
+    "Pretty Mirror", "Reporter's Binoculars", "Master Practice Guide", "Scholar's Hat",
+    "Fluffy Pillow", "Pocket Planner", "Rich Hand Cream", "Smart Scale",
+    "Aroma Diffuser", "Practice Drills DVD", "Miracle Cure",
+    "Speed Training Application", "Stamina Training Application",
+    "Power Training Application", "Guts Training Application", "Wit Training Application",
+    "Reset Whistle",
+    "Coaching Megaphone", "Motivating Megaphone", "Empowering Megaphone",
+    "Speed Ankle Weights", "Stamina Ankle Weights", "Power Ankle Weights", "Guts Ankle Weights",
+    "Good-Luck Charm",
+    "Artisan Cleat Hammer", "Master Cleat Hammer",
+    "Glow Sticks",
 ]
 
-confusable_lookup = {}
-for g in CONFUSABLE_GROUPS:
-    for c in g:
-        confusable_lookup[c] = g
+def display_to_slug(display_name):
+    return display_name.lower().replace("'", '').replace(' ', '_')
 
 
-class PrimaryCNN(nn.Module):
-    def __init__(self, num_classes):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(64, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(128, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(), nn.AdaptiveAvgPool2d((3, 5)),
-        )
-        self.classifier = nn.Sequential(
-            nn.Dropout(0.3), nn.Linear(128 * 3 * 5, 256), nn.ReLU(),
-            nn.Dropout(0.3), nn.Linear(256, num_classes),
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        return self.classifier(x)
-
-
-class InnerCNN(nn.Module):
-    def __init__(self, num_classes):
-        super().__init__()
-        self.features = nn.Sequential(
-            nn.Conv2d(3, 32, 3, padding=1), nn.BatchNorm2d(32), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(32, 64, 3, padding=1), nn.BatchNorm2d(64), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(64, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(), nn.MaxPool2d(2),
-            nn.Conv2d(128, 128, 3, padding=1), nn.BatchNorm2d(128), nn.ReLU(), nn.AdaptiveAvgPool2d((3, 3)),
-        )
-        self.classifier = nn.Sequential(
-            nn.Dropout(0.3), nn.Linear(128 * 3 * 3, 256), nn.ReLU(),
-            nn.Dropout(0.3), nn.Linear(256, num_classes),
-        )
-
-    def forward(self, x):
-        x = self.features(x)
-        x = x.view(x.size(0), -1)
-        return self.classifier(x)
-
-
-primary_model = None
-inner_model = None
-p_class_names = None
-i_class_names = None
-name_to_key = None
-
-
-def load_models():
-    global primary_model, inner_model, p_class_names, i_class_names, name_to_key
-    if primary_model is not None:
-        return
-
-    from module.umamusume.asset.template import MANT_SHOP_ITEM_NAMES
-
-    pdata = torch.load(PRIMARY_MODEL_PATH, map_location="cpu", weights_only=False)
-    p_class_names = pdata["class_names"]
-    primary_model = PrimaryCNN(len(p_class_names))
-    primary_model.load_state_dict(pdata["model_state"])
-    primary_model.eval()
-
-    idata = torch.load(INNER_MODEL_PATH, map_location="cpu", weights_only=False)
-    i_class_names = idata["class_names"]
-    inner_model = InnerCNN(len(i_class_names))
-    inner_model.load_state_dict(idata["model_state"])
-    inner_model.eval()
-
-    name_to_key = {}
-    for key, cnn_name in MANT_SHOP_ITEM_NAMES.items():
-        name_to_key[cnn_name] = key
+EFFECT_PREFIXES = (
+    'race ', 'energy +', 'speed +', 'stamina +', 'power +', 'guts +',
+    'wisdom +', 'motivation', 'maximum', 'training', 'heal ', 'get ',
+    'all ', 'shuffle',
+)
 
 
 def is_shop_scan_turn(date):
@@ -245,119 +182,145 @@ def _gauss_scan_x():
             return x
 
 
-def find_item_icon_positions(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    icon_col = gray[SHOP_ROI_Y1:SHOP_ROI_Y2, ICON_X1:ICON_X2]
-    row_means = icon_col.mean(axis=1)
-
-    in_sep = False
-    separators = []
-    sep_start = 0
-    for y in range(len(row_means)):
-        if row_means[y] > 240:
-            if not in_sep:
-                sep_start = y
-                in_sep = True
-        else:
-            if in_sep:
-                if y - sep_start >= 5:
-                    separators.append((sep_start, y))
-                in_sep = False
-
-    zones = []
-    for s, e in separators:
-        if zones and s - zones[-1][1] < 10:
-            zones[-1] = (zones[-1][0], e)
-        else:
-            zones.append((s, e))
-
-    icon_positions = []
-    prev_end = 0
-    for s, e in zones:
-        if s - prev_end > 40:
-            item_h = s - prev_end
-            icon_y = prev_end + int(item_h * 0.15)
-            if icon_y >= 0 and icon_y + CROP_H <= len(row_means):
-                icon_positions.append(SHOP_ROI_Y1 + icon_y)
-        prev_end = e
-
-    if len(row_means) - prev_end > 40:
-        item_h = len(row_means) - prev_end
-        icon_y = prev_end + int(item_h * 0.15)
-        if icon_y >= 0 and icon_y + CROP_H <= len(row_means):
-            icon_positions.append(SHOP_ROI_Y1 + icon_y)
-
-    return icon_positions
+def is_effect_text(text):
+    lower = text.lower()
+    return any(lower.startswith(p) for p in EFFECT_PREFIXES)
 
 
-def classify_icon(icon):
-    x = torch.from_numpy(icon.astype(np.float32) / 255.0).permute(2, 0, 1).unsqueeze(0)
-    with torch.no_grad():
-        probs = torch.softmax(primary_model(x), 1)
-        p_conf, p_pred = probs.max(1)
-    p_class = p_class_names[p_pred.item()]
-    p_conf = p_conf.item()
+def classify_items_in_frame(frame):
+    name_roi = frame[SHOP_ROI_Y1:SHOP_ROI_Y2, OCR_NAME_X1:OCR_NAME_X2]
+    raw = ocr(name_roi, lang="en")
 
-    if p_class not in confusable_lookup and p_conf > 0.9:
-        return p_class, p_conf
+    if not raw or not raw[0]:
+        return [], False
 
-    if p_class not in confusable_lookup:
-        return None, p_conf
+    items = []
+    seen_y = []
 
-    inner = icon[BORDER_INSET:CROP_H, BORDER_INSET:CROP_W - BORDER_INSET]
-    inner_resized = cv2.resize(inner, (INNER_TRAIN_SIZE, INNER_TRAIN_SIZE), interpolation=cv2.INTER_AREA)
-    x2 = torch.from_numpy(inner_resized.astype(np.float32) / 255.0).permute(2, 0, 1).unsqueeze(0)
-    with torch.no_grad():
-        iprobs = torch.softmax(inner_model(x2), 1)
-
-    group = confusable_lookup[p_class]
-    group_indices = [i for i, n in enumerate(i_class_names) if n in group]
-    group_probs = {i_class_names[i]: iprobs[0, i].item() for i in group_indices}
-    best_inner = max(group_probs, key=group_probs.get)
-    best_inner_conf = group_probs[best_inner]
-    return best_inner, best_inner_conf
-
-
-def is_purchased(frame, abs_y):
-    row = frame[abs_y:abs_y + CROP_H, PURCHASED_CHECK_X1:PURCHASED_CHECK_X2]
-    return np.mean(row) < PURCHASED_BRIGHTNESS_THRESHOLD
-
-
-def classify_icons_in_frame(frame):
-    load_models()
-    positions = find_item_icon_positions(frame)
-    results = []
-    hit_purchased = False
-
-    for abs_y in positions:
-        if abs_y < SHOP_ROI_Y1 + EDGE_MARGIN or abs_y + CROP_H > SHOP_ROI_Y2 - EDGE_MARGIN:
+    for entry in raw[0]:
+        if not entry or len(entry) < 2:
             continue
-        icon = frame[abs_y:abs_y + CROP_H, ICON_X1:ICON_X2]
-        if icon.shape != (CROP_H, CROP_W, 3):
+        bbox = entry[0]
+        text = entry[1][0].strip()
+        conf = entry[1][1]
+        y_center = (bbox[0][1] + bbox[2][1]) / 2
+
+        if len(text) < 4 or conf < 0.5:
             continue
-        if np.std(icon) < 15:
+        lower = text.lower()
+        if lower in ('effect', 'cost', 'new', 'turn(s)', '6 turn(s)'):
+            continue
+        if text.replace('+', '').replace('-', '').replace(' ', '').replace('.', '').isdigit():
+            continue
+        if text.startswith('+') or text.startswith('-'):
+            continue
+        if is_effect_text(text):
             continue
 
-        if is_purchased(frame, abs_y):
-            hit_purchased = True
+        match = process.extractOne(text, SHOP_ITEM_NAMES, scorer=fuzz.ratio, score_cutoff=OCR_FUZZY_THRESHOLD)
+        if not match:
             continue
 
-        pred_class, conf = classify_icon(icon)
-        if pred_class is None:
+        matched_name, match_score, _ = match
+        abs_y = SHOP_ROI_Y1 + y_center
+
+        is_dup = False
+        for sy in seen_y:
+            if abs(abs_y - sy) < 40:
+                is_dup = True
+                break
+        if is_dup:
             continue
-        key = name_to_key.get(pred_class, pred_class)
 
-        if conf < CNN_CONFIDENCE_THRESHOLD:
-            continue
+        items.append((matched_name, match_score, abs_y))
+        seen_y.append(abs_y)
 
-        results.append((key, conf, abs_y))
+    items.sort(key=lambda r: r[2])
+    return items, False
 
-    return results, hit_purchased
+
+def dedup_detections(all_detections, captured_frames):
+    by_frame = defaultdict(list)
+    for key, conf, fi, abs_y in all_detections:
+        by_frame[fi].append((key, conf, abs_y))
+
+    sorted_frames = sorted(by_frame.keys())
+    if not sorted_frames:
+        return []
+
+    cumulative_shift = {sorted_frames[0]: 0}
+    for i in range(1, len(sorted_frames)):
+        prev_fi = sorted_frames[i - 1]
+        curr_fi = sorted_frames[i]
+
+        content_shift = 0
+        if prev_fi in captured_frames and curr_fi in captured_frames:
+            shift, conf = find_content_shift(captured_frames[prev_fi], captured_frames[curr_fi])
+            if conf > 0.85 and shift > 0:
+                content_shift = shift
+
+        if content_shift == 0:
+            prev_items = [(k, y) for k, c, y in by_frame[prev_fi]]
+            curr_items = [(k, y) for k, c, y in by_frame[curr_fi]]
+            shifts = []
+            used_curr = set()
+            for pk, py in prev_items:
+                best_shift = None
+                best_dist = 9999
+                best_ci = -1
+                for ci, (ck, cy) in enumerate(curr_items):
+                    if ci in used_curr:
+                        continue
+                    if pk == ck:
+                        dist = abs(py - cy)
+                        if dist < best_dist:
+                            best_dist = dist
+                            best_shift = py - cy
+                            best_ci = ci
+                if best_shift is not None:
+                    shifts.append(best_shift)
+                    used_curr.add(best_ci)
+            if shifts:
+                shifts.sort()
+                content_shift = shifts[len(shifts) // 2]
+
+        cumulative_shift[curr_fi] = cumulative_shift[prev_fi] + content_shift
+
+    global_detections = []
+    for key, conf, fi, abs_y in all_detections:
+        global_y = abs_y + cumulative_shift.get(fi, 0)
+        global_detections.append((key, conf, fi, global_y))
+
+    global_detections.sort(key=lambda d: d[3])
+    position_clusters = []
+    for key, conf, fi, gy in global_detections:
+        placed = False
+        for cluster in position_clusters:
+            cluster_gy = sum(d[3] for d in cluster) / len(cluster)
+            if abs(gy - cluster_gy) < 80:
+                cluster.append((key, conf, fi, gy))
+                placed = True
+                break
+        if not placed:
+            position_clusters.append([(key, conf, fi, gy)])
+
+    items_list = []
+    for cluster in position_clusters:
+        name_counts = Counter()
+        name_best_conf = {}
+        for k, c, fi, gy in cluster:
+            name_counts[k] += 1
+            if k not in name_best_conf or c > name_best_conf[k]:
+                name_best_conf[k] = c
+        winner = max(name_counts.keys(), key=lambda n: (name_counts[n], name_best_conf[n]))
+        avg_gy = sum(d[3] for d in cluster) / len(cluster)
+        items_list.append((winner, name_best_conf[winner], avg_gy))
+
+    items_list.sort(key=lambda x: x[2])
+    return items_list
 
 
 def scan_mant_shop(ctx):
-    load_models()
-
     from module.umamusume.constants.game_constants import is_summer_camp_period
     current_date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
     shop_x = SHOP_OPEN_X_SUMMER if is_summer_camp_period(current_date) else SHOP_OPEN_X
@@ -371,7 +334,7 @@ def scan_mant_shop(ctx):
     thumb = find_thumb(img_rgb)
 
     if thumb is None:
-        results, _ = classify_icons_in_frame(img)
+        results, _ = classify_items_in_frame(img)
         items_list = [(key, conf) for key, conf, _ in results]
         log.info("shop items: %s", [n for n, _ in items_list])
         ctx.ctrl.click(95, 1228)
@@ -428,8 +391,9 @@ def scan_mant_shop(ctx):
     est_frames = total_content / desired_shift
     swipe_dur = max(5000, min(25000, int(est_frames * 600)))
 
-    first_results, _ = classify_icons_in_frame(img)
+    first_results, _ = classify_items_in_frame(img)
     all_detections = []
+    captured_frames = {0: img.copy()}
     for key, conf, abs_y in first_results:
         all_detections.append((key, conf, 0, abs_y))
 
@@ -449,7 +413,8 @@ def scan_mant_shop(ctx):
             time.sleep(0.06)
             curr = ctx.ctrl.get_screen()
             if curr is not None and not content_same(prev_frame, curr):
-                f = pool.submit(classify_icons_in_frame, curr)
+                captured_frames[frame_idx] = curr.copy()
+                f = pool.submit(classify_items_in_frame, curr)
                 futures.append((frame_idx, f))
                 prev_frame = curr
                 frame_idx += 1
@@ -464,67 +429,16 @@ def scan_mant_shop(ctx):
         time.sleep(0.15)
         final = ctx.ctrl.get_screen()
         if final is not None and not content_same(prev_frame, final):
-            f = pool.submit(classify_icons_in_frame, final)
+            captured_frames[frame_idx] = final.copy()
+            f = pool.submit(classify_items_in_frame, final)
             futures.append((frame_idx, f))
 
         for fi, f in futures:
-            hits, hit_purchased = f.result()
+            hits, _ = f.result()
             for key, conf, abs_y in hits:
                 all_detections.append((key, conf, fi, abs_y))
 
-    frame_shifts = {}
-    by_frame = defaultdict(list)
-    for key, conf, fi, abs_y in all_detections:
-        by_frame[fi].append((key, conf, abs_y))
-
-    sorted_frames = sorted(by_frame.keys())
-    cumulative_shift = {sorted_frames[0]: 0} if sorted_frames else {}
-    for i in range(1, len(sorted_frames)):
-        prev_fi = sorted_frames[i - 1]
-        curr_fi = sorted_frames[i]
-        prev_items = {(k, y) for k, c, y in by_frame[prev_fi]}
-        curr_items = {(k, y) for k, c, y in by_frame[curr_fi]}
-        shifts = []
-        for pk, py in prev_items:
-            for ck, cy in curr_items:
-                if pk == ck:
-                    shifts.append(py - cy)
-        if shifts:
-            shifts.sort()
-            median_shift = shifts[len(shifts) // 2]
-        else:
-            median_shift = 0
-        cumulative_shift[curr_fi] = cumulative_shift[prev_fi] + median_shift
-
-    global_detections = []
-    for key, conf, fi, abs_y in all_detections:
-        global_y = abs_y + cumulative_shift.get(fi, 0)
-        global_detections.append((key, conf, fi, global_y))
-
-    by_name = defaultdict(list)
-    for key, conf, fi, gy in global_detections:
-        by_name[key].append((conf, fi, gy))
-
-    items_list = []
-    for name, dets in by_name.items():
-        dets.sort(key=lambda d: d[2])
-        clusters = []
-        for conf, fi, gy in dets:
-            placed = False
-            for cluster in clusters:
-                if abs(gy - cluster[-1][2]) < 80:
-                    cluster.append((conf, fi, gy))
-                    placed = True
-                    break
-            if not placed:
-                clusters.append([(conf, fi, gy)])
-
-        for cluster in clusters:
-            best_conf = max(d[0] for d in cluster)
-            avg_gy = sum(d[2] for d in cluster) / len(cluster)
-            items_list.append((name, best_conf, avg_gy))
-
-    items_list.sort(key=lambda x: x[2])
+    items_list = dedup_detections(all_detections, captured_frames)
     log.info("shop items: %s", [(n, round(gy)) for n, _, gy in items_list])
 
     first_item_gy = items_list[0][2] if items_list else 0
@@ -545,8 +459,6 @@ BACK_BTN_Y = 1228
 
 
 def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_gy):
-    load_models()
-
     from module.umamusume.constants.game_constants import is_summer_camp_period
     current_date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
     shop_x = SHOP_OPEN_X_SUMMER if is_summer_camp_period(current_date) else SHOP_OPEN_X
@@ -586,7 +498,7 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
                 time.sleep(0.3)
 
         frame = ctx.ctrl.get_screen()
-        results, _ = classify_icons_in_frame(frame)
+        results, _ = classify_items_in_frame(frame)
         matches = [(k, c, y) for k, c, y in results if k == name]
 
         if not matches:
@@ -600,7 +512,7 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
                     trigger_scrollbar(ctx)
                     time.sleep(0.3)
                 frame = ctx.ctrl.get_screen()
-                results, _ = classify_icons_in_frame(frame)
+                results, _ = classify_items_in_frame(frame)
                 matches = [(k, c, y) for k, c, y in results if k == name]
                 if matches:
                     break
@@ -611,7 +523,7 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
             time.sleep(1)
             return False
 
-        click_y = matches[0][2] + CROP_H // 2
+        click_y = int(matches[0][2]) + 20
         ctx.ctrl.click(CHECKBOX_X, click_y, "select " + name)
         time.sleep(0.3)
         selected += 1

@@ -1,479 +1,532 @@
 [
   {
-    "name": "speedsmall",
-    "filename": "speedsmall.png",
+    "name": "speed_notepad",
+    "filename": "speed_notepad.png",
     "section": "Stats",
     "jpName": "スピードのメモ帳",
     "effect": "Speed +3",
     "cost": 10,
-    "iconId": "scenario_free_item_icon_01001"
+    "iconId": "scenario_free_item_icon_01001",
+    "displayName": "Speed Notepad"
   },
   {
-    "name": "staminasmall",
-    "filename": "staminasmall.png",
+    "name": "stamina_notepad",
+    "filename": "stamina_notepad.png",
     "section": "Stats",
     "jpName": "スタミナのメモ帳",
     "effect": "Stamina +3",
     "cost": 10,
-    "iconId": "scenario_free_item_icon_01002"
+    "iconId": "scenario_free_item_icon_01002",
+    "displayName": "Stamina Notepad"
   },
   {
-    "name": "powersmall",
-    "filename": "powersmall.png",
+    "name": "power_notepad",
+    "filename": "power_notepad.png",
     "section": "Stats",
     "jpName": "パワーのメモ帳",
     "effect": "Power +3",
     "cost": 10,
-    "iconId": "scenario_free_item_icon_01003"
+    "iconId": "scenario_free_item_icon_01003",
+    "displayName": "Power Notepad"
   },
   {
-    "name": "gutssmall",
-    "filename": "gutssmall.png",
+    "name": "guts_notepad",
+    "filename": "guts_notepad.png",
     "section": "Stats",
     "jpName": "根性のメモ帳",
     "effect": "Guts +3",
     "cost": 10,
-    "iconId": "scenario_free_item_icon_01004"
+    "iconId": "scenario_free_item_icon_01004",
+    "displayName": "Guts Notepad"
   },
   {
-    "name": "witsmall",
-    "filename": "witsmall.png",
+    "name": "wit_notepad",
+    "filename": "wit_notepad.png",
     "section": "Stats",
     "jpName": "賢さのメモ帳",
     "effect": "Wisdom +3",
     "cost": 10,
-    "iconId": "scenario_free_item_icon_01005"
+    "iconId": "scenario_free_item_icon_01005",
+    "displayName": "Wit Notepad"
   },
   {
-    "name": "speedmedium",
-    "filename": "speedmedium.png",
+    "name": "speed_manual",
+    "filename": "speed_manual.png",
     "section": "Stats",
     "jpName": "スピード戦術書",
     "effect": "Speed +7",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_01101"
+    "iconId": "scenario_free_item_icon_01101",
+    "displayName": "Speed Manual"
   },
   {
-    "name": "staminamedium",
-    "filename": "staminamedium.png",
+    "name": "stamina_manual",
+    "filename": "stamina_manual.png",
     "section": "Stats",
     "jpName": "スタミナ戦術書",
     "effect": "Stamina +7",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_01102"
+    "iconId": "scenario_free_item_icon_01102",
+    "displayName": "Stamina Manual"
   },
   {
-    "name": "powermedium",
-    "filename": "powermedium.png",
+    "name": "power_manual",
+    "filename": "power_manual.png",
     "section": "Stats",
     "jpName": "パワー戦術書",
     "effect": "Power +7",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_01103"
+    "iconId": "scenario_free_item_icon_01103",
+    "displayName": "Power Manual"
   },
   {
-    "name": "gutsmedium",
-    "filename": "gutsmedium.png",
+    "name": "guts_manual",
+    "filename": "guts_manual.png",
     "section": "Stats",
     "jpName": "根性戦術書",
     "effect": "Guts +7",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_01104"
+    "iconId": "scenario_free_item_icon_01104",
+    "displayName": "Guts Manual"
   },
   {
-    "name": "witmedium",
-    "filename": "witmedium.png",
+    "name": "wit_manual",
+    "filename": "wit_manual.png",
     "section": "Stats",
     "jpName": "賢さ戦術書",
     "effect": "Wisdom +7",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_01105"
+    "iconId": "scenario_free_item_icon_01105",
+    "displayName": "Wit Manual"
   },
   {
-    "name": "speedlarge",
-    "filename": "speedlarge.png",
+    "name": "speed_scroll",
+    "filename": "speed_scroll.png",
     "section": "Stats",
     "jpName": "スピード秘伝書",
     "effect": "Speed +15",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_01201"
+    "iconId": "scenario_free_item_icon_01201",
+    "displayName": "Speed Scroll"
   },
   {
-    "name": "staminalarge",
-    "filename": "staminalarge.png",
+    "name": "stamina_scroll",
+    "filename": "stamina_scroll.png",
     "section": "Stats",
     "jpName": "スタミナ秘伝書",
     "effect": "Stamina +15",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_01202"
+    "iconId": "scenario_free_item_icon_01202",
+    "displayName": "Stamina Scroll"
   },
   {
-    "name": "powerlarge",
-    "filename": "powerlarge.png",
+    "name": "power_scroll",
+    "filename": "power_scroll.png",
     "section": "Stats",
     "jpName": "パワー秘伝書",
     "effect": "Power +15",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_01203"
+    "iconId": "scenario_free_item_icon_01203",
+    "displayName": "Power Scroll"
   },
   {
-    "name": "gutslarge",
-    "filename": "gutslarge.png",
+    "name": "guts_scroll",
+    "filename": "guts_scroll.png",
     "section": "Stats",
     "jpName": "根性秘伝書",
     "effect": "Guts +15",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_01204"
+    "iconId": "scenario_free_item_icon_01204",
+    "displayName": "Guts Scroll"
   },
   {
-    "name": "witlarge",
-    "filename": "witlarge.png",
+    "name": "wit_scroll",
+    "filename": "wit_scroll.png",
     "section": "Stats",
     "jpName": "賢さ秘伝書",
     "effect": "Wisdom +15",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_01205"
+    "iconId": "scenario_free_item_icon_01205",
+    "displayName": "Wit Scroll"
   },
   {
-    "name": "energydrinksmall",
-    "filename": "energydrinksmall.png",
+    "name": "vita_20",
+    "filename": "vita_20.png",
     "section": "Energy and Motivation",
     "jpName": "バイタル20",
     "effect": "Energy +20",
     "cost": 35,
-    "iconId": "scenario_free_item_icon_02001"
+    "iconId": "scenario_free_item_icon_02001",
+    "displayName": "Vita 20"
   },
   {
-    "name": "energydrinkmedium",
-    "filename": "energydrinkmedium.png",
+    "name": "vita_40",
+    "filename": "vita_40.png",
     "section": "Energy and Motivation",
     "jpName": "バイタル40",
     "effect": "Energy +40",
     "cost": 55,
-    "iconId": "scenario_free_item_icon_02002"
+    "iconId": "scenario_free_item_icon_02002",
+    "displayName": "Vita 40"
   },
   {
-    "name": "energydrinklarge",
-    "filename": "energydrinklarge.png",
+    "name": "vita_65",
+    "filename": "vita_65.png",
     "section": "Energy and Motivation",
     "jpName": "バイタル65",
     "effect": "Energy +65",
     "cost": 75,
-    "iconId": "scenario_free_item_icon_02003"
+    "iconId": "scenario_free_item_icon_02003",
+    "displayName": "Vita 65"
   },
   {
-    "name": "greenjuice",
-    "filename": "greenjuice.png",
+    "name": "royal_kale_juice",
+    "filename": "royal_kale_juice.png",
     "section": "Energy and Motivation",
     "jpName": "ロイヤルビタージュース",
     "effect": "Energy +100, Motivation -1",
     "cost": 70,
-    "iconId": "scenario_free_item_icon_02101"
+    "iconId": "scenario_free_item_icon_02101",
+    "displayName": "Royal Kale Juice"
   },
   {
-    "name": "maxsmall",
-    "filename": "maxsmall.png",
+    "name": "energy_drink_max",
+    "filename": "energy_drink_max.png",
     "section": "Energy and Motivation",
     "jpName": "エネドリンクMAX",
     "effect": "Maximum energy +4, Energy +5",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_02201"
+    "iconId": "scenario_free_item_icon_02201",
+    "displayName": "Energy Drink MAX"
   },
   {
-    "name": "maxlarge",
-    "filename": "maxlarge.png",
+    "name": "energy_drink_max_ex",
+    "filename": "energy_drink_max_ex.png",
     "section": "Energy and Motivation",
     "jpName": "ロングエネドリンクMAX",
     "effect": "Maximum energy +8",
     "cost": 50,
-    "iconId": "scenario_free_item_icon_02202"
+    "iconId": "scenario_free_item_icon_02202",
+    "displayName": "Energy Drink MAX EX"
   },
   {
-    "name": "moodsmall",
-    "filename": "moodsmall.png",
+    "name": "plain_cupcake",
+    "filename": "plain_cupcake.png",
     "section": "Energy and Motivation",
     "jpName": "プレーンカップケーキ",
     "effect": "Motivation +1",
     "cost": 30,
-    "iconId": "scenario_free_item_icon_02301"
+    "iconId": "scenario_free_item_icon_02301",
+    "displayName": "Plain Cupcake"
   },
   {
-    "name": "moodlarge",
-    "filename": "moodlarge.png",
+    "name": "berry_sweet_cupcake",
+    "filename": "berry_sweet_cupcake.png",
     "section": "Energy and Motivation",
     "jpName": "スイートカップケーキ",
     "effect": "Motivation +2",
     "cost": 55,
-    "iconId": "scenario_free_item_icon_02302"
+    "iconId": "scenario_free_item_icon_02302",
+    "displayName": "Berry Sweet Cupcake"
   },
   {
-    "name": "catfood",
-    "filename": "catfood.png",
+    "name": "yummy_cat_food",
+    "filename": "yummy_cat_food.png",
     "section": "Bond",
     "jpName": "おいしい猫缶",
     "effect": "Yayoi Akikawa's bond +5",
     "cost": 10,
-    "iconId": "scenario_free_item_icon_03001"
+    "iconId": "scenario_free_item_icon_03001",
+    "displayName": "Yummy Cat Food"
   },
   {
-    "name": "bbq",
-    "filename": "bbq.png",
+    "name": "grilled_carrots",
+    "filename": "grilled_carrots.png",
     "section": "Bond",
     "jpName": "にんじんBBQセット",
     "effect": "All Support card bonds +5",
     "cost": 40,
-    "iconId": "scenario_free_item_icon_03101"
+    "iconId": "scenario_free_item_icon_03101",
+    "displayName": "Grilled Carrots"
   },
   {
-    "name": "mirror",
-    "filename": "mirror.png",
+    "name": "pretty_mirror",
+    "filename": "pretty_mirror.png",
     "section": "Get Good Conditions",
     "jpName": "プリティーミラー",
     "effect": "Get Charming ○ status effect",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_04001"
+    "iconId": "scenario_free_item_icon_04001",
+    "displayName": "Pretty Mirror"
   },
   {
-    "name": "binoc",
-    "filename": "binoc.png",
+    "name": "reporters_binoculars",
+    "filename": "reporters_binoculars.png",
     "section": "Get Good Conditions",
     "jpName": "名物記者の双眼鏡",
     "effect": "Get Rising Star status effect",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_04002"
+    "iconId": "scenario_free_item_icon_04002",
+    "displayName": "Reporter's Binoculars"
   },
   {
-    "name": "ppbook",
-    "filename": "ppbook.png",
+    "name": "master_practice_guide",
+    "filename": "master_practice_guide.png",
     "section": "Get Good Conditions",
     "jpName": "効率練習のススメ",
     "effect": "Get Good Practice ○ status effect",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_04003"
+    "iconId": "scenario_free_item_icon_04003",
+    "displayName": "Master Practice Guide"
   },
   {
-    "name": "hat",
-    "filename": "hat.png",
+    "name": "scholars_hat",
+    "filename": "scholars_hat.png",
     "section": "Get Good Conditions",
     "jpName": "博学帽子",
     "effect": "Get Sharp status effect",
     "cost": 280,
-    "iconId": "scenario_free_item_icon_04004"
+    "iconId": "scenario_free_item_icon_04004",
+    "displayName": "Scholar's Hat"
   },
   {
-    "name": "pillow",
-    "filename": "pillow.png",
+    "name": "fluffy_pillow",
+    "filename": "fluffy_pillow.png",
     "section": "Heal Bad Conditions",
     "jpName": "すやすや安眠枕",
     "effect": "Heal Insomnia",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_04101"
+    "iconId": "scenario_free_item_icon_04101",
+    "displayName": "Fluffy Pillow"
   },
   {
-    "name": "scheduler",
-    "filename": "scheduler.png",
+    "name": "pocket_planner",
+    "filename": "pocket_planner.png",
     "section": "Heal Bad Conditions",
     "jpName": "ポケットスケジュール帳",
     "effect": "Heal Lazy Habit",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_04102"
+    "iconId": "scenario_free_item_icon_04102",
+    "displayName": "Pocket Planner"
   },
   {
-    "name": "handcream",
-    "filename": "handcream.png",
+    "name": "rich_hand_cream",
+    "filename": "rich_hand_cream.png",
     "section": "Heal Bad Conditions",
     "jpName": "うるおいハンドクリーム",
     "effect": "Heal Rough Skin",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_04103"
+    "iconId": "scenario_free_item_icon_04103",
+    "displayName": "Rich Hand Cream"
   },
   {
-    "name": "scale",
-    "filename": "scale.png",
+    "name": "smart_scale",
+    "filename": "smart_scale.png",
     "section": "Heal Bad Conditions",
     "jpName": "スリムスキャナー",
     "effect": "Heal Overweight",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_04104"
+    "iconId": "scenario_free_item_icon_04104",
+    "displayName": "Smart Scale"
   },
   {
-    "name": "aroma",
-    "filename": "aroma.png",
+    "name": "aroma_diffuser",
+    "filename": "aroma_diffuser.png",
     "section": "Heal Bad Conditions",
     "jpName": "アロマディフューザー",
     "effect": "Heal Migraine",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_04105"
+    "iconId": "scenario_free_item_icon_04105",
+    "displayName": "Aroma Diffuser"
   },
   {
-    "name": "useless2",
-    "filename": "useless2.png",
+    "name": "practice_drills_dvd",
+    "filename": "practice_drills_dvd.png",
     "section": "Heal Bad Conditions",
     "jpName": "練習改善DVD",
     "effect": "Heal Bad Practice",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_04106"
+    "iconId": "scenario_free_item_icon_04106",
+    "displayName": "Practice Drills DVD"
   },
   {
-    "name": "cureall",
-    "filename": "cureall.png",
+    "name": "miracle_cure",
+    "filename": "miracle_cure.png",
     "section": "Heal Bad Conditions",
     "jpName": "ナンデモナオール",
     "effect": "Heal all negative status effects",
     "cost": 40,
-    "iconId": "scenario_free_item_icon_04201"
+    "iconId": "scenario_free_item_icon_04201",
+    "displayName": "Miracle Cure"
   },
   {
-    "name": "speedpet",
-    "filename": "speedpet.png",
+    "name": "speed_training_application",
+    "filename": "speed_training_application.png",
     "section": "Training Facilities",
     "jpName": "スピードトレーニング嘆願書",
     "effect": "Speed Training Level +1",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_05001"
+    "iconId": "scenario_free_item_icon_05001",
+    "displayName": "Speed Training Application"
   },
   {
-    "name": "staminapet",
-    "filename": "staminapet.png",
+    "name": "stamina_training_application",
+    "filename": "stamina_training_application.png",
     "section": "Training Facilities",
     "jpName": "スタミナトレーニング嘆願書",
     "effect": "Stamina Training Level +1",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_05002"
+    "iconId": "scenario_free_item_icon_05002",
+    "displayName": "Stamina Training Application"
   },
   {
-    "name": "powerpet",
-    "filename": "powerpet.png",
+    "name": "power_training_application",
+    "filename": "power_training_application.png",
     "section": "Training Facilities",
     "jpName": "パワートレーニング嘆願書",
     "effect": "Power Training Level +1",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_05003"
+    "iconId": "scenario_free_item_icon_05003",
+    "displayName": "Power Training Application"
   },
   {
-    "name": "gutspet",
-    "filename": "gutspet.png",
+    "name": "guts_training_application",
+    "filename": "guts_training_application.png",
     "section": "Training Facilities",
     "jpName": "根性トレーニング嘆願書",
     "effect": "Guts Training Level +1",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_05004"
+    "iconId": "scenario_free_item_icon_05004",
+    "displayName": "Guts Training Application"
   },
   {
-    "name": "witpet",
-    "filename": "witpet.png",
+    "name": "wit_training_application",
+    "filename": "wit_training_application.png",
     "section": "Training Facilities",
     "jpName": "賢さトレーニング嘆願書",
     "effect": "Wisdom Training Level +1",
     "cost": 150,
-    "iconId": "scenario_free_item_icon_05005"
+    "iconId": "scenario_free_item_icon_05005",
+    "displayName": "Wit Training Application"
   },
   {
-    "name": "shuffle",
-    "filename": "shuffle.png",
+    "name": "reset_whistle",
+    "filename": "reset_whistle.png",
     "section": "Training Facilities",
     "jpName": "リセットホイッスル",
     "effect": "Shuffle support card distribution",
     "cost": 20,
-    "iconId": "scenario_free_item_icon_07001"
+    "iconId": "scenario_free_item_icon_07001",
+    "displayName": "Reset Whistle"
   },
   {
-    "name": "megasmall",
-    "filename": "megasmall.png",
+    "name": "coaching_megaphone",
+    "filename": "coaching_megaphone.png",
     "section": "Training Effects",
     "jpName": "チアメガホン",
     "effect": "Training bonus +20% for 4 turns",
     "cost": 40,
-    "iconId": "scenario_free_item_icon_08001"
+    "iconId": "scenario_free_item_icon_08001",
+    "displayName": "Coaching Megaphone"
   },
   {
-    "name": "megamedium",
-    "filename": "megamedium.png",
+    "name": "motivating_megaphone",
+    "filename": "motivating_megaphone.png",
     "section": "Training Effects",
     "jpName": "スパルタメガホン",
     "effect": "Training bonus +40% for 3 turns",
     "cost": 55,
-    "iconId": "scenario_free_item_icon_08002"
+    "iconId": "scenario_free_item_icon_08002",
+    "displayName": "Motivating Megaphone"
   },
   {
-    "name": "megalarge",
-    "filename": "megalarge.png",
+    "name": "empowering_megaphone",
+    "filename": "empowering_megaphone.png",
     "section": "Training Effects",
     "jpName": "ブートキャンプメガホン",
     "effect": "Training bonus +60% for 2 turns",
     "cost": 70,
-    "iconId": "scenario_free_item_icon_08003"
+    "iconId": "scenario_free_item_icon_08003",
+    "displayName": "Empowering Megaphone"
   },
   {
-    "name": "speedweights",
-    "filename": "speedweights.png",
+    "name": "speed_ankle_weights",
+    "filename": "speed_ankle_weights.png",
     "section": "Training Effects",
     "jpName": "スピードアンクルウェイト",
     "effect": "Speed training bonus +50%, Energy consumption +20% (One turn)",
     "cost": 50,
-    "iconId": "scenario_free_item_icon_09001"
+    "iconId": "scenario_free_item_icon_09001",
+    "displayName": "Speed Ankle Weights"
   },
   {
-    "name": "staminaweights",
-    "filename": "staminaweights.png",
+    "name": "stamina_ankle_weights",
+    "filename": "stamina_ankle_weights.png",
     "section": "Training Effects",
     "jpName": "スタミナアンクルウェイト",
     "effect": "Stamina training bonus +50%, Energy consumption +20% (One turn)",
     "cost": 50,
-    "iconId": "scenario_free_item_icon_09002"
+    "iconId": "scenario_free_item_icon_09002",
+    "displayName": "Stamina Ankle Weights"
   },
   {
-    "name": "powerweights",
-    "filename": "powerweights.png",
+    "name": "power_ankle_weights",
+    "filename": "power_ankle_weights.png",
     "section": "Training Effects",
     "jpName": "パワーアンクルウェイト",
     "effect": "Power training bonus +50%, Energy consumption +20% (One turn)",
     "cost": 50,
-    "iconId": "scenario_free_item_icon_09003"
+    "iconId": "scenario_free_item_icon_09003",
+    "displayName": "Power Ankle Weights"
   },
   {
-    "name": "gutsweights",
-    "filename": "gutsweights.png",
+    "name": "guts_ankle_weights",
+    "filename": "guts_ankle_weights.png",
     "section": "Training Effects",
     "jpName": "根性アンクルウェイト",
     "effect": "Guts training bonus +50%, Energy consumption +20% (One turn)",
     "cost": 50,
-    "iconId": "scenario_free_item_icon_09004"
+    "iconId": "scenario_free_item_icon_09004",
+    "displayName": "Guts Ankle Weights"
   },
   {
-    "name": "prayer",
-    "filename": "prayer.png",
+    "name": "good-luck_charm",
+    "filename": "good-luck_charm.png",
     "section": "Training Effects",
     "jpName": "健康祈願のお守り",
     "effect": "Training failure rate set to 0% (One turn)",
     "cost": 40,
-    "iconId": "scenario_free_item_icon_10001"
+    "iconId": "scenario_free_item_icon_10001",
+    "displayName": "Good-Luck Charm"
   },
   {
-    "name": "rb",
-    "filename": "rb.png",
+    "name": "artisan_cleat_hammer",
+    "filename": "artisan_cleat_hammer.png",
     "section": "Races",
     "jpName": "蹄鉄ハンマー・匠",
     "effect": "Race bonus +20% (One turn)",
     "cost": 25,
-    "iconId": "scenario_free_item_icon_11001"
+    "iconId": "scenario_free_item_icon_11001",
+    "displayName": "Artisan Cleat Hammer"
   },
   {
-    "name": "rbex",
-    "filename": "rbex.png",
+    "name": "master_cleat_hammer",
+    "filename": "master_cleat_hammer.png",
     "section": "Races",
     "jpName": "蹄鉄ハンマー・極",
     "effect": "Race bonus +35% (One turn)",
     "cost": 40,
-    "iconId": "scenario_free_item_icon_11002"
+    "iconId": "scenario_free_item_icon_11002",
+    "displayName": "Master Cleat Hammer"
   },
   {
-    "name": "penlight",
-    "filename": "penlight.png",
+    "name": "glow_sticks",
+    "filename": "glow_sticks.png",
     "section": "Races",
     "jpName": "三色ペンライト",
     "effect": "Race fan gain +50% (One turn)",
     "cost": 15,
-    "iconId": "scenario_free_item_icon_11003"
+    "iconId": "scenario_free_item_icon_11003",
+    "displayName": "Glow Sticks"
   }
 ]

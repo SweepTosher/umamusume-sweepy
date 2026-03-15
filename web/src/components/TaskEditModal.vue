@@ -112,9 +112,9 @@
                         <label>Use when percentile is (whistle above rest below)</label>
                         <div class="mant-threshold-group">
                           <div class="mant-threshold-row">
-                            <img :src="getMantItemImg('shuffle')" class="mant-threshold-img" />
+                            <img :src="getMantItemImg('reset_whistle')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
-                              <span class="mant-threshold-label">Whistle</span>
+                              <span class="mant-threshold-label">Reset Whistle</span>
                               <div class="mant-threshold-slider-row">
                                 <input type="range" class="hint-slider" v-model.number="mantWhistleThreshold" min="0" max="100" />
                                 <span class="mant-threshold-val">{{ mantWhistleThreshold }}</span>
@@ -126,9 +126,9 @@
                             </div>
                           </div>
                           <div class="mant-threshold-row">
-                            <img :src="getMantItemImg('megasmall')" class="mant-threshold-img" />
+                            <img :src="getMantItemImg('coaching_megaphone')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
-                              <span class="mant-threshold-label">Mega Small</span>
+                              <span class="mant-threshold-label">Coaching Megaphone</span>
                               <div class="mant-threshold-slider-row">
                                 <input type="range" class="hint-slider" v-model.number="mantMegaSmallThreshold" min="0" max="100" />
                                 <span class="mant-threshold-val">{{ mantMegaSmallThreshold }}</span>
@@ -136,9 +136,9 @@
                             </div>
                           </div>
                           <div class="mant-threshold-row">
-                            <img :src="getMantItemImg('megamedium')" class="mant-threshold-img" />
+                            <img :src="getMantItemImg('motivating_megaphone')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
-                              <span class="mant-threshold-label">Mega Medium</span>
+                              <span class="mant-threshold-label">Motivating Megaphone</span>
                               <div class="mant-threshold-slider-row">
                                 <input type="range" class="hint-slider" v-model.number="mantMegaMediumThreshold" min="0" max="100" />
                                 <span class="mant-threshold-val">{{ mantMegaMediumThreshold }}</span>
@@ -146,9 +146,9 @@
                             </div>
                           </div>
                           <div class="mant-threshold-row">
-                            <img :src="getMantItemImg('megalarge')" class="mant-threshold-img" />
+                            <img :src="getMantItemImg('empowering_megaphone')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
-                              <span class="mant-threshold-label">Mega Large</span>
+                              <span class="mant-threshold-label">Empowering Megaphone</span>
                               <div class="mant-threshold-slider-row">
                                 <input type="range" class="hint-slider" v-model.number="mantMegaLargeThreshold" min="0" max="100" />
                                 <span class="mant-threshold-val">{{ mantMegaLargeThreshold }}</span>
@@ -157,13 +157,13 @@
                           </div>
                           <div class="mant-threshold-row">
                             <div class="mant-threshold-img-grid">
-                              <img :src="getMantItemImg('speedweights')" />
-                              <img :src="getMantItemImg('staminaweights')" />
-                              <img :src="getMantItemImg('powerweights')" />
-                              <img :src="getMantItemImg('gutsweights')" />
+                              <img :src="getMantItemImg('speed_ankle_weights')" />
+                              <img :src="getMantItemImg('stamina_ankle_weights')" />
+                              <img :src="getMantItemImg('power_ankle_weights')" />
+                              <img :src="getMantItemImg('guts_ankle_weights')" />
                             </div>
                             <div class="mant-threshold-controls">
-                              <span class="mant-threshold-label">Training Weights</span>
+                              <span class="mant-threshold-label">Ankle Weights</span>
                               <div class="mant-threshold-slider-row">
                                 <input type="range" class="hint-slider" v-model.number="mantTrainingWeightsThreshold" min="0" max="100" />
                                 <span class="mant-threshold-val">{{ mantTrainingWeightsThreshold }}</span>
@@ -176,7 +176,7 @@
                         <label>Friendship</label>
                         <div class="mant-threshold-group">
                           <div class="mant-threshold-row">
-                            <img :src="getMantItemImg('bbq')" class="mant-threshold-img" />
+                            <img :src="getMantItemImg('grilled_carrots')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
                               <span class="mant-threshold-label">Number of unmaxxed cards (Bumped up a tier for number above and down for every number below during training)</span>
                               <div class="mant-threshold-slider-row">
@@ -2206,20 +2206,20 @@ export default {
       mantDragItemId: null,
       mantTierCount: 2,
       mantItemIds: [
-        'speedsmall','speedmedium','speedlarge',
-        'staminasmall','staminamedium','staminalarge',
-        'powersmall','powermedium','powerlarge',
-        'gutssmall','gutsmedium','gutslarge',
-        'witsmall','witmedium','witlarge',
-        'energydrinksmall','energydrinkmedium','energydrinklarge',
-        'greenjuice','maxsmall','maxlarge','moodsmall','moodlarge',
-        'catfood','bbq',
-        'mirror','binoc','ppbook','hat',
-        'pillow','scheduler','handcream','scale','aroma','useless2','cureall',
-        'speedpet','staminapet','powerpet','gutspet','witpet','shuffle',
-        'megasmall','megamedium','megalarge',
-        'speedweights','staminaweights','powerweights','gutsweights','prayer',
-        'rb','rbex','penlight',
+        'speed_notepad','speed_manual','speed_scroll',
+        'stamina_notepad','stamina_manual','stamina_scroll',
+        'power_notepad','power_manual','power_scroll',
+        'guts_notepad','guts_manual','guts_scroll',
+        'wit_notepad','wit_manual','wit_scroll',
+        'vita_20','vita_40','vita_65',
+        'royal_kale_juice','energy_drink_max','energy_drink_max_ex','plain_cupcake','berry_sweet_cupcake',
+        'yummy_cat_food','grilled_carrots',
+        'pretty_mirror','reporters_binoculars','master_practice_guide','scholars_hat',
+        'fluffy_pillow','pocket_planner','rich_hand_cream','smart_scale','aroma_diffuser','practice_drills_dvd','miracle_cure',
+        'speed_training_application','stamina_training_application','power_training_application','guts_training_application','wit_training_application','reset_whistle',
+        'coaching_megaphone','motivating_megaphone','empowering_megaphone',
+        'speed_ankle_weights','stamina_ankle_weights','power_ankle_weights','guts_ankle_weights','good-luck_charm',
+        'artisan_cleat_hammer','master_cleat_hammer','glow_sticks',
       ],
       mantItemTiers: {},
       mantWhistleThreshold: 20,
@@ -3416,22 +3416,22 @@ export default {
     },
     mantGetDefaultTiers() {
       const defaults = {
-        speedsmall: 5, speedmedium: 2, speedlarge: 2,
-        staminasmall: 5, staminamedium: 2, staminalarge: 2,
-        powersmall: 5, powermedium: 2, powerlarge: 2,
-        gutssmall: 5, gutsmedium: 2, gutslarge: 2,
-        witsmall: 5, witmedium: 2, witlarge: 2,
-        energydrinksmall: 2, energydrinkmedium: 2, energydrinklarge: 2,
-        greenjuice: 2, maxsmall: 5, maxlarge: 6,
-        moodsmall: 2, moodlarge: 3, catfood: 6, bbq: 3,
-        mirror: 6, binoc: 6, ppbook: 6, hat: 5,
-        pillow: 6, scheduler: 6, handcream: 4, scale: 6,
-        aroma: 6, useless2: 6, cureall: 4,
-        speedpet: 6, staminapet: 6, powerpet: 6, gutspet: 6, witpet: 6,
-        shuffle: 1,
-        megasmall: 2, megamedium: 2, megalarge: 2,
-        speedweights: 6, staminaweights: 6, powerweights: 6, gutsweights: 6,
-        prayer: 2, rb: 2, rbex: 2, penlight: 6,
+        speed_notepad: 5, speed_manual: 2, speed_scroll: 2,
+        stamina_notepad: 5, stamina_manual: 2, stamina_scroll: 2,
+        power_notepad: 5, power_manual: 2, power_scroll: 2,
+        guts_notepad: 5, guts_manual: 2, guts_scroll: 2,
+        wit_notepad: 5, wit_manual: 2, wit_scroll: 2,
+        vita_20: 2, vita_40: 2, vita_65: 2,
+        royal_kale_juice: 2, energy_drink_max: 5, energy_drink_max_ex: 6,
+        plain_cupcake: 2, berry_sweet_cupcake: 3, yummy_cat_food: 6, grilled_carrots: 3,
+        pretty_mirror: 6, reporters_binoculars: 6, master_practice_guide: 6, scholars_hat: 5,
+        fluffy_pillow: 6, pocket_planner: 6, rich_hand_cream: 4, smart_scale: 6,
+        aroma_diffuser: 6, practice_drills_dvd: 6, miracle_cure: 4,
+        speed_training_application: 6, stamina_training_application: 6, power_training_application: 6, guts_training_application: 6, wit_training_application: 6,
+        reset_whistle: 1,
+        coaching_megaphone: 2, motivating_megaphone: 2, empowering_megaphone: 2,
+        speed_ankle_weights: 6, stamina_ankle_weights: 6, power_ankle_weights: 6, guts_ankle_weights: 6,
+        'good-luck_charm': 2, artisan_cleat_hammer: 2, master_cleat_hammer: 2, glow_sticks: 6,
       };
       const t = {};
       this.mantGetAllItemIds().forEach(id => { t[id] = defaults[id] ?? 2; });
@@ -3457,8 +3457,7 @@ export default {
       this.mantDragItemId = null;
       this.mantDragOverTier = null;
     },
-    mantMigrateLegacyTiers() {
-      // Convert old tier -1 (blacklist) and 0 (unselected) to valid numbered tiers
+    mantNormalizeTiers() {
       const ids = this.mantGetAllItemIds();
       let needsMigration = false;
       for (const id of ids) {
@@ -4043,7 +4042,7 @@ export default {
       if ('mant_config' in this.presetsUse && this.presetsUse.mant_config.item_tiers) {
         this.mantItemTiers = this.presetsUse.mant_config.item_tiers;
         this.mantTierCount = this.presetsUse.mant_config.tier_count || 6;
-        this.mantMigrateLegacyTiers();
+        this.mantNormalizeTiers();
         this.mantWhistleThreshold = this.presetsUse.mant_config.whistle_threshold ?? 20;
         this.mantWhistleFocusSummer = this.presetsUse.mant_config.whistle_focus_summer ?? true;
         this.mantMegaSmallThreshold = this.presetsUse.mant_config.mega_small_threshold ?? 60;
@@ -4225,7 +4224,7 @@ export default {
       if (data.mant_config && data.mant_config.item_tiers) {
         this.mantItemTiers = data.mant_config.item_tiers;
         this.mantTierCount = data.mant_config.tier_count || 6;
-        this.mantMigrateLegacyTiers();
+        this.mantNormalizeTiers();
         this.mantWhistleThreshold = data.mant_config.whistle_threshold ?? 20;
         this.mantWhistleFocusSummer = data.mant_config.whistle_focus_summer ?? true;
         this.mantMegaSmallThreshold = data.mant_config.mega_small_threshold ?? 60;

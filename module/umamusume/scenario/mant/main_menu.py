@@ -41,7 +41,10 @@ def handle_mant_turn_start(ctx, current_date):
 def handle_mant_shop_scan(ctx, current_date):
     if ctx.cultivate_detail.mant_shop_scanned_this_turn:
         return False
-    from module.umamusume.scenario.mant.shop import is_shop_scan_turn, scan_mant_shop
+    from module.umamusume.scenario.mant.shop import (
+        is_shop_scan_turn, scan_mant_shop, buy_shop_items,
+        SHOP_ITEM_COSTS, SLUG_TO_DISPLAY, display_to_slug
+    )
     if is_shop_scan_turn(current_date):
         items_list, ratio, drag_ratio, first_item_gy = scan_mant_shop(ctx)
         ctx.cultivate_detail.mant_shop_items = items_list
@@ -49,6 +52,30 @@ def handle_mant_shop_scan(ctx, current_date):
         ctx.cultivate_detail.mant_shop_drag_ratio = drag_ratio
         ctx.cultivate_detail.mant_shop_first_gy = first_item_gy
         ctx.cultivate_detail.mant_shop_scanned_this_turn = True
+
+        bought = False
+        mant_cfg = getattr(ctx.task.detail.scenario_config, 'mant_config', None)
+        if mant_cfg and mant_cfg.item_tiers:
+            tier1_slugs = [slug for slug, tier in mant_cfg.item_tiers.items() if tier == 1]
+            shop_names = [name for name, _, _ in items_list]
+            shop_slugs = [display_to_slug(n) for n in shop_names]
+            targets = []
+            for slug in tier1_slugs:
+                if slug in shop_slugs:
+                    display = SLUG_TO_DISPLAY.get(slug)
+                    if display:
+                        cost = SHOP_ITEM_COSTS.get(display, 9999)
+                        if cost <= ctx.cultivate_detail.mant_coins:
+                            targets.append(display)
+            if targets:
+                bought = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
+
+        if not bought:
+            from module.umamusume.scenario.mant.shop import BACK_BTN_X, BACK_BTN_Y
+            import time as t
+            ctx.ctrl.click(BACK_BTN_X, BACK_BTN_Y)
+            t.sleep(1)
+
         ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
         return True
     return False

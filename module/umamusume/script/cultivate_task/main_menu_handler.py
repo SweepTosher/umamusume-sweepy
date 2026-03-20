@@ -236,7 +236,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
             if energy == 0:
                 time.sleep(0.15)
                 energy = read_energy()
-        if energy <= limit:
+        if energy <= limit and not is_mant(ctx):
             if should_use_pal_outing_simple(ctx):
                 ctx.ctrl.click_by_point(get_trip(ctx))
             else:

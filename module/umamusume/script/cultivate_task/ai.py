@@ -73,12 +73,18 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     else:
         mood_threshold = ctx.cultivate_detail.motivation_threshold_year3
         
-    if ctx.cultivate_detail.turn_info.medic_room_available and energy <= ENERGY_FAST_MEDIC:
+    is_mant_scenario = False
+    try:
+        is_mant_scenario = ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_MANT
+    except Exception:
+        pass
+
+    if ctx.cultivate_detail.turn_info.medic_room_available and energy <= ENERGY_FAST_MEDIC and not is_mant_scenario:
         log.info(f"Fast path: Low stamina ({energy}) - prioritizing medic")
         turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_MEDIC
         return turn_operation
 
-    if (mood_raw is not None) and energy < ENERGY_FAST_TRIP and mood_val < mood_threshold:
+    if (mood_raw is not None) and energy < ENERGY_FAST_TRIP and mood_val < mood_threshold and not is_mant_scenario:
         if getattr(ctx.cultivate_detail, 'prioritize_recreation', False) and ctx.cultivate_detail.pal_event_stage > 0:
             try:
                 img = ctx.current_screen
@@ -102,7 +108,7 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
     limit = getattr(ctx.cultivate_detail, 'rest_threshold', getattr(ctx.cultivate_detail, 'rest_treshold', getattr(ctx.cultivate_detail, 'fast_path_energy_limit', 48)))
     if limit == 0:
         energy = 100
-    if energy <= limit:
+    if energy <= limit and not is_mant_scenario:
         if getattr(ctx.cultivate_detail, 'prioritize_recreation', False) and ctx.cultivate_detail.pal_event_stage > 0:
             try:
                 img = ctx.current_screen
@@ -229,9 +235,9 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
                 else:
                     trip = True
             rest = False
-            if energy <= limit:
+            if energy <= limit and not is_mant_scenario:
                 rest = True
-            elif (ctx.cultivate_detail.turn_info.date == 36 or ctx.cultivate_detail.turn_info.date == 60) and energy < ENERGY_REST_EXTRA_DAY:
+            elif (ctx.cultivate_detail.turn_info.date == 36 or ctx.cultivate_detail.turn_info.date == 60) and energy < ENERGY_REST_EXTRA_DAY and not is_mant_scenario:
                 rest = True
             if rest:
                 if getattr(ctx.cultivate_detail, 'prioritize_recreation', False) and ctx.cultivate_detail.pal_event_stage > 0:

@@ -512,31 +512,25 @@ def is_plus_disabled(frame, plus_x, plus_y):
 
 
 def try_click_item_plus_once(ctx, item_name: str) -> bool:
-    trigger_scrollbar(ctx)
-    scroll_to_top(ctx)
-    trigger_scrollbar(ctx)
-    time.sleep(0.25)
-
-    def _find_item_y_on_current_screen(frame, target_name: str):
+    def find_item_y_on_current_screen(frame, target_name: str):
         results = classify_names_only(frame)
         for name, score, abs_y in results:
             if name == target_name:
                 return abs_y
         return None
 
-    for _ in range(60):
+    while True:
         frame = ctx.ctrl.get_screen()
         if frame is None:
             time.sleep(0.2)
             continue
 
-        y = _find_item_y_on_current_screen(frame, item_name)
+        y = find_item_y_on_current_screen(frame, item_name)
         if y is not None and 130 < y < 1030:
             plus_x = 648
             plus_y = int(round(y + 48))
 
-            frame_now = frame
-            if is_plus_disabled(frame_now, plus_x, plus_y):
+            if is_plus_disabled(frame, plus_x, plus_y):
                 return False
 
             ctx.ctrl.execute_adb_shell(f"shell input tap {plus_x} {plus_y}", True)
@@ -560,31 +554,20 @@ def try_click_item_plus_once(ctx, item_name: str) -> bool:
         sb_drag(ctx, cursor, next_y)
         time.sleep(0.25)
 
-    return False
-
 
 def use_training_item(ctx, item_name, quantity=1):
     ctx.ctrl.execute_adb_shell("shell input tap 37 347", True)
     time.sleep(0.9)
 
-    owned_items = scan_inventory(ctx, stop_when_found=item_name)
-    owned_map = {n: q for n, q in owned_items}
-    have_qty = owned_map.get(item_name, 0)
-
-    if have_qty <= 0 or have_qty < quantity:
-        ctx.ctrl.execute_adb_shell("shell input tap 187 1185", True)
-        time.sleep(0.4)
-        return False
-
-    trigger_scrollbar(ctx)
-    scroll_to_top(ctx)
-    trigger_scrollbar(ctx)
-    time.sleep(0.25)
-
     for _ in range(quantity):
         if not try_click_item_plus_once(ctx, item_name):
             ctx.ctrl.execute_adb_shell("shell input tap 187 1185", True)
             time.sleep(0.4)
+            owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
+            owned_map = {n: q for n, q in owned}
+            if owned_map.get(item_name, 0) > 0:
+                owned_map.pop(item_name, None)
+                ctx.cultivate_detail.mant_owned_items = [(n, q) for n, q in owned_map.items() if q > 0]
             return False
         time.sleep(0.15)
 

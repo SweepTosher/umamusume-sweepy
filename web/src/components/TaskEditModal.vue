@@ -181,7 +181,7 @@
                             </div>
                           </div>
                           <div class="mant-threshold-row">
-                            <img :src="getMantItemImg('good_luck_charm')" class="mant-threshold-img" />
+                            <img :src="getMantItemImg('good-luck_charm')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
                               <span class="mant-threshold-label">Active charm when best training (without failure rate penalty) percentile ></span>
                               <div class="mant-threshold-slider-row">

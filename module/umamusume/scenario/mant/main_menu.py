@@ -124,9 +124,13 @@ def handle_mant_shop_scan(ctx, current_date):
             if bought:
                 from module.umamusume.context import log_detected_items
                 for t in targets:
-                    log.info(f"[ITEM BOUGHT] {t}")
+                    if t in held_items:
+                        log.info(f"[ITEM BOUGHT] {t}")
                 if held_items:
-                    updated = [(n, q) for n, q in held_items.items() if q > 0]
+                    existing = dict(getattr(ctx.cultivate_detail, 'mant_owned_items', []))
+                    for name, qty in held_items.items():
+                        existing[name] = qty
+                    updated = [(n, q) for n, q in existing.items() if q > 0]
                     ctx.cultivate_detail.mant_owned_items = updated
                 log.info(f"[INVENTORY] after purchase: {[(n, q) for n, q in ctx.cultivate_detail.mant_owned_items]}")
                 log_detected_items(ctx.cultivate_detail.mant_owned_items)

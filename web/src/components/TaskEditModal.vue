@@ -2219,7 +2219,7 @@ export default {
     }
         this.mantItemTiers = this.mantGetDefaultTiers();
         this.mantTierCount = 6;
-        this.mantTierThresholds = {2: 50, 3: 100, 4: 150, 5: 200, 6: 250};
+        this.mantTierThresholds = {};
   },
   data: function () {
     return {
@@ -3492,11 +3492,11 @@ export default {
     },
     mantGetDefaultTiers() {
       const defaults = {
-        speed_notepad: 5, speed_manual: 2, speed_scroll: 2,
-        stamina_notepad: 5, stamina_manual: 2, stamina_scroll: 2,
-        power_notepad: 5, power_manual: 2, power_scroll: 2,
-        guts_notepad: 5, guts_manual: 2, guts_scroll: 2,
-        wit_notepad: 5, wit_manual: 2, wit_scroll: 2,
+        speed_notepad: 5, speed_manual: 1, speed_scroll: 1,
+        stamina_notepad: 5, stamina_manual: 1, stamina_scroll: 1,
+        power_notepad: 5, power_manual: 1, power_scroll: 1,
+        guts_notepad: 5, guts_manual: 1, guts_scroll: 1,
+        wit_notepad: 5, wit_manual: 1, wit_scroll: 1,
         vita_20: 2, vita_40: 2, vita_65: 2,
         royal_kale_juice: 2, energy_drink_max: 5, energy_drink_max_ex: 6,
         plain_cupcake: 2, berry_sweet_cupcake: 3, yummy_cat_food: 6, grilled_carrots: 3,
@@ -4132,35 +4132,35 @@ export default {
         this.mantWhistleFocusSummer = this.presetsUse.mant_config.whistle_focus_summer ?? true;
         this.mantFocusSummerClassic = this.presetsUse.mant_config.focus_summer_classic ?? 20;
         this.mantFocusSummerSenior = this.presetsUse.mant_config.focus_summer_senior ?? 10;
-        this.mantMegaSmallThreshold = this.presetsUse.mant_config.mega_small_threshold ?? 50;
-        this.mantMegaMediumThreshold = this.presetsUse.mant_config.mega_medium_threshold ?? 60;
-        this.mantMegaLargeThreshold = this.presetsUse.mant_config.mega_large_threshold ?? 70;
+        this.mantMegaSmallThreshold = this.presetsUse.mant_config.mega_small_threshold ?? 60;
+        this.mantMegaMediumThreshold = this.presetsUse.mant_config.mega_medium_threshold ?? 70;
+        this.mantMegaLargeThreshold = this.presetsUse.mant_config.mega_large_threshold ?? 80;
         this.mantMegaRacePenalty = this.presetsUse.mant_config.mega_race_penalty ?? 5;
         this.mantMegaSummerBonus = this.presetsUse.mant_config.mega_summer_bonus ?? 10;
         this.mantTrainingWeightsThreshold = this.presetsUse.mant_config.training_weights_threshold ?? 60;
         this.mantBbqUnmaxxedCards = this.presetsUse.mant_config.bbq_unmaxxed_cards ?? 3;
         this.mantCharmThreshold = this.presetsUse.mant_config.charm_threshold ?? 70;
         this.mantCharmFailureRate = this.presetsUse.mant_config.charm_failure_rate ?? 30;
-        this.mantSkipRacePercentile = this.presetsUse.mant_config.skip_race_percentile ?? 0;
+        this.mantSkipRacePercentile = this.presetsUse.mant_config.skip_race_percentile ?? 81;
         this.mantTierThresholds = this.presetsUse.mant_config.tier_thresholds ?? {};
       } else {
         this.mantItemTiers = this.mantGetDefaultTiers();
         this.mantTierCount = 6;
-        this.mantTierThresholds = {2: 50, 3: 100, 4: 150, 5: 200, 6: 250};
+        this.mantTierThresholds = {};
         this.mantWhistleThreshold = 20;
         this.mantWhistleFocusSummer = true;
         this.mantFocusSummerClassic = 20;
         this.mantFocusSummerSenior = 10;
-        this.mantMegaSmallThreshold = 50;
-        this.mantMegaMediumThreshold = 60;
-        this.mantMegaLargeThreshold = 70;
+        this.mantMegaSmallThreshold = 60;
+        this.mantMegaMediumThreshold = 70;
+        this.mantMegaLargeThreshold = 80;
         this.mantMegaRacePenalty = 5;
         this.mantMegaSummerBonus = 10;
         this.mantTrainingWeightsThreshold = 60;
         this.mantBbqUnmaxxedCards = 3;
         this.mantCharmThreshold = 70;
         this.mantCharmFailureRate = 30;
-        this.mantSkipRacePercentile = 0;
+        this.mantSkipRacePercentile = 81;
       }
 
     },
@@ -4330,16 +4330,16 @@ export default {
         this.mantWhistleFocusSummer = data.mant_config.whistle_focus_summer ?? true;
         this.mantFocusSummerClassic = data.mant_config.focus_summer_classic ?? 20;
         this.mantFocusSummerSenior = data.mant_config.focus_summer_senior ?? 10;
-        this.mantMegaSmallThreshold = data.mant_config.mega_small_threshold ?? 50;
-        this.mantMegaMediumThreshold = data.mant_config.mega_medium_threshold ?? 60;
-        this.mantMegaLargeThreshold = data.mant_config.mega_large_threshold ?? 70;
+        this.mantMegaSmallThreshold = data.mant_config.mega_small_threshold ?? 60;
+        this.mantMegaMediumThreshold = data.mant_config.mega_medium_threshold ?? 70;
+        this.mantMegaLargeThreshold = data.mant_config.mega_large_threshold ?? 80;
         this.mantMegaRacePenalty = data.mant_config.mega_race_penalty ?? 5;
         this.mantMegaSummerBonus = data.mant_config.mega_summer_bonus ?? 10;
         this.mantTrainingWeightsThreshold = data.mant_config.training_weights_threshold ?? 60;
         this.mantBbqUnmaxxedCards = data.mant_config.bbq_unmaxxed_cards ?? 3;
         this.mantCharmThreshold = data.mant_config.charm_threshold ?? 70;
         this.mantCharmFailureRate = data.mant_config.charm_failure_rate ?? 30;
-        this.mantSkipRacePercentile = data.mant_config.skip_race_percentile ?? 0;
+        this.mantSkipRacePercentile = data.mant_config.skip_race_percentile ?? 81;
         this.mantTierThresholds = data.mant_config.tier_thresholds ?? {};
       }
     },

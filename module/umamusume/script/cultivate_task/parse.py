@@ -289,6 +289,9 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
         # Debug: Log the extracted date text for URA
         log.info(f"URA Extracted date text: '{date_text}'")
         
+        if "Climax" in date_text or "TS Climax" in date_text:
+            return 73
+
         # Special handling for "Finale Season" in URA championship
         if "Finale Season" in date_text or "Finale" in date_text:
             log.info("URA Finale Season detected - checking championship phase")

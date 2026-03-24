@@ -43,9 +43,9 @@ class MantConfig:
         self.whistle_focus_summer = config.get("whistle_focus_summer", True)
         self.focus_summer_classic = config.get("focus_summer_classic", 20)
         self.focus_summer_senior = config.get("focus_summer_senior", 10)
-        self.mega_small_threshold = config.get("mega_small_threshold", 50)
-        self.mega_medium_threshold = config.get("mega_medium_threshold", 60)
-        self.mega_large_threshold = config.get("mega_large_threshold", 70)
+        self.mega_small_threshold = config.get("mega_small_threshold", 60)
+        self.mega_medium_threshold = config.get("mega_medium_threshold", 70)
+        self.mega_large_threshold = config.get("mega_large_threshold", 80)
         self.mega_race_penalty = config.get("mega_race_penalty", 5)
         self.mega_summer_bonus = config.get("mega_summer_bonus", 10)
         self.training_weights_threshold = config.get("training_weights_threshold", 60)
@@ -54,7 +54,7 @@ class MantConfig:
         self.charm_failure_rate = config.get("charm_failure_rate", 30)
         raw_thresholds = config.get("tier_thresholds", {})
         self.tier_thresholds = {int(k): v for k, v in raw_thresholds.items()}
-        self.skip_race_percentile = config.get("skip_race_percentile", 0)
+        self.skip_race_percentile = config.get("skip_race_percentile", 81)
 
 
 class ScenarioConfig:

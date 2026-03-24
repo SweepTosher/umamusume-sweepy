@@ -536,8 +536,8 @@ def try_click_item_plus_once(ctx, item_name: str) -> bool:
 
         cursor = (thumb[0] + thumb[1]) // 2
         th = thumb[1] - thumb[0]
-        next_y = min(INV_TRACK_BOT, cursor + max(th // 2, 10))
-        if next_y <= cursor:
+        next_y = min(INV_TRACK_BOT, cursor + max(th, 30))
+        if next_y <= cursor + 3:
             return False
         sb_drag(ctx, cursor, next_y)
         time.sleep(0.25)
@@ -1120,10 +1120,61 @@ def count_races_in_window(ctx, duration):
     return count
 
 
+MANT_CLIMAX_START = 73
+MANT_CLIMAX_TRAINING_TURNS = [73, 75, 77]
+
+
+def remaining_training_turns(date):
+    if date >= MANT_CLIMAX_START:
+        return sum(1 for t in MANT_CLIMAX_TRAINING_TURNS if t >= date)
+    return (MANT_CLIMAX_START - date) + len(MANT_CLIMAX_TRAINING_TURNS)
+
+
+def total_megaphone_turns(owned_map):
+    total = 0
+    for name, (tier, duration) in MEGAPHONE_TIERS.items():
+        qty = owned_map.get(name, 0)
+        total += qty * duration
+    return total
+
+
+def handle_megaphone_endgame(ctx):
+    owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
+    owned_map = {n: q for n, q in owned}
+    date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
+
+    if date >= MANT_CLIMAX_START and date not in MANT_CLIMAX_TRAINING_TURNS:
+        return False
+
+    remaining = remaining_training_turns(date)
+    mega_turns = total_megaphone_turns(owned_map)
+    if mega_turns <= remaining:
+        return False
+
+    for name, (tier, duration) in sorted(MEGAPHONE_TIERS.items(), key=lambda x: x[1][0]):
+        if owned_map.get(name, 0) <= 0:
+            continue
+        ok = use_item_and_update_inventory(ctx, name)
+        if ok:
+            ctx.cultivate_detail.mant_megaphone_tier = tier
+            ctx.cultivate_detail.mant_megaphone_turns = duration
+            log.info(f"endgame megaphone dump: tier {tier} for {duration} turns")
+        return ok
+
+    return False
+
+
 def handle_megaphone(ctx):
     mant_cfg = getattr(ctx.task.detail.scenario_config, 'mant_config', None)
     if mant_cfg is None:
         return False
+
+    date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
+    if date >= MANT_CLIMAX_START and date not in MANT_CLIMAX_TRAINING_TURNS:
+        return False
+
+    if handle_megaphone_endgame(ctx):
+        return True
 
     percentile = get_best_percentile(ctx)
     if percentile is None:
@@ -1135,11 +1186,17 @@ def handle_megaphone(ctx):
     active_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
     active_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
 
-    date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
     from module.umamusume.constants.game_constants import is_summer_camp_period
     is_summer = is_summer_camp_period(date)
     summer_bonus = getattr(mant_cfg, 'mega_summer_bonus', 10)
     race_penalty = getattr(mant_cfg, 'mega_race_penalty', 5)
+
+    has_higher = {}
+    for name, (tier, _) in MEGAPHONE_TIERS.items():
+        for other_name, (other_tier, _) in MEGAPHONE_TIERS.items():
+            if other_tier > tier and owned_map.get(other_name, 0) > 0:
+                has_higher[tier] = True
+                break
 
     best_mega = None
     best_tier = 0
@@ -1157,6 +1214,13 @@ def handle_megaphone(ctx):
                 continue
             upgrade_bonus = 7 if tier_diff == 1 else 15
             threshold += upgrade_bonus
+
+        extra_qty = owned_map.get(name, 0) - 1
+        if extra_qty > 0:
+            threshold -= extra_qty * 5
+
+        if has_higher.get(tier, False):
+            threshold -= 5
 
         races_in_window = count_races_in_window(ctx, duration)
         threshold += races_in_window * race_penalty
@@ -1276,19 +1340,44 @@ def handle_glow_sticks_before_race(ctx):
     return use_item_and_update_inventory(ctx, 'Glow Sticks')
 
 
+MANT_CLIMAX_RACE_TURNS = [74, 76, 78]
+
+
+def remaining_climax_races(date):
+    return sum(1 for t in MANT_CLIMAX_RACE_TURNS if t >= date)
+
+
 def handle_cleat_before_race(ctx, race_id):
     from module.umamusume.asset.race_data import is_g1_race
     owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
     owned_map = {n: q for n, q in owned}
+    date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
+
+    master_qty = owned_map.get('Master Cleat Hammer', 0)
+    artisan_qty = owned_map.get('Artisan Cleat Hammer', 0)
+    is_climax_race = date in MANT_CLIMAX_RACE_TURNS
+
+    if is_climax_race:
+        if master_qty > 0:
+            return use_item_and_update_inventory(ctx, 'Master Cleat Hammer')
+        elif artisan_qty > 0:
+            return use_item_and_update_inventory(ctx, 'Artisan Cleat Hammer')
+        return False
+
+    races_left = remaining_climax_races(date)
+    master_reserve = min(races_left, master_qty)
+    artisan_reserve = max(0, races_left - master_reserve)
+    master_spare = master_qty - master_reserve
+    artisan_spare = artisan_qty - artisan_reserve
 
     if is_g1_race(race_id):
-        if owned_map.get('Master Cleat Hammer', 0) > 0:
+        if master_spare > 0:
             return use_item_and_update_inventory(ctx, 'Master Cleat Hammer')
-        elif owned_map.get('Artisan Cleat Hammer', 0) > 0:
+        elif artisan_spare > 0:
             return use_item_and_update_inventory(ctx, 'Artisan Cleat Hammer')
         return False
     else:
-        if owned_map.get('Artisan Cleat Hammer', 0) > 0:
+        if artisan_spare > 0:
             return use_item_and_update_inventory(ctx, 'Artisan Cleat Hammer')
         return False
 

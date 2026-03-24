@@ -23,7 +23,7 @@ PURCHASED_CHECK_X1 = 200
 PURCHASED_CHECK_X2 = 600
 PURCHASED_BRIGHTNESS_THRESHOLD = 180
 MANT_SHOP_SCAN_START = 13
-MANT_SHOP_SCAN_INTERVAL = 6
+MANT_SHOP_SCAN_INTERVAL = 3
 
 SHOP_OPEN_X = 412
 SHOP_OPEN_X_SUMMER = 359
@@ -518,9 +518,9 @@ def scan_mant_shop(ctx):
         if extra_thumb is None:
             break
         cursor = (extra_thumb[0] + extra_thumb[1]) // 2
-        step = max((extra_thumb[1] - extra_thumb[0]) // 2, 15)
+        step = max(extra_thumb[1] - extra_thumb[0], 30)
         next_y = min(TRACK_BOT, cursor + step)
-        if next_y <= cursor:
+        if next_y <= cursor + 3:
             break
         sb_drag(ctx, cursor, next_y)
         time.sleep(0.15)
@@ -713,11 +713,24 @@ def scan_exchange_complete(ctx):
     thumb = inv_find_thumb(img_rgb)
 
     if thumb:
-        for _ in range(15):
+        prev_cursor = -1
+        stall_count = 0
+        for _ in range(25):
+            thumb_h = thumb[1] - thumb[0]
             cursor = (thumb[0] + thumb[1]) // 2
-            target = min(INV_TRACK_BOT, cursor + 60)
-            if target <= cursor:
+            step = max(thumb_h, 30)
+            target = min(INV_TRACK_BOT, cursor + step)
+            if target <= cursor + 3:
                 break
+            if prev_cursor >= 0 and abs(cursor - prev_cursor) < 5:
+                stall_count += 1
+                if stall_count >= 3:
+                    break
+                target = INV_TRACK_BOT
+            else:
+                stall_count = 0
+            prev_cursor = cursor
+
             sb_drag(ctx, cursor, target)
             time.sleep(0.3)
 
@@ -803,9 +816,9 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
             break
         cursor = (thumb[0] + thumb[1]) // 2
         th = thumb[1] - thumb[0]
-        step = max(th // 2, 10)
+        step = max(th, 30)
         next_y = min(TRACK_BOT, cursor + step)
-        if next_y <= cursor:
+        if next_y <= cursor + 3:
             break
         sb_drag(ctx, cursor, next_y)
         time.sleep(0.2)

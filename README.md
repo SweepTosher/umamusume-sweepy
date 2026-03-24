@@ -2,7 +2,7 @@
 
 ### A umamusume bot that handles all aspects of gameplay including training, races, events, skill purchasing, and starting runs. 
 
-If anyone has time to kill you can help to verify and screenshot cases where the stat gain detection detects wrongly (emulator resolution) so I can fine-tune the model. The training images I used were quite limited so I'm not 100% sure it works 100% of the time.
+MANT is very far from being complete but it is functional rn and is prob better for parent farming compared to aoharu. The item usage isn't quite there yet but I need people to stress test the groundwork of MANT first (item purchase, inventory detection, using items) only then can I start finetuning the logic
 
 ![Uma Musume Auto Trainer](docs/main.png)
 
@@ -190,6 +190,10 @@ Install or reinstall Visual C++ Redistributable:
 ---
 
 ## Changelog
+### 2025-03-24
+- MANT skeleton      
+- Status effects like slow meta/charming now contributes to decisionmaking    
+
 ### 2025-03-4
 - Option to boost friendship contrib of certain cards     
 - A bunch more stuff i dont remeber i forgot to update this          

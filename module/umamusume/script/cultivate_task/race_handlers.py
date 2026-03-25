@@ -10,7 +10,7 @@ from module.umamusume.asset.point import (
     CULTIVATE_GOAL_RACE_INTER_1, CULTIVATE_GOAL_RACE_INTER_2,
     RETURN_TO_CULTIVATE_MAIN_MENU, BEFORE_RACE_START, BEFORE_RACE_SKIP,
     BEFORE_RACE_CHANGE_TACTIC, IN_RACE_UMA_LIST_CONFIRM, IN_RACE_SKIP,
-    RACE_RESULT_CONFIRM, RACE_REWARD_CONFIRM
+    RACE_RESULT_CONFIRM, RACE_REWARD_CONFIRM, TO_TRAINING_SELECT
 )
 from module.umamusume.asset.template import (
     REF_RACE_LIST_GOAL_RACE, REF_RACE_LIST_URA_RACE, REF_SUITABLE_RACE
@@ -22,6 +22,18 @@ log = logger.get_logger(__name__)
 
 def script_cultivate_goal_race(ctx: UmamusumeContext):
     log.info("Entering goal race function")
+
+    mant_cfg = getattr(getattr(ctx.task.detail, 'scenario_config', None), 'mant_config', None)
+    if mant_cfg is not None and getattr(ctx.cultivate_detail, 'mant_climax_pending_train', False):
+        if ctx.cultivate_detail.turn_info is not None:
+            ctx.cultivate_detail.mant_climax_pending_train = False
+            ctx.cultivate_detail.turn_info.parse_train_info_finish = False
+            ctx.cultivate_detail.turn_info.turn_operation = None
+            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+            ctx.ctrl.trigger_decision_reset = True
+            return
+        ctx.cultivate_detail.mant_climax_pending_train = False
+
     img = ctx.current_screen
     current_date = parse_date(img, ctx)
     
@@ -55,6 +67,14 @@ def script_cultivate_goal_race(ctx: UmamusumeContext):
             ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_2)
         else:
             log.info(f"This is a regular race (ID: {race_id}) - entering detail interface")
+            if mant_cfg is not None and race_id == 0:
+                from module.umamusume.scenario.mant.inventory import (
+                    handle_cleat_before_race, handle_energy_drink_max_before_race, handle_glow_sticks_before_race
+                )
+                handle_energy_drink_max_before_race(ctx)
+                handle_glow_sticks_before_race(ctx)
+                handle_cleat_before_race(ctx, race_id, True)
+                ctx.cultivate_detail.mant_climax_pending_train = True
             ctx.ctrl.click_by_point(CULTIVATE_GOAL_RACE_INTER_1)
     else:
         log.warning("No turn operation found - cannot determine race type")

@@ -75,7 +75,13 @@ def handle_mant_shop_scan(ctx, current_date):
     last_chunk = getattr(ctx.cultivate_detail, 'mant_shop_last_chunk', -1)
     if chunk == last_chunk:
         return False
-    items_list, ratio, drag_ratio, first_item_gy = scan_mant_shop(ctx)
+
+    scan_result = scan_mant_shop(ctx)
+    if scan_result is None:
+        ctx.ctrl.trigger_decision_reset = True
+        return True
+
+    items_list, ratio, drag_ratio, first_item_gy = scan_result
     ctx.cultivate_detail.mant_shop_items = items_list
     ctx.cultivate_detail.mant_shop_ratio = ratio
     ctx.cultivate_detail.mant_shop_drag_ratio = drag_ratio
@@ -191,8 +197,10 @@ def handle_mant_main_menu(ctx, img, current_date):
 
     if not getattr(ctx.cultivate_detail.turn_info, 'mant_coins_read', False):
         is_summer = is_summer_camp_period(current_date)
-        is_climax = current_date > 72
+        is_climax = current_date > 72 or current_date < -72
         coins = read_shop_coins(img, is_summer, is_climax)
+        if coins == -1:
+            coins = 0
         ctx.cultivate_detail.turn_info.mant_coins_read = True
         ctx.cultivate_detail.mant_coins = coins
         log.info("shop coins: %d", coins)

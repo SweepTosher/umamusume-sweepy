@@ -1362,7 +1362,7 @@ def remaining_climax_races(date):
     return sum(1 for t in MANT_CLIMAX_RACE_TURNS if t >= date)
 
 
-def handle_cleat_before_race(ctx, race_id):
+def handle_cleat_before_race(ctx, race_id, is_climax_override=False):
     from module.umamusume.asset.race_data import is_g1_race
     owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
     owned_map = {n: q for n, q in owned}
@@ -1370,7 +1370,7 @@ def handle_cleat_before_race(ctx, race_id):
 
     master_qty = owned_map.get('Master Cleat Hammer', 0)
     artisan_qty = owned_map.get('Artisan Cleat Hammer', 0)
-    is_climax_race = date in MANT_CLIMAX_RACE_TURNS
+    is_climax_race = is_climax_override or date in MANT_CLIMAX_RACE_TURNS
 
     if is_climax_race:
         if master_qty > 0:

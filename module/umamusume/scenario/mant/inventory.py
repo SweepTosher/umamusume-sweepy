@@ -195,7 +195,15 @@ def read_qty_at(frame, item_y):
     if qty_y1 < 0 or qty_y2 > h or qty_x1 < 0 or qty_x2 > w:
         return 1
     roi = frame[qty_y1:qty_y2, qty_x1:qty_x2]
-    raw = ocr(roi, lang="en")
+    try:
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        gray = cv2.resize(gray, None, fx=2.0, fy=2.0, interpolation=cv2.INTER_CUBIC)
+        _, thr = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        roi_ocr = cv2.cvtColor(thr, cv2.COLOR_GRAY2BGR)
+    except Exception:
+        roi_ocr = roi
+
+    raw = ocr(roi_ocr, lang="en")
     if not raw or not raw[0]:
         return 1
     for entry in raw[0]:
@@ -203,8 +211,13 @@ def read_qty_at(frame, item_y):
             continue
         text = entry[1][0].strip()
         parsed = parse_held_qty(text)
-        if parsed is not None and parsed > 0:
-            return parsed
+        if parsed is None:
+            continue
+        if parsed <= 0:
+            continue
+        if parsed > 9:
+            continue
+        return parsed
     return 1
 
 
@@ -329,83 +342,61 @@ def dedup_names(all_detections, captured_frames):
 def scan_inventory(ctx, stop_when_found=None):
     scroll_to_top(ctx)
     time.sleep(0.3)
+
     img = ctx.ctrl.get_screen()
     if img is None:
         return []
+
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     thumb = inv_find_thumb(img_rgb)
 
     if thumb is None:
         results = classify_with_qty(img)
         owned = [(name, qty) for name, score, y, qty in results if 130 < y < 1030]
+        owned.sort(key=lambda x: x[0])
         return owned
 
     thumb_h = thumb[1] - thumb[0]
-    thumb_center = (thumb[0] + thumb[1]) // 2
-    if thumb[0] > INV_TRACK_TOP + 5:
-        sb_drag(ctx, thumb_center, INV_TRACK_TOP)
-        time.sleep(0.25)
-        img = ctx.ctrl.get_screen()
-        if img is not None:
-            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            thumb = inv_find_thumb(img_rgb)
-            thumb_center = (thumb[0] + thumb[1]) // 2 if thumb else INV_TRACK_TOP + thumb_h // 2
-
-    before_cal = img
-    cal_px = 30
-    sb_drag(ctx, thumb_center, thumb_center + cal_px)
-    time.sleep(0.25)
-    after_cal = ctx.ctrl.get_screen()
-    shift_cal, conf_cal = (0, 0)
-    if after_cal is not None:
-        shift_cal, conf_cal = inv_find_content_shift(before_cal, after_cal)
-    ratio = shift_cal / cal_px if (shift_cal > 0 and conf_cal > 0.85) else 14.0
-
-    scroll_to_top(ctx)
-    time.sleep(0.3)
-    img = ctx.ctrl.get_screen()
-    if img is None:
-        return []
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    thumb = inv_find_thumb(img_rgb)
-    start_y = (thumb[0] + thumb[1]) // 2 if thumb else INV_TRACK_TOP + thumb_h // 2 + 5
-
-    content_h = INV_CONTENT_BOT - INV_CONTENT_TOP
-    track_len = INV_TRACK_BOT - INV_TRACK_TOP
-    total_content = track_len * ratio + content_h
-    desired_overlap = 160
-    desired_shift = content_h - desired_overlap
-    est_frames = max(2, int(total_content / desired_shift))
-    swipe_dur = max(5000, min(25000, int(est_frames * 600)))
+    start_y = (thumb[0] + thumb[1]) // 2
 
     scan_x_end = _gauss_scan_x()
+    swipe_dur = 12000
     swipe_cmd = f"shell input swipe {SB_X} {start_y} {scan_x_end} {INV_TRACK_BOT} {swipe_dur}"
     proc = ctx.ctrl.execute_adb_shell(swipe_cmd, False)
-    time.sleep(0.3)
 
     item_qtys = {}
-    prev_frame = img
-    results_start = classify_with_qty(img)
-    for name, score, y, qty in results_start:
-        if 130 < y < 1030:
-            if name not in item_qtys or qty > item_qtys[name]:
-                item_qtys[name] = qty
+    scan_deadline = time.time() + 40
 
-    scan_deadline = time.time() + 30
+    results = classify_with_qty(img)
+    for name, score, y, qty in results:
+        if 130 < y < 1030 and (name not in item_qtys or qty > item_qtys[name]):
+            item_qtys[name] = qty
+    if stop_when_found and any(n == stop_when_found for n, _, _, _ in results):
+        try:
+            proc.terminate()
+        except Exception:
+            pass
+        owned = [(name, qty) for name, qty in item_qtys.items()]
+        owned.sort(key=lambda x: x[0])
+        scroll_to_top(ctx)
+        return owned
 
     while ctx.task.running() and time.time() < scan_deadline:
-        time.sleep(0.06)
-        curr = ctx.ctrl.get_screen()
-        if curr is None:
+        time.sleep(0.08)
+        frame = ctx.ctrl.get_screen()
+        if frame is None:
+            if proc.poll() is not None:
+                break
             continue
-        prev_frame = curr
-        results = classify_with_qty(curr)
+
+        results = classify_with_qty(frame)
         for name, score, y, qty in results:
-            if 130 < y < 1030:
-                if name not in item_qtys or qty > item_qtys[name]:
-                    item_qtys[name] = qty
+            if 130 < y < 1030 and (name not in item_qtys or qty > item_qtys[name]):
+                item_qtys[name] = qty
+
         if stop_when_found and any(n == stop_when_found for n, _, _, _ in results):
             break
+
         if proc.poll() is not None:
             break
 
@@ -414,161 +405,47 @@ def scan_inventory(ctx, stop_when_found=None):
     except Exception:
         pass
 
-    time.sleep(0.15)
-    final = ctx.ctrl.get_screen()
-    if final is not None and not inv_content_same(prev_frame, final):
-        results = classify_with_qty(final)
-        for name, score, y, qty in results:
-            if 130 < y < 1030:
-                if name not in item_qtys or qty > item_qtys[name]:
-                    item_qtys[name] = qty
-
-    owned = [(name, qty) for name, qty in item_qtys.items()]
-    owned.sort(key=lambda x: x[0])
-    scroll_to_top(ctx)
-    return owned
-
-    thumb_h = thumb[1] - thumb[0]
-    thumb_center = (thumb[0] + thumb[1]) // 2
-    if thumb[0] > INV_TRACK_TOP + 5:
-        sb_drag(ctx, thumb_center, INV_TRACK_TOP)
-        img = ctx.ctrl.get_screen()
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        thumb = inv_find_thumb(img_rgb)
-        thumb_center = (thumb[0] + thumb[1]) // 2 if thumb else INV_TRACK_TOP + thumb_h // 2
-
-    start_y = thumb_center if thumb else INV_TRACK_TOP + thumb_h // 2 + 5
-
-    before_cal = img
-    cal_px = 30
-    sb_drag(ctx, thumb_center, thumb_center + cal_px)
-    after_cal = ctx.ctrl.get_screen()
-    shift_cal, conf_cal = inv_find_content_shift(before_cal, after_cal)
-    ratio = shift_cal / cal_px if (shift_cal > 0 and conf_cal > 0.85) else 14.0
-
-    scroll_to_top(ctx)
-    img = ctx.ctrl.get_screen()
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    thumb = inv_find_thumb(img_rgb)
-    start_y = (thumb[0] + thumb[1]) // 2 if thumb else INV_TRACK_TOP + thumb_h // 2 + 5
-
-    content_h = INV_CONTENT_BOT - INV_CONTENT_TOP
-    track_len = INV_TRACK_BOT - INV_TRACK_TOP
-    total_content = track_len * ratio + content_h
-    desired_overlap = 160
-    desired_shift = content_h - desired_overlap
-    est_frames = total_content / desired_shift
-    swipe_dur = max(5000, min(25000, int(est_frames * 600)))
-
-    first_results = classify_names_only(img)
-    all_detections = []
-    captured_frames = {0: img.copy()}
-    for name, conf, abs_y in first_results:
-        all_detections.append((name, conf, 0, abs_y))
-
-    if stop_when_found and any(n == stop_when_found for n, _, _ in first_results):
-        items_names = [(stop_when_found, 1.0, 0.0)]
-        scroll_to_top(ctx)
-        time.sleep(0.3)
-        item_qtys = {}
-        for _ in range(6):
-            frame = ctx.ctrl.get_screen()
-            if frame is None:
-                time.sleep(0.2)
-                continue
-            results = classify_with_qty(frame)
-            for name, score, y, qty in results:
-                if name == stop_when_found and 130 < y < 1030:
-                    item_qtys[name] = qty
-                    break
-            if stop_when_found in item_qtys:
-                break
-            time.sleep(0.2)
-        qty = item_qtys.get(stop_when_found, 1)
-        return [(stop_when_found, qty)]
-
-    scan_x_end = _gauss_scan_x()
-    swipe_cmd = ("shell input swipe " + str(SB_X) + " " + str(start_y) +
-                 " " + str(scan_x_end) + " " + str(INV_TRACK_BOT) + " " + str(swipe_dur))
-    proc = ctx.ctrl.execute_adb_shell(swipe_cmd, False)
-
-    time.sleep(0.3)
-    prev_frame = img
-    scan_deadline = time.time() + 30
-    frame_idx = 1
-
-    with ThreadPoolExecutor(max_workers=2) as pool:
-        futures = []
-        while ctx.task.running() and time.time() < scan_deadline:
-            time.sleep(0.06)
-            curr = ctx.ctrl.get_screen()
-            if curr is not None and not inv_content_same(prev_frame, curr):
-                captured_frames[frame_idx] = curr.copy()
-                f = pool.submit(classify_names_only, curr)
-                futures.append((frame_idx, f))
-                prev_frame = curr
-                frame_idx += 1
-            if proc.poll() is not None:
-                break
-
-            if stop_when_found:
-                try:
-                    hits_now = classify_names_only(curr) if curr is not None else []
-                    if any(n == stop_when_found for n, _, _ in hits_now):
-                        break
-                except Exception:
-                    pass
-        try:
-            proc.terminate()
-        except Exception:
-            pass
-        time.sleep(0.15)
-        final = ctx.ctrl.get_screen()
-        if final is not None and not inv_content_same(prev_frame, final):
-            captured_frames[frame_idx] = final.copy()
-            f = pool.submit(classify_names_only, final)
-            futures.append((frame_idx, f))
-        for fi, f in futures:
-            hits = f.result()
-            for name, conf, abs_y in hits:
-                all_detections.append((name, conf, fi, abs_y))
-
-    items_names = dedup_names(all_detections, captured_frames)
-
-    scroll_to_top(ctx)
-    time.sleep(0.3)
-
-    item_qtys = {}
-    for step in range(30):
-        time.sleep(0.2)
+    prev_cursor = -1
+    stall_count = 0
+    for _ in range(20):
+        if not ctx.task.running():
+            break
+        time.sleep(0.18)
         frame = ctx.ctrl.get_screen()
-        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if frame is None:
+            continue
 
         results = classify_with_qty(frame)
         for name, score, y, qty in results:
-            if name not in item_qtys and 130 < y < 1030:
+            if 130 < y < 1030 and (name not in item_qtys or qty > item_qtys[name]):
                 item_qtys[name] = qty
 
-        if all(name in item_qtys for name, _, _ in items_names):
-            break
-
+        img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         if inv_at_bottom(img_rgb):
             break
 
         thumb = inv_find_thumb(img_rgb)
-        if thumb:
-            tc = (thumb[0] + thumb[1]) // 2
-            target = min(tc + 60, INV_TRACK_BOT - 10)
-            sb_drag(ctx, tc, target)
-            time.sleep(0.3)
-        else:
+        if thumb is None:
             break
 
-    owned = []
-    for name, conf, gy in items_names:
-        qty = item_qtys.get(name, 1)
-        owned.append((name, qty))
+        cursor = (thumb[0] + thumb[1]) // 2
+        if prev_cursor >= 0 and abs(cursor - prev_cursor) < 5:
+            stall_count += 1
+            if stall_count >= 3:
+                sb_drag(ctx, cursor, INV_TRACK_BOT)
+        else:
+            stall_count = 0
+        prev_cursor = cursor
 
+        step = max(thumb[1] - thumb[0], 30)
+        target = min(INV_TRACK_BOT, cursor + step)
+        if target <= cursor + 3:
+            break
+        sb_drag(ctx, cursor, target)
+
+    owned = [(name, qty) for name, qty in item_qtys.items()]
+    owned.sort(key=lambda x: x[0])
+    scroll_to_top(ctx)
     return owned
 
 
@@ -693,7 +570,8 @@ def open_items_panel(ctx):
     for _ in range(10):
         time.sleep(0.3)
         if is_items_panel_open(ctx.ctrl.get_screen()):
-            return
+            return True
+    return False
 
 
 def close_items_panel(ctx):

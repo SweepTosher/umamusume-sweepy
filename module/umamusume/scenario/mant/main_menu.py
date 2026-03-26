@@ -41,14 +41,39 @@ def handle_mant_inventory_scan(ctx, current_date):
     from module.umamusume.scenario.mant.inventory import scan_inventory, open_items_panel, close_items_panel
     from module.umamusume.context import log_detected_items
 
-    open_items_panel(ctx)
+    opened = open_items_panel(ctx)
+    if not opened:
+        ctx.ctrl.trigger_decision_reset = True
+        return True
 
     owned = scan_inventory(ctx)
     ctx.cultivate_detail.mant_owned_items = owned
     ctx.cultivate_detail.mant_inventory_scanned = True
     log_detected_items(owned)
-    log.info(f"[INVENTORY] initial scan: {[(n, q) for n, q in owned]}")
 
+    close_items_panel(ctx)
+    ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
+    return True
+
+
+def handle_mant_inventory_rescan_if_pending(ctx, current_date):
+    pending = getattr(ctx.cultivate_detail, 'mant_inventory_rescan_pending', False)
+    if not pending:
+        return False
+
+    from module.umamusume.scenario.mant.inventory import scan_inventory, open_items_panel, close_items_panel
+    from module.umamusume.context import log_detected_items
+
+    opened = open_items_panel(ctx)
+    if not opened:
+        ctx.ctrl.trigger_decision_reset = True
+        return True
+
+    owned = scan_inventory(ctx)
+    ctx.cultivate_detail.mant_owned_items = owned
+    ctx.cultivate_detail.mant_inventory_scanned = True
+    ctx.cultivate_detail.mant_inventory_rescan_pending = False
+    log_detected_items(owned)
     close_items_panel(ctx)
     ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
     return True
@@ -157,14 +182,7 @@ def handle_mant_shop_scan(ctx, current_date):
         if targets:
             bought, held_items = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
             if bought:
-                from module.umamusume.context import log_detected_items
-                existing = dict(getattr(ctx.cultivate_detail, 'mant_owned_items', []))
-                for name, qty in held_items.items():
-                    existing[name] = qty
-                updated = [(n, q) for n, q in existing.items() if q > 0]
-                ctx.cultivate_detail.mant_owned_items = updated
-                log.info(f"inventory post purchase: {updated}")
-                log_detected_items(updated)
+                ctx.cultivate_detail.mant_inventory_rescan_pending = True
 
     if not bought:
         from module.umamusume.scenario.mant.shop import BACK_BTN_X, BACK_BTN_Y
@@ -178,6 +196,9 @@ def handle_mant_shop_scan(ctx, current_date):
 
 def handle_mant_main_menu(ctx, img, current_date):
     from module.umamusume.constants.game_constants import is_summer_camp_period
+
+    if handle_mant_inventory_rescan_if_pending(ctx, current_date):
+        return True
 
     if handle_mant_inventory_scan(ctx, current_date):
         return True

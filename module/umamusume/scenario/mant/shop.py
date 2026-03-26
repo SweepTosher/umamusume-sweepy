@@ -849,7 +849,7 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
 
     held_items = {}
     if exchange_ready:
-        held_items = scan_exchange_complete(ctx)
+        held_items = {}
 
     ctx.ctrl.click(EXCHANGE_CLOSE_X, EXCHANGE_CLOSE_Y)
     time.sleep(0.5)

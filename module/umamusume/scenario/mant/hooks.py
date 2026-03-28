@@ -20,5 +20,13 @@ def mant_after_hook(ctx, img):
     if all_rainbow and detected_portraits_log:
         set_ignore_grilled_carrots(True)
 
+    try:
+        from module.umamusume.scenario.mant.race_reward_items import check_and_detect_race_reward_items
+        screen = getattr(ctx, 'current_screen', None)
+        if screen is not None:
+            check_and_detect_race_reward_items(screen, img)
+    except Exception:
+        pass
+
     return False
 

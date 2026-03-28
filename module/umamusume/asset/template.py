@@ -231,6 +231,8 @@ REF_BLUE_LINE = Template("blue_line", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_MANT_FINAL_END = Template("mant_final_end", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(280, 10, 450, 90), match_accuracy=0.80))
 REF_MANT_SHOP_TITLE = Template("shop_title", UMAMUSUME_REF_MANT_SHOP_PATH, ImageMatchConfig(match_area=Area(17, 8, 78, 35)))
 
+REF_MANT_REWARD_ITEMS = Template("items", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(224, 797, 326, 817), match_accuracy=0.76))
+
 # CNN class name -> display key mapping (no template images needed, CNN handles recognition)
 MANT_SHOP_ITEM_NAMES = {
     "Aroma": "aroma",

@@ -266,6 +266,4 @@ def script_cultivate_race_result(ctx: UmamusumeContext):
 
 
 def script_cultivate_race_reward(ctx: UmamusumeContext):
-    from module.umamusume.scenario.mant.race_reward_items import start_race_reward_item_detection_if_mant
-    start_race_reward_item_detection_if_mant(ctx)
     ctx.ctrl.click_by_point(RACE_REWARD_CONFIRM)

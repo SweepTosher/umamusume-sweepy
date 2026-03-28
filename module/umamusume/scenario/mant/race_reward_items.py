@@ -1,7 +1,6 @@
 import os
 import json
 import threading
-import time
 
 import cv2
 import numpy as np
@@ -10,7 +9,7 @@ import bot.base.log as logger
 
 log = logger.get_logger(__name__)
 
-REWARD_ROI = (151, 378, 574, 775)
+ITEM_ROI = (11, 345, 717, 783)
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 ITEM_ASSETS_DIR = os.path.normpath(
@@ -29,8 +28,6 @@ HIST_MIN_COMBINED = 0.40
 HIST_MIN_MARGIN = 0.01
 CELL_PAD = 8
 INNER_PAD = 0.12
-SAT_PRECHECK_THRESH = 65
-SAT_PRECHECK_MIN_FRAC = 0.08
 
 template_cache = None
 cache_lock = threading.Lock()
@@ -159,25 +156,12 @@ def grid_cells(roi_h, roi_w):
     ]
 
 
-def has_new_items_tiles(img):
-    x1, y1, x2, y2 = REWARD_ROI
-    h_img, w_img = img.shape[:2]
-    roi = img[max(0, y1):min(h_img, y2), max(0, x1):min(w_img, x2)]
-    roi_h = roi.shape[0]
-    lower_half = roi[roi_h // 2:, :]
-    if lower_half.size == 0:
-        return False
-    hsv = cv2.cvtColor(lower_half, cv2.COLOR_BGR2HSV)
-    vivid_frac = (hsv[:, :, 1] > SAT_PRECHECK_THRESH).sum() / lower_half.shape[0] / lower_half.shape[1]
-    return vivid_frac >= SAT_PRECHECK_MIN_FRAC
-
-
 def detect_race_reward_items(img):
     templates = load_templates()
     if not templates:
         return []
 
-    x1, y1, x2, y2 = REWARD_ROI
+    x1, y1, x2, y2 = ITEM_ROI
     h_img, w_img = img.shape[:2]
     roi = img[max(0, y1):min(h_img, y2), max(0, x1):min(w_img, x2)]
     roi_h, roi_w = roi.shape[:2]
@@ -199,32 +183,16 @@ def detect_race_reward_items(img):
     return results
 
 
-def _race_reward_item_scan_loop(ctx, initial_ui):
+def check_and_detect_race_reward_items(img, img_gray):
     try:
-        items_done = False
-        while ctx.current_ui is initial_ui:
-            if items_done:
-                return
-            img = ctx.ctrl.get_screen()
-            if img is None or not getattr(img, 'size', 0):
-                time.sleep(0.1)
-                continue
-            if has_new_items_tiles(img):
-                items = detect_race_reward_items(img)
-                if items:
-                    log.info("Race reward new shop items: %s", items)
-                items_done = True
-            time.sleep(0.1)
+        from bot.recog.image_matcher import image_match
+        from module.umamusume.asset.template import REF_MANT_REWARD_ITEMS
+
+        res = image_match(img_gray, REF_MANT_REWARD_ITEMS)
+        if not res.find_match:
+            return
+
+        items = detect_race_reward_items(img)
+        log.info("Race reward new shop items: %s", items)
     except Exception:
         pass
-
-
-def start_race_reward_item_detection_if_mant(ctx):
-    mant_cfg = getattr(getattr(ctx.task.detail, 'scenario_config', None), 'mant_config', None)
-    if mant_cfg is None:
-        return
-    threading.Thread(
-        target=_race_reward_item_scan_loop,
-        args=(ctx, ctx.current_ui),
-        daemon=True,
-    ).start()

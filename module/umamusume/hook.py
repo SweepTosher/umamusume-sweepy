@@ -190,6 +190,7 @@ def before_hook(ctx: UmamusumeContext):
 def after_hook(ctx: UmamusumeContext):
     if ctx.task.task_status != TaskStatus.TASK_STATUS_RUNNING:
         return
+
     try:
         if getattr(ctx.ctrl, 'trigger_decision_reset', False):
             ctx.ctrl.trigger_decision_reset = False

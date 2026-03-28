@@ -1010,16 +1010,15 @@ def has_whistle(ctx):
 
 
 def whistle_loop(ctx, start_date):
-    while True:
-        if not ctx.task.running():
-            return
-        if getattr(ctx.cultivate_detail.turn_info, 'date', None) != start_date:
-            return
-        used = handle_training_whistle(ctx)
-        if not used:
-            return
-        time.sleep(0.5)
-        rescan_training(ctx)
+    if not ctx.task.running():
+        return
+    if getattr(ctx.cultivate_detail.turn_info, 'date', None) != start_date:
+        return
+    used = handle_training_whistle(ctx)
+    if not used:
+        return
+    time.sleep(0.5)
+    rescan_training(ctx)
 
 
 def handle_cupcake_use(ctx):

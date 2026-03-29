@@ -3796,7 +3796,7 @@ export default {
       this.selectedSupportCard = this.presetsUse.follow_support_card,
         this.supportCardLevel = this.presetsUse.follow_support_card_level,
         this.clockUseLimit = this.presetsUse.clock_use_limit,
-        this.restTreshold = (this.presetsUse.rest_treshold || this.presetsUse.fast_path_energy_limit || 48),
+        this.restTreshold = (this.presetsUse.rest_threshold || this.presetsUse.rest_treshold || this.presetsUse.fast_path_energy_limit || 48),
         this.summerScoreThreshold = (this.presetsUse.summer_score_threshold !== undefined ? this.presetsUse.summer_score_threshold : 0.17),
         this.witRaceSearchThreshold = (this.presetsUse.wit_race_search_threshold !== undefined ? this.presetsUse.wit_race_search_threshold : 0.08),
       this.compensateFailure = (this.presetsUse.compensate_failure !== false)
@@ -4188,7 +4188,7 @@ export default {
       this.supportCardLevel = data.follow_support_card_level || this.supportCardLevel;
       this.extraRace = data.extra_race_list || [];
       this.clockUseLimit = data.clock_use_limit !== undefined ? data.clock_use_limit : this.clockUseLimit;
-      this.restTreshold = data.rest_treshold || this.restTreshold;
+      this.restTreshold = data.rest_threshold || data.rest_treshold || this.restTreshold;
       this.compensateFailure = data.compensate_failure !== false;
       this.summerScoreThreshold = data.summer_score_threshold !== undefined ? data.summer_score_threshold : 0.17;
       this.witRaceSearchThreshold = data.wit_race_search_threshold !== undefined ? data.wit_race_search_threshold : 0.08;

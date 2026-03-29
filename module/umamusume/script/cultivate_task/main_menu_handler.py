@@ -225,10 +225,20 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 energy = read_energy()
         if is_mant(ctx) and energy <= limit:
             ctx.cultivate_detail.turn_info.cached_energy = energy
-            from module.umamusume.scenario.mant.inventory import handle_energy_recovery
-            if handle_energy_recovery(ctx):
-                energy = read_energy()
+            if has_extra_race:
+                from module.umamusume.scenario.mant.inventory import has_energy_recovery
+                if has_energy_recovery(ctx):
+                    ctx.cultivate_detail.turn_info.energy_recovery_deferred = True
+            else:
+                from module.umamusume.scenario.mant.inventory import handle_energy_recovery
+                if handle_energy_recovery(ctx):
+                    energy = read_energy()
         if energy <= limit:
+            if getattr(ctx.cultivate_detail.turn_info, 'energy_recovery_deferred', False):
+                base_energy, _, _ = scan_energy(ctx.ctrl)
+                ctx.cultivate_detail.turn_info.base_energy = base_energy
+                ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
+                return
             if should_use_pal_outing_simple(ctx):
                 ctx.ctrl.click_by_point(get_trip(ctx))
             else:

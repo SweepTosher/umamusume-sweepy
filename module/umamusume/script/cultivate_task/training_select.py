@@ -909,6 +909,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
         try:
             if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_MANT:
+                if getattr(ctx.cultivate_detail.turn_info, 'energy_recovery_deferred', False):
+                    from module.umamusume.scenario.mant.inventory import handle_energy_recovery
+                    handle_energy_recovery(ctx)
+                    ctx.cultivate_detail.turn_info.energy_recovery_deferred = False
                 from module.umamusume.scenario.mant.inventory import item_loop
                 item_loop(ctx)
         except Exception:

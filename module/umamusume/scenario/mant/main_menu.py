@@ -137,85 +137,72 @@ def handle_mant_shop_scan(ctx, current_date):
 
     bought = False
     mant_cfg = getattr(ctx.task.detail.scenario_config, 'mant_config', None)
-    log.info(f"[SHOP BUY] mant_cfg exists: {mant_cfg is not None}, item_tiers: {mant_cfg.item_tiers if mant_cfg else 'N/A'}")
     if mant_cfg and mant_cfg.item_tiers:
         budget = ctx.cultivate_detail.mant_coins
-        shop_items = items_list
-        log.info(f"[SHOP BUY] budget={budget}, shop_items_with_turns={[(n, t) for n, _, _, t, p in shop_items]}")
+        shop_available = {name for name, _, _, _, purchased in items_list if not purchased}
+        shop_slugs = {display_to_slug(n) for n in shop_available}
 
-        shop_names = [name for name, _, _, _, purchased in items_list if not purchased]
-        shop_slugs = [display_to_slug(n) for n in shop_names]
-        log.info(f"[SHOP BUY] budget={budget}, shop_slugs={shop_slugs}")
         img = ctx.ctrl.get_screen()
         any_sale = handle_mant_on_sale(img) if img is not None else False
         sale_modifier = 0.9 if any_sale else 1.0
-        targets = []
-        for tier in range(1, mant_cfg.tier_count + 1):
-            if tier > 1:
-                threshold = mant_cfg.tier_thresholds.get(tier, 0)
-                if budget < threshold * sale_modifier:
-                    log.info(f"[SHOP BUY] skipping tier {tier}: budget {budget} < threshold {threshold}")
-                    continue
-            tier_slugs = [slug for slug, t in mant_cfg.item_tiers.items() if t == tier]
-            log.info(f"[SHOP BUY] tier {tier} slugs: {tier_slugs}")
-            for slug in tier_slugs:
-                if slug in shop_slugs:
-                    display = SLUG_TO_DISPLAY.get(slug)
-                    if display:
-                        cost = SHOP_ITEM_COSTS.get(display, 9999)
-                        if cost <= budget:
-                            targets.append(display)
-                            budget -= cost
-                            log.info(f"[SHOP BUY] target: {display} (cost={cost}, remaining={budget})")
-                        else:
-                            log.info(f"[SHOP BUY] skip {display}: cost {cost} > budget {budget}")
-        from module.umamusume.persistence import get_used_buffs
+
+        from module.umamusume.persistence import get_used_buffs, get_ignore_cat_food, get_ignore_grilled_carrots
         from module.umamusume.scenario.mant.inventory import ONE_TIME_BUFF_ITEMS
         used_buffs = get_used_buffs()
-        pre_buff_targets = targets.copy()
-        targets = [t for t in targets if t not in ONE_TIME_BUFF_ITEMS or t not in used_buffs]
-        if len(pre_buff_targets) != len(targets):
-            log.info(f"[SHOP BUY] buff filter removed: {set(pre_buff_targets) - set(targets)}")
+        ignore_cat = get_ignore_cat_food()
+        ignore_carrots = get_ignore_grilled_carrots()
 
         active_ailments = getattr(ctx.cultivate_detail, 'mant_afflictions', [])
         owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
         owned_map = {n: q for n, q in owned}
         has_miracle_cure = owned_map.get(AILMENT_CURE_ALL, 0) > 0
 
+        priority_targets = []
+        if active_ailments and not has_miracle_cure:
+            needed_cures = set()
+            for ailment, cure in AILMENT_CURE_MAP.items():
+                for active in active_ailments:
+                    if ailment.lower() in active.lower():
+                        needed_cures.add(cure)
+            for cure in needed_cures:
+                if cure in shop_available and owned_map.get(cure, 0) <= 0:
+                    cost = SHOP_ITEM_COSTS.get(cure, 9999)
+                    if cost <= budget:
+                        priority_targets.append(cure)
+                        budget -= cost
+            if needed_cures and not priority_targets:
+                if AILMENT_CURE_ALL in shop_available:
+                    cost = SHOP_ITEM_COSTS.get(AILMENT_CURE_ALL, 9999)
+                    if cost <= budget:
+                        priority_targets.append(AILMENT_CURE_ALL)
+                        budget -= cost
+        priority_set = set(priority_targets)
+
         all_cures = set(AILMENT_CURE_MAP.values())
-        needed_cures = set()
-        for ailment, cure in AILMENT_CURE_MAP.items():
-            for active in active_ailments:
-                if ailment.lower() in active.lower():
-                    needed_cures.add(cure)
 
-        pre_cure_targets = targets.copy()
-        filtered = []
-        for t in targets:
-            if t in all_cures:
+        def should_skip(display_name):
+            if display_name in priority_set:
+                return True
+            if display_name in ONE_TIME_BUFF_ITEMS and display_name in used_buffs:
+                return True
+            if ignore_cat and display_name == "Yummy Cat Food":
+                return True
+            if ignore_carrots and display_name == "Grilled Carrots":
+                return True
+            if display_name in all_cures:
                 if has_miracle_cure:
-                    continue
-                if owned_map.get(t, 0) > 0:
-                    continue
-                if t not in needed_cures and t != "Rich Hand Cream":
-                    continue
-            if t == AILMENT_CURE_ALL and has_miracle_cure:
-                continue
-            filtered.append(t)
-        targets = filtered
-        if len(pre_cure_targets) != len(targets):
-            log.info(f"[SHOP BUY] cure filter removed: {set(pre_cure_targets) - set(targets)}")
-
-        from module.umamusume.persistence import get_ignore_cat_food, get_ignore_grilled_carrots
-        if get_ignore_cat_food():
-            targets = [t for t in targets if t != "Yummy Cat Food"]
-        if get_ignore_grilled_carrots():
-            targets = [t for t in targets if t != "Grilled Carrots"]
+                    return True
+                if owned_map.get(display_name, 0) > 0:
+                    return True
+            if display_name == AILMENT_CURE_ALL and has_miracle_cure:
+                return True
+            return False
 
         cupcake_names = {'Plain Cupcake', 'Berry Sweet Cupcake'}
+        skip_cupcakes = False
         total_cupcakes = sum(owned_map.get(n, 0) for n in cupcake_names)
         if total_cupcakes >= 2:
-            targets = [t for t in targets if t not in cupcake_names]
+            skip_cupcakes = True
         else:
             from module.umamusume.scenario.mant.constants import get_incoming_mood
             cached_mood = getattr(ctx.cultivate_detail.turn_info, 'cached_mood', None)
@@ -225,13 +212,45 @@ def handle_mant_shop_scan(ctx, current_date):
                 from bot.conn.fetch import read_mood
                 current_mood = read_mood(ctx.current_screen)
             if current_mood is None or current_mood >= 5:
-                targets = [t for t in targets if t not in cupcake_names]
+                skip_cupcakes = True
             else:
                 incoming = get_incoming_mood(current_date, 3)
                 if current_mood + 1 + incoming >= 5:
-                    targets = [t for t in targets if t not in cupcake_names]
+                    skip_cupcakes = True
 
-        log.info(f"[SHOP BUY] final targets: {targets}")
+        from module.umamusume.constants.game_constants import SUMMER_CAMP_2_END
+        post_senior_summer = current_date > SUMMER_CAMP_2_END
+
+        tier_targets = []
+        for tier in range(1, mant_cfg.tier_count + 1):
+            threshold = 0
+            if tier > 1 and not post_senior_summer:
+                raw_threshold = mant_cfg.tier_thresholds.get(tier, (tier - 1) * 50)
+                threshold = raw_threshold * sale_modifier
+
+            tier_slugs = [slug for slug, t in mant_cfg.item_tiers.items() if t == tier]
+            for slug in tier_slugs:
+                if slug not in shop_slugs:
+                    continue
+                display = SLUG_TO_DISPLAY.get(slug)
+                if not display:
+                    continue
+                if should_skip(display):
+                    continue
+                if skip_cupcakes and display in cupcake_names:
+                    continue
+
+                cost = SHOP_ITEM_COSTS.get(display, 9999)
+                remaining_after = budget - cost
+                if remaining_after < 0:
+                    continue
+                if tier > 1 and remaining_after < threshold:
+                    continue
+
+                tier_targets.append(display)
+                budget -= cost
+
+        targets = priority_targets + tier_targets
         if targets:
             bought, held_items = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
             if bought:
@@ -286,22 +305,28 @@ def handle_mant_emergency_shop_buys(ctx, current_date):
         if expiring:
             shop_slugs = {display_to_slug(n) for n, _, _, _, purchased in shop_items
                           if not purchased}
+            from module.umamusume.constants.game_constants import SUMMER_CAMP_2_END
+            post_senior_summer = current_date > SUMMER_CAMP_2_END
+
             tmp_budget = budget
             for tier in range(1, mant_cfg.tier_count + 1):
-                if tier > 1:
-                    threshold = mant_cfg.tier_thresholds.get(tier, 0)
-                    if tmp_budget < threshold:
-                        continue
+                threshold = 0
+                if tier > 1 and not post_senior_summer:
+                    threshold = mant_cfg.tier_thresholds.get(tier, (tier - 1) * 50)
                 for slug, t in mant_cfg.item_tiers.items():
                     if t != tier or slug not in shop_slugs:
                         continue
                     display = SLUG_TO_DISPLAY.get(slug)
                     if display and display in expiring:
                         cost = SHOP_ITEM_COSTS.get(display, 9999)
-                        if cost <= tmp_budget:
-                            emergency_targets.append(display)
-                            tmp_budget -= cost
-                            budget = tmp_budget
+                        remaining_after = tmp_budget - cost
+                        if remaining_after < 0:
+                            continue
+                        if tier > 1 and remaining_after < threshold:
+                            continue
+                        emergency_targets.append(display)
+                        tmp_budget -= cost
+                        budget = tmp_budget
 
     active_ailments = getattr(ctx.cultivate_detail, 'mant_afflictions', [])
     if active_ailments:

@@ -474,7 +474,7 @@ def scan_inventory(ctx, stop_when_found=None):
 
     prev_cursor = -1
     stall_count = 0
-    for _ in range(20 if not idle_terminated else 0):
+    for _ in range(20):
         if not ctx.task.running():
             break
         time.sleep(0.18)

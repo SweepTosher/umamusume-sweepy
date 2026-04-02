@@ -1355,12 +1355,13 @@ def handle_megaphone(ctx):
     summer_bonus = getattr(mant_cfg, 'mega_summer_bonus', 10)
     race_penalty = getattr(mant_cfg, 'mega_race_penalty', 5)
 
-    has_higher = {}
-    for name, (tier, _) in MEGAPHONE_TIERS.items():
-        for other_name, (other_tier, _) in MEGAPHONE_TIERS.items():
-            if other_tier > tier and owned_map.get(other_name, 0) > 0:
-                has_higher[tier] = True
-                break
+    def _mega_year_rate(d):
+        from module.umamusume.constants.game_constants import JUNIOR_YEAR_END, CLASSIC_YEAR_END
+        if d <= JUNIOR_YEAR_END:
+            return 2
+        elif d <= CLASSIC_YEAR_END:
+            return 3.5
+        return 5
 
     best_mega = None
     best_tier = 0
@@ -1379,12 +1380,15 @@ def handle_megaphone(ctx):
             upgrade_bonus = 7 if tier_diff == 1 else 15
             threshold += upgrade_bonus
 
-        extra_qty = owned_map.get(name, 0) - 1
-        if extra_qty > 0:
-            threshold -= extra_qty * 5
-
-        if has_higher.get(tier, False):
-            threshold -= 5
+        year_rate = _mega_year_rate(date)
+        own_qty = owned_map.get(name, 0)
+        threshold -= own_qty * year_rate
+        for other_name, (other_tier, _) in MEGAPHONE_TIERS.items():
+            if other_name == name:
+                continue
+            other_qty = owned_map.get(other_name, 0)
+            if other_qty > 0:
+                threshold -= other_qty * year_rate * 0.5
 
         races_in_window = count_races_in_window(ctx, duration)
         threshold += races_in_window * race_penalty

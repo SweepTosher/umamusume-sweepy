@@ -680,9 +680,8 @@ def close_items_panel(ctx):
         frame = ctx.ctrl.get_screen()
         if not is_items_panel_open(frame) and not has_use_training_items_button(frame):
             return
-        from module.umamusume.asset.point import ESCAPE
-        ctx.ctrl.click_by_point(ESCAPE)
-        time.sleep(0.5)
+        ctx.ctrl.execute_adb_shell("shell input tap 200 1205", True)
+        time.sleep(0.3)
 
 
 def use_training_item(ctx, item_name, quantity=1):
@@ -698,23 +697,27 @@ def use_training_item(ctx, item_name, quantity=1):
                 owned_map.pop(item_name, None)
                 ctx.cultivate_detail.mant_owned_items = [(n, q) for n, q in owned_map.items() if q > 0]
             return False
-        time.sleep(0.3)
+        time.sleep(0.15)
 
-    confirm_tap = False
-    for _ in range(15):
-        time.sleep(0.35)
+    ctx.ctrl.execute_adb_shell("shell input tap 530 1205", True)
+    time.sleep(0.3)
+
+    clicked_use = False
+    for _ in range(20):
+        time.sleep(0.17)
         frame = ctx.ctrl.get_screen()
         if has_use_training_items_button(frame):
             ctx.ctrl.execute_adb_shell("shell input tap 530 1205", True)
-            confirm_tap = True
-            time.sleep(0.6)
-        elif confirm_tap:
-            if not is_items_panel_open(frame):
+            clicked_use = True
+            time.sleep(0.5)
+            continue
+        if clicked_use:
+            if is_items_panel_open(frame) or not has_use_training_items_button(frame):
                 return True
+        if not clicked_use and is_items_panel_open(frame):
+            ctx.ctrl.execute_adb_shell("shell input tap 530 1205", True)
 
-    if confirm_tap:
-        close_items_panel(ctx)
-    return confirm_tap
+    return True
 
 
 INSTANT_USE_ITEMS = [

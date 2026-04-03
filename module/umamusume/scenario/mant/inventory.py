@@ -1526,7 +1526,7 @@ def remaining_climax_races(date):
 
 
 def handle_cleat_before_race(ctx, race_id, is_climax_override=False):
-    from module.umamusume.constants.game_constants import SUMMER_CAMP_2_END
+    from module.umamusume.constants.game_constants import SUMMER_CAMP_2_START
 
     if getattr(ctx.cultivate_detail, 'mant_cleat_used', False):
         return False
@@ -1555,7 +1555,10 @@ def handle_cleat_before_race(ctx, race_id, is_climax_override=False):
             return result
         return False
 
-    if date >= SUMMER_CAMP_2_END:
+    from module.umamusume.constants.game_constants import CLASSIC_YEAR_END, SENIOR_YEAR_END
+    from module.umamusume.asset.race_data import is_g1_race
+
+    if date > SUMMER_CAMP_2_START:
         total = master_qty + artisan_qty
         if total <= 2:
             return False
@@ -1563,6 +1566,15 @@ def handle_cleat_before_race(ctx, race_id, is_climax_override=False):
         reserve_master = min(master_qty, reserve_total)
         spare_master = master_qty - reserve_master
         spare_artisan = artisan_qty - (reserve_total - reserve_master)
+
+        is_senior = date <= SENIOR_YEAR_END
+
+        if is_senior and master_qty < 3 and spare_artisan > 0:
+            result = use_item_and_update_inventory(ctx, 'Artisan Cleat Hammer')
+            if result:
+                ctx.cultivate_detail.mant_cleat_used = True
+            return result
+
         if spare_master > 0:
             result = use_item_and_update_inventory(ctx, 'Master Cleat Hammer')
             if result:
@@ -1575,8 +1587,22 @@ def handle_cleat_before_race(ctx, race_id, is_climax_override=False):
             return result
         return False
 
-    from module.umamusume.asset.race_data import is_g1_race
     if not is_g1_race(race_id):
+        return False
+
+    is_senior = CLASSIC_YEAR_END < date <= SENIOR_YEAR_END
+
+    if is_senior and master_qty < 3:
+        if artisan_qty > 0:
+            result = use_item_and_update_inventory(ctx, 'Artisan Cleat Hammer')
+            if result:
+                ctx.cultivate_detail.mant_cleat_used = True
+            return result
+        if master_qty > 0:
+            result = use_item_and_update_inventory(ctx, 'Master Cleat Hammer')
+            if result:
+                ctx.cultivate_detail.mant_cleat_used = True
+            return result
         return False
 
     if master_qty > 0:

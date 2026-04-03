@@ -234,6 +234,8 @@ def handle_mant_shop_scan(ctx, current_date):
                     return True
             if display_name == AILMENT_CURE_ALL and has_miracle_cure:
                 return True
+            if display_name == "Energy Drink MAX" and owned_map.get("Energy Drink MAX", 0) > 0:
+                return True
             return False
 
         from module.umamusume.constants.game_constants import CLASSIC_YEAR_END, SENIOR_YEAR_END, SUMMER_CAMP_2_END
@@ -432,6 +434,14 @@ def handle_mant_emergency_shop_buys(ctx, current_date):
                         continue
                     if display in set(AILMENT_CURE_MAP.values()) or display == AILMENT_CURE_ALL:
                         continue
+                    from module.umamusume.persistence import get_used_buffs
+                    from module.umamusume.scenario.mant.inventory import ONE_TIME_BUFF_ITEMS
+                    if display in ONE_TIME_BUFF_ITEMS and display in get_used_buffs():
+                        continue
+                    if display == "Energy Drink MAX":
+                        owned_em = {n: q for n, q in getattr(ctx.cultivate_detail, 'mant_owned_items', [])}
+                        if owned_em.get("Energy Drink MAX", 0) > 0:
+                            continue
 
                     cost = SHOP_ITEM_COSTS.get(display, 9999)
                     copies = expiring_counts.get(display, 0)

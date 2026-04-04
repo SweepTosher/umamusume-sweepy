@@ -159,6 +159,7 @@ def image_match(target, template: Template) -> ImageMatchResult:
 
 
 def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult:
+    global half_target_cache_id, half_target_cache_img, quarter_target_cache_id, quarter_target_cache_img
     if target is None or target.size == 0:
         return ImageMatchResult()
     try:
@@ -174,7 +175,6 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
                 return ImageMatchResult()
             
             if target.size > 100000:
-                global half_target_cache_id, half_target_cache_img, quarter_target_cache_id, quarter_target_cache_img
                 tpl_path = getattr(template, 'template_path', None)
                 tgt_id = id(target)
                 quarter_loc = None
@@ -189,7 +189,6 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
                         if tgt_quarter is None:
                             tgt_quarter = cv2.resize(target, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA)
                             with cache_lock:
-                                global quarter_target_cache_id, quarter_target_cache_img
                                 quarter_target_cache_id = tgt_id
                                 quarter_target_cache_img = tgt_quarter
                         if tgt_quarter.shape[0] >= arr_quarter.shape[0] and tgt_quarter.shape[1] >= arr_quarter.shape[1]:
@@ -213,7 +212,6 @@ def template_match(target, template, accuracy: float = 0.86) -> ImageMatchResult
                         if tgt_half is None:
                             tgt_half = cv2.resize(target, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
                             with cache_lock:
-                                global half_target_cache_id, half_target_cache_img
                                 half_target_cache_id = tgt_id
                                 half_target_cache_img = tgt_half
                         if tgt_half.shape[0] >= hth and tgt_half.shape[1] >= htw:

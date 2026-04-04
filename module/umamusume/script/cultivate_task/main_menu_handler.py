@@ -22,7 +22,7 @@ from module.umamusume.constants.timing_constants import (
     MEDIC_CHECK_DELAY, RACE_SEARCH_TIMEOUT
 )
 from module.umamusume.script.cultivate_task.parse import parse_date, parse_cultivate_main_menu
-from module.umamusume.script.cultivate_task.helpers import should_use_pal_outing_simple, detect_pal_stage
+from module.umamusume.script.cultivate_task.helpers import should_use_pal_outing_simple, detect_pal_stage, should_use_team_sirius_recreation, execute_team_sirius_recreation, execute_regular_recreation
 from bot.recog.energy_scanner import scan_energy
 
 log = logger.get_logger(__name__)
@@ -200,10 +200,18 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
 
 
     if turn_operation is not None and turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_REST:
+        if should_use_team_sirius_recreation(ctx):
+            execute_team_sirius_recreation(ctx, trip_click_point=get_trip(ctx))
+            return
+        if getattr(ctx.cultivate_detail, 'team_sirius_enabled', False):
+            execute_regular_recreation(ctx, trip_click_point=get_trip(ctx))
+            return
         if should_use_pal_outing_simple(ctx):
             ctx.ctrl.click_by_point(get_trip(ctx))
-        else:
-            ctx.ctrl.click_by_point(CULTIVATE_REST)
+            return
+        ctx.cultivate_detail.turn_info.turn_operation = None
+        ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
+        ctx.cultivate_detail.turn_info.parse_train_info_finish = False
         return
     
     if turn_operation is not None and turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRIP:
@@ -265,10 +273,18 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 ctx.cultivate_detail.turn_info.base_energy = base_energy
             ctx.ctrl.click_by_point(TO_TRAINING_SELECT)
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_REST:
+            if should_use_team_sirius_recreation(ctx):
+                execute_team_sirius_recreation(ctx, trip_click_point=get_trip(ctx))
+                return
+            if getattr(ctx.cultivate_detail, 'team_sirius_enabled', False):
+                execute_regular_recreation(ctx, trip_click_point=get_trip(ctx))
+                return
             if should_use_pal_outing_simple(ctx):
                 ctx.ctrl.click_by_point(get_trip(ctx))
-            else:
-                ctx.ctrl.click_by_point(CULTIVATE_REST)
+                return
+            ctx.cultivate_detail.turn_info.turn_operation = None
+            ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
+            ctx.cultivate_detail.turn_info.parse_train_info_finish = False
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_MEDIC:
             is_summer = is_summer_camp_period(ctx.cultivate_detail.turn_info.date)
             ctx.ctrl.click_by_point(get_medic(ctx, summer=is_summer))

@@ -798,6 +798,19 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         else:
         
             if not hasattr(ctx.cultivate_detail.turn_info, 'race_search_attempted') and date <= 72:
+                ts_check_enabled = getattr(ctx.cultivate_detail, 'team_sirius_enabled', False)
+                ts_check_dates = getattr(ctx.cultivate_detail, 'team_sirius_available_dates', [])
+                ts_check_priority_order = [7, 5, 1, 4, 3]
+                if ts_check_enabled and ts_check_dates:
+                    ts_check_pct = getattr(ctx.cultivate_detail, 'team_sirius_percentile', 26)
+                    if percentile < ts_check_pct:
+                        matching = [d for d in ts_check_priority_order if d in ts_check_dates]
+                        if matching:
+                            ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
+                            ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
+                            ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+                            return
+
                 wit_race_threshold = getattr(ctx.cultivate_detail, 'wit_race_search_threshold', 0.15)
                 
                 current_energy = getattr(ctx.cultivate_detail.turn_info, 'cached_energy', 0)
@@ -868,6 +881,23 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     if not new_is_race and getattr(ctx.cultivate_detail, '_prev_op_was_race', False):
         ctx.cultivate_detail.mant_cleat_used = False
         ctx.cultivate_detail._prev_op_was_race = False
+
+    ts_enabled = getattr(ctx.cultivate_detail, 'team_sirius_enabled', False)
+    ts_percentile = getattr(ctx.cultivate_detail, 'team_sirius_percentile', 26)
+    ts_dates = getattr(ctx.cultivate_detail, 'team_sirius_available_dates', [])
+    ts_priority_order = [7, 5, 1, 4, 3]
+    if ts_enabled and ts_dates:
+        op_check = ctx.cultivate_detail.turn_info.turn_operation
+        is_race_operation = (op_check is not None and
+                             op_check.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_RACE)
+        if not is_race_operation and len(history) >= 2:
+            if percentile < ts_percentile:
+                matching = [d for d in ts_priority_order if d in ts_dates]
+                if matching:
+                    ctx.cultivate_detail.turn_info.turn_operation = TurnOperation()
+                    ctx.cultivate_detail.turn_info.turn_operation.turn_operation_type = TurnOperationType.TURN_OPERATION_TYPE_REST
+                    ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
+                    return
 
     try:
         best_idx_tmp = int(np.argmax(computed_scores))

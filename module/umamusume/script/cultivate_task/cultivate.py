@@ -53,6 +53,7 @@ from module.umamusume.script.cultivate_task.not_found_handler import (
 
 from module.umamusume.script.cultivate_task.helpers import (
     should_use_pal_outing_simple,
+    should_use_team_sirius_recreation,
 )
 
 __all__ = [
@@ -89,4 +90,5 @@ __all__ = [
     'script_scenario_rating_update',
     'script_not_found_ui',
     'should_use_pal_outing_simple',
+    'should_use_team_sirius_recreation',
 ]

@@ -3225,9 +3225,10 @@ export default {
     },
     selectRaceForSlot: function (raceId) {
       const slotRaceIds = this.slotPopupRaces.map(r => r.id);
-      this.extraRace = this.extraRace.filter(id => !slotRaceIds.includes(id));
-      const index = this.extraRace.indexOf(raceId);
-      if (index === -1) {
+      if (this.extraRace.includes(raceId)) {
+        this.extraRace = this.extraRace.filter(id => !slotRaceIds.includes(id));
+      } else {
+        this.extraRace = this.extraRace.filter(id => !slotRaceIds.includes(id));
         this.extraRace.push(raceId);
       }
     },

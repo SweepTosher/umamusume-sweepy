@@ -259,22 +259,23 @@ def script_info(ctx: UmamusumeContext):
             if getattr(ctx.cultivate_detail, 'team_sirius_enabled', False) and ts_priority:
                 ctx.ctrl.click_by_point(CULTIVATE_OPERATION_COMMON_CONFIRM)
             elif getattr(ctx.cultivate_detail, 'team_sirius_enabled', False):
-                pass
+                import random
+                ctx.ctrl.click(random.randint(500, 600), random.randint(15, 22))
             else:
                 img = ctx.current_screen
                 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 from module.umamusume.asset.template import UI_FRIEND_RECREATION, UI_FRIEND_RECREATION_COMPLETE
-                
+
                 result_complete = image_match(img_gray, UI_FRIEND_RECREATION_COMPLETE)
                 log.info(f"Recreation complete match: {result_complete.find_match}")
-                
+
                 if result_complete.find_match:
                     log.info("Recreation complete")
                     ctx.ctrl.click_by_point(CULTIVATE_TRIP_WITH_FRIEND_COMPLETE)
                 else:
                     result = image_match(img_gray, UI_FRIEND_RECREATION)
                     log.info(f"Friend recreation match: {result.find_match}")
-                    
+
                     if result.find_match:
                         log.info("Friend recreation")
                         ctx.ctrl.click_by_point(CULTIVATE_TRIP_WITH_FRIEND)

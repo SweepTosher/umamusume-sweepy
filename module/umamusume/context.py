@@ -176,6 +176,7 @@ class CultivateContextDetail:
         self.mant_coins = 0
         self.mant_inventory_scanned = False
         self.mant_owned_items = []
+        self.mant_max_energy = 100
         self.user_provided_priority = False
         self.event_overrides = {}
         self.use_last_parents = False

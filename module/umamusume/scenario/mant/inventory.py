@@ -19,6 +19,66 @@ from module.umamusume.scenario.mant.shop import (
 
 log = logger.get_logger(__name__)
 
+MAX_ENERGY_OCR_X1 = 456
+MAX_ENERGY_OCR_Y1 = 219
+MAX_ENERGY_OCR_X2 = 516
+MAX_ENERGY_OCR_Y2 = 243
+
+def ocr_max_energy_from_screen(img):
+    if img is None:
+        return None
+    try:
+        h, w = img.shape[:2]
+        x1 = min(MAX_ENERGY_OCR_X1, w - 1)
+        y1 = min(MAX_ENERGY_OCR_Y1, h - 1)
+        x2 = min(MAX_ENERGY_OCR_X2, w)
+        y2 = min(MAX_ENERGY_OCR_Y2, h)
+        if x2 <= x1 or y2 <= y1:
+            return None
+        roi = img[y1:y2, x1:x2]
+        roi_scaled = cv2.resize(roi, None, fx=3.0, fy=3.0, interpolation=cv2.INTER_CUBIC)
+        gray = cv2.cvtColor(roi_scaled, cv2.COLOR_BGR2GRAY)
+        _, thr = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        roi_ocr = cv2.cvtColor(thr, cv2.COLOR_GRAY2BGR)
+        raw = ocr(roi_ocr, lang="en")
+        if not raw or not raw[0]:
+            return None
+        for entry in raw[0]:
+            if not entry or len(entry) < 2:
+                continue
+            text = entry[1][0].strip()
+            digits = re.sub(r'[^0-9]', '', text)
+            if digits:
+                val = int(digits)
+                if 50 <= val <= 999:
+                    return val
+        return None
+    except Exception:
+        return None
+
+
+def sync_max_energy_to_scanner(ctx):
+    max_energy = getattr(ctx.cultivate_detail, 'mant_max_energy', 100)
+    from bot.recog.energy_scanner import set_max_energy
+    set_max_energy(max_energy)
+
+
+def update_max_energy_from_ocr(ctx):
+    frame = ctx.ctrl.get_screen()
+    if frame is None:
+        return False
+    detected = ocr_max_energy_from_screen(frame)
+    if detected is None:
+        return False
+    current_max = getattr(ctx.cultivate_detail, 'mant_max_energy', 100)
+    if detected > current_max:
+        ctx.cultivate_detail.mant_max_energy = detected
+        log.info(f"new max energy: {detected}")
+        sync_max_energy_to_scanner(ctx)
+        return True
+    return False
+
+
 INV_TRACK_TOP = 120
 INV_TRACK_BOT = 1060
 INV_CONTENT_TOP = 90
@@ -755,8 +815,7 @@ ENERGY_SCORE_THRESHOLD = 20
 OVERFLOW_PENALTY = {0: 1.0, 1: 0.9, 2: 0.8, 3: 0.8, 4: 0.8}
 
 
-def calc_effective_energy(item_name, raw_energy, current_energy, period_idx):
-    max_energy = 100
+def calc_effective_energy(item_name, raw_energy, current_energy, period_idx, max_energy=100):
     effective = raw_energy
     overflow = max(0, current_energy + raw_energy - max_energy)
     penalty_rate = OVERFLOW_PENALTY.get(period_idx, 0.8)
@@ -767,7 +826,6 @@ def calc_effective_energy(item_name, raw_energy, current_energy, period_idx):
 
 
 LOW_ENERGY_THRESHOLD = 5
-MAX_ENERGY = 100
 
 
 def pick_best_energy_item(ctx):
@@ -777,7 +835,11 @@ def pick_best_energy_item(ctx):
     if current_energy is None:
         return None
     current_energy = int(current_energy)
-    if current_energy >= ENERGY_USE_MAX:
+    max_energy = getattr(ctx.cultivate_detail, 'mant_max_energy', 100)
+    energy_use_max = max_energy * 0.5
+    energy_result_min = max_energy * 0.4
+    energy_score_threshold = max_energy * 0.2
+    if current_energy >= energy_use_max:
         return None
 
     date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
@@ -790,18 +852,18 @@ def pick_best_energy_item(ctx):
         if owned_map.get(item_name, 0) <= 0:
             continue
         result_energy = current_energy + raw_energy
-        if result_energy < ENERGY_RESULT_MIN:
+        if result_energy < energy_result_min:
             continue
-        effective = calc_effective_energy(item_name, raw_energy, current_energy, period_idx)
+        effective = calc_effective_energy(item_name, raw_energy, current_energy, period_idx, max_energy)
         if effective > best_effective:
             best_effective = effective
             best_item = item_name
-    if best_effective < ENERGY_SCORE_THRESHOLD:
+    if best_effective < energy_score_threshold:
         return None
     return best_item
 
 
-def plan_low_energy_recovery(current_energy, owned_map):
+def plan_low_energy_recovery(current_energy, owned_map, max_energy=100):
     available = []
     for item_name, raw_energy in sorted(ENERGY_ITEMS.items(), key=lambda x: x[1]):
         qty = owned_map.get(item_name, 0)
@@ -815,9 +877,9 @@ def plan_low_energy_recovery(current_energy, owned_map):
     energy = current_energy
 
     for item_name, raw_energy, qty in reversed(available):
-        if energy >= MAX_ENERGY:
+        if energy >= max_energy:
             break
-        while qty > 0 and energy + raw_energy <= MAX_ENERGY:
+        while qty > 0 and energy + raw_energy <= max_energy:
             plan.append(item_name)
             energy += raw_energy
             qty -= 1
@@ -842,6 +904,7 @@ def use_item_and_update_inventory(ctx, item_name):
     ok = use_training_item(ctx, item_name, 1)
     if not ok:
         return False
+    update_max_energy_from_ocr(ctx)
     close_items_panel(ctx)
     owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
     owned_map = {n: q for n, q in owned}
@@ -912,8 +975,11 @@ def handle_energy_recovery(ctx):
         return False
     current_energy = int(current_energy)
 
-    limit = getattr(ctx.cultivate_detail, 'rest_threshold',
+    max_energy = getattr(ctx.cultivate_detail, 'mant_max_energy', 100)
+
+    rest_threshold = getattr(ctx.cultivate_detail, 'rest_threshold',
                     getattr(ctx.cultivate_detail, 'rest_treshold', 48))
+    limit = max_energy * (rest_threshold / 100.0)
 
     owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
     owned_map = {n: q for n, q in owned}
@@ -931,7 +997,7 @@ def handle_energy_recovery(ctx):
     used_any = False
     for item_name, raw_energy, qty in available:
         while qty > 0 and energy <= limit:
-            if energy + raw_energy > MAX_ENERGY:
+            if energy + raw_energy > max_energy:
                 break
             ok = use_item_and_update_inventory(ctx, item_name)
             if not ok:
@@ -1001,6 +1067,7 @@ def handle_instant_use_items(ctx):
         if has_use_training_items_button(frame):
             ctx.ctrl.execute_adb_shell("shell input tap 530 1205", True)
             time.sleep(0.5)
+            update_max_energy_from_ocr(ctx)
             break
         if is_items_panel_open(frame):
             ctx.ctrl.execute_adb_shell("shell input tap 530 1205", True)
@@ -1459,6 +1526,7 @@ def tick_megaphone(ctx):
 
 def item_loop(ctx):
     start_date = getattr(ctx.cultivate_detail.turn_info, 'date', None)
+    sync_max_energy_to_scanner(ctx)
 
     got_charm = has_charm(ctx)
     got_whistle = has_whistle(ctx)

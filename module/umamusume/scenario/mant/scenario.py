@@ -24,8 +24,6 @@ STAT_AREAS_MANT = {
     "sp": (588, 770, 695, 826),
 }
 
-MAX_ENERGY = 100
-
 def get_incoming_energy(current_turn, lookahead=1):
     total = 0
     for data in MANT_FIXED_EVENTS.values():
@@ -85,8 +83,9 @@ class MANTScenario(URAScenario):
         except Exception:
             w_energy_change = 0.006
 
-        overflow_without = max(0, current_energy + incoming - MAX_ENERGY)
-        overflow_with = max(0, (current_energy + energy_change_val) + incoming - MAX_ENERGY)
+        max_energy = getattr(ctx.cultivate_detail, 'mant_max_energy', 100)
+        overflow_without = max(0, current_energy + incoming - max_energy)
+        overflow_with = max(0, (current_energy + energy_change_val) + incoming - max_energy)
         wasted_diff = overflow_with - overflow_without
 
         if wasted_diff != 0:

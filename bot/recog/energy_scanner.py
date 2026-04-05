@@ -5,6 +5,17 @@ from bot.recog.image_matcher import image_match
 ENERGY_BAR_Y = 161
 ENERGY_BAR_START_X = 227
 energy_template = None
+current_max_energy = 100
+
+
+def set_max_energy(max_energy):
+    global current_max_energy
+    current_max_energy = max_energy
+
+
+def get_max_energy():
+    return current_max_energy
+
 
 def get_energy_template():
     global energy_template
@@ -93,7 +104,7 @@ def scan_energy_single(img, y=ENERGY_BAR_Y):
     else:
         filled = first_gray - ENERGY_BAR_START_X - 1
         gray_count = bar_end - first_gray
-    base_energy = filled / bar_length * 100
+    base_energy = filled / bar_length * current_max_energy
     return row, gray_count, base_energy
 
 
@@ -142,7 +153,7 @@ def scan_training_energy_change_single(img, y=ENERGY_BAR_Y):
     mismatches = compare_rows(reference_row, current_row)
     if mismatches == 0:
         return 0.0
-    energy_change_pct = mismatches / reference_bar_length * 100
+    energy_change_pct = mismatches / reference_bar_length * current_max_energy
     first_gray = find_first_gray(img, ENERGY_BAR_START_X, bar_end, y)
     current_gray_count = (bar_end - first_gray) if first_gray else 0
     if current_gray_count > reference_gray_count:
@@ -184,6 +195,6 @@ def scan_base_energy(img, y=ENERGY_BAR_Y):
         return 0
     first_gray = find_first_gray(img, ENERGY_BAR_START_X, bar_end, y)
     if first_gray is None:
-        return 100.0
+        return float(current_max_energy)
     filled = first_gray - ENERGY_BAR_START_X - 1
-    return filled / bar_length * 100
+    return filled / bar_length * current_max_energy

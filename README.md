@@ -4,7 +4,7 @@ Go get the original, which is not only updated but probably will have all these 
 
 This was made to fix the following issues that were encountered in MANT:
 
-- Events getting stuck only sometimes and with no specific event being the issue. This made the event handler loop like crazy, so now the bot checks the event before trying to loop the logic and triggering the decision making click.
+- Events getting stuck only sometimes and with no specific event being the issue. This made the event handler loop like crazy, so now the bot checks the event before trying to loop the logic and triggering the decision making click. Fuck, just had a run where it got stuck again, but it seems to be due to the fact that: It was a G1 race with a Rival, but also the third consecutive race in the schedule, with no good training available without a high failure rate and no recreation, so it kinda gets super dumb and goes into the trainins and back to the main menu, rinse and repeat. I'll figure it out tho
 
 - Bot sometimes getting stuck on the races menu, trying to find a scheduled race but not finding it. Now the bot will lower the threshold for detection everytime it reaches the bottom of the race list, until it finds the race. Don't know what happens if it fails too much tho, it seems to be fine finding it after the second try so it may choose the wrong race or get stuck idk
 

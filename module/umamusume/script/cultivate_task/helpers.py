@@ -118,6 +118,10 @@ def should_use_team_sirius_recreation(ctx: UmamusumeContext) -> bool:
     available = getattr(ctx.cultivate_detail, 'team_sirius_available_dates', [])
     if not available:
         return False
+    last_used = getattr(ctx.cultivate_detail, 'team_sirius_last_date', -1)
+    current_date = ctx.cultivate_detail.turn_info.date
+    if current_date - last_used <= 1:
+        return False
     all_ts_dates = REST_REPLACEMENT_DATES | TRAINING_REPLACEMENT_DATES | RECREATION_REPLACEMENT_DATES
     return any(d in all_ts_dates for d in available)
 
@@ -177,6 +181,9 @@ def execute_team_sirius_recreation(ctx: UmamusumeContext, trip_click_point=None)
         y = random.randint(15, 22)
         ctx.ctrl.click(x, y)
         time.sleep(0.2)
+
+    ctx.cultivate_detail.team_sirius_last_date = date_slot
+    ctx.cultivate_detail.team_sirius_available_dates = []
 
     return True
 

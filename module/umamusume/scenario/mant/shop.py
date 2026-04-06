@@ -20,6 +20,7 @@ CONTENT_X1 = 30
 CONTENT_X2 = 640
 PURCHASED_CHECK_X1 = 200
 PURCHASED_CHECK_X2 = 600
+PURCHASED_BRIGHTNESS_THRESHOLD = 180
 MANT_SHOP_SCAN_START = 13
 MANT_SHOP_SCAN_INTERVAL = 6
 
@@ -215,33 +216,12 @@ def is_effect_text(text):
     return any(lower.startswith(p) for p in EFFECT_PREFIXES)
 
 
-def find_shop_checkmarks(frame):
-    from module.umamusume.asset.template import REF_MANT_SHOP_CHECKMARK
-    template = cv2.imread(REF_MANT_SHOP_CHECKMARK.template_path)
-    if template is None:
-        return []
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    tmpl_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-    th, tw = tmpl_gray.shape[:2]
-    result = cv2.matchTemplate(gray, tmpl_gray, cv2.TM_CCOEFF_NORMED)
-    threshold = 0.8
-    loc = np.where(result >= threshold)
-    marks = []
-    for pt in zip(*loc[::-1]):
-        cx = pt[0] + tw // 2
-        cy = pt[1] + th // 2
-        if any(abs(cx - mx) < 10 and abs(cy - my) < 10 for mx, my in marks):
-            continue
-        marks.append((cx, cy))
-    return marks
-
-
-def is_buyable(frame, item_y):
-    marks = find_shop_checkmarks(frame)
-    for mx, my in marks:
-        if abs(my - item_y) < 50:
-            return True
-    return False
+def is_purchased(frame, item_y):
+    row_y1 = max(0, int(item_y) - 20)
+    row_y2 = min(frame.shape[0], int(item_y) + 60)
+    roi = frame[row_y1:row_y2, PURCHASED_CHECK_X1:PURCHASED_CHECK_X2]
+    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+    return float(cv2.mean(gray)[0]) < PURCHASED_BRIGHTNESS_THRESHOLD
 
 
 def classify_items_in_frame(frame):
@@ -294,12 +274,12 @@ def classify_items_in_frame(frame):
 
         if any(abs(abs_y - sy) < 40 for sy in seen_y):
             continue
-        buyable = is_buyable(frame, abs_y)
-        items.append((matched_name, match_score, abs_y, y_center, buyable))
+        bought = is_purchased(frame, abs_y)
+        items.append((matched_name, match_score, abs_y, y_center, bought))
         seen_y.append(abs_y)
 
     final_items = []
-    for name, score, abs_y, y_center, buyable in items:
+    for name, score, abs_y, y_center, bought in items:
         best_t = 1
         min_dist = 60
         for t_val, ty in turns_found:
@@ -307,7 +287,7 @@ def classify_items_in_frame(frame):
             if dist < min_dist:
                 best_t = t_val
                 min_dist = dist
-        final_items.append((name, score, abs_y, best_t, buyable))
+        final_items.append((name, score, abs_y, best_t, bought))
 
     final_items.sort(key=lambda r: r[2])
     return final_items, False
@@ -342,8 +322,8 @@ def name_based_shift(by_frame, prev_fi, curr_fi):
 
 def dedup_detections(all_detections, captured_frames):
     by_frame = defaultdict(list)
-    for key, conf, fi, abs_y, turns, buyable in all_detections:
-        by_frame[fi].append((key, conf, abs_y, turns, buyable))
+    for key, conf, fi, abs_y, turns, bought in all_detections:
+        by_frame[fi].append((key, conf, abs_y, turns, bought))
 
     sorted_frames = sorted(by_frame.keys())
     if not sorted_frames:
@@ -383,41 +363,41 @@ def dedup_detections(all_detections, captured_frames):
         cumulative_shift[curr_fi] = cumulative_shift[prev_fi] + content_shift
 
     global_detections = []
-    for key, conf, fi, abs_y, turns, buyable in all_detections:
+    for key, conf, fi, abs_y, turns, bought in all_detections:
         global_y = abs_y + cumulative_shift.get(fi, 0)
-        global_detections.append((key, conf, fi, global_y, turns, buyable))
+        global_detections.append((key, conf, fi, global_y, turns, bought))
 
     global_detections.sort(key=lambda d: d[3])
     position_clusters = []
-    for key, conf, fi, gy, turns, buyable in global_detections:
+    for key, conf, fi, gy, turns, bought in global_detections:
         placed = False
         for cluster in position_clusters:
             cluster_gy = sum(d[3] for d in cluster) / len(cluster)
             if abs(gy - cluster_gy) < 80:
-                cluster.append((key, conf, fi, gy, turns, buyable))
+                cluster.append((key, conf, fi, gy, turns, bought))
                 placed = True
                 break
         if not placed:
-            position_clusters.append([(key, conf, fi, gy, turns, buyable)])
+            position_clusters.append([(key, conf, fi, gy, turns, bought)])
 
     items_list = []
     for cluster in position_clusters:
         name_counts = Counter()
         name_best_conf = {}
         turn_counts = Counter()
-        buyable_votes = Counter()
-        for k, c, fi, gy, turns, buyable in cluster:
+        bought_votes = Counter()
+        for k, c, fi, gy, turns, bought in cluster:
             name_counts[k] += 1
             if k not in name_best_conf or c > name_best_conf[k]:
                 name_best_conf[k] = c
             if turns != 99:
                 turn_counts[turns] += 1
-            buyable_votes[buyable] += 1
+            bought_votes[bought] += 1
         winner = max(name_counts.keys(), key=lambda n: (name_counts[n], name_best_conf[n]))
         winner_turns = turn_counts.most_common(1)[0][0] if turn_counts else 99
-        winner_buyable = buyable_votes.most_common(1)[0][0]
+        winner_bought = bought_votes.most_common(1)[0][0]
         avg_gy = sum(d[3] for d in cluster) / len(cluster)
-        items_list.append((winner, name_best_conf[winner], avg_gy, winner_turns, winner_buyable))
+        items_list.append((winner, name_best_conf[winner], avg_gy, winner_turns, winner_bought))
 
     items_list.sort(key=lambda x: x[2])
     return items_list
@@ -515,8 +495,8 @@ def scan_mant_shop(ctx):
     all_detections = []
     max_kept_frames = 6
     captured_frames = {0: img.copy()}
-    for key, conf, abs_y, turns, buyable in first_results:
-        all_detections.append((key, conf, 0, abs_y, turns, buyable))
+    for key, conf, abs_y, turns, bought in first_results:
+        all_detections.append((key, conf, 0, abs_y, turns, bought))
 
     scan_x_end = _gauss_scan_x()
     swipe_cmd = (
@@ -565,8 +545,8 @@ def scan_mant_shop(ctx):
 
         for fi, f in futures:
             hits, _ = f.result()
-            for key, conf, abs_y, turns, buyable in hits:
-                all_detections.append((key, conf, fi, abs_y, turns, buyable))
+            for key, conf, abs_y, turns, bought in hits:
+                all_detections.append((key, conf, fi, abs_y, turns, bought))
 
     time.sleep(0.2)
     for _extra_pass in range(20):
@@ -581,8 +561,8 @@ def scan_mant_shop(ctx):
                     oldest = min(captured_frames)
                     del captured_frames[oldest]
                 hits, _ = classify_items_in_frame(extra_img)
-                for key, conf, abs_y, turns, buyable in hits:
-                    all_detections.append((key, conf, frame_idx, abs_y, turns, buyable))
+                for key, conf, abs_y, turns, bought in hits:
+                    all_detections.append((key, conf, frame_idx, abs_y, turns, bought))
                 frame_idx += 1
             break
         extra_thumb = find_thumb(extra_rgb)
@@ -602,8 +582,8 @@ def scan_mant_shop(ctx):
                 oldest = min(captured_frames)
                 del captured_frames[oldest]
             hits, _ = classify_items_in_frame(after_extra)
-            for key, conf, abs_y, turns, buyable in hits:
-                all_detections.append((key, conf, frame_idx, abs_y, turns, buyable))
+            for key, conf, abs_y, turns, bought in hits:
+                all_detections.append((key, conf, frame_idx, abs_y, turns, bought))
             prev_frame = after_extra
             frame_idx += 1
 
@@ -850,8 +830,8 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
         results, _ = classify_items_in_frame(frame)
 
         name_candidates = defaultdict(list)
-        for item_name, conf, abs_y, turns, buyable in results:
-            if buyable and not is_unbuyable(frame, abs_y) and remaining.get(item_name, 0) > 0:
+        for item_name, conf, abs_y, turns, bought in results:
+            if not bought and not is_unbuyable(frame, abs_y) and remaining.get(item_name, 0) > 0:
                 name_candidates[item_name].append((turns, abs_y))
         for lst in name_candidates.values():
             lst.sort()

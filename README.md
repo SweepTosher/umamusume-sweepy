@@ -1,3 +1,10 @@
+## Table of Contents
+
+- [Info](#Info)
+- [Changelog](#changelog)
+
+## Info
+
 This is only a fork made with fixes that I've applied myself since every new change was breaking the bot.
 
 Go get the original, which is not only updated but probably will have all these fixes sometime soon: https://github.com/SweepTosher/umamusume-sweepy
@@ -15,3 +22,23 @@ This was made to fix the following issues that were encountered in MANT:
 - Bot getting confused when deciding between rest and training. I'm not really sure why, but I think it had to do with the changes due to the addition of the sirius team card. The bot scored trainings and decided to rest, but since there was no recreation option it resets and goes back to weighting the options, which created tis infinite loop. This is 100% fixed now.
 
 Overall the bot is a little slower due to the shop logic, but after a few MANT runs I can say it works perfectly now. I'm a very new beginner at this so this all may suck, but hey its working and I'm happy with it!
+
+---
+
+## Changelog
+
+April 4th: 
+
+Done like 3 mant runs with no issues so far, the bot is now more robust then ever.
+
+- Made changes to how the bot handles infinite loops, so it now has a loop protection if it detects one. However, there should be less of these as I think that the logic that made it go into loop was fixed. Before it would get stuck into a REST > TRAIN decision loop when the trainings were not good or had a high failure rate and a scheduled race was detected. These were two different loops that triggered themselves so now the bot should: Prioritize scheduled G1 races at all costs, except if it has 0 energy. Then, if no G1 is detected, it will prioritize any G2 or G3 race, but take in consideration training and resting. If it decided the best course of action is resting, only then it will try to rest/recreate.
+
+- Event handler being called infinitely: It seems this happened because the bot thought it made a decision already but it didn't, so now if the event text is still showing the bot will make a decision again just to make sure the event goes away. If it doesn't find an event in the database it will click the first option.
+
+- Stuck in race menu: the bot will now lower the threshold to find a race (same as before) but now with the new race logic it won't go back to the main menu, preventing an infinite loop.
+
+- Not buying items in shop: for some reason the bot was not buying items in the shop sometimes, even though it wanted to. So now, the bot makes his purchase list, goes through the shop looking for what to buy and then does it. If the planned item is not bought, it will go again (same as before) only once. The changes made are to make this more robust and less prone to failure, as the same item was being read as 2 different items when the bot was scrolling through the shop, but now it will try to ignore it as much as possible. The downside is that if two items are near each other (like, one after the other) it will count them as only 1.
+
+- Energy item usage: the bot now uses other energy items to recover if there is a scheduled G1 and it has no energy, I'll just make it so it always race without energy at the end of year and during inspiration rounds in a future update
+
+- Logs are now better: the logs didn't tell me shit before, so now it logs all its actions so I can see why it is acting like a lobotomized AI sometimes. Without this none of the fixes would've happened, not sure why I didn't start with this.

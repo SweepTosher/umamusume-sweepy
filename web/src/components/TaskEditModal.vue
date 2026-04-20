@@ -142,9 +142,68 @@
                               <input type="number" class="form-control form-control-sm" style="width:60px" v-model.number="mantFocusSummerClassic" min="0" max="100" />
                               <label class="mant-threshold-label mb-0">Senior +</label>
                               <input type="number" class="form-control form-control-sm" style="width:60px" v-model.number="mantFocusSummerSenior" min="0" max="100" />
-                            </div>
+                             </div>
                            </div>
                            <div class="mant-threshold-row">
+                            <img :src="getMantItemImg('coaching_megaphone')" class="mant-threshold-img" />
+                            <div class="mant-threshold-controls">
+                              <span class="mant-threshold-label">Coaching Megaphone</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantMegaSmallThreshold" min="0" max="100" />
+                                <span class="mant-threshold-val">{{ mantMegaSmallThreshold }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mant-threshold-row">
+                            <img :src="getMantItemImg('motivating_megaphone')" class="mant-threshold-img" />
+                            <div class="mant-threshold-controls">
+                              <span class="mant-threshold-label">Motivating Megaphone</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantMegaMediumThreshold" min="0" max="100" />
+                                <span class="mant-threshold-val">{{ mantMegaMediumThreshold }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mant-threshold-row">
+                            <img :src="getMantItemImg('empowering_megaphone')" class="mant-threshold-img" />
+                            <div class="mant-threshold-controls">
+                              <span class="mant-threshold-label">Empowering Megaphone</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantMegaLargeThreshold" min="0" max="100" />
+                                <span class="mant-threshold-val">{{ mantMegaLargeThreshold }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mant-threshold-row">
+                            <div class="mant-threshold-img-grid">
+                              <img :src="getMantItemImg('speed_ankle_weights')" />
+                              <img :src="getMantItemImg('stamina_ankle_weights')" />
+                              <img :src="getMantItemImg('power_ankle_weights')" />
+                              <img :src="getMantItemImg('guts_ankle_weights')" />
+                            </div>
+                            <div class="mant-threshold-controls">
+                              <span class="mant-threshold-label">Ankle Weights</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantTrainingWeightsThreshold" min="0" max="100" />
+                                <span class="mant-threshold-val">{{ mantTrainingWeightsThreshold }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mant-threshold-row">
+                            <div class="mant-threshold-controls" style="width:100%">
+                              <span class="mant-threshold-label">Megaphone race penalty (per race in window)</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantMegaRacePenalty" min="0" max="30" />
+                                <span class="mant-threshold-val">{{ mantMegaRacePenalty }}</span>
+                              </div>
+                              <span class="mant-threshold-label">Megaphone summer bonus (threshold reduction)</span>
+                              <div class="mant-threshold-slider-row">
+                                <input type="range" class="hint-slider" v-model.number="mantMegaSummerBonus" min="0" max="30" />
+                                <span class="mant-threshold-val">{{ mantMegaSummerBonus }}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="mant-threshold-row">
                             <img :src="getMantItemImg('good-luck_charm')" class="mant-threshold-img" />
                             <div class="mant-threshold-controls">
                               <span class="mant-threshold-label">Active charm when best training (without failure rate penalty) percentile ></span>
@@ -2067,6 +2126,12 @@ export default {
       mantWhistleFocusSummer: true,
       mantFocusSummerClassic: 20,
       mantFocusSummerSenior: 10,
+      mantMegaSmallThreshold: 60,
+      mantMegaMediumThreshold: 70,
+      mantMegaLargeThreshold: 80,
+      mantMegaRacePenalty: 5,
+      mantMegaSummerBonus: 10,
+      mantTrainingWeightsThreshold: 60,
       mantBbqUnmaxxedCards: 3,
       mantCharmThreshold: 40,
       mantCharmFailureRate: 21,
@@ -3489,20 +3554,20 @@ export default {
             "preliminaryRoundSelections": [...this.preliminaryRoundSelections],
             "aoharuTeamNameSelection": this.aoharuTeamNameSelection
           } : null,
-          "mant_config": this.selectedScenario === 3 ? {
-            "item_tiers": { ...this.mantItemTiers },
-            "tier_count": this.mantTierCount,
-            "whistle_threshold": this.mantWhistleThreshold,
-            "whistle_focus_summer": this.mantWhistleFocusSummer,
-            "focus_summer_classic": this.mantFocusSummerClassic,
-            "focus_summer_senior": this.mantFocusSummerSenior,
-            "mega_small_threshold": 37,
-            "mega_medium_threshold": 42,
-            "mega_large_threshold": 47,
-            "mega_race_penalty": 5,
-            "mega_summer_bonus": 10,
-            "training_weights_threshold": 40,
-            "bbq_unmaxxed_cards": this.mantBbqUnmaxxedCards,
+           "mant_config": this.selectedScenario === 3 ? {
+             "item_tiers": { ...this.mantItemTiers },
+             "tier_count": this.mantTierCount,
+             "whistle_threshold": this.mantWhistleThreshold,
+             "whistle_focus_summer": this.mantWhistleFocusSummer,
+             "focus_summer_classic": this.mantFocusSummerClassic,
+             "focus_summer_senior": this.mantFocusSummerSenior,
+             "mega_small_threshold": this.mantMegaSmallThreshold,
+             "mega_medium_threshold": this.mantMegaMediumThreshold,
+             "mega_large_threshold": this.mantMegaLargeThreshold,
+             "mega_race_penalty": this.mantMegaRacePenalty,
+             "mega_summer_bonus": this.mantMegaSummerBonus,
+             "training_weights_threshold": this.mantTrainingWeightsThreshold,
+             "bbq_unmaxxed_cards": this.mantBbqUnmaxxedCards,
             "charm_threshold": this.mantCharmThreshold,
             "charm_failure_rate": this.mantCharmFailureRate,
             "skip_race_percentile": this.mantSkipRacePercentile,
@@ -3966,21 +4031,33 @@ export default {
         this.mantBbqUnmaxxedCards = this.presetsUse.mant_config.bbq_unmaxxed_cards ?? 3;
         this.mantCharmThreshold = this.presetsUse.mant_config.charm_threshold ?? 40;
         this.mantCharmFailureRate = this.presetsUse.mant_config.charm_failure_rate ?? 21;
-        this.mantSkipRacePercentile = this.presetsUse.mant_config.skip_race_percentile ?? 0;
-        this.mantTierThresholds = this.presetsUse.mant_config.tier_thresholds ?? {"3":51,"7":300,"8":99999999999};
-      } else {
-        this.mantItemTiers = this.mantGetDefaultTiers();
-        this.mantTierCount = 8;
-        this.mantTierThresholds = {"3":51,"7":300,"8":99999999999};
-        this.mantWhistleThreshold = 20;
-        this.mantWhistleFocusSummer = true;
-        this.mantFocusSummerClassic = 20;
-        this.mantFocusSummerSenior = 10;
-        this.mantBbqUnmaxxedCards = 3;
-        this.mantCharmThreshold = 40;
-        this.mantCharmFailureRate = 21;
-        this.mantSkipRacePercentile = 0;
-      }
+         this.mantSkipRacePercentile = this.presetsUse.mant_config.skip_race_percentile ?? 0;
+         this.mantTierThresholds = this.presetsUse.mant_config.tier_thresholds ?? {"3":51,"7":300,"8":99999999999};
+         this.mantMegaSmallThreshold = this.presetsUse.mant_config.mega_small_threshold ?? 60;
+         this.mantMegaMediumThreshold = this.presetsUse.mant_config.mega_medium_threshold ?? 70;
+         this.mantMegaLargeThreshold = this.presetsUse.mant_config.mega_large_threshold ?? 80;
+         this.mantMegaRacePenalty = this.presetsUse.mant_config.mega_race_penalty ?? 5;
+         this.mantMegaSummerBonus = this.presetsUse.mant_config.mega_summer_bonus ?? 10;
+         this.mantTrainingWeightsThreshold = this.presetsUse.mant_config.training_weights_threshold ?? 60;
+       } else {
+         this.mantItemTiers = this.mantGetDefaultTiers();
+         this.mantTierCount = 8;
+         this.mantTierThresholds = {"3":51,"7":300,"8":99999999999};
+         this.mantWhistleThreshold = 20;
+         this.mantWhistleFocusSummer = true;
+         this.mantFocusSummerClassic = 20;
+         this.mantFocusSummerSenior = 10;
+         this.mantMegaSmallThreshold = 60;
+         this.mantMegaMediumThreshold = 70;
+         this.mantMegaLargeThreshold = 80;
+         this.mantMegaRacePenalty = 5;
+         this.mantMegaSummerBonus = 10;
+         this.mantTrainingWeightsThreshold = 60;
+         this.mantBbqUnmaxxedCards = 3;
+         this.mantCharmThreshold = 40;
+         this.mantCharmFailureRate = 21;
+         this.mantSkipRacePercentile = 0;
+       }
 
     },
     showModal: function () {
@@ -4174,17 +4251,29 @@ export default {
         this.mantBbqUnmaxxedCards = data.mant_config.bbq_unmaxxed_cards ?? 3;
         this.mantCharmThreshold = data.mant_config.charm_threshold ?? 40;
         this.mantCharmFailureRate = data.mant_config.charm_failure_rate ?? 21;
-        this.mantSkipRacePercentile = data.mant_config.skip_race_percentile ?? 0;
-        this.mantTierThresholds = data.mant_config.tier_thresholds ?? {"3":51,"7":300,"8":99999999999};
-      } else {
+         this.mantSkipRacePercentile = data.mant_config.skip_race_percentile ?? 0;
+         this.mantTierThresholds = data.mant_config.tier_thresholds ?? {"3":51,"7":300,"8":99999999999};
+         this.mantMegaSmallThreshold = data.mant_config.mega_small_threshold ?? 60;
+         this.mantMegaMediumThreshold = data.mant_config.mega_medium_threshold ?? 70;
+         this.mantMegaLargeThreshold = data.mant_config.mega_large_threshold ?? 80;
+         this.mantMegaRacePenalty = data.mant_config.mega_race_penalty ?? 5;
+         this.mantMegaSummerBonus = data.mant_config.mega_summer_bonus ?? 10;
+         this.mantTrainingWeightsThreshold = data.mant_config.training_weights_threshold ?? 60;
+       } else {
         this.mantItemTiers = this.mantGetDefaultTiers();
         this.mantTierCount = 8;
         this.mantTierThresholds = {"3":51,"7":300,"8":99999999999};
         this.mantWhistleThreshold = 20;
         this.mantWhistleFocusSummer = true;
-        this.mantFocusSummerClassic = 20;
-        this.mantFocusSummerSenior = 10;
-        this.mantBbqUnmaxxedCards = 3;
+         this.mantFocusSummerClassic = 20;
+         this.mantFocusSummerSenior = 10;
+         this.mantMegaSmallThreshold = 60;
+         this.mantMegaMediumThreshold = 70;
+         this.mantMegaLargeThreshold = 80;
+         this.mantMegaRacePenalty = 5;
+         this.mantMegaSummerBonus = 10;
+         this.mantTrainingWeightsThreshold = 60;
+         this.mantBbqUnmaxxedCards = 3;
         this.mantCharmThreshold = 40;
         this.mantCharmFailureRate = 21;
         this.mantSkipRacePercentile = 0;
@@ -4342,19 +4431,25 @@ export default {
           aoharuTeamNameSelection: this.aoharuTeamNameSelection
         };
       } else if (this.selectedScenario === 3) {
-        preset.mant_config = {
-          item_tiers: { ...this.mantItemTiers },
-          tier_count: this.mantTierCount,
-          whistle_threshold: this.mantWhistleThreshold,
-          whistle_focus_summer: this.mantWhistleFocusSummer,
-          focus_summer_classic: this.mantFocusSummerClassic,
-          focus_summer_senior: this.mantFocusSummerSenior,
-          bbq_unmaxxed_cards: this.mantBbqUnmaxxedCards,
-          charm_threshold: this.mantCharmThreshold,
-          charm_failure_rate: this.mantCharmFailureRate,
-          skip_race_percentile: this.mantSkipRacePercentile,
-          tier_thresholds: { ...this.mantTierThresholds }
-        };
+         preset.mant_config = {
+           item_tiers: { ...this.mantItemTiers },
+           tier_count: this.mantTierCount,
+           whistle_threshold: this.mantWhistleThreshold,
+           whistle_focus_summer: this.mantWhistleFocusSummer,
+           focus_summer_classic: this.mantFocusSummerClassic,
+           focus_summer_senior: this.mantFocusSummerSenior,
+           mega_small_threshold: this.mantMegaSmallThreshold,
+           mega_medium_threshold: this.mantMegaMediumThreshold,
+           mega_large_threshold: this.mantMegaLargeThreshold,
+           mega_race_penalty: this.mantMegaRacePenalty,
+           mega_summer_bonus: this.mantMegaSummerBonus,
+           training_weights_threshold: this.mantTrainingWeightsThreshold,
+           bbq_unmaxxed_cards: this.mantBbqUnmaxxedCards,
+           charm_threshold: this.mantCharmThreshold,
+           charm_failure_rate: this.mantCharmFailureRate,
+           skip_race_percentile: this.mantSkipRacePercentile,
+           tier_thresholds: { ...this.mantTierThresholds }
+         };
       }
       let payload = {
         "preset": JSON.stringify(preset)

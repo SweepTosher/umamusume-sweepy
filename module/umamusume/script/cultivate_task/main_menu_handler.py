@@ -252,6 +252,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 time.sleep(0.15)
                 base_energy, _, _ = scan_energy(ctx.ctrl)
                 energy = base_energy
+        
         if is_mant(ctx) and energy <= limit:
             ctx.cultivate_detail.turn_info.cached_energy = energy
             if has_extra_race:
@@ -295,6 +296,7 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                     is_summer = is_summer_camp_period(ctx.cultivate_detail.turn_info.date)
                     ctx.ctrl.click_by_point(get_race(ctx, summer=is_summer))
                     return
+            
             if should_use_group_card_recreation(ctx):
                 if execute_group_card_recreation(ctx, trip_click_point=get_trip(ctx)):
                     return

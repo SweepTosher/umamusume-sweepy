@@ -1269,6 +1269,12 @@ MEGAPHONE_TIERS = {
     'Empowering Megaphone': (3, 2),
 }
 
+MEGAPHONE_CONFIG_KEYS = {
+    1: 'mega_small_threshold',
+    2: 'mega_medium_threshold',
+    3: 'mega_large_threshold',
+}
+
 TRAINING_TYPE_ANKLET = {
     1: 'Speed Ankle Weights',
     2: 'Stamina Ankle Weights',
@@ -1485,8 +1491,9 @@ def handle_megaphone_endgame(ctx):
     if date >= MANT_CLIMAX_START and date not in MANT_CLIMAX_TRAINING_TURNS:
         return False
 
-    urgency = compute_mega_urgency(ctx)
-    if urgency < 1.0:
+    training_remaining = remaining_training_turns_real(ctx, date)
+    mega_turns = total_megaphone_turns(owned_map)
+    if mega_turns <= training_remaining:
         return False
 
     for name, (tier, duration) in sorted(MEGAPHONE_TIERS.items(), key=lambda x: x[1][0]):
@@ -1507,63 +1514,72 @@ def handle_megaphone_endgame(ctx):
 
 
 def handle_megaphone(ctx):
-    if handle_megaphone_endgame(ctx):
-        return True
+    mant_cfg = getattr(ctx.task.detail.scenario_config, 'mant_config', None)
+    if mant_cfg is None:
+        return False
 
     date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
     if date >= MANT_CLIMAX_START and date not in MANT_CLIMAX_TRAINING_TURNS:
         return False
 
+    if handle_megaphone_endgame(ctx):
+        return True
+
+    percentile = get_stat_only_percentile(ctx)
+    if percentile is None:
+        return False
+
     owned = getattr(ctx.cultivate_detail, 'mant_owned_items', [])
     owned_map = {n: q for n, q in owned}
+
     active_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
     active_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
 
-    if not any(owned_map.get(n, 0) > 0 for n in MEGAPHONE_TIERS):
-        return False
+    from module.umamusume.constants.game_constants import is_summer_camp_period
+    is_summer = is_summer_camp_period(date)
+    summer_bonus = getattr(mant_cfg, 'mega_summer_bonus', 10)
+    race_penalty = getattr(mant_cfg, 'mega_race_penalty', 5)
 
-    percentile = get_date_weighted_percentile(ctx)
-    if percentile is None:
-        percentile = 50.0
-
-    urgency = compute_mega_urgency(ctx)
+    def _mega_year_rate(d):
+        from module.umamusume.constants.game_constants import JUNIOR_YEAR_END, CLASSIC_YEAR_END
+        if d <= JUNIOR_YEAR_END:
+            return 2
+        elif d <= CLASSIC_YEAR_END:
+            return 3.5
+        return 5
 
     best_mega = None
     best_tier = 0
     for name, (tier, duration) in sorted(MEGAPHONE_TIERS.items(), key=lambda x: -x[1][0]):
         if owned_map.get(name, 0) <= 0:
             continue
-        if active_turns > 0 and tier <= active_tier:
-            continue
+        cfg_key = MEGAPHONE_CONFIG_KEYS[tier]
+        base_threshold = getattr(mant_cfg, cfg_key, 50)
 
-        if urgency >= 0.8:
-            threshold = 20
-        elif urgency >= 0.5:
-            threshold = 40
-        else:
-            threshold = {1: 70, 2: 55, 3: 40}[tier]
+        threshold = base_threshold
 
-        from module.umamusume.constants.game_constants import is_summer_camp_period
-        if is_summer_camp_period(date):
-            threshold -= 15
+        if active_turns > 0 and active_tier > 0:
+            tier_diff = tier - active_tier
+            if tier_diff <= 0:
+                continue
+            upgrade_bonus = 7 if tier_diff == 1 else 15
+            threshold += upgrade_bonus
+
+        year_rate = _mega_year_rate(date)
+        own_qty = owned_map.get(name, 0)
+        threshold -= own_qty * year_rate
+        for other_name, (other_tier, _) in MEGAPHONE_TIERS.items():
+            if other_name == name:
+                continue
+            other_qty = owned_map.get(other_name, 0)
+            if other_qty > 0:
+                threshold -= other_qty * year_rate * 0.5
 
         races_in_window = count_races_in_window(ctx, duration)
-        if duration == 2:
-            if races_in_window >= 1:
-                threshold += 25
-        elif duration == 3:
-            if races_in_window >= 2:
-                threshold += 20
-            elif races_in_window >= 1:
-                threshold += 8
-        elif duration == 4:
-            if races_in_window >= 2:
-                threshold += 25
-            elif races_in_window >= 1:
-                threshold += 10
+        threshold += races_in_window * race_penalty
 
-        if threshold < 0:
-            threshold = 0
+        if is_summer:
+            threshold -= summer_bonus
 
         if percentile >= threshold:
             best_mega = name
@@ -1578,33 +1594,23 @@ def handle_megaphone(ctx):
     if ok:
         ctx.cultivate_detail.mant_megaphone_tier = best_tier
         ctx.cultivate_detail.mant_megaphone_turns = duration
-        log.info(f"megaphone active: tier {best_tier} for {duration} turns (urgency={urgency:.2f} pct={percentile:.0f})")
+        log.info(f"megaphone active: tier {best_tier} for {duration} turns")
         from module.umamusume.persistence import save_megaphone_state
         save_megaphone_state(best_tier, duration)
     return ok
 
 
 def handle_anklet(ctx):
-    date = getattr(ctx.cultivate_detail.turn_info, 'date', 0)
+    mant_cfg = getattr(ctx.task.detail.scenario_config, 'mant_config', None)
+    if mant_cfg is None:
+        return False
 
-    percentile = get_date_weighted_percentile(ctx)
+    percentile = get_stat_only_percentile(ctx)
     if percentile is None:
-        percentile = 50.0
+        return False
 
-    urgency = compute_mega_urgency(ctx)
-    base_threshold = 40
-    if urgency >= 1.0:
-        base_threshold = 0
-    elif urgency >= 0.5:
-        base_threshold = max(0, base_threshold - 20)
-    elif urgency >= 0.3:
-        base_threshold = max(0, base_threshold - 10)
-
-    from module.umamusume.constants.game_constants import is_summer_camp_period
-    if is_summer_camp_period(date):
-        base_threshold = max(0, base_threshold - 10)
-
-    if percentile < base_threshold:
+    threshold = getattr(mant_cfg, 'training_weights_threshold', 40)
+    if percentile < threshold:
         return False
 
     op = getattr(ctx.cultivate_detail.turn_info, 'turn_operation', None)

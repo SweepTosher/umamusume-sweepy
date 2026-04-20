@@ -421,6 +421,21 @@ def get_event_choice(ctx: UmamusumeContext, event_name: str):
     except Exception:
         pass
     try:
+        ENERGY_CONDITIONAL_EVENTS = {
+            'extra training': (1, 2, 90),  # (high_energy_choice, low_energy_choice, threshold)
+        }
+        if event_name.strip().lower() in ENERGY_CONDITIONAL_EVENTS:
+            high_choice, low_choice, threshold = ENERGY_CONDITIONAL_EVENTS[event_name.strip().lower()]
+            energy = getattr(ctx.cultivate_detail.turn_info, 'cached_energy', 100)
+            if energy > threshold:
+                log.info(f"Energy conditional event '{event_name}': energy={energy}>{threshold}, choice {high_choice}")
+                return high_choice, "hardcoded", 0
+            else:
+                log.info(f"Energy conditional event '{event_name}': energy={energy}<={threshold}, choice {low_choice}")
+                return low_choice, "hardcoded", 0
+    except Exception:
+        pass
+    try:
         POST_RACE_EVENTS = ('victory!', 'solid showing', 'defeat')
         if event_name.strip().lower() in POST_RACE_EVENTS:
             energy = getattr(ctx.cultivate_detail.turn_info, 'cached_energy', 100)

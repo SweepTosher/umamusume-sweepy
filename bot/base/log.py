@@ -24,10 +24,8 @@ log_colors_config = {
 }
 
 current_time = time.strftime("%Y%m%d_%H%M%S", time.localtime())
-log_dir = os.path.join(base_path, "logs")
-os.makedirs(log_dir, exist_ok=True)
-log_path = os.path.join(log_dir, f"log_{current_time}.txt")
-ENABLE_FILE_LOG = True
+log_path = os.path.join(base_path, f"log_{current_time}.txt")
+ENABLE_FILE_LOG = False
 
 class TaskLogHandler(logging.Handler):
     def __init__(self, capacity=1000):

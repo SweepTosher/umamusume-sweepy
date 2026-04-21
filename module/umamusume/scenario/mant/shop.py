@@ -428,6 +428,15 @@ def dedup_detections(all_detections, captured_frames):
                 turn_counts[turns] += 1
             buyable_votes[buyable] += 1
         winner = max(name_counts.keys(), key=lambda n: (name_counts[n], name_best_conf[n]))
+        
+        #
+        if name_counts[winner] < max(name_counts.values()):
+            log.info(
+                f"[dedup] cluster winner '{winner}' chosen by conf tie-break over "
+                f"{[k for k,v in name_counts.items() if v == max(name_counts.values())]}"
+            )
+        #
+        
         winner_turns = turn_counts.most_common(1)[0][0] if turn_counts else 99
         winner_buyable = buyable_votes.most_common(1)[0][0]
         avg_gy = sum(d[3] for d in cluster) / len(cluster)
@@ -867,7 +876,15 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
             continue
 
         results, _ = classify_items_in_frame(frame)
-
+        #
+        for item_name, conf, abs_y, turns, buyable in results:
+            if remaining.get(item_name, 0) > 0:
+                unbuyable = is_unbuyable(frame, abs_y)
+                log.info(
+                    f"[buy] candidate '{item_name}' y={abs_y:.0f} buyable_flag={buyable} "
+                    f"is_unbuyable={unbuyable} remaining={remaining[item_name]}"
+                )
+        #        
         name_candidates = defaultdict(list)
         for item_name, conf, abs_y, turns, buyable in results:
             if buyable and not is_unbuyable(frame, abs_y) and remaining.get(item_name, 0) > 0:
@@ -876,7 +893,7 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
             lst.sort()
 
         clicked_any = False
-        for item_name, candidates in name_candidates.items():
+        for item_name, candidates in name_candidates.items():  
             for turns, abs_y in candidates:
                 if remaining.get(item_name, 0) <= 0:
                     break

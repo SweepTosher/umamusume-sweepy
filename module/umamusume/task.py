@@ -48,6 +48,7 @@ class TaskDetail:
     hint_boost_characters: list[str]
     hint_boost_multiplier: int
     friendship_score_groups: list
+    character_score_configs: dict
     pal_card_store: dict
     group_card_enabled: bool
     group_card_name: str
@@ -188,6 +189,7 @@ def build_task(task_execute_mode: TaskExecuteMode, task_type: int,
     td.hint_boost_characters = attachment_data.get('hint_boost_characters', [])
     td.hint_boost_multiplier = int(attachment_data.get('hint_boost_multiplier', 100))
     td.friendship_score_groups = attachment_data.get('friendship_score_groups', [])
+    td.character_score_configs = attachment_data.get('character_score_configs', {})
     
     ut.detail = td
     return ut

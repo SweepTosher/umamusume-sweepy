@@ -658,66 +658,73 @@
                 </div>
               </div>
 
-              <div class="hint-boost-section mt-3 mb-3" v-for="(fsg, fsgIdx) in friendshipScoreGroups" :key="'fsg-'+fsgIdx">
-                <div class="hint-boost-header" @click="fsg.expanded = !fsg.expanded">
+              <div class="friendship-calib-section mt-3 mb-3">
+                <div class="hint-boost-header" @click="showCharSelector = !showCharSelector">
                   <div class="hint-boost-title">
-                    <i class="fas fa-heart"></i>
-                    Friendship score{{ fsgIdx > 0 ? ' ' + (fsgIdx + 1) : '' }}
+                    Friendship Calibration
                   </div>
                   <div class="hint-boost-toggle">
-                    <span v-if="fsg.characters.length" class="hint-boost-badge">{{ fsg.characters.length }} selected · {{ fsg.multiplier }}%</span>
-                    <span class="toggle-text">{{ fsg.expanded ? 'Hide' : 'Show' }}</span>
-                    <i class="fas" :class="fsg.expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    <span v-if="selectedFriendshipCharacters.length" class="hint-boost-badge me-2">{{ selectedFriendshipCharacters.length }} calibrated</span>
+                    <span class="toggle-text">{{ showCharSelector ? 'Hide' : 'Show' }}</span>
+                    <i class="fas" :class="showCharSelector ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
                   </div>
                 </div>
-                <div v-if="fsg.expanded" class="hint-boost-content">
-                  <p style="font-size: 0.85em; color: var(--muted); margin-bottom: 10px;">
-                    Multiplies the blue and green friendship scores of selected characters by this %
-                  </p>
-                  <div class="row align-items-center mb-3">
-                    <div class="col-md-4 col-6">
-                      <label class="mb-1">Friendship Multiplier</label>
-                      <div class="hint-slider-group">
-                        <input type="range" class="hint-slider" v-model.number="fsg.multiplier" min="0" max="200" step="5">
-                        <div class="input-group input-group-sm" style="width:110px;">
-                          <input type="number" class="form-control" v-model.number="fsg.multiplier" min="0" max="200" step="5">
-                          <span class="input-group-text">%</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-4 col-6">
-                      <label class="mb-1">Search</label>
-                      <input type="text" class="form-control form-control-sm" v-model="fsg.search" placeholder="Search characters...">
-                    </div>
-                    <div class="col-md-4 col-6 d-flex align-items-end" style="padding-top: 4px;">
-                      <button type="button" class="btn btn-sm btn-outline-secondary" @click="fsg.characters = []">Clear All</button>
-
+                
+                <div v-if="showCharSelector" class="hint-boost-content p-3" style="border: 1px solid rgba(255,255,255,0.08); border-top: none; border-radius: 0 0 8px 8px; margin-top: -11px; background: rgba(0,0,0,0.1);">
+                  <div class="mb-3">
+                    <input type="text" class="form-control form-control-sm" v-model="friendshipTabSearch" placeholder="Search characters to calibrate...">
+                  </div>
+                  <div class="hint-char-grid mb-3">
+                    <div v-for="name in filteredFriendshipCharacters" :key="name"
+                      class="hint-char-item" :class="{ selected: selectedFriendshipCharacters.includes(name) }"
+                      @click="toggleFriendshipCharacter(name)">
+                      <img :src="'/training-icon/' + encodeURIComponent(name)" class="hint-char-icon" loading="lazy" @error="$event.target.style.display='none'">
+                      <span class="hint-char-name">{{ name }}</span>
                     </div>
                   </div>
-                  <div v-if="fsg.characters.length" class="hint-boost-selected mb-2">
-                    <div v-for="name in fsg.characters" :key="'fsg-sel-'+fsgIdx+'-'+name" class="hint-chip selected" @click="toggleFsgCharacter(fsgIdx, name)">
+
+                  <div v-if="selectedFriendshipCharacters.length" class="hint-boost-selected mb-3">
+                    <div v-for="name in selectedFriendshipCharacters" :key="'chip-'+name" class="hint-chip selected" @click="toggleFriendshipCharacter(name)">
                       <img :src="'/training-icon/' + encodeURIComponent(name)" class="hint-chip-icon" loading="lazy" @error="$event.target.style.display='none'">
                       <span>{{ name }}</span>
                       <i class="fas fa-times hint-chip-remove"></i>
                     </div>
                   </div>
-                  <div class="hint-char-grid">
-                    <div v-for="name in filteredFsgCharacters(fsgIdx)" :key="'fsg-'+fsgIdx+'-'+name"
-                      class="hint-char-item" :class="{ selected: fsg.characters.includes(name) }"
-                      @click="toggleFsgCharacter(fsgIdx, name)">
-                      <img :src="'/training-icon/' + encodeURIComponent(name)" class="hint-char-icon" loading="lazy" @error="$event.target.style.display='none'">
-                      <span class="hint-char-name">{{ name }}</span>
+
+                  <div class="friendship-calib-list">
+                    <div v-for="name in selectedFriendshipCharacters" :key="'calib-' + name" class="mb-2">
+                      <div class="advanced-options-header" @click="getCharacterConfig(name).expanded = !getCharacterConfig(name).expanded">
+                        <div class="advanced-options-title d-flex align-items-center">
+                          <img :src="'/training-icon/' + encodeURIComponent(name)" style="width: 20px; height: 20px; border-radius: 50%;" class="me-2">
+                          {{ name }}
+                        </div>
+                        <div class="advanced-options-toggle">
+                          <i class="fas" :class="getCharacterConfig(name).expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                        </div>
+                      </div>
+                      
+                      <div v-if="getCharacterConfig(name).expanded" class="p-3 rounded-bottom" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-top: none;">
+                        <div class="row g-2">
+                          <div v-for="period in ['junior', 'classic', 'senior']" :key="name + '-' + period" class="col-md-4">
+                            <div class="small fw-bold text-uppercase mb-2 text-muted" style="letter-spacing: 0.5px; font-size: 10px;">{{ period }}</div>
+                            <div class="input-group input-group-sm mb-1">
+                              <span class="input-group-text" style="width: 60px; font-size: 10px; background: rgba(255,255,255,0.05); color: #888; border-color: rgba(255,255,255,0.1);">Blue</span>
+                              <input type="number" step="0.01" class="form-control" style="background: rgba(0,0,0,0.2); color: #fff; border-color: rgba(255,255,255,0.1);" v-model.number="getCharacterConfig(name)[period].blue">
+                            </div>
+                            <div class="input-group input-group-sm mb-1">
+                              <span class="input-group-text" style="width: 60px; font-size: 10px; background: rgba(255,255,255,0.05); color: #888; border-color: rgba(255,255,255,0.1);">Green</span>
+                              <input type="number" step="0.01" class="form-control" style="background: rgba(0,0,0,0.2); color: #fff; border-color: rgba(255,255,255,0.1);" v-model.number="getCharacterConfig(name)[period].green">
+                            </div>
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text" style="width: 60px; font-size: 10px; background: rgba(255,255,255,0.05); color: #888; border-color: rgba(255,255,255,0.1);">Yellow</span>
+                              <input type="number" step="0.01" class="form-control" style="background: rgba(0,0,0,0.2); color: #fff; border-color: rgba(255,255,255,0.1);" v-model.number="getCharacterConfig(name)[period].yellow">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="mb-3">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @click="friendshipScoreGroups.push({ characters: [], multiplier: 100, search: '', expanded: false })">
-                  <i class="fas fa-plus"></i> Add new folder
-                </button>
-                <button v-if="friendshipScoreGroups.length > 1" type="button" class="btn btn-sm btn-outline-danger ms-2" @click="friendshipScoreGroups.pop()">
-                  <i class="fas fa-trash"></i> Delete folder
-                </button>
               </div>
 
               <div>
@@ -1834,6 +1841,7 @@
   white-space: nowrap;
 }
 
+
 .pal-config-section {
   border: 1px solid var(--accent);
   border-radius: 8px;
@@ -2276,10 +2284,11 @@ export default {
       hintBoostMultiplier: 100,
       hintBoostSearch: '',
       showHintBoostPanel: false,
-      friendshipScoreGroups: [
-        { characters: [], multiplier: 100, search: '', expanded: false },
-        { characters: [], multiplier: 100, search: '', expanded: false }
-      ],
+      showCharSelector: false,
+      friendshipSearch: '',
+      characterScoreConfigs: {},
+      selectedFriendshipCharacters: [],
+      friendshipTabSearch: '',
       allTrainingCharacters: [],
       npcScoreJunior: [0.05, 0.05, 0.05],
       npcScoreClassic: [0.05, 0.05, 0.05],
@@ -2385,6 +2394,11 @@ export default {
     filteredHintCharacters() {
       if (!this.hintBoostSearch) return this.allTrainingCharacters;
       const q = this.hintBoostSearch.toLowerCase();
+      return this.allTrainingCharacters.filter(n => n.toLowerCase().includes(q));
+    },
+    filteredFriendshipCharacters() {
+      if (!this.friendshipTabSearch) return this.allTrainingCharacters;
+      const q = this.friendshipTabSearch.toLowerCase();
       return this.allTrainingCharacters.filter(n => n.toLowerCase().includes(q));
     },
     filteredRaces_1() {
@@ -2592,39 +2606,28 @@ export default {
     }
   },
   methods: {
-    // ---------------------------------------------------------------
-    // Normalize a pal_card_store entry to have an explicit type tag.
-    // Old presets: arrays = friend, objects with .group = group
-    // New presets: explicit type:"friend" or type:"group"
-    // ---------------------------------------------------------------
     normalizePalEntry(key, val) {
       if (Array.isArray(val)) {
-        // Old-style: bare array of threshold stages → friend card
         return { type: 'friend', thresholds: val };
       }
       if (typeof val === 'object' && val !== null) {
         if (val.type === 'friend' || val.type === 'group') {
-          // Already tagged — ensure friend cards have .thresholds
           if (val.type === 'friend' && !val.thresholds) {
             return { ...val, thresholds: [] };
           }
           return val;
         }
-        // Infer from structure
         if (val.group) {
-          // Has a .group field → group card (e.g. team_sirius)
           return { ...val, type: 'group' };
         }
         if (val.thresholds && Array.isArray(val.thresholds)) {
           return { ...val, type: 'friend' };
         }
-        // Fallback: if it looks like an array of arrays, it's a friend
         return { ...val, type: 'friend' };
       }
       return val;
     },
 
-    // Get the thresholds array from a pal entry (handles both old and new format)
     getPalThresholds(palData) {
       if (Array.isArray(palData)) return palData;
       if (palData && typeof palData === 'object') {
@@ -2633,24 +2636,20 @@ export default {
       return null;
     },
 
-    // Check if a pal entry is a group card
     isGroupCard(palData) {
       if (!palData || typeof palData !== 'object' || Array.isArray(palData)) return false;
       const ptype = palData.type;
       if (ptype === 'group') return true;
       if (ptype === 'friend') return false;
-      // No type tag — infer from .group field
       return !!palData.group;
     },
 
-    // Check if a pal entry is a friend card
     isFriendCard(palData) {
       if (Array.isArray(palData)) return true;
       if (!palData || typeof palData !== 'object') return false;
       const ptype = palData.type;
       if (ptype === 'friend') return true;
       if (ptype === 'group') return false;
-      // No type tag — infer
       return !palData.group;
     },
     getTurnFromDate(dateStr) {
@@ -2679,20 +2678,19 @@ export default {
           if (res && res.data) {
             const apiStore = res.data;
             for (const key in apiStore) {
-              // Normalize: add type tags to old-format entries
+              
               this.palCardStore[key] = this.normalizePalEntry(key, apiStore[key]);
             }
-            // Ensure team_sirius group card always exists (disabled by default)
+            
             if (!this.palCardStore['team_sirius']) {
               this.palCardStore['team_sirius'] = { type: 'group', group: 'team_sirius', enabled: false, percentile: 26 };
             }
             const palNames = Object.keys(this.palCardStore);
             if (palNames.length > 0 && !this.palSelected) {
-              // Default to first friend card entry
+              
               const firstFriend = palNames.find(n => this.isFriendCard(this.palCardStore[n]));
               this.palSelected = firstFriend || palNames[0];
             }
-            // Sync: if a friend card is selected, group cards must be disabled
             if (this.palSelected && this.isFriendCard(this.palCardStore[this.palSelected])) {
               for (const v of Object.values(this.palCardStore)) {
                 if (this.isGroupCard(v)) {
@@ -2741,7 +2739,7 @@ export default {
     },
     togglePalCardSelection(palName) {
       if (this.palSelected === palName) {
-        // Deselecting
+        
         const entry = this.palCardStore[palName];
         if (this.isGroupCard(entry)) {
           entry.enabled = false;
@@ -2749,7 +2747,7 @@ export default {
         this.prioritizeRecreation = false;
         this.palSelected = null;
       } else {
-        // Selecting
+        
         const entry = this.palCardStore[palName];
         if (this.isGroupCard(entry)) {
           // Group card: toggle enabled flag, clear friend card state
@@ -3032,6 +3030,7 @@ export default {
           'Senior Year': char.objectives.senior_year.dates.map(date => `Senior Year ${date.replace('Senior ', '')}`)
         };
       });
+      this.allTrainingCharacters = this.characterList.map(c => c.name).sort();
     },
     loadRaceData: function () {
       const juniorRaces = raceData.races.filter(race => race.date.includes('Junior Year'));
@@ -3064,20 +3063,25 @@ export default {
         this.hintBoostCharacters.push(name);
       }
     },
-    toggleFsgCharacter(groupIdx, name) {
-      const group = this.friendshipScoreGroups[groupIdx];
-      const idx = group.characters.indexOf(name);
+    toggleFriendshipCharacter(name) {
+      const idx = this.selectedFriendshipCharacters.indexOf(name);
       if (idx >= 0) {
-        group.characters.splice(idx, 1);
+        this.selectedFriendshipCharacters.splice(idx, 1);
       } else {
-        group.characters.push(name);
+        this.selectedFriendshipCharacters.push(name);
+        this.getCharacterConfig(name);
       }
     },
-    filteredFsgCharacters(groupIdx) {
-      const group = this.friendshipScoreGroups[groupIdx];
-      if (!group.search) return this.allTrainingCharacters;
-      const q = group.search.toLowerCase();
-      return this.allTrainingCharacters.filter(n => n.toLowerCase().includes(q));
+    getCharacterConfig(name) {
+      if (!this.characterScoreConfigs[name]) {
+        this.characterScoreConfigs[name] = {
+          expanded: true,
+          junior: { blue: 0.11, green: 0.1, yellow: 0 },
+          classic: { blue: 0.08, green: 0.07, yellow: 0 },
+          senior: { blue: 0, green: 0, yellow: 0 }
+        };
+      }
+      return this.characterScoreConfigs[name];
     },
     deleteBox(item, index) {
       if (this.skillLearnPriorityList.length <= 1) {
@@ -3514,7 +3518,8 @@ export default {
           "skip_double_circle_unless_high_hint": this.skipDoubleCircleUnlessHighHint,
           "hint_boost_characters": [...this.hintBoostCharacters],
           "hint_boost_multiplier": this.hintBoostMultiplier,
-          "friendship_score_groups": this.friendshipScoreGroups.map(g => ({ characters: [...g.characters], multiplier: g.multiplier })),
+          "character_score_configs": this.characterScoreConfigs,
+          "selected_friendship_characters": this.selectedFriendshipCharacters,
           "override_insufficient_fans_forced_races": this.overrideInsufficientFansForcedRaces,
           "learn_skill_threshold": this.learnSkillThreshold,
           "allow_recover_tp": this.recoverTP,
@@ -3617,7 +3622,6 @@ export default {
         }
       };
 
-      // --- Friend card data (separate from group card) ---
       const selectedPalEntry = this.palSelected ? this.palCardStore[this.palSelected] : null;
       const palThresholds = this.getPalThresholds(selectedPalEntry);
       const hasFriendCard = this.prioritizeRecreation && this.palSelected && palThresholds && palThresholds.length > 0;
@@ -3636,8 +3640,8 @@ export default {
         payload.attachment_data.pal_card_multiplier = 0.1;
       }
 
-      // --- Group card data (separate from friend card) ---
-      // Build pal_card_store with explicit type tags so backend can distinguish
+      
+      
       const palCardStoreOut = {};
       const friendSelected = this.palSelected && this.isFriendCard(this.palCardStore[this.palSelected]);
       for (const [key, val] of Object.entries(this.palCardStore)) {
@@ -3698,11 +3702,13 @@ export default {
       this.skipDoubleCircleUnlessHighHint = !!this.presetsUse.skip_double_circle_unless_high_hint
       this.hintBoostCharacters = Array.isArray(this.presetsUse.hint_boost_characters) ? [...this.presetsUse.hint_boost_characters] : []
       this.hintBoostMultiplier = this.presetsUse.hint_boost_multiplier !== undefined ? this.presetsUse.hint_boost_multiplier : 100
-      if (Array.isArray(this.presetsUse.friendship_score_groups) && this.presetsUse.friendship_score_groups.length > 0) {
-        this.friendshipScoreGroups = this.presetsUse.friendship_score_groups.map(g => ({ characters: [...(g.characters || [])], multiplier: g.multiplier !== undefined ? g.multiplier : 100, search: '', expanded: false }))
-      } else {
-        this.friendshipScoreGroups = [{ characters: [], multiplier: 100, search: '', expanded: false }, { characters: [], multiplier: 100, search: '', expanded: false }]
-      }
+      this.selectedFriendshipCharacters = Array.isArray(this.presetsUse.selected_friendship_characters) ? [...this.presetsUse.selected_friendship_characters] : [];
+      this.characterScoreConfigs = this.presetsUse.character_score_configs || {};
+      this.selectedFriendshipCharacters.forEach(name => {
+        if (!this.characterScoreConfigs[name]) {
+          this.characterScoreConfigs[name] = this.getCharacterConfig(name);
+        }
+      });
         this.learnSkillThreshold = this.presetsUse.learn_skill_threshold
         if (this.presetsUse.tactic_actions && this.presetsUse.tactic_actions.length > 0) {
           this.raceTacticConditions = this.presetsUse.tactic_actions;
@@ -3729,7 +3735,7 @@ export default {
         const presetStore = this.presetsUse.pal_card_store
         for (const key in presetStore) {
           const val = presetStore[key]
-          // Normalize: add type tags to old-format entries
+          
           const normalized = this.normalizePalEntry(key, val);
           if (normalized) {
             this.palCardStore[key] = normalized;
@@ -4096,11 +4102,32 @@ export default {
       this.skipDoubleCircleUnlessHighHint = data.skip_double_circle_unless_high_hint || false;
       this.hintBoostCharacters = Array.isArray(data.hint_boost_characters) ? [...data.hint_boost_characters] : [];
       this.hintBoostMultiplier = data.hint_boost_multiplier !== undefined ? data.hint_boost_multiplier : 100;
-      if (Array.isArray(data.friendship_score_groups) && data.friendship_score_groups.length > 0) {
-        this.friendshipScoreGroups = data.friendship_score_groups.map(g => ({ characters: [...(g.characters || [])], multiplier: g.multiplier !== undefined ? g.multiplier : 100, search: '', expanded: false }));
+      
+      if (data.character_score_configs && typeof data.character_score_configs === 'object') {
+        this.characterScoreConfigs = {};
+        this.selectedFriendshipCharacters = [];
+        for (const charName in data.character_score_configs) {
+          this.selectedFriendshipCharacters.push(charName);
+          const charData = data.character_score_configs[charName];
+          this.characterScoreConfigs[charName] = {
+            expanded: false,
+            junior: { blue: 0, green: 0, yellow: 0, ...(charData.junior || {}) },
+            classic: { blue: 0, green: 0, yellow: 0, ...(charData.classic || {}) },
+            senior: { blue: 0, green: 0, yellow: 0, ...(charData.senior || {}) }
+          };
+        }
       } else {
-        this.friendshipScoreGroups = [{ characters: [], multiplier: 100, search: '', expanded: false }, { characters: [], multiplier: 100, search: '', expanded: false }];
+        this.characterScoreConfigs = {};
+        this.selectedFriendshipCharacters = [];
       }
+
+      this.selectedFriendshipCharacters = Array.isArray(data.selected_friendship_characters) ? [...data.selected_friendship_characters] : [];
+      this.characterScoreConfigs = data.character_score_configs || {};
+      this.selectedFriendshipCharacters.forEach(name => {
+        if (!this.characterScoreConfigs[name]) {
+          this.characterScoreConfigs[name] = this.getCharacterConfig(name);
+        }
+      });
       this.learnSkillOnlyUserProvided = data.learn_skill_only_user_provided || false;
       if (data.tactic_list && data.tactic_list.length >= 3) {
         this.selectedRaceTactic1 = data.tactic_list[0];
@@ -4112,7 +4139,6 @@ export default {
       this.motivationThresholdYear3 = data.motivation_threshold_year3 || 4;
       this.prioritizeRecreation = data.prioritize_recreation || false;
       if (data.pal_name) this.palSelected = data.pal_name;
-      // Legacy: pal_thresholds as a bare array → wrap as friend card
       if (data.pal_thresholds && this.palSelected) {
         this.palCardStore[this.palSelected] = this.normalizePalEntry(this.palSelected, data.pal_thresholds);
       }
@@ -4125,7 +4151,6 @@ export default {
           }
         }
       }
-      // Ensure team_sirius group card exists
       if (!this.palCardStore['team_sirius']) {
         this.palCardStore['team_sirius'] = { type: 'group', group: 'team_sirius', enabled: false, percentile: 26 };
       }
@@ -4278,6 +4303,24 @@ export default {
         this.mantCharmFailureRate = 21;
         this.mantSkipRacePercentile = 0;
       }
+
+      if ('character_score_configs' in this.presetsUse && typeof this.presetsUse.character_score_configs === 'object') {
+        this.characterScoreConfigs = {};
+        this.selectedFriendshipCharacters = [];
+        for (const charName in this.presetsUse.character_score_configs) {
+          this.selectedFriendshipCharacters.push(charName);
+          const charData = this.presetsUse.character_score_configs[charName];
+          this.characterScoreConfigs[charName] = {
+            expanded: false,
+            junior: { blue: 0, green: 0, yellow: 0, friendship: 0, ...(charData.junior || {}) },
+            classic: { blue: 0, green: 0, yellow: 0, friendship: 0, ...(charData.classic || {}) },
+            senior: { blue: 0, green: 0, yellow: 0, friendship: 0, ...(charData.senior || {}) }
+          };
+        }
+      } else {
+        this.characterScoreConfigs = {};
+        this.selectedFriendshipCharacters = [];
+      }
     },
     getPresets: function () {
       return this.axios.post("/umamusume/get-presets", "").then(
@@ -4365,7 +4408,8 @@ export default {
         skip_double_circle_unless_high_hint: this.skipDoubleCircleUnlessHighHint,
         hint_boost_characters: [...this.hintBoostCharacters],
         hint_boost_multiplier: this.hintBoostMultiplier,
-        friendship_score_groups: this.friendshipScoreGroups.map(g => ({ characters: [...g.characters], multiplier: g.multiplier })),
+        character_score_configs: this.characterScoreConfigs,
+        selected_friendship_characters: [...this.selectedFriendshipCharacters],
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,
@@ -4555,7 +4599,8 @@ export default {
         skip_double_circle_unless_high_hint: this.skipDoubleCircleUnlessHighHint,
         hint_boost_characters: [...this.hintBoostCharacters],
         hint_boost_multiplier: this.hintBoostMultiplier,
-        friendship_score_groups: this.friendshipScoreGroups.map(g => ({ characters: [...g.characters], multiplier: g.multiplier })),
+        character_score_configs: this.characterScoreConfigs,
+        selected_friendship_characters: [...this.selectedFriendshipCharacters],
         race_tactic_1: this.selectedRaceTactic1,
         race_tactic_2: this.selectedRaceTactic2,
         race_tactic_3: this.selectedRaceTactic3,

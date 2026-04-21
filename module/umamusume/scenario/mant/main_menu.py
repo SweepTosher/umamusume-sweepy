@@ -359,7 +359,8 @@ def handle_mant_shop_scan(ctx, current_date):
             if bought:
                 ctx.cultivate_detail.mant_inventory_rescan_pending = True
                 total_spent = sum(SHOP_ITEM_COSTS.get(t, 0) for t in targets)
-                ctx.cultivate_detail.mant_coins = max(0, ctx.cultivate_detail.mant_coins - total_spent)
+                budget_end = max(0, ctx.cultivate_detail.mant_coins - total_spent)
+                ctx.cultivate_detail.mant_coins = budget_end
                 bought_set = set(targets)
                 ctx.cultivate_detail.mant_shop_items = [
                     (name, conf, gy, turns, buyable and (name not in bought_set))
@@ -550,7 +551,9 @@ def handle_mant_emergency_shop_buys(ctx, current_date):
     if bought:
         ctx.cultivate_detail.mant_inventory_rescan_pending = True
         spent = sum(SHOP_ITEM_COSTS.get(tgt, 0) for tgt in final_targets)
-        ctx.cultivate_detail.mant_coins = max(0, ctx.cultivate_detail.mant_coins - spent)
+        budget_end = max(0, ctx.cultivate_detail.mant_coins - spent)
+        
+        ctx.cultivate_detail.mant_coins = budget_end
         bought_set = set(final_targets)
         ctx.cultivate_detail.mant_shop_items = [
             (name, conf, gy, turns, buyable and (name not in bought_set))

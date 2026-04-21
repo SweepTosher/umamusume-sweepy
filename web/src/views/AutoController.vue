@@ -132,7 +132,9 @@ export default {
        taskListTimer: null,
        runtimeStateTimer: null,
        shopItemsTimer: null,
-       detectedItemsTimer: null
+       detectedItemsTimer: null,
+       detectedSkillsTimer: null,
+       detectedPortraitsTimer: null
      }
    },
   computed: {
@@ -156,7 +158,11 @@ export default {
       this.shopItemsTimer = setInterval(this.pollDetectedShopItems, 5000);
       this.taskLogTimer = setInterval(this.getTaskLog, 1000);
       this.detectedItemsTimer = setInterval(this.pollDetectedItems, 3000);
+      this.detectedSkillsTimer = setInterval(this.pollDetectedSkills, 3000);
+      this.detectedPortraitsTimer = setInterval(this.pollDetectedPortraits, 3000);
       this.pollDetectedItems();
+      this.pollDetectedSkills();
+      this.pollDetectedPortraits();
    },
    methods:{
      fetchCareerDataCount() {
@@ -269,6 +275,8 @@ export default {
      if (this.shopItemsTimer) clearInterval(this.shopItemsTimer);
      if (this.taskLogTimer) clearInterval(this.taskLogTimer);
      if (this.detectedItemsTimer) clearInterval(this.detectedItemsTimer);
+     if (this.detectedSkillsTimer) clearInterval(this.detectedSkillsTimer);
+     if (this.detectedPortraitsTimer) clearInterval(this.detectedPortraitsTimer);
    }
  }
 </script>

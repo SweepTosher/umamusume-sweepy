@@ -722,10 +722,19 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
         ctx.cultivate_detail.turn_info.cached_stat_scores = list(stat_scores)
 
+        mega_mult = 1.0
+        if is_mant:
+            mega_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
+            mega_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
+            if mega_turns > 0:
+                mega_mult = {1: 1.20, 2: 1.40, 3: 1.60}.get(mega_tier, 1.0)
+
         best_stat_score = max(stat_scores) if stat_scores else 0.0
+        unboosted_stat_score = best_stat_score / mega_mult
+
         if not hasattr(ctx.cultivate_detail, 'stat_only_history'):
             ctx.cultivate_detail.stat_only_history = []
-        ctx.cultivate_detail.stat_only_history.append(best_stat_score)
+        ctx.cultivate_detail.stat_only_history.append(unboosted_stat_score)
         if len(ctx.cultivate_detail.stat_only_history) > MAX_DATAPOINTS:
             ctx.cultivate_detail.stat_only_history = ctx.cultivate_detail.stat_only_history[-MAX_DATAPOINTS:]
         ctx.cultivate_detail.turn_info.cached_stat_only_score = best_stat_score
@@ -747,30 +756,15 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             raw_sum = sum(v for v in sr.values() if v > 0)
             if raw_sum > raw_best:
                 raw_best = raw_sum
-        ctx.cultivate_detail.raw_stat_history.append(raw_best)
+        
+        unboosted_raw_best = raw_best / mega_mult
+        ctx.cultivate_detail.raw_stat_history.append(unboosted_raw_best)
         if len(ctx.cultivate_detail.raw_stat_history) > MAX_DATAPOINTS:
             ctx.cultivate_detail.raw_stat_history = ctx.cultivate_detail.raw_stat_history[-MAX_DATAPOINTS:]
         ctx.cultivate_detail.date_history.append(int(date))
         if len(ctx.cultivate_detail.date_history) > MAX_DATAPOINTS:
             ctx.cultivate_detail.date_history = ctx.cultivate_detail.date_history[-MAX_DATAPOINTS:]
 
-        history = ctx.cultivate_detail.score_history
-        best_score = max(original_scores)
-        history.append(best_score)
-        if len(history) >= 2:
-            prev = history[:-1]
-            below_count = sum(1 for s in prev if s < best_score)
-            percentile = below_count / len(prev) * 100
-            ctx.cultivate_detail.percentile_history.append(percentile)
-            pct_hist = ctx.cultivate_detail.percentile_history
-            hist_avg = float(np.mean(pct_hist))
-            dp_count = len(history)
-            if len(pct_hist) >= 5:
-                recent_avg = float(np.mean(pct_hist[-5:]))
-                avg_pct_change = recent_avg - hist_avg
-                log.info(f"Percentile: {percentile:.0f}% | Avg Percentile Change (last 5 vs all): {avg_pct_change:+.1f}% | Datapoints: {dp_count}")
-            else:
-                log.info(f"Percentile: {percentile:.0f}% | Historical Avg: {hist_avg:.1f}% | Datapoints: {dp_count}")
         try:
             from module.umamusume.persistence import save_career_data
             save_career_data(ctx)
@@ -805,6 +799,24 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         ctx.cultivate_detail.turn_info.cached_facility_mults = list(facility_mults)
 
         max_score = max(computed_scores) if len(computed_scores) == 5 else 0.0
+        
+        if not hasattr(ctx.cultivate_detail, 'score_history'):
+            ctx.cultivate_detail.score_history = []
+        stat_boost_amt = best_stat_score - unboosted_stat_score
+        unboosted_total_score = max_score - stat_boost_amt
+        ctx.cultivate_detail.score_history.append(unboosted_total_score)
+
+        if len(ctx.cultivate_detail.score_history) >= 2:
+            history = ctx.cultivate_detail.score_history
+            best_score = history[-1]
+            prev = history[:-1]
+            below_count = sum(1 for s in prev if s < best_score)
+            percentile = below_count / len(prev) * 100
+            ctx.cultivate_detail.percentile_history.append(percentile)
+
+        if len(ctx.cultivate_detail.score_history) > MAX_DATAPOINTS:
+            ctx.cultivate_detail.score_history = ctx.cultivate_detail.score_history[-MAX_DATAPOINTS:]
+
         eps = 1e-9
         
         blocked_count = sum(blocked_trainings)
@@ -959,27 +971,18 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
         try:
             if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_MANT:
+                ctx.cultivate_detail.turn_info._pre_item_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
+                ctx.cultivate_detail.turn_info._pre_item_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
+
+                from module.umamusume.scenario.mant.inventory import item_loop
+                item_loop(ctx)
+
                 if getattr(ctx.cultivate_detail.turn_info, 'energy_recovery_deferred', False):
-                    ctx.cultivate_detail.turn_info._pre_item_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
-                    ctx.cultivate_detail.turn_info._pre_item_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
-
-                    from module.umamusume.scenario.mant.inventory import item_loop
-                    item_loop(ctx)
-
                     from module.umamusume.scenario.mant.inventory import handle_energy_recovery
-                    charm_used = getattr(ctx.cultivate_detail.turn_info, 'charm_used_this_turn', False)
-                    if not charm_used:
+                    if not getattr(ctx.cultivate_detail.turn_info, 'charm_used_this_turn', False):
                         handle_energy_recovery(ctx)
-                    else:
-                        log.info("Charm used this turn skipping energy recovery")
                     ctx.cultivate_detail.turn_info.energy_recovery_deferred = False
                     ctx.cultivate_detail.turn_info.charm_used_this_turn = False
-                else:
-                    ctx.cultivate_detail.turn_info._pre_item_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
-                    ctx.cultivate_detail.turn_info._pre_item_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
-
-                    from module.umamusume.scenario.mant.inventory import item_loop
-                    item_loop(ctx)
 
                 try:
                     from module.umamusume.scenario.mant.inventory import megaphone_reevaluate

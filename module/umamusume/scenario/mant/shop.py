@@ -282,18 +282,24 @@ def classify_items_in_frame(frame):
             continue
 
         if len(text) < 4 or conf < 0.5:
+            log.debug(f"[scan] rejected (short/low conf): '{text}' conf={conf:.2f}")
             continue
         if lower in ('effect', 'cost', 'new'):
+            log.debug(f"[scan] rejected (keyword): '{text}'")
             continue
         if text.replace('+', '').replace('-', '').replace(' ', '').replace('.', '').isdigit():
+            log.debug(f"[scan] rejected (digits): '{text}'")
             continue
         if text.startswith('+') or text.startswith('-'):
+            log.debug(f"[scan] rejected (sign prefix): '{text}'")
             continue
         if is_effect_text(text):
+            log.debug(f"[scan] rejected (effect text): '{text}'")
             continue
 
         match = process.extractOne(text, SHOP_ITEM_NAMES, scorer=fuzz.ratio, score_cutoff=OCR_FUZZY_THRESHOLD)
         if not match:
+            log.debug(f"[scan] rejected (no fuzzy match): '{text}'")
             continue
 
         matched_name, match_score, _ = match
@@ -315,7 +321,8 @@ def classify_items_in_frame(frame):
                 best_t = t_val
                 min_dist = dist
         final_items.append((name, score, abs_y, best_t, buyable))
-
+    for name, score, abs_y, turns, buyable in final_items:
+        log.debug(f"[scan] detected: '{name}' score={score:.0f} y={abs_y:.0f} turns={turns} buyable={buyable}")
     final_items.sort(key=lambda r: r[2])
     return final_items, False
 
@@ -427,6 +434,11 @@ def dedup_detections(all_detections, captured_frames):
         items_list.append((winner, name_best_conf[winner], avg_gy, winner_turns, winner_buyable))
 
     items_list.sort(key=lambda x: x[2])
+    log.info(f"[dedup] final deduplicated shop items ({len(items_list)}):")
+    for name, conf, gy, turns, buyable in items_list:
+        log.info(f"[dedup]   '{name}' conf={conf:.0f} gy={gy:.0f} turns={turns} buyable={buyable}")
+
+    
     return items_list
 
 

@@ -327,6 +327,13 @@ def handle_mant_shop_scan(ctx, current_date):
                     budget -= cost
 
         targets = priority_targets + tier_targets
+        
+        log.info(f"[shop] items visible in shop this scan ({len(items_list)}):")
+        for name, conf, gy, turns, buyable in items_list:
+            log.info(f"[shop]   '{name}' turns={turns} buyable={buyable}")
+        log.info(f"[shop] budget={ctx.cultivate_detail.mant_coins} priority_targets={priority_targets} tier_targets={tier_targets}")
+        log.info(f"[shop] final purchase targets: {targets}")
+        
         if targets:
             bought, held_items = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
             if bought:

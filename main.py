@@ -298,7 +298,7 @@ if __name__ == '__main__':
     except Exception:
         pass
 
-    cleanup_orphan_processes()
+    #cleanup_orphan_processes()
 
     selected_device = None
     if os.environ.get("UAT_AUTORESTART", "0") == "1":

@@ -149,12 +149,6 @@ def handle_mant_shop_scan(ctx, current_date):
         shop_available = {name for name, _, _, _, buyable in items_list if buyable}
         shop_slugs = {display_to_slug(n) for n in shop_available}
         
-        log.info(f"[shop] shop_slugs from scan: {sorted(shop_slugs)}")
-        log.info(f"[shop] configured item_tiers: {dict(mant_cfg.item_tiers)}")
-        missing_from_shop = {s for s in mant_cfg.item_tiers if s not in shop_slugs}
-        if missing_from_shop:
-            log.info(f"[shop] configured items NOT seen in shop scan: {missing_from_shop}")
-        
         shop_copy_counts = {}
         for name, _, _, _, buyable in items_list:
             if buyable:
@@ -232,31 +226,23 @@ def handle_mant_shop_scan(ctx, current_date):
 
         def should_skip(display_name):
             if display_name in priority_set:
-                log.debug(f"[shop skip] '{display_name}' → already in priority_set")
                 return True
             if display_name in ONE_TIME_BUFF_ITEMS and display_name in used_buffs:
-                log.info(f"[shop skip] '{display_name}' → one-time buff already used")
                 return True
             if ignore_cat and display_name == "Yummy Cat Food":
-                log.debug(f"[shop skip] '{display_name}' → ignore_cat_food flag set")
                 return True
             if ignore_carrots:
                 bbq_slug = display_to_slug(display_name)
                 if bbq_slug == "grilled_carrots":
-                    log.debug(f"[shop skip] '{display_name}' → ignore_grilled_carrots flag set")
                     return True
             if display_name in all_cures:
                 if has_miracle_cure:
-                    log.info(f"[shop skip] '{display_name}' → already have Miracle Cure")
                     return True
                 if owned_map.get(display_name, 0) > 0:
-                    log.info(f"[shop skip] '{display_name}' → already own specific cure")
                     return True
             if display_name == AILMENT_CURE_ALL and has_miracle_cure:
-                log.info(f"[shop skip] '{display_name}' → already own Miracle Cure")
                 return True
             if display_name == "Energy Drink MAX" and owned_map.get("Energy Drink MAX", 0) > 0:
-                log.info(f"[shop skip] '{display_name}' → already own Energy Drink MAX")
                 return True
             return False
 
@@ -286,7 +272,15 @@ def handle_mant_shop_scan(ctx, current_date):
             if current_mood + 1 + incoming >= 5:
                 skip_cupcakes = True
         post_senior_summer = current_date > SUMMER_CAMP_2_END
+        
+        cupcake_shift = total_cupcakes - 1 if skip_cupcakes else 0
 
+        plain_cupcake_base_tier = mant_cfg.item_tiers.get("plain_cupcake")
+        plain_cupcake_effective_tier = plain_cupcake_base_tier - cupcake_shift if plain_cupcake_base_tier is not None else None
+
+        berry_cupcake_base_tier = mant_cfg.item_tiers.get("berry_sweet_cupcake")
+        berry_cupcake_effective_tier = berry_cupcake_base_tier - cupcake_shift if berry_cupcake_base_tier is not None else None
+        
         cleat_reserve = 0
         if CLASSIC_YEAR_END < current_date <= SENIOR_YEAR_END:
             owned_total = owned_map.get('Master Cleat Hammer', 0) + owned_map.get('Artisan Cleat Hammer', 0)
@@ -308,6 +302,7 @@ def handle_mant_shop_scan(ctx, current_date):
                     budget -= cost
 
         for tier in range(1, mant_cfg.tier_count + 1):
+            tier_items = []
             for slug, t in mant_cfg.item_tiers.items():
                 if slug == "grilled_carrots" and bbq_effective_tier is not None:
                     if bbq_effective_tier <= 0 or bbq_effective_tier > mant_cfg.tier_count:
@@ -317,16 +312,28 @@ def handle_mant_shop_scan(ctx, current_date):
                     if charm_stop or charm_effective_tier <= 0 or charm_effective_tier > mant_cfg.tier_count:
                         continue
                     effective_tier = charm_effective_tier
+                elif slug == "plain_cupcake" and plain_cupcake_effective_tier is not None:
+                    if plain_cupcake_effective_tier <= 0 or plain_cupcake_effective_tier > mant_cfg.tier_count:
+                        continue
+                    effective_tier = plain_cupcake_effective_tier
+                elif slug == "berry_sweet_cupcake" and berry_cupcake_effective_tier is not None:
+                    if berry_cupcake_effective_tier <= 0 or berry_cupcake_effective_tier > mant_cfg.tier_count:
+                        continue
+                    effective_tier = berry_cupcake_effective_tier
                 else:
                     effective_tier = t
                 if effective_tier != tier or slug not in shop_slugs:
                     continue
+                    
+                tier_items.append(slug)
+                
+            tier_items.sort(key=lambda s: shop_turns.get(SLUG_TO_DISPLAY.get(s), 99))
+            
+            for slug in tier_items:
                 display = SLUG_TO_DISPLAY.get(slug)
                 if not display:
                     continue
                 if should_skip(display):
-                    continue
-                if skip_cupcakes and display in cupcake_names:
                     continue
 
                 cost = SHOP_ITEM_COSTS.get(display, 9999)
@@ -338,26 +345,17 @@ def handle_mant_shop_scan(ctx, current_date):
                 for i in range(actual_copies):
                     remaining_after = budget - cost
                     if remaining_after < 0:
-                        log.info(f"[shop] SKIP '{display}' tier={tier} — insufficient budget ({budget} < {cost})")
                         break
                     threshold = 0
                     if tier > 1 and not post_senior_summer:
                         raw_threshold = mant_cfg.tier_thresholds.get(tier, (tier - 1) * 50)
                         threshold = raw_threshold * sale_modifier
                     if threshold > 0 and remaining_after < threshold:
-                        log.info(f"[shop] SKIP '{display}' tier={tier} — remaining after purchase ({remaining_after}) < threshold ({threshold:.0f})")
                         break
                     tier_targets.append(display)
                     budget -= cost
 
         targets = priority_targets + tier_targets
-        
-        log.info(f"[shop] items visible in shop this scan ({len(items_list)}):")
-        for name, conf, gy, turns, buyable in items_list:
-            log.info(f"[shop]   '{name}' turns={turns} buyable={buyable}")
-        log.info(f"[shop] budget={ctx.cultivate_detail.mant_coins} priority_targets={priority_targets} tier_targets={tier_targets}")
-        log.info(f"[shop] final purchase targets: {targets}")
-        
         if targets:
             bought, held_items = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
             if bought:
@@ -773,8 +771,13 @@ def handle_mant_on_sale(img):
 
 def try_use_cure_items(ctx):
     from module.umamusume.scenario.mant.constants import AILMENT_CURE_MAP, AILMENT_CURE_ALL
-    from module.umamusume.scenario.mant.inventory import use_item_and_update_inventory
+    from module.umamusume.scenario.mant.inventory import use_item_and_update_inventory, get_chain_position
 
+    _, total = get_chain_position(ctx)
+    if total > 1:
+        log.info(f"Race chain of {total} - skipping cure items")
+        return False
+    
     afflictions = getattr(ctx.cultivate_detail, 'mant_afflictions', [])
     if not afflictions:
         return False

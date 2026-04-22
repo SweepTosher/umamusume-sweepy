@@ -1013,5 +1013,19 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
         time.sleep(0.5)
         return
     
+    if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_MANT:
+        if getattr(ctx.cultivate_detail.turn_info, 'energy_recovery_deferred', False):
+            try:
+                from module.umamusume.scenario.mant.inventory import item_loop, handle_energy_recovery, rescan_training
+                item_loop(ctx)
+                if not getattr(ctx.cultivate_detail.turn_info, 'charm_used_this_turn', False):
+                    handle_energy_recovery(ctx)
+                ctx.cultivate_detail.turn_info.energy_recovery_deferred = False
+                ctx.cultivate_detail.turn_info.charm_used_this_turn = False
+                rescan_training(ctx)
+                return
+            except Exception:
+                pass
+    
     ctx.ctrl.click_by_point(RETURN_TO_CULTIVATE_MAIN_MENU)
     return

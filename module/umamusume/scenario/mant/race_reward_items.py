@@ -234,11 +234,5 @@ def check_and_detect_race_reward_items(img, img_gray, ctx=None):
                 for name in items:
                     if name not in existing_names:
                         ctx.cultivate_detail.mant_shop_items.append((name, 0, 0, 3, False))
-                        #
-                        log.info(
-                            f"[race reward] appending '{name}' to mant_shop_items with buyable=False "
-                            f"— will NOT be purchasable via tier logic until next scan"
-                        )
-                        #
     except Exception:
         pass

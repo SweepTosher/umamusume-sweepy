@@ -282,24 +282,18 @@ def classify_items_in_frame(frame):
             continue
 
         if len(text) < 4 or conf < 0.5:
-            log.debug(f"[scan] rejected (short/low conf): '{text}' conf={conf:.2f}")
             continue
         if lower in ('effect', 'cost', 'new'):
-            log.debug(f"[scan] rejected (keyword): '{text}'")
             continue
         if text.replace('+', '').replace('-', '').replace(' ', '').replace('.', '').isdigit():
-            log.debug(f"[scan] rejected (digits): '{text}'")
             continue
         if text.startswith('+') or text.startswith('-'):
-            log.debug(f"[scan] rejected (sign prefix): '{text}'")
             continue
         if is_effect_text(text):
-            log.debug(f"[scan] rejected (effect text): '{text}'")
             continue
 
         match = process.extractOne(text, SHOP_ITEM_NAMES, scorer=fuzz.ratio, score_cutoff=OCR_FUZZY_THRESHOLD)
         if not match:
-            log.debug(f"[scan] rejected (no fuzzy match): '{text}'")
             continue
 
         matched_name, match_score, _ = match
@@ -429,23 +423,12 @@ def dedup_detections(all_detections, captured_frames):
             buyable_votes[buyable] += 1
         winner = max(name_counts.keys(), key=lambda n: (name_counts[n], name_best_conf[n]))
         
-        #
-        if name_counts[winner] < max(name_counts.values()):
-            log.info(
-                f"[dedup] cluster winner '{winner}' chosen by conf tie-break over "
-                f"{[k for k,v in name_counts.items() if v == max(name_counts.values())]}"
-            )
-        #
-        
         winner_turns = turn_counts.most_common(1)[0][0] if turn_counts else 99
         winner_buyable = buyable_votes.most_common(1)[0][0]
         avg_gy = sum(d[3] for d in cluster) / len(cluster)
         items_list.append((winner, name_best_conf[winner], avg_gy, winner_turns, winner_buyable))
 
     items_list.sort(key=lambda x: x[2])
-    log.info(f"[dedup] final deduplicated shop items ({len(items_list)}):")
-    for name, conf, gy, turns, buyable in items_list:
-        log.info(f"[dedup]   '{name}' conf={conf:.0f} gy={gy:.0f} turns={turns} buyable={buyable}")
 
     
     return items_list
@@ -861,15 +844,6 @@ def buy_shop_items(ctx, target_names, items_list, ratio, drag_ratio, first_item_
             continue
 
         results, _ = classify_items_in_frame(frame)
-        #
-        for item_name, conf, abs_y, turns, buyable in results:
-            if remaining.get(item_name, 0) > 0:
-                unbuyable = is_unbuyable(frame, abs_y)
-                log.info(
-                    f"[buy] candidate '{item_name}' y={abs_y:.0f} buyable_flag={buyable} "
-                    f"is_unbuyable={unbuyable} remaining={remaining[item_name]}"
-                )
-        #        
         name_candidates = defaultdict(list)
         for item_name, conf, abs_y, turns, buyable in results:
             if buyable and not is_unbuyable(frame, abs_y) and remaining.get(item_name, 0) > 0:

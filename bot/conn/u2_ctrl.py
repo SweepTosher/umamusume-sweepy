@@ -64,6 +64,10 @@ class U2AndroidConfig:
         )
 
 
+class ADBTimeoutError(Exception):
+    pass
+
+
 class U2AndroidController(AndroidController):
     config = U2AndroidConfig.load(CONFIG)
 
@@ -84,6 +88,8 @@ class U2AndroidController(AndroidController):
     screencap_lock = None
     pixel_buffer = None
     last_dims = None
+
+    adb_failure_count = 0
 
     def __init__(self):
         self.recent_click_buckets = []
@@ -111,17 +117,20 @@ class U2AndroidController(AndroidController):
             pass
 
     def _create_adb_socket(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(5.0)
-        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2097152)
-        sock.connect(('127.0.0.1', 5037))
-        sock.sendall(self._transport_bytes)
-        resp = sock.recv(4)
-        if not resp or b'OKAY' not in resp:
-            sock.close()
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(5.0)
+            sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 2097152)
+            sock.connect(('127.0.0.1', 5037))
+            sock.sendall(self._transport_bytes)
+            resp = sock.recv(4)
+            if not resp or b'OKAY' not in resp:
+                sock.close()
+                return None
+            return sock
+        except Exception:
             return None
-        return sock
 
     def _close_pool_sock(self):
         if self._pool_sock is not None:
@@ -205,6 +214,8 @@ class U2AndroidController(AndroidController):
             raw = self._capture_via_socket()
             
             if raw is None or len(raw) < 16:
+                if attempt == 2:
+                    self.adb_failure_count += 1
                 time.sleep(0.1)
                 continue
             
@@ -230,6 +241,7 @@ class U2AndroidController(AndroidController):
                 
                 self._cached_frame = img
                 self._cache_time = time.time()
+                self.adb_failure_count = 0
                 
                 return img
             except Exception:
@@ -377,6 +389,7 @@ class U2AndroidController(AndroidController):
             if result.returncode != 0:
                 raise Exception(f"ADB connection failed: {result.stderr.decode()}")
             log.debug(f"ADB connection verified for {self.config.device_name}")
+            self.adb_failure_count = 0
         except Exception as e:
             log.error(f"Failed to connect to device {self.config.device_name}: {e}")
             raise
@@ -388,12 +401,30 @@ class U2AndroidController(AndroidController):
                           capture_output=True, timeout=5)
         except Exception:
             pass
-        time.sleep(0.2)
+        
+        try:
+            subprocess.run(["taskkill", "/F", "/IM", "adb.exe", "/T"], capture_output=True, timeout=5)
+        except Exception:
+            pass
+        
+        try:
+            subprocess.run([self.path + "adb.exe", "kill-server"], capture_output=True, timeout=10)
+            time.sleep(1)
+            subprocess.run([self.path + "adb.exe", "start-server"], capture_output=True, timeout=15)
+            time.sleep(2)
+            
+            if ":" in self.config.device_name:
+                subprocess.run([self.path + "adb.exe", "connect", self.config.device_name], capture_output=True, timeout=15)
+                time.sleep(1)
+            
+            self.init_env()
+        except Exception:
+            pass
+
         self._screen_width = None
         self._screen_height = None
         self._cached_frame = None
         self._cache_time = 0.0
-        self.init_env()
 
     def get_screen(self, to_gray=False):
         with self.screencap_lock:
@@ -491,10 +522,12 @@ class U2AndroidController(AndroidController):
         if sync:
             try:
                 proc.communicate(timeout=10)
+                self.adb_failure_count = 0
             except subprocess.TimeoutExpired:
-                log.error(f"ADB command timed out: {cmd_str}")
                 proc.kill()
                 proc.communicate()
+                self.adb_failure_count += 1
+                raise ADBTimeoutError(f"ADB command timed out: {cmd_str}")
         else:
             def _wait():
                 try:

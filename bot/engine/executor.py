@@ -170,6 +170,7 @@ class Executor:
                 last_img = None
                 unchanged = 0
                 last_restart_time = 0
+                none_count = 0
 
                 def preprocess(im):
                     try:
@@ -191,7 +192,14 @@ class Executor:
 
                         img = controller.get_screen(to_gray=True)
                         if img is None:
+                            none_count += 1
                             unchanged += 1
+                            
+                            if none_count >= 2:
+                                controller.reinit_connection()
+                                none_count = 0
+                                last_img = None
+
                             try:
                                 if update_watchdog:
                                     update_watchdog(unchanged)
@@ -203,6 +211,7 @@ class Executor:
                             except Exception:
                                 pass
                         else:
+                            none_count = 0
                             cur = preprocess(img)
                             if last_img is None:
                                 last_img = cur
@@ -242,6 +251,7 @@ class Executor:
                                     pass
                             else:
                                 unchanged = 0
+                                last_img = cur
                                 try:
                                     if update_watchdog:
                                         update_watchdog(unchanged)
@@ -260,20 +270,35 @@ class Executor:
                                 log.info(f"watchdog {watchdog_threshold}/{watchdog_threshold} restarting app")
                             except Exception:
                                 pass
+                            
+                            recovery_success = False
                             try:
                                 import bot.conn.u2_ctrl as u2c
+                                from bot.conn.u2_ctrl import ADBTimeoutError
                                 u2c.INPUT_BLOCKED = True
+                                
                                 for attempt in range(3):
                                     try:
                                         controller.execute_adb_shell("shell am force-stop com.cygames.umamusume", True)
+                                        recovery_success = True
                                         break
+                                    except ADBTimeoutError:
+                                        if attempt == 1:
+                                            controller.reinit_connection()
+                                        time.sleep(1.0)
                                     except Exception:
                                         time.sleep(1.0)
+                                
                                 time.sleep(1.0)
                                 try:
                                     controller.recover_home_and_reopen()
+                                    recovery_success = True
+                                except ADBTimeoutError:
+                                    controller.reinit_connection()
+                                    controller.start_app(manifest.app_package_name, manifest.app_activity_name)
                                 except Exception:
                                     controller.start_app(manifest.app_package_name, manifest.app_activity_name)
+                                
                                 time.sleep(2.0)
                                 try:
                                     controller.trigger_decision_reset = True
@@ -286,6 +311,7 @@ class Executor:
                                     u2c.INPUT_BLOCKED = False
                                 except Exception:
                                     pass
+                            
                             unchanged = 0
                             last_img = None
                             last_restart_time = time.time()

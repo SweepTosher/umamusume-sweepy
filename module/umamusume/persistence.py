@@ -127,7 +127,8 @@ def clear_career_data():
                     'energy_history': [], 
                     'action_history': [], 
                     'raw_stat_history': [], 
-                    'date_history': []
+                    'date_history': [],
+                    'facility_clicks': {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}
                 }, f)
                 f.flush()
                 os.fsync(f.fileno())

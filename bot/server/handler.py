@@ -311,13 +311,14 @@ def get_career_data_count():
     from module.umamusume.persistence import PERSISTENCE_FILE
     try:
         if not os.path.exists(PERSISTENCE_FILE):
-            return {"count": 0}
+            return {"count": 0, "facility_clicks": {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}}
         with open(PERSISTENCE_FILE, 'r') as f:
             data = json.load(f)
         score_history = data.get('score_history', [])
-        return {"count": len(score_history)}
+        facility_clicks = data.get('facility_clicks', {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0})
+        return {"count": len(score_history), "facility_clicks": facility_clicks}
     except Exception:
-        return {"count": 0}
+        return {"count": 0, "facility_clicks": {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}}
 
 
 @server.get("/api/pal-defaults")

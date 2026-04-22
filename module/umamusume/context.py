@@ -151,6 +151,7 @@ class CultivateContextDetail:
     action_history: list[str]
     raw_stat_history: list[float]
     date_history: list[int]
+    facility_clicks: dict[str, int]
     last_title: str
     same_title_count: int
 
@@ -205,6 +206,7 @@ class CultivateContextDetail:
         self.group_card_last_date = -1
         self.last_title = ""
         self.same_title_count = 0
+        self.facility_clicks = {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}
 
 
     def reset_skill_learn(self):

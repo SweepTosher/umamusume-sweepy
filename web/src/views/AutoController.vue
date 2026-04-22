@@ -30,6 +30,16 @@
             </div>
           </div>
           <div class="row g-3 mt-2">
+            <div class="col-sm-12">
+              <div class="stat-card">
+                <div class="stat-label">Facility Executions (Career)</div>
+                <div class="stat-value" style="font-size:16px">
+                  Spd: {{ facilityClicks.speed }} | Sta: {{ facilityClicks.stamina }} | Pow: {{ facilityClicks.power }} | Guts: {{ facilityClicks.guts }} | Wits: {{ facilityClicks.wits }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3 mt-2">
             <div class="col-sm-6">
               <div class="stat-card">
                 <div class="d-flex align-items-center justify-content-between">
@@ -126,6 +136,7 @@ export default {
        detectedItems: [],
        detectedShopItems: [],
        careerDataCount: 0,
+       facilityClicks: { speed: 0, stamina: 0, power: 0, guts: 0, wits: 0 },
        careerDataTimer: null,
        currentDate: null,
        currentDateTimer: null,
@@ -168,6 +179,9 @@ export default {
      fetchCareerDataCount() {
        this.axios.get('/api/career-data-count').then(res => {
          this.careerDataCount = res.data.count;
+         if (res.data.facility_clicks) {
+           this.facilityClicks = res.data.facility_clicks;
+         }
        }).catch(() => {
          this.careerDataCount = 0;
        });

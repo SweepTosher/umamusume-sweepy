@@ -452,6 +452,13 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
             pal_count = 0
             score = base_scores[idx] if isinstance(base_scores, (list, tuple)) and len(base_scores) > idx else 0.0
             
+            lv1c = 0
+            lv2c = 0
+            lv1_total = 0.0
+            lv2_total = 0.0
+            npc = 0
+            npc_total_contrib = 0.0
+
             detected_chars = getattr(til, 'detected_characters', [])
             slot_name_map = {}
             for slot_idx, cname, cscore in detected_chars:
@@ -464,6 +471,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
                 
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
+                    npc += 1
                     npc_scores = getattr(ctx.cultivate_detail, 'npc_score_value', DEFAULT_NPC_SCORE_VALUE)
                     npc_period_idx = get_date_period_index(date)
                     npc_add = 0.0
@@ -476,6 +484,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         elif favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4):
                             npc_add = npc_arr[2]
                     score += npc_add
+                    npc_total_contrib += npc_add
                     continue
 
                 if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN or favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
@@ -503,16 +512,26 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 if char_name and char_name in char_configs:
                     cfg = char_configs[char_name].get(period_key, {})
                     if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
-                        score += cfg.get('blue', 0)
+                        add_val = cfg.get('blue', 0)
+                        score += add_val
+                        lv1_total += add_val
+                        lv1c += 1
                     elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
-                        score += cfg.get('green', 0)
+                        add_val = cfg.get('green', 0)
+                        score += add_val
+                        lv2_total += add_val
+                        lv2c += 1
                     elif favor in (SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_3, SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_4):
                         score += cfg.get('yellow', 0)
                 else:
                     if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
                         score += w_lv1
+                        lv1_total += w_lv1
+                        lv1c += 1
                     elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
                         score += w_lv2
+                        lv2_total += w_lv2
+                        lv2c += 1
             
             stat_results = getattr(til, 'stat_results', {})
             stat_score = 0.0

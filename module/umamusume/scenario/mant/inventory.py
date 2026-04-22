@@ -768,6 +768,8 @@ def use_training_item(ctx, item_name, quantity=1):
             if owned_map.get(item_name, 0) > 0:
                 owned_map.pop(item_name, None)
                 ctx.cultivate_detail.mant_owned_items = [(n, q) for n, q in owned_map.items() if q > 0]
+                from module.umamusume.persistence import save_inventory
+                save_inventory(ctx.cultivate_detail.mant_owned_items)
             return False
         time.sleep(0.15)
 
@@ -936,6 +938,8 @@ def use_item_and_update_inventory(ctx, item_name):
     owned_map[item_name] = max(0, owned_map.get(item_name, 0) - 1)
     updated = [(n, q) for n, q in owned_map.items() if q > 0]
     ctx.cultivate_detail.mant_owned_items = updated
+    from module.umamusume.persistence import save_inventory
+    save_inventory(ctx.cultivate_detail.mant_owned_items)
     from module.umamusume.context import log_detected_items
     log_detected_items(updated)
     log.info(f"used {item_name}")
@@ -1083,6 +1087,8 @@ def handle_instant_use_items(ctx):
             if owned_map.get(missing, 0) > 0:
                 owned_map.pop(missing, None)
         ctx.cultivate_detail.mant_owned_items = [(n, q) for n, q in owned_map.items() if q > 0]
+        from module.umamusume.persistence import save_inventory
+        save_inventory(ctx.cultivate_detail.mant_owned_items)
 
     if not selected:
         close_items_panel(ctx)
@@ -1117,6 +1123,8 @@ def handle_instant_use_items(ctx):
 
     updated = [(n, q) for n, q in owned_map.items() if q > 0]
     ctx.cultivate_detail.mant_owned_items = updated
+    from module.umamusume.persistence import save_inventory
+    save_inventory(ctx.cultivate_detail.mant_owned_items)
     from module.umamusume.context import log_detected_items
     log_detected_items(updated)
 
@@ -1383,8 +1391,8 @@ def save_megaphone_scan_state_and_tick(ctx):
 
 
 def megaphone_reevaluate(ctx, current_op):
-    pre_item_tier = getattr(ctx.cultivate_detail.turn_info, '_pre_item_tier', None)
-    pre_item_turns = getattr(ctx.cultivate_detail.turn_info, '_pre_item_turns', None)
+    pre_item_tier = getattr(ctx.cultivate_detail.turn_info, 'pre_item_tier', None)
+    pre_item_turns = getattr(ctx.cultivate_detail.turn_info, 'pre_item_turns', None)
     if pre_item_tier is None or pre_item_turns is None:
         return False
 

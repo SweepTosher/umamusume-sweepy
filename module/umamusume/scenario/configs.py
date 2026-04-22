@@ -70,13 +70,13 @@ class ScenarioConfig:
         self.skill_event_weight = skill_event_weight if skill_event_weight is not None else [0, 0, 0]
         self.reset_skill_event_weight_list = reset_skill_event_weight_list if reset_skill_event_weight_list is not None else []
 
-    def removeSkillFromResetList(self, skill: str):
+    def remove_skill_from_reset_list(self, skill: str):
         if skill in self.reset_skill_event_weight_list:
             self.reset_skill_event_weight_list.remove(skill)
             if not self.reset_skill_event_weight_list:
                 self.skill_event_weight = [0, 0, 0]
 
-    def getSkillEventWeight(self, date: int) -> int:
+    def get_skill_event_weight(self, date: int) -> int:
         if date <= 24:
             return self.skill_event_weight[0]
         elif date <= 48:

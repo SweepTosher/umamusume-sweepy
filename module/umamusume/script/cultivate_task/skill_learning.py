@@ -342,9 +342,9 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     try:
         log.info("Priority list:")
         if isinstance(learn_skill_list, list):
-            for idx, plist in enumerate(learn_skill_list):
+            for idx, p_list in enumerate(learn_skill_list):
                 try:
-                    log.info(f"  priority {idx}: {', '.join(plist) if plist else ''}")
+                    log.info(f"  priority {idx}: {', '.join(p_list) if p_list else ''}")
                 except Exception:
                     pass
         bl = ctx.cultivate_detail.learn_skill_blacklist or []
@@ -503,10 +503,10 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     log.debug("Current skill state: " + str(skill_list))
 
     for s in skill_list:
-        sname = s.get("skill_name_raw") or s.get("skill_name", "")
-        if sname:
+        skill_name = s.get("skill_name_raw") or s.get("skill_name", "")
+        if skill_name:
             log_detected_skill(
-                sname, "menu",
+                skill_name, "menu",
                 hint_level=int(s.get("hint_level", 0)),
                 cost=int(s.get("skill_cost", 0)),
                 gold=bool(s.get("gold", False))
@@ -558,16 +558,16 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
     log.info(f"Total skills to learn: {len(target_skill_list)}, points to spend: {curr_point}")
 
     for skill in target_skill_list:
-        ctx.task.detail.scenario_config.removeSkillFromResetList(skill)
+        ctx.task.detail.scenario_config.remove_skill_from_reset_list(skill)
 
     for skill in target_skill_list_raw:
-        for prioritylist in ctx.cultivate_detail.learn_skill_list:
-            if skill in prioritylist:
-                prioritylist.remove(skill)
+        for priority_list in ctx.cultivate_detail.learn_skill_list:
+            if skill in priority_list:
+                priority_list.remove(skill)
     for skill in skill_list:
-        for prioritylist in ctx.cultivate_detail.learn_skill_list:
-            if not skill['available'] and skill['skill_name_raw'] in prioritylist:
-                prioritylist.remove(skill['skill_name_raw'])
+        for priority_list in ctx.cultivate_detail.learn_skill_list:
+            if not skill['available'] and skill['skill_name_raw'] in priority_list:
+                priority_list.remove(skill['skill_name_raw'])
     ctx.cultivate_detail.learn_skill_list = [x for x in ctx.cultivate_detail.learn_skill_list if x]
 
     def _manual_purchase_confirmed():

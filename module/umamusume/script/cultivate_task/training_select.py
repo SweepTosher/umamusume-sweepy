@@ -220,8 +220,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                                     favor = getattr(sc_list[slot_idx], "favor", None)
                                     if favor is not None and favor.value != 0:
                                         from module.umamusume.context import log_detected_portrait
-                                        ctype = getattr(sc_list[slot_idx], "card_type", None)
-                                        is_npc = (ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC)
+                                        card_type = getattr(sc_list[slot_idx], "card_type", None)
+                                        is_npc = (card_type == SupportCardType.SUPPORT_CARD_TYPE_NPC)
                                         log_detected_portrait(name, favor.value, is_npc=is_npc)
                             except Exception:
                                 pass
@@ -461,16 +461,16 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
 
             detected_chars = getattr(til, 'detected_characters', [])
             slot_name_map = {}
-            for slot_idx, cname, cscore in detected_chars:
-                if cname:
-                    slot_name_map[slot_idx] = cname
+            for slot_idx, card_name, cscore in detected_chars:
+                if card_name:
+                    slot_name_map[slot_idx] = card_name
 
             sc_list = getattr(til, "support_card_info_list", []) or []
             for sc_idx, sc in enumerate(sc_list):
                 favor = getattr(sc, "favor", SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN)
-                ctype = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
+                card_type = getattr(sc, "card_type", SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN)
                 
-                if ctype == SupportCardType.SUPPORT_CARD_TYPE_NPC:
+                if card_type == SupportCardType.SUPPORT_CARD_TYPE_NPC:
                     npc += 1
                     npc_scores = getattr(ctx.cultivate_detail, 'npc_score_value', DEFAULT_NPC_SCORE_VALUE)
                     npc_period_idx = get_date_period_index(date)
@@ -487,10 +487,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     npc_total_contrib += npc_add
                     continue
 
-                if ctype == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN or favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
+                if card_type == SupportCardType.SUPPORT_CARD_TYPE_UNKNOWN or favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_UNKNOWN:
                     continue
 
-                if ctype == SupportCardType.SUPPORT_CARD_TYPE_FRIEND:
+                if card_type == SupportCardType.SUPPORT_CARD_TYPE_FRIEND:
                     pal_count += 1
                     pal_scores = ctx.cultivate_detail.pal_friendship_score
                     if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
@@ -501,7 +501,7 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                         score += pal_scores[2]
                     continue
 
-                if ctype == SupportCardType.SUPPORT_CARD_TYPE_GROUP:
+                if card_type == SupportCardType.SUPPORT_CARD_TYPE_GROUP:
                     if favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_1:
                         score += w_lv1
                     elif favor == SupportCardFavorLevel.SUPPORT_CARD_FAVOR_LEVEL_2:
@@ -563,10 +563,10 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                 has_any_hint = False
                 hint_total = 0.0
                 hint_count = 0
-                for cname, cscore, c_has_hint in char_list_hint:
+                for char_name, cscore, c_has_hint in char_list_hint:
                     if c_has_hint:
                         has_any_hint = True
-                        if cname in boost_chars:
+                        if char_name in boost_chars:
                             hint_total += w_hint * boost_mult
                             selected_hint_count += 1
                         else:
@@ -983,8 +983,8 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     if op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
         try:
             if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_MANT:
-                ctx.cultivate_detail.turn_info._pre_item_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
-                ctx.cultivate_detail.turn_info._pre_item_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
+                ctx.cultivate_detail.turn_info.pre_item_tier = getattr(ctx.cultivate_detail, 'mant_megaphone_tier', 0)
+                ctx.cultivate_detail.turn_info.pre_item_turns = getattr(ctx.cultivate_detail, 'mant_megaphone_turns', 0)
 
                 from module.umamusume.scenario.mant.inventory import item_loop
                 item_loop(ctx)

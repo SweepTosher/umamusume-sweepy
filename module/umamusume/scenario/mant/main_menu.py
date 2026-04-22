@@ -49,6 +49,8 @@ def handle_mant_inventory_scan(ctx, current_date):
 
     owned = scan_inventory(ctx)
     ctx.cultivate_detail.mant_owned_items = owned
+    from module.umamusume.persistence import save_inventory
+    save_inventory(ctx.cultivate_detail.mant_owned_items)
     ctx.cultivate_detail.mant_inventory_scanned = True
     log_detected_items(owned)
 
@@ -72,6 +74,8 @@ def handle_mant_inventory_rescan_if_pending(ctx, current_date):
 
     owned = scan_inventory(ctx)
     ctx.cultivate_detail.mant_owned_items = owned
+    from module.umamusume.persistence import save_inventory
+    save_inventory(ctx.cultivate_detail.mant_owned_items)
     ctx.cultivate_detail.mant_inventory_scanned = True
     ctx.cultivate_detail.mant_inventory_rescan_pending = False
     log_detected_items(owned)
@@ -693,6 +697,8 @@ def _execute_cleat_buy(ctx, cleat_name, cost):
         owned = dict(getattr(ctx.cultivate_detail, 'mant_owned_items', {}))
         owned[cleat_name] = owned.get(cleat_name, 0) + 1
         ctx.cultivate_detail.mant_owned_items = list(owned.items())
+        from module.umamusume.persistence import save_inventory
+        save_inventory(ctx.cultivate_detail.mant_owned_items)
         ctx.cultivate_detail.mant_shop_items = [
             (n, c, g, t, buyable and n != cleat_name)
             for n, c, g, t, buyable in items_list
@@ -780,6 +786,8 @@ def try_use_cure_items(ctx):
         log.info(f"using {AILMENT_CURE_ALL} for {afflictions}")
         if use_item_and_update_inventory(ctx, AILMENT_CURE_ALL):
             ctx.cultivate_detail.mant_afflictions = []
+            from module.umamusume.persistence import save_afflictions
+            save_afflictions(ctx.cultivate_detail.mant_afflictions)
             return True
 
     used_any = False
@@ -796,6 +804,8 @@ def try_use_cure_items(ctx):
             break
 
     ctx.cultivate_detail.mant_afflictions = afflictions
+    from module.umamusume.persistence import save_afflictions
+    save_afflictions(ctx.cultivate_detail.mant_afflictions)
     return used_any
 
 
@@ -810,11 +820,15 @@ def handle_mant_afflictions(ctx, img):
     medic_lit = medic_px[0] > 200 and medic_px[1] > 200 and medic_px[2] > 200
     if not medic_lit:
         ctx.cultivate_detail.mant_afflictions = []
+        from module.umamusume.persistence import save_afflictions
+        save_afflictions(ctx.cultivate_detail.mant_afflictions)
         return False
     if medic_lit and not ctx.cultivate_detail.mant_afflictions:
         from module.umamusume.scenario.mant.afflictions import detect_afflictions
         afflictions = detect_afflictions(ctx)
         ctx.cultivate_detail.mant_afflictions = afflictions
+        from module.umamusume.persistence import save_afflictions
+        save_afflictions(ctx.cultivate_detail.mant_afflictions)
         ctx.cultivate_detail.turn_info.parse_main_menu_finish = False
         return True
     if ctx.cultivate_detail.mant_afflictions:

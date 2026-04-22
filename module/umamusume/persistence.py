@@ -234,3 +234,41 @@ def clear_megaphone_state():
     data.pop('megaphone_tier', None)
     data.pop('megaphone_turns', None)
     save_persist(data)
+
+
+def save_last_known_date(date):
+    data = load_persist()
+    data['last_known_date'] = date
+    save_persist(data)
+
+
+def load_last_known_date():
+    data = load_persist()
+    return data.get('last_known_date', -1)
+
+
+def save_afflictions(afflictions):
+    data = load_persist()
+    data['afflictions'] = afflictions
+    save_persist(data)
+
+
+def load_afflictions():
+    data = load_persist()
+    return data.get('afflictions', [])
+
+
+def save_inventory(inventory):
+    data = load_persist()
+    data['inventory'] = inventory
+    save_persist(data)
+
+
+def load_inventory():
+    data = load_persist()
+    return data.get('inventory', [])
+
+
+def clear_all_persistence():
+    save_persist({})
+

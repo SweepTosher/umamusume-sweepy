@@ -31,23 +31,23 @@ class LRUCache:
     def __init__(self, maxsize=2000):
         self.cache = OrderedDict()
         self.maxsize = maxsize
-    
+
     def get(self, key):
         if key not in self.cache:
             return None
         self.cache.move_to_end(key)
         return self.cache[key]
-    
+
     def set(self, key, value):
         if key in self.cache:
             self.cache.move_to_end(key)
         self.cache[key] = value
         if len(self.cache) > self.maxsize:
             self.cache.popitem(last=False)
-    
+
     def clear(self):
         self.cache.clear()
-    
+
     def __contains__(self, key):
         return key in self.cache
 
@@ -130,11 +130,11 @@ def get_canonical_skill_name(skill_name: str) -> str:
         return ""
     query = normalize_text_for_match(skill_name)
     qlen = len(query)
-    qbigrams = build_bigrams(query)
-    qtokens = set(query.split())
+    q_bigrams = build_bigrams(query)
+    q_tokens = set(query.split())
 
-    index_cache = getattr(get_canonical_skill_name, 'cacheIndex', None)
-    source_cache = getattr(get_canonical_skill_name, 'cacheSource', None)
+    index_cache = getattr(get_canonical_skill_name, 'cache_index', None)
+    source_cache = getattr(get_canonical_skill_name, 'cache_source', None)
     if index_cache is None or source_cache is not names:
         cache_list = []
         token_index = {}
@@ -149,18 +149,18 @@ def get_canonical_skill_name(skill_name: str) -> str:
             for tok in tokens:
                 if tok:
                     token_index.setdefault(tok, []).append(idx)
-        setattr(get_canonical_skill_name, 'cacheIndex', cache_list)
-        setattr(get_canonical_skill_name, 'cacheSource', names)
-        setattr(get_canonical_skill_name, 'cacheTokenIndex', token_index)
-        setattr(get_canonical_skill_name, 'cacheNormMap', norm_map)
+        setattr(get_canonical_skill_name, 'cache_index', cache_list)
+        setattr(get_canonical_skill_name, 'cache_source', names)
+        setattr(get_canonical_skill_name, 'cache_token_index', token_index)
+        setattr(get_canonical_skill_name, 'cache_norm_map', norm_map)
         index_cache = cache_list
 
     best_key = None
     best_score = 0.0
     best_len_ratio = 0.0
-    token_index = getattr(get_canonical_skill_name, 'cacheTokenIndex', None)
+    token_index = getattr(get_canonical_skill_name, 'cache_token_index', None)
     candidate_indices = set()
-    for tok in qtokens:
+    for tok in q_tokens:
         if token_index and tok in token_index:
             for idx in token_index[tok]:
                 candidate_indices.add(idx)
@@ -177,10 +177,10 @@ def get_canonical_skill_name(skill_name: str) -> str:
                 best_len_ratio = len_ratio
                 best_key = original_key
             continue
-        token_inter = len(qtokens & normalized_tokens)
-        token_union = len(qtokens | normalized_tokens) or 1
+        token_inter = len(q_tokens & normalized_tokens)
+        token_union = len(q_tokens | normalized_tokens) or 1
         token_score = token_inter / token_union
-        bigram_score = jaccard_counter_ratio(qbigrams, normalized_bigrams)
+        bigram_score = jaccard_counter_ratio(q_bigrams, normalized_bigrams)
         if normalized_length == qlen:
             positional = sum(1 for i in range(qlen) if query[i] == normalized_key[i]) / qlen if qlen else 0.0
             score = max(bigram_score, token_score, positional)
@@ -220,14 +220,14 @@ def try_alt_cost_regions(skill_info_img):
 
 
 def parse_date(img, ctx: UmamusumeContext) -> int:
+    return _parse_date_internal(img, ctx)
+
+def _parse_date_internal(img, ctx: UmamusumeContext) -> int:
     if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_AOHARUHAI:
         sub_img_date = ctx.cultivate_detail.scenario.get_date_img(img)
         sub_img_date = cv2.copyMakeBorder(sub_img_date, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
         date_text = ocr_line(sub_img_date)
-        
-        # Debug: Log the extracted date text
-        log.info(f"Extracted date text: '{date_text}'")
-        
+
         year_text = ""
         for text in DATE_YEAR:
             if date_text.__contains__(text):
@@ -239,7 +239,6 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
             if not any(kw in date_lower for kw in VALID_YEAR_KEYWORDS):
                 return -1
             year_text = find_similar_text(date_text, DATE_YEAR)
-            log.info(f"Similar text found: '{year_text}'")
 
         if year_text == DATE_YEAR[3]:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -251,7 +250,6 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
                 return 99
 
         if year_text == "":
-            log.warning(f"No year text found in date: '{date_text}'")
             return -1
 
         month_text = ""
@@ -269,54 +267,36 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
                                                       (255, 255, 255))
             turn_to_race_text = ocr_line(sub_img_turn_to_race)
             if turn_to_race_text == "Race Day":
-                log.debug("Debut race day")
                 return 12
             turn_to_race_text = DIGITS_ONLY.sub("", turn_to_race_text)
             if turn_to_race_text == '':
-                log.warning("Debut race date recognition exception")
-                return max(1, 12 - (len(ctx.cultivate_detail.turn_info_history) + 1))
+                return min(11, max(1, len(ctx.cultivate_detail.turn_info_history) + 1))
             date_id = 12 - int(turn_to_race_text)
-            if date_id < 1:
-                log.warning("Debut race date recognition exception")
-                return max(1, 12 - (len(ctx.cultivate_detail.turn_info_history) + 1))
+            if date_id < 1 or date_id > 11:
+                return min(11, max(1, len(ctx.cultivate_detail.turn_info_history) + 1))
         return date_id
     else:
-        # URA scenario date parsing
         sub_img_date = ctx.cultivate_detail.scenario.get_date_img(img)
         sub_img_date = cv2.copyMakeBorder(sub_img_date, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
         date_text = ocr_line(sub_img_date)
-        
-        # Debug: Log the extracted date text for URA
-        log.info(f"URA Extracted date text: '{date_text}'")
-        
+
         if "Climax" in date_text or "TS Climax" in date_text:
             return 73
 
-        # Special handling for "Finale Season" in URA championship
         if "Finale Season" in date_text or "Finale" in date_text:
-            log.info("URA Finale Season detected - checking championship phase")
-            
-            # Check specific coordinates for URA championship phase text
-            championship_phase_img = img[74:100, 250:575]  # x: 250, y: 74, width: 325, height: 26
+            championship_phase_img = img[74:100, 250:575]
             championship_phase_img = cv2.copyMakeBorder(championship_phase_img, 20, 20, 20, 20, cv2.BORDER_CONSTANT, None, (255, 255, 255))
             championship_phase_text = ocr_line(championship_phase_img)
-            log.info(f"URA Championship phase text: '{championship_phase_text}'")
-            
-            # Determine URA championship phase based on OCR text
+
             if "URA Finale Qualifier" in championship_phase_text or "Qualifier" in championship_phase_text:
-                log.info("URA Finals Qualifier detected")
-                return 73  # Qualifier date
-            elif "URA Finale Semifinal" in championship_phase_text or "Semifinal" in championship_phase_text:
-                log.info("URA Finals Semifinal detected")
-                return 76  # Semi-final date
-            elif "URA Finale Finals" in championship_phase_text or "Finals" in championship_phase_text:
-                log.info("URA Finals Final detected")
-                return 79  # Final date
-            else:
-                log.warning(f"Unknown URA championship phase: '{championship_phase_text}'")
-                # Fallback to qualifier if unknown
                 return 73
-        
+            elif "URA Finale Semifinal" in championship_phase_text or "Semifinal" in championship_phase_text:
+                return 76
+            elif "URA Finale Finals" in championship_phase_text or "Finals" in championship_phase_text:
+                return 79
+            else:
+                return 73
+
         year_text = ""
         for text in DATE_YEAR:
             if date_text.__contains__(text):
@@ -328,7 +308,6 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
             if not any(kw in date_lower for kw in VALID_YEAR_KEYWORDS):
                 return -1
             year_text = find_similar_text(date_text, DATE_YEAR)
-            log.info(f"URA Similar text found: '{year_text}'")
 
         if year_text == DATE_YEAR[3]:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -340,7 +319,6 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
                 return 99
 
         if year_text == "":
-            log.warning(f"URA No year text found in date: '{date_text}'")
             return -1
 
         month_text = ""
@@ -358,16 +336,13 @@ def parse_date(img, ctx: UmamusumeContext) -> int:
                                                       (255, 255, 255))
             turn_to_race_text = ocr_line(sub_img_turn_to_race)
             if turn_to_race_text == "Race Day":
-                log.debug("URA Debut race day")
                 return 12
             turn_to_race_text = DIGITS_ONLY.sub("", turn_to_race_text)
             if turn_to_race_text == '':
-                log.warning("URA Debut race date recognition exception")
-                return max(1, 12 - (len(ctx.cultivate_detail.turn_info_history) + 1))
+                return min(11, max(1, len(ctx.cultivate_detail.turn_info_history) + 1))
             date_id = 12 - int(turn_to_race_text)
-            if date_id < 1:
-                log.warning("URA Debut race date recognition exception")
-                return max(1, 12 - (len(ctx.cultivate_detail.turn_info_history) + 1))
+            if date_id < 1 or date_id > 11:
+                return min(11, max(1, len(ctx.cultivate_detail.turn_info_history) + 1))
         return date_id
 
 
@@ -433,7 +408,6 @@ def trans_attribute_value(text: str, ctx: UmamusumeContext,
         prev_turn_idx = len(ctx.cultivate_detail.turn_info_history)
         if prev_turn_idx != 0:
             history = ctx.cultivate_detail.turn_info_history[prev_turn_idx - 1]
-            log.warning("Image recognition error, using previous turn value")
             if train_type.value == 1:
                 return history.uma_attribute.speed
             elif train_type.value == 2:
@@ -454,7 +428,7 @@ def trans_attribute_value(text: str, ctx: UmamusumeContext,
 
 def parse_train_main_menu_operations_availability(ctx: UmamusumeContext, img):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # Availability
+
     btn_rest_check_point = img[980, 60]
     btn_train_check_point = img[990, 250]
     btn_skill_check_point = img[980, 550]
@@ -462,7 +436,7 @@ def parse_train_main_menu_operations_availability(ctx: UmamusumeContext, img):
     btn_trip_check_point = img[1115, 305]
     btn_race_check_point = img[1130, 490]
 
-    # During summer camp
+
     if ctx.cultivate_detail.turn_info and ctx.cultivate_detail.turn_info.date and (36 < ctx.cultivate_detail.turn_info.date <= 40 or 60 < ctx.cultivate_detail.turn_info.date <= 64):
         btn_medic_room_check_point = img[1130, 200]
         btn_rest_check_point = img[990, 190]
@@ -508,7 +482,7 @@ def parse_training_support_card(ctx: UmamusumeContext, img, train_type: Training
         if getattr(sc, "card_type", None) == target:
             relevant_count += 1
     til.relevant_count = relevant_count
-        
+
 def parse_train_type(ctx: UmamusumeContext, img) -> TrainingType:
     try:
         if img is None or getattr(img, 'size', 0) == 0:
@@ -539,8 +513,7 @@ def parse_train_type(ctx: UmamusumeContext, img) -> TrainingType:
 
 def parse_training_result(ctx: UmamusumeContext, img, train_type: TrainingType):
     train_incr = ctx.cultivate_detail.scenario.parse_training_result(img)
-    log.debug(train_incr)
-    
+
     ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].speed_incr = train_incr[0]
     ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].stamina_incr = train_incr[1]
     ctx.cultivate_detail.turn_info.training_info_list[train_type.value - 1].power_incr = train_incr[2]
@@ -591,7 +564,7 @@ def parse_failure_rates(ctx: UmamusumeContext, img, train_type: TrainingType | N
                 except Exception:
                     pass
     except Exception as e:
-        log.debug(f"Failure rate parsing error: {e}")
+        pass
 
 
 def find_support_card(ctx: UmamusumeContext, img):
@@ -619,7 +592,6 @@ def find_support_card(ctx: UmamusumeContext, img):
                 continue
             cleaned_level = DIGITS_ONLY.sub("", support_card_level_text)
             if cleaned_level == "":
-                log.info("Skipping card")
                 continue
             support_card_level = int(cleaned_level)
             if support_card_level < ctx.cultivate_detail.follow_support_card_level:
@@ -715,10 +687,8 @@ def find_race(ctx: UmamusumeContext, img, race_id: int = 0) -> bool:
     img_height, img_width = img.shape
 
     if target_race_template is None:
-        log.warning(f"No template for race ID {race_id}")
         return False
 
-    log.info(f"Looking for race {race_id}: {RACE_LIST[race_id][1]}")
 
     iterations = 0
     while iterations < 100:
@@ -742,7 +712,6 @@ def find_race(ctx: UmamusumeContext, img, race_id: int = 0) -> bool:
                     race_name_img.shape[1] >= template_img.shape[1]):
                     template_match_result = image_match(race_name_img, target_race_template)
                     if template_match_result.find_match:
-                        log.info(f"Race {race_id} matched")
                         ctx.ctrl.click(pos_center[0], pos_center[1],
                                        f"Select race: {RACE_LIST[race_id][1]}")
                         return True
@@ -756,7 +725,6 @@ def find_race(ctx: UmamusumeContext, img, race_id: int = 0) -> bool:
 
 
 def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bool) -> bool:
-    log.debug(f"find_skill called with {len(skill)} skills: {skill}")
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     find = False
     iterations = 0
@@ -783,7 +751,6 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                         h0, w0 = origin_img.shape[:2]
                         if 0 <= probe_x < w0 and 0 <= probe_y < h0:
                             b, g, r = origin_img[probe_y, probe_x]
-                            log.debug(f"hint rgb probe at ({probe_x},{probe_y}) bgr=({int(b)},{int(g)},{int(r)})")
                             if abs(int(r) - 255) <= 8 and abs(int(g) - 145) <= 8 and abs(int(b) - 28) <= 8:
                                 rx1, ry1 = buy_x - 62, buy_y - 71
                                 rx2, ry2 = buy_x - 6, buy_y - 50
@@ -797,7 +764,6 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                                     for i, tpl in enumerate(REF_HINT_LEVELS):
                                         try:
                                             mr = image_match(roi_gray, tpl)
-                                            log.debug(f"hint tpl L{i+1} match={mr.find_match} score={getattr(mr,'score',0)}")
                                             if mr.find_match and getattr(mr, 'score', 0) > best_score:
                                                 best_score = float(getattr(mr, 'score', 0))
                                                 best_lvl = i + 1
@@ -805,53 +771,46 @@ def find_skill(ctx: UmamusumeContext, img, skill: list[str], learn_any_skill: bo
                                             continue
                                     hint_level = best_lvl
                     except Exception as e:
-                        log.debug(f"hint level error: {e}")
-                    log.info(f"detected text='{detected_text}' matched skill='{matched_skill}'")
+                        pass
                     target_match = None
                     for target in skill:
                         if (normalize_text_for_match(name_for_match) == normalize_text_for_match(target)
                             or normalize_text_for_match(detected_text) == normalize_text_for_match(target)):
                             target_match = target
                             break
-                    
+
                     if target_match is not None or learn_any_skill:
                         tmp_img = ctx.ctrl.get_screen()
                         pt_text = re.sub("\\D", "", ocr_en(tmp_img[400: 440, 490: 665]))
                         skill_pt_cost_text = re.sub("\\D", "", ocr_en(skill_info_img[69: 99, 525: 588]))
-                        
-                        # Handle empty cost (Global Server UI compatibility) - same as get_skill_list()
+
+
                         if not skill_pt_cost_text or skill_pt_cost_text == '':
                             alt_cost, alt_idx = try_alt_cost_regions(skill_info_img)
                             if alt_cost:
                                 skill_pt_cost_text = alt_cost
-                                log.debug(f"find_skill - Found skill cost using alternative region {alt_idx}: '{alt_cost}' for '{detected_text}'")
                             if not skill_pt_cost_text or skill_pt_cost_text == '':
-                                log.debug(f"find_skill - Could not parse skill cost for '{detected_text}', defaulting to 1")
                                 skill_pt_cost_text = '1'
-                        
-                        # Debug: Log point and cost extraction
-                        log.debug(f"find_skill - Available points: '{pt_text}', Skill cost: '{skill_pt_cost_text}'")
-                        
+
+
+
                         if pt_text != "" and skill_pt_cost_text != "":
                             pt = int(pt_text)
                             skill_pt_cost = int(skill_pt_cost_text)
-                            log.debug(f"find_skill - Points: {pt}, Cost: {skill_pt_cost}, Can buy: {pt >= skill_pt_cost}")
-                            
+
                             if pt >= skill_pt_cost:
-                                log.info(f"Buying skill '{detected_text}' - Points: {pt}, Cost: {skill_pt_cost}")
                                 ctx.ctrl.click(match_result.center_point[0] + 128, match_result.center_point[1],
                                                f"Bonus Skills{detected_text}")
                                 if target_match is not None and target_match in skill:
                                     skill.remove(target_match)
-                                    log.info(f"Removed '{target_match}' from skill list. Remaining: {skill}")
                                 elif target_match is not None:
-                                    log.warning(f"Skill '{target_match}' not found in skill list: {skill}")
+                                    pass
                                 ctx.cultivate_detail.learn_skill_selected = True
                                 find = True
                             else:
-                                log.debug(f"Not enough points for '{detected_text}' - Need {skill_pt_cost}, have {pt}")
+                                pass
                         else:
-                            log.debug(f"Failed to extract points/cost - Points: '{pt_text}', Cost: '{skill_pt_cost_text}'")
+                            pass
 
             img[match_result.matched_area[0][1]:match_result.matched_area[1][1],
             match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
@@ -884,23 +843,21 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 detected_text = ocr_en(skill_name_img)
                 cost_text = ocr_en(skill_cost_img)
                 cost = re.sub("\\D", "", cost_text)
-                
-                # Handle empty cost (Global Server UI compatibility)
+
+
                 if not cost or cost == '':
                     alt_cost, alt_idx = try_alt_cost_regions(skill_info_img)
                     if alt_cost:
                         cost = alt_cost
-                        log.debug(f"Found skill cost using alternative region {alt_idx}: '{alt_cost}' for '{detected_text}'")
                     if not cost or cost == '':
-                        log.debug(f"Could not parse skill cost for '{detected_text}', cost_text: '{cost_text}', defaulting to 1")
                         cost = '1'
 
-                # Check if it's a gold skill
+
                 mask = cv2.inRange(skill_info_cp, numpy.array([40, 180, 240]), numpy.array([100, 210, 255]))
                 is_gold = True if mask[120, 600] == 255 else False
 
                 skill_in_priority_list = False
-                skill_name_raw = "" # Save original skill name to prevent OCR deviation
+                skill_name_raw = ""
                 priority = 99
                 matched_skill = get_canonical_skill_name(detected_text)
                 name_for_match = matched_skill if matched_skill != "" else detected_text
@@ -913,7 +870,6 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                     h0, w0 = origin_img.shape[:2]
                     if 0 <= probe_x < w0 and 0 <= probe_y < h0:
                         b, g, r = origin_img[probe_y, probe_x]
-                        log.debug(f"hint rgb probe at ({probe_x},{probe_y}) bgr=({int(b)},{int(g)},{int(r)})")
                         if abs(int(r) - 255) <= 8 and abs(int(g) - 145) <= 8 and abs(int(b) - 28) <= 8:
                             rx1, ry1 = buy_x - 62, buy_y - 71
                             rx2, ry2 = buy_x - 6, buy_y - 50
@@ -926,7 +882,6 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                                 for i, tpl in enumerate(REF_HINT_LEVELS):
                                     try:
                                         mr = image_match(roi_gray, tpl)
-                                        log.debug(f"hint tpl L{i+1} match={mr.find_match}")
                                         if mr.find_match:
                                             lvl = i + 1
                                             break
@@ -934,11 +889,10 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                                         continue
                                 hint_level = lvl
                 except Exception as e:
-                    log.debug(f"hint level error: {e}")
-                log.info(f"detected text='{detected_text}' matched skill='{matched_skill}' Hint: lv {hint_level}")
+                    pass
                 normalized_name = normalize_text_for_match(name_for_match)
                 in_blacklist = any(normalized_name == normalize_text_for_match(b) for b in skill_blacklist)
-                
+
                 if in_blacklist:
                     priority = -1
                     skill_name_raw = name_for_match
@@ -955,7 +909,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
 
                 available = not image_match(skill_info_img, REF_SKILL_LEARNED).find_match
 
-                if priority != -1: # Exclude skills that appear in blacklist
+                if priority != -1:
                     res.append({"skill_name": detected_text,
                                 "skill_name_raw": skill_name_raw,
                                 "skill_cost": int(cost),
@@ -969,7 +923,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 match_result.matched_area[0][0]:match_result.matched_area[1][0]] = 0
             img = img.copy()
 
-        # Parse previously obtained skills
+
         match_result = image_match(img, REF_SKILL_LEARNED)
         if match_result.find_match:
             all_skill_scanned = False
@@ -979,7 +933,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
                 skill_info_img = img[pos[0][1] - 65:pos[1][1] + 75, pos[0][0] - 520: pos[1][0] + 150]
                 skill_info_cp = origin_img[pos[0][1] - 65:pos[1][1] + 75, pos[0][0] - 470: pos[1][0] + 150]
 
-                # Check if it's a gold skill
+
                 mask = cv2.inRange(skill_info_cp, numpy.array([40, 180, 240]), numpy.array([100, 210, 255]))
                 is_gold = True if mask[120, 600] == 255 else False
                 skill_name_img = skill_info_img[10: 47, 100: 445]
@@ -999,7 +953,7 @@ def get_skill_list(img, skill: list[str], skill_blacklist: list[str]) -> list:
             break
 
     res = sorted(res, key=lambda x: x["y_pos"])
-    # No precise calculation, but approximately y-axis less than 540 will cause skill name to display incompletely. No problems tested yet.
+
     return [{k: v for k, v in r.items() if k != "y_pos"} for r in res if r["y_pos"] >= 540]
 
 

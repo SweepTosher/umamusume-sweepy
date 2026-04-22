@@ -484,11 +484,7 @@ def scan_mant_shop(ctx):
     scroll_to_top(ctx)
     img = ctx.ctrl.get_screen()
 
-    coin_executor = None
-    coin_future = None
-    if not getattr(ctx.cultivate_detail.turn_info, 'mant_coins_read', False):
-        coin_executor = ThreadPoolExecutor(max_workers=1)
-        coin_future = coin_executor.submit(detect_mant_shop_coins, img)
+
 
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     thumb = find_thumb(img_rgb)
@@ -635,17 +631,6 @@ def scan_mant_shop(ctx):
             prev_frame = after_extra
             frame_idx += 1
 
-    if coin_executor is not None:
-        try:
-            coins = coin_future.result()
-            if coins == -1:
-                coins = 0
-            ctx.cultivate_detail.mant_coins = coins
-            setattr(ctx.cultivate_detail.turn_info, 'mant_coins_read', True)
-        except Exception:
-            pass
-        finally:
-            coin_executor.shutdown(wait=False)
 
     items_list = dedup_detections(all_detections, captured_frames)
 

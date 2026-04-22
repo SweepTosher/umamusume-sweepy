@@ -32,7 +32,7 @@
           <div class="row g-3 mt-2">
             <div class="col-sm-12">
               <div class="stat-card">
-                <div class="stat-label">Facility Executions (Career)</div>
+                <div class="stat-label">Facility Executions</div>
                 <div class="stat-value" style="font-size:16px">
                   Spd: {{ facilityClicks.speed }} | Sta: {{ facilityClicks.stamina }} | Pow: {{ facilityClicks.power }} | Guts: {{ facilityClicks.guts }} | Wits: {{ facilityClicks.wits }}
                 </div>

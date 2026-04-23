@@ -1,4 +1,4 @@
-﻿from bot.base.resource import Template
+from bot.base.resource import Template
 from bot.base.common import Area, ImageMatchConfig
 from module.umamusume.define import ScenarioType
 
@@ -203,6 +203,7 @@ REF_RACE_END = Template("race_end", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_RACE_END2 = Template("race_end2", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_TEAM_SHOWDOWN = Template("team_showdown", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_NEXT = Template("next", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(0, 640, 720, 1280), match_accuracy=0.79))
+REF_NEXT_RIGHT = Template("next", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(360, 640, 720, 1280), match_accuracy=0.79))
 REF_SEE_RESULTS = Template("see_results", UMAMUSUME_REF_TEMPLATE_PATH)
 REF_RESUME_CAREER = Template("resume_career", UMAMUSUME_REF_TEMPLATE_PATH, ImageMatchConfig(match_area=Area(548, 375, 632, 422)))
 REF_NEXT2 = Template("next2", UMAMUSUME_REF_TEMPLATE_PATH)

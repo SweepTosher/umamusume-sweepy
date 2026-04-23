@@ -174,14 +174,14 @@ def script_not_found_ui(ctx: UmamusumeContext):
     except Exception as e:
         log.debug(f"Goal detection fallback failed: {str(e)}")
     try:
-        from module.umamusume.asset.template import REF_NEXT
-        img = getattr(ctx, 'current_screen_gray', None) or cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
-        next_match = image_match(img, REF_NEXT)
-        if next_match.find_match:
-            center_x = next_match.center_point[0]
-            center_y = next_match.center_point[1]
-            ctx.ctrl.click(center_x, center_y, "Next button")
-            return
+        from module.umamusume.asset.template import REF_NEXT, UI_CULTIVATE_FOLLOW_SUPPORT_CARD_SELECT
+        img_gray = getattr(ctx, 'current_screen_gray', None) or cv2.cvtColor(ctx.current_screen, cv2.COLOR_BGR2GRAY)
+        follow_check = image_match(img_gray, UI_CULTIVATE_FOLLOW_SUPPORT_CARD_SELECT)
+        if not follow_check.find_match:
+            next_match = image_match(img_gray, REF_NEXT)
+            if next_match.find_match:
+                ctx.ctrl.click(next_match.center_point[0], next_match.center_point[1], "Next button")
+                return
     except Exception:
         pass
 

@@ -62,17 +62,16 @@ class AdbController(AndroidController):
 
     def click(self, x, y, name="", random_offset=True, hold_duration=0):
         from bot.base.runtime_state import get_state
-        if get_state().get("input_blocked"): return
-        if random_offset:
-            x += int(max(-8, min(8, random.gauss(0, 3))))
-            y += int(max(-8, min(8, random.gauss(0, 3))))
         x, y = max(1, min(719, x)), max(1, min(1279, y))
         elapsed = time.time() - self.last_click
         wait = max(0.0, random.uniform(0.06, 0.09) - elapsed)
         if wait > 0: time.sleep(wait)
-        duration = int(max(50, min(180, random.gauss(90, 30)))) + hold_duration
-        dx, dy = x + random.randint(-3, 3), y + random.randint(-3, 3)
-        self.execute_adb_shell(f"input swipe {x} {y} {dx} {dy} {duration}", True)
+        if hold_duration == 0:
+            self.execute_adb_shell(f"input tap {x} {y}", True)
+        else:
+            duration = int(max(50, min(180, random.gauss(90, 30)))) + hold_duration
+            dx, dy = x + random.randint(-3, 3), y + random.randint(-3, 3)
+            self.execute_adb_shell(f"input swipe {x} {y} {dx} {dy} {duration}", True)
         self.last_click = time.time()
         time.sleep(CONFIG.bot.auto.adb.delay)
 
@@ -83,6 +82,8 @@ class AdbController(AndroidController):
         y1 += int(max(-10, min(10, random.gauss(0, 4))))
         x2 += int(max(-10, min(10, random.gauss(0, 4))))
         y2 += int(max(-10, min(10, random.gauss(0, 4))))
+        x1, y1 = max(1, min(719, x1)), max(1, min(1279, y1))
+        x2, y2 = max(1, min(719, x2)), max(1, min(1279, y2))
         d = int(duration * 1000 * random.uniform(0.94, 1.06))
         self.execute_adb_shell(f"input swipe {x1} {y1} {x2} {y2} {d}", True)
         time.sleep(CONFIG.bot.auto.adb.delay)
@@ -136,9 +137,13 @@ class AdbController(AndroidController):
         y1 += int(max(-10, min(10, random.gauss(0, 4))))
         x2 += int(max(-10, min(10, random.gauss(0, 4))))
         y2 += int(max(-10, min(10, random.gauss(0, 4))))
+        x1, y1 = max(1, min(719, x1)), max(1, min(1279, y1))
+        x2, y2 = max(1, min(719, x2)), max(1, min(1279, y2))
         sw_d = int(swipe_duration * random.uniform(0.94, 1.06))
         ho_d = int(hold_duration * random.uniform(0.94, 1.06))
         rev_y = y2 - 28 if y2 > y1 else y2 + 28
+        rev_y = max(1, min(1279, rev_y))
         self.execute_adb_shell(f"input swipe {x1} {y1} {x2} {y2} {sw_d}", True)
+        time.sleep(0.05)
         self.execute_adb_shell(f"input swipe {x2} {y2} {x2} {rev_y} {ho_d}", True)
         time.sleep(CONFIG.bot.auto.adb.delay)

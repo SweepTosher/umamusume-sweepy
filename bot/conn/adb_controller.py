@@ -82,6 +82,9 @@ class AdbController(AndroidController):
     def swipe(self, x1, y1, x2, y2, duration=0.2, name=""):
         from bot.base.runtime_state import get_state
         if get_state().get("input_blocked"): return
+        if y1 < 30:
+            self.click(x1, y1, name=name, random_offset=True, hold_duration=0)
+            return
         x1 += int(max(-10, min(10, random.gauss(0, 4))))
         y1 += int(max(-10, min(10, random.gauss(0, 4))))
         x2 += int(max(-10, min(10, random.gauss(0, 4))))
@@ -137,6 +140,9 @@ class AdbController(AndroidController):
     def swipe_and_hold(self, x1, y1, x2, y2, swipe_duration, hold_duration, name=""):
         from bot.base.runtime_state import get_state
         if get_state().get("input_blocked"): return
+        if y1 < 30:
+            self.click(x1, y1, name=name, random_offset=True, hold_duration=0)
+            return
         x1 += int(max(-10, min(10, random.gauss(0, 4))))
         y1 += int(max(-10, min(10, random.gauss(0, 4))))
         x2 += int(max(-10, min(10, random.gauss(0, 4))))

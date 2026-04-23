@@ -813,7 +813,6 @@ ONE_TIME_BUFF_ITEMS = {
 
 ENERGY_RECOVERY_ITEMS = {
     'Vita 20', 'Vita 40', 'Vita 65', 'Royal Kale Juice',
-    'Energy Drink MAX', 'Energy Drink MAX EX',
 }
 CHARM_ITEM = 'Good-Luck Charm'
 ENERGY_ITEM_SKIP_FAST_PATH_THRESHOLD = 1
@@ -851,9 +850,9 @@ def pick_best_energy_item(ctx):
         return None
     current_energy = int(current_energy)
     max_energy = getattr(ctx.cultivate_detail, 'mant_max_energy', 100)
-    energy_use_max = max_energy * 0.45
-    energy_result_min = max_energy * 0.4
-    energy_score_threshold = max_energy * 0.2
+    energy_use_max = max_energy * 0.55
+    energy_result_min = max_energy * 0.3
+    energy_score_threshold = max_energy * 0.1
     if current_energy >= energy_use_max:
         return None
 
@@ -869,9 +868,7 @@ def pick_best_energy_item(ctx):
         if any(r in ctx.cultivate_detail.extra_race_list for r in available):
             race_count += 1
 
-    projected = current_energy - (race_count * 20)
-    if projected <= 30:
-        return None
+    # Removed restrictive projected check that discouraged item use before races
 
     best_item = None
     best_effective = 0
@@ -1028,8 +1025,12 @@ def handle_energy_recovery(ctx):
     used_any = False
     for item_name, raw_energy, qty in available:
         while qty > 0 and energy <= limit:
-            if energy + raw_energy > max_energy:
+            if raw_energy >= 100:
+                if energy > (limit / 2) and energy > 20:
+                    break
+            elif energy + raw_energy > max_energy + 5:
                 break
+            
             ok = use_item_and_update_inventory(ctx, item_name)
             if not ok:
                 break
@@ -1040,7 +1041,7 @@ def handle_energy_recovery(ctx):
         if energy > limit:
             break
 
-    if not used_any:
+    if not used_any and energy <= limit:
         smallest = available[-1]
         ok = use_item_and_update_inventory(ctx, smallest[0])
         if ok:
@@ -1705,14 +1706,14 @@ def item_loop(ctx):
     if got_recovery and got_charm:
         charm_used = handle_charm(ctx)
         if charm_used:
-            handle_energy_item(ctx)
+            handle_energy_recovery(ctx)
         else:
-            handle_energy_item(ctx)
+            handle_energy_recovery(ctx)
             if whistle_loop(ctx, start_date):
                 return
             handle_charm(ctx)
     elif got_recovery:
-        handle_energy_item(ctx)
+        handle_energy_recovery(ctx)
         if whistle_loop(ctx, start_date):
             return
     elif got_charm and got_whistle:

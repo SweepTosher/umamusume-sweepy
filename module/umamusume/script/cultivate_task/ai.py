@@ -79,6 +79,20 @@ def get_operation(ctx: UmamusumeContext) -> TurnOperation | None:
         if ctx.cultivate_detail.scenario.scenario_type() == ScenarioType.SCENARIO_TYPE_MANT:
             from module.umamusume.scenario.mant.inventory import should_skip_fast_path
             mant_skip_fast_path = should_skip_fast_path(ctx)
+
+            if not mant_skip_fast_path:
+                if getattr(ctx.cultivate_detail.turn_info, "energy_recovery_deferred", False):
+                    mant_skip_fast_path = True
+                else:
+                    from module.umamusume.scenario.mant.inventory import has_energy_recovery
+                    if has_energy_recovery(ctx):
+                        mant_skip_fast_path = True
+                    else:
+                        from module.umamusume.asset.race_data import get_races_for_period
+                        next_date = ctx.cultivate_detail.turn_info.date + 1
+                        available_races_next = get_races_for_period(next_date)
+                        if any(r in ctx.cultivate_detail.extra_race_list for r in available_races_next):
+                            mant_skip_fast_path = True
     except Exception:
         pass
 

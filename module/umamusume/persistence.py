@@ -38,6 +38,7 @@ def save_career_data(ctx):
                 career_cleared_flag = False
                 ctx.cultivate_detail.score_history = []
                 ctx.cultivate_detail.percentile_history = []
+                ctx.cultivate_detail.facility_clicks = {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}
                 log.info("Career data cleared from memory")
                 return
             score_history = getattr(ctx.cultivate_detail, 'score_history', [])
@@ -275,4 +276,5 @@ def load_inventory():
 
 def clear_all_persistence():
     save_persist({})
+    clear_career_data()
 

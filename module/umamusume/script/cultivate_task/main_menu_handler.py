@@ -69,6 +69,12 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
                 ctx.cultivate_detail.mant_megaphone_turns = 0
                 ctx.cultivate_detail.mant_afflictions = []
                 ctx.cultivate_detail.mant_owned_items = []
+            elif current_date < last_known_date:
+                from module.umamusume.persistence import clear_career_data, clear_megaphone_state, clear_used_buffs
+                clear_career_data()
+                clear_megaphone_state()
+                clear_used_buffs()
+                ctx.cultivate_detail.facility_clicks = {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}
 
         ctx.cultivate_detail._last_known_date_id = current_date
         from module.umamusume.persistence import save_last_known_date
@@ -268,7 +274,11 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
         
         if is_mant(ctx) and energy <= limit:
             ctx.cultivate_detail.turn_info.cached_energy = energy
-            if has_extra_race:
+            
+            from module.umamusume.scenario.mant.inventory import has_scheduled_race_this_turn
+            has_race_this_turn = has_scheduled_race_this_turn(ctx)
+            
+            if has_race_this_turn or has_extra_race:
                 from module.umamusume.scenario.mant.inventory import has_energy_recovery
                 if has_energy_recovery(ctx):
                     ctx.cultivate_detail.turn_info.energy_recovery_deferred = True

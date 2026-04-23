@@ -112,9 +112,9 @@ def scan_energy(ctrl, y=ENERGY_BAR_Y):
     global reference_row, reference_bar_length, reference_gray_count, reference_brightness
     prev_row = None
     prev_valid = False
-    max_attempts = 10
+    max_attempts = 5
     for _ in range(max_attempts):
-        img = ctrl.get_screen()
+        img = ctrl.get_screen(force=prev_valid)
         template = get_energy_template()
         match_result = image_match(img, template)
         if not match_result.find_match:

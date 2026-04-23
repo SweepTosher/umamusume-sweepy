@@ -7,7 +7,7 @@
         </div>
       </div>
       <div v-if="runningTask !== undefined" class="card-body">
-        <div class="d-flex align-items-center" style="gap:12px">
+        <div class="d-flex align-items-center gap-12px">
           <h5 class="mb-0">Currently Running: {{runningTask['task_desc']}}</h5>
           <span class="ml-auto edit-task-btn" @click="onEditTask"><i class="fa fa-cog fa-lg"></i></span>
         </div>
@@ -24,14 +24,13 @@ export default {
   props:["runningTask"],
   data(){ return{} },
   components: { TaskDetailInfoHandler },
-  methods: {
-    onEditTask() {
-      this.$emit('edit-task', this.runningTask);
-    }
-  }
-}
+   methods: {
+     onEditTask() {
+       this.$emit('edit-task', this.runningTask);
+     }
+   }
+ }
 </script>
-
 <style scoped>
 .edit-task-btn {
   cursor: pointer;

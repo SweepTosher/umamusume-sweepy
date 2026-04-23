@@ -192,8 +192,10 @@ def after_hook(ctx: UmamusumeContext):
         return
 
     try:
-        if getattr(ctx.ctrl, 'trigger_decision_reset', False):
-            ctx.ctrl.trigger_decision_reset = False
+        from bot.base.runtime_state import get_state
+        state = get_state()
+        if state.get('trigger_decision_reset', False):
+            state['trigger_decision_reset'] = False
             ti = getattr(ctx.cultivate_detail, 'turn_info', None)
             if ti is not None:
                 cached_training = getattr(ti, 'cached_training_type', None)
@@ -246,12 +248,12 @@ def after_hook(ctx: UmamusumeContext):
     if image_match(img, BTN_SKIP).find_match:
         ctx.ctrl.click_by_point(SKIP)
     if image_match(img, BTN_SKIP_OFF).find_match:
-        import bot.conn.u2_ctrl as u2c
-        u2c.IN_CAREER_RUN = True
+        from bot.base.runtime_state import get_state
+        get_state()["in_career_run"] = True
         ctx.ctrl.click_by_point(SCENARIO_SKIP_OFF)
     if image_match(img, BTN_SKIP_SPEED_1).find_match:
-        import bot.conn.u2_ctrl as u2c
-        u2c.IN_CAREER_RUN = True
+        from bot.base.runtime_state import get_state
+        get_state()["in_career_run"] = True
         ctx.ctrl.click_by_point(SCENARIO_SKIP_SPEED_1)
     if ctx.cultivate_detail and ctx.cultivate_detail.turn_info is not None:
         if ctx.cultivate_detail.turn_info.parse_train_info_finish and ctx.cultivate_detail.turn_info.parse_main_menu_finish:

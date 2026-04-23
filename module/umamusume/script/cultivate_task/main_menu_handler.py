@@ -54,8 +54,8 @@ def get_medic(ctx, summer=False):
 def script_cultivate_main_menu(ctx: UmamusumeContext):
     img = ctx.current_screen
     current_date = parse_date(img, ctx)
-    import bot.conn.u2_ctrl as u2c
-    u2c.IN_CAREER_RUN = True
+    from bot.base.runtime_state import get_state
+    get_state()["in_career_run"] = True
     if current_date == -1:
         current_date = -(len(ctx.cultivate_detail.turn_info_history) + 1)
 
@@ -356,7 +356,9 @@ def script_cultivate_main_menu(ctx: UmamusumeContext):
             else:
                 check_point = img_rgb[1125, 105]
             if not (check_point[0] > 200 and check_point[1] > 200 and check_point[2] > 200):
-                ctx.ctrl.trigger_decision_reset = True
+                # We'll use get_state() to signal a reset if needed, or stick with current ctx.ctrl if we add it there
+                from bot.base.runtime_state import get_state
+                get_state()["trigger_decision_reset"] = True
         elif turn_operation.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRIP:
             if is_summer_camp_period(ctx.cultivate_detail.turn_info.date):
                 ctx.ctrl.click(68, 991, "Summer Camp")

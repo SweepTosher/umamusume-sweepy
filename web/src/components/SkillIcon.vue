@@ -35,6 +35,8 @@ export default {
 };
 </script>
 
+
+
 <style scoped>
 .skill-icon {
   display: inline-flex;

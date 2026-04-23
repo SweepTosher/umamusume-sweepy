@@ -11,7 +11,7 @@ import cv2
 from bot.base.resource import UI, NOT_FOUND_UI
 from bot.base.task import TaskStatus, Task, EndTaskReason
 from bot.conn.os import push_system_notification
-from bot.conn.u2_ctrl import U2AndroidController
+from bot.conn.adb_controller import AdbController
 from bot.recog.image_matcher import template_match, image_match
 from bot.recog.ocr import reset_ocr
 from bot.recog.timeout_tracker import check_and_reset_timeout
@@ -20,14 +20,12 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from bot.base.manifest import APP_MANIFEST_LIST
 from config import CONFIG
 
-
 log = logger.get_logger(__name__)
-
 debug = True
 
-
-def get_controller() -> U2AndroidController:
-    return U2AndroidController()
+def get_controller() -> AdbController:
+    from config import CONFIG
+    return AdbController(CONFIG.bot.auto.adb.device_name)
 
 
 class Executor:
@@ -273,42 +271,36 @@ class Executor:
                             
                             recovery_success = False
                             try:
-                                import bot.conn.u2_ctrl as u2c
-                                from bot.conn.u2_ctrl import ADBTimeoutError
-                                u2c.INPUT_BLOCKED = True
+                                from bot.base.runtime_state import get_state
+                                state = get_state()
+                                state["input_blocked"] = True
                                 
                                 for attempt in range(3):
                                     try:
-                                        controller.execute_adb_shell("shell am force-stop com.cygames.umamusume", True)
+                                        controller.client.run_cmd(["shell", "am", "force-stop", "com.cygames.umamusume"])
                                         recovery_success = True
                                         break
-                                    except ADBTimeoutError:
-                                        if attempt == 1:
-                                            controller.reinit_connection()
-                                        time.sleep(1.0)
                                     except Exception:
                                         time.sleep(1.0)
                                 
                                 time.sleep(1.0)
                                 try:
-                                    controller.recover_home_and_reopen()
-                                    recovery_success = True
-                                except ADBTimeoutError:
-                                    controller.reinit_connection()
+                                    controller.execute_adb_shell("shell input keyevent 4", True)
+                                    time.sleep(0.5)
+                                    controller.execute_adb_shell("shell input keyevent 3", True)
+                                    time.sleep(0.5)
                                     controller.start_app(manifest.app_package_name, manifest.app_activity_name)
+                                    recovery_success = True
                                 except Exception:
+
                                     controller.start_app(manifest.app_package_name, manifest.app_activity_name)
                                 
                                 time.sleep(2.0)
-                                try:
-                                    controller.trigger_decision_reset = True
-                                except Exception:
-                                    pass
                             except Exception:
                                 pass
                             finally:
                                 try:
-                                    u2c.INPUT_BLOCKED = False
+                                    state["input_blocked"] = False
                                 except Exception:
                                     pass
                             

@@ -3495,7 +3495,7 @@ export default {
 
       var learn_skill_blacklist = [...this.blacklistedSkills];
 
-      console.log(learn_skill_list)
+      
       var ura_reset_skill_event_weight_list = this.resetSkillEventWeightList ? this.resetSkillEventWeightList.split(",").map(item => item.trim()) : []
       let payload = {
         app_name: "umamusume",
@@ -3585,7 +3585,7 @@ export default {
           cron: this.cron
         }
       }
-      console.log('POST /task', payload)
+      
       payload.attachment_data = payload.attachment_data || {};
       payload.attachment_data.event_choices = this.buildEventChoices();
       
@@ -3671,7 +3671,7 @@ export default {
           $('#create-task-list-modal').modal('hide');
         }
       ).catch(e => {
-        console.error(e)
+        
       })
     },
     applyPresetRace: function () {
@@ -4498,7 +4498,7 @@ export default {
       let payload = {
         "preset": JSON.stringify(preset)
       }
-      console.log(JSON.stringify(payload))
+      
       const savedName = this.presetNameEdit
       this.axios.post("/umamusume/add-presets", JSON.stringify(payload)).then(
         () => {
@@ -4861,8 +4861,8 @@ export default {
   position: sticky;
   top: 16px;
   height: fit-content;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
+  background: var(--surface);
+  border: 1px solid var(--accent);
   border-radius: 12px;
   padding: 12px;
 }
@@ -4870,6 +4870,7 @@ export default {
 .side-nav-title {
   font-weight: 700;
   margin-bottom: 8px;
+  color: var(--muted);
 }
 
 .side-nav-list {
@@ -4881,18 +4882,18 @@ export default {
 .side-nav-list li a {
   display: block;
   padding: 8px 10px;
-  color: #374151;
+  color: var(--text);
   border-radius: 8px;
   text-decoration: none;
 }
 
 .side-nav-list li a:hover {
-  background: #f3f4f6;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
 }
 
 .side-nav-list li a.active {
-  background: #eef2ff;
-  color: #4338ca;
+  background: color-mix(in srgb, var(--accent) 25%, transparent);
+  color: var(--accent);
   font-weight: 600;
 }
 

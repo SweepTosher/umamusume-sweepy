@@ -190,18 +190,3 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Ensure URA config modal is at the top layer */
-#ura-config-modal.modal {
-  z-index: 1060; /* Higher than TaskEditModal and overlay */
-}
-
-#ura-config-modal .modal-dialog {
-  z-index: 1061;
-}
-
-.section-card{border:1px solid var(--accent);border-radius:12px;box-shadow:none;}
-
-/* Enlarge confirm button */
-/* header buttons reuse global theme classes */
-</style>

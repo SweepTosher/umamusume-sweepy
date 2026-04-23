@@ -59,7 +59,11 @@ export default defineConfig({
         const publicRacesDir = path.join(publicDir, 'races');
 
         if (fs.existsSync(racesBackupDir)) {
-          fs.rmSync(publicRacesDir, { recursive: true, force: true });
+          try {
+            fs.rmSync(publicRacesDir, { recursive: true, force: true });
+          } catch (e) {
+            console.warn(`Failed to remove ${publicRacesDir}: ${e.message}`);
+          }
           copyFolderRecursive(racesBackupDir, publicRacesDir);
         }
       }

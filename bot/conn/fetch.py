@@ -1,19 +1,19 @@
 import cv2
 import time
 from typing import Dict, Any, Optional
-from bot.conn.u2_ctrl import U2AndroidController
+from bot.conn.adb_controller import AdbController
 from bot.recog.image_matcher import image_match, compare_color_equal
 from bot.recog.ocr import ocr_line
 from bot.recog.energy_scanner import scan_base_energy
 from module.umamusume.asset import MOTIVATION_LIST
 
-shared_controller: Optional[U2AndroidController] = None
+shared_controller: Optional[AdbController] = None
 
-
-def get_shared_controller() -> U2AndroidController:
+def get_shared_controller() -> AdbController:
     global shared_controller
     if shared_controller is None:
-        shared_controller = U2AndroidController()
+        from config import CONFIG
+        shared_controller = AdbController(CONFIG.bot.auto.adb.device_name)
         shared_controller.init_env()
     return shared_controller
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="cron-job-list">
     <div class="card">
       <div class="card-body">
         <div class="d-flex bd-highlight">
@@ -25,14 +25,3 @@ export default {
 }
 </script>
 
-<style scoped>
-.card-title{
-  margin-bottom: 0;
-}
-.start-time{
-  color: var(--muted);
-}
-.card-body{
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-</style>

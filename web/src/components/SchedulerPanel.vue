@@ -73,7 +73,7 @@ export default {
         this.$refs.taskEditModal.loadFromTask(task);
         this.$refs.taskEditModal.showModal();
       }).catch(e => {
-        console.error(e);
+        ;
       });
     },
     toggleCharacter() {
@@ -83,28 +83,15 @@ export default {
       this.applyTheme();
     },
     applyTheme() {
-      const root = document.documentElement;
-      if (this.activeCharacter === 1) {
-        root.style.setProperty('--bg-start', '#020810');
-        root.style.setProperty('--bg-end', '#050f1a');
-        root.style.setProperty('--surface', '#0a1420');
-        root.style.setProperty('--surface-2', '#081018');
-        root.style.setProperty('--accent', '#00d9ff');
-        root.style.setProperty('--accent-2', '#5ce1ff');
-        root.style.setProperty('--glow', '0 0 18px rgba(0,217,255,.25), 0 0 36px rgba(0,217,255,.12)');
-      } else {
-        root.style.setProperty('--bg-start', '#08000c');
-        root.style.setProperty('--bg-end', '#120015');
-        root.style.setProperty('--surface', '#141018');
-        root.style.setProperty('--surface-2', '#100c13');
-        root.style.setProperty('--accent', '#ff2da3');
-        root.style.setProperty('--accent-2', '#ff5cc6');
-        root.style.setProperty('--glow', '0 0 18px rgba(255,45,163,.25), 0 0 36px rgba(255,45,163,.12)');
-      }
+      const isBlue = this.activeCharacter === 1;
+      document.documentElement.classList.toggle('theme-blue', isBlue);
+      document.documentElement.classList.toggle('theme-pink', !isBlue);
     }
   }
 }
 </script>
+
+
 
 <style scoped>
 .list-panel{display:flex;flex-direction:column;height:100%}

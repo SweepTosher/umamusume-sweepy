@@ -2,7 +2,7 @@
   <div>
     <div class="card">
       <div class="card-body">
-        <div class="d-flex align-items-center w-100" style="gap:12px">
+        <div class="d-flex align-items-center w-100 gap-12px">
           <h5 class="mb-0">UAT</h5>
           <div class="status-pill">
             <span :class="['dot', botStatus]"></span>
@@ -39,9 +39,5 @@ export default {
   },
   mounted(){ this.pollTimer = setInterval(this.pollStatus, 1500); this.pollStatus() },
   beforeUnmount(){ if (this.pollTimer) clearInterval(this.pollTimer) }
-}
+   }
 </script>
-
-<style scoped>
-.btn+.btn{margin-left:6px}
-</style>

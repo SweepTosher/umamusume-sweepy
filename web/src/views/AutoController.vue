@@ -33,7 +33,7 @@
             <div class="col-sm-12">
               <div class="stat-card">
                 <div class="stat-label">Facility Executions</div>
-                <div class="stat-value" style="font-size:16px">
+                 <div class="stat-value fs-16">
                   Spd: {{ facilityClicks.speed }} | Sta: {{ facilityClicks.stamina }} | Pow: {{ facilityClicks.power }} | Guts: {{ facilityClicks.guts }} | Wits: {{ facilityClicks.wits }}
                 </div>
               </div>
@@ -45,13 +45,13 @@
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
                     <div class="stat-label">Repetitive-click recovery</div>
-                    <div class="stat-value" style="font-size:18px">
+                     <div class="stat-value fs-18">
                       {{ runtimeState.repetitive_count }} / {{ runtimeState.repetitive_threshold }}
-                      <span class="small text-muted" style="margin-left:8px">(other: {{ runtimeState.repetitive_other_clicks }})</span>
+                       <span class="small text-muted ms-2">(other: {{ runtimeState.repetitive_other_clicks }})</span>
                     </div>
                   </div>
-                  <input type="number" min="1" class="form-control form-control-sm" style="width:80px" v-model.number="editRepetitive" @change="saveThresholds">
-                </div>
+                    <input type="number" min="1" class="form-control form-control-sm w-80px" v-model.number="editRepetitive" @change="saveThresholds">
+                 </div>
               </div>
             </div>
             <div class="col-sm-6">
@@ -59,9 +59,9 @@
                 <div class="d-flex align-items-center justify-content-between">
                   <div>
                     <div class="stat-label">Screen Watchdog</div>
-                    <div class="stat-value" style="font-size:18px">{{ runtimeState.watchdog_unchanged }} / {{ runtimeState.watchdog_threshold }}</div>
+                     <div class="stat-value fs-18">{{ runtimeState.watchdog_unchanged }} / {{ runtimeState.watchdog_threshold }}</div>
                   </div>
-                  <input type="number" min="1" class="form-control form-control-sm" style="width:80px" v-model.number="editWatchdog" @change="saveThresholds">
+                    <input type="number" min="1" class="form-control form-control-sm w-80px" v-model.number="editWatchdog" @change="saveThresholds">
                 </div>
               </div>
             </div>
@@ -72,9 +72,9 @@
 
     <div v-if="runningTask" class="row mb-3">
       <div class="col-12">
-        <div class="section-card d-flex align-items-center justify-content-between">
-          <div class="d-flex align-items-center" style="gap:12px">
-            <div class="status-pill"><span class="dot running"></span><span>Running</span></div>
+         <div class="section-card d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-12px">
+             <div class="status-pill"><span class="dot running"></span><span>Running</span></div>
             <div class="spot-text">
               <div class="spot-title">{{ runningTask.task_desc || 'Active Task' }}</div>
               <div class="spot-meta">Task ID: {{ runningTask.task_id || '-' }} • Scenario: {{ runningTask.attachment_data?.scenario || '-' }}</div>
@@ -294,6 +294,8 @@ export default {
    }
  }
 </script>
+
+
 
 <style scoped>
 .stat-label{font-size:12px;color:var(--muted)}

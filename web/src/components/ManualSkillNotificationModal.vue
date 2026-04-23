@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show" class="modal-overlay" @click="handleOverlayClick">
+  <div v-if="show" class="modal-overlay" id="manual-skill-notification-modal" @click="handleOverlayClick">
     <div class="modal-dialog" @click.stop>
       <div class="modal-content notification-dialog">
         <div class="modal-header">
@@ -63,10 +63,11 @@ export default {
 };
 </script>
 
+
 <style scoped>
 .modal-overlay {position:fixed;top:0;left:0;width:100%;height:100%;background-color: rgba(0, 0, 0, 0.5);display:flex;align-items:center;justify-content:center;z-index:9999}
 .modal-dialog {max-width:500px;width:90%;margin:0}
-.notification-dialog {border-radius:12px;border:none;box-shadow: var(--shadow);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)), var(--surface);color:var(--text)}
+.notification-dialog {border-radius:12px;border:none;box-shadow: var(--shadow);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01)), var(--surface);color:var(--text)}        
 .notification-dialog .modal-header {background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);color:#fff;border-radius:12px 12px 0 0;border:none;padding:1.5rem}
 .notification-dialog .modal-title {font-size:1.25rem;font-weight:600;margin:0}
 .notification-dialog .modal-title i {margin-right:.5rem;color:#ffd700}
@@ -78,7 +79,7 @@ export default {
 .notification-text {flex:1}
 .notification-message {font-size:1.1rem;color:var(--text);margin-bottom:1rem;line-height:1.5}
 .notification-hint {font-size:.95rem;color:var(--muted);margin:0;font-style:italic}
-.notification-dialog .modal-footer {background: transparent;border-top: 1px solid rgba(255,255,255,.06);padding:1.5rem;border-radius:0 0 12px 12px;display:flex;justify-content:flex-end;gap:.75rem}
+.notification-dialog .modal-footer {background: transparent;border-top: 1px solid rgba(255,255,255,.06);padding:1.5rem;border-radius:0 0 12px 12px;display:flex;justify-content:flex-end;gap:.75rem}    
 .notification-dialog .btn {padding:.75rem 1.5rem;font-weight:500;border-radius:8px;border:none;transition:all .2s ease}
 .notification-dialog .btn-secondary {background:var(--surface-2);color:var(--text);border:1px solid rgba(255,255,255,.15)}
 .notification-dialog .btn-secondary:hover {background:var(--surface);transform: translateY(-1px);border-color:var(--accent)}
@@ -88,4 +89,5 @@ export default {
 #manual-skill-notification-modal .modal-dialog {z-index:1071}
 @keyframes pulse {0%{transform:scale(1)}50%{transform:scale(1.05)}100%{transform:scale(1)}}
 @media (max-width: 576px) {.notification-content{flex-direction:column;text-align:center}.notification-icon{align-self:center}}
-</style> 
+</style>
+description:

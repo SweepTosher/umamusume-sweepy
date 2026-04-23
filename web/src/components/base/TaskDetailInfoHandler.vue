@@ -52,27 +52,6 @@ export default {
         console.error("Failed to delete task:", err)
       })
     },
-  }
+   }
 }
 </script>
-
-<style scoped>
-.time{
-  color: var(--muted);
-}
-.badge-stat{
-  background: color-mix(in srgb, var(--accent) 25%, transparent) !important;
-  color: var(--accent) !important;
-  border: 1px solid var(--accent) !important;
-}
-.badge-aptitude{
-  background: color-mix(in srgb, var(--accent-2) 20%, transparent) !important;
-  color: var(--accent-2) !important;
-  border: 1px solid var(--accent-2) !important;
-}
-.badge-other{
-  background: rgba(255,255,255,.1) !important;
-  color: var(--text) !important;
-  border: 1px solid rgba(255,255,255,.2) !important;
-}
-</style>

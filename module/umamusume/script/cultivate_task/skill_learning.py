@@ -189,8 +189,8 @@ def script_follow_support_card_select(ctx: UmamusumeContext):
 
 
 def script_cultivate_finish(ctx: UmamusumeContext):
-    import bot.conn.u2_ctrl as u2c
-    u2c.IN_CAREER_RUN = False
+    from bot.base.runtime_state import get_state
+    get_state()["in_career_run"] = False
     try:
         from module.umamusume.persistence import clear_used_buffs, clear_megaphone_state
         clear_used_buffs()
@@ -412,7 +412,7 @@ def script_cultivate_learn_skill(ctx: UmamusumeContext):
 
         scan_x_end = _gauss_scan_x()
         swipe_cmd = "shell input swipe " + str(SB_X) + " " + str(start_y) + " " + str(scan_x_end) + " " + str(TRACK_BOT) + " " + str(swipe_dur)
-        proc = ctx.ctrl.execute_adb_shell(swipe_cmd, False)
+        proc = ctx.ctrl.execute_adb_shell(swipe_cmd, sync=False)
 
         time.sleep(0.3)
         prev_frame = img

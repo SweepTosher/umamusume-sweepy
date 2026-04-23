@@ -83,6 +83,20 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
     if turn_op is not None:
         if turn_op.turn_operation_type == TurnOperationType.TURN_OPERATION_TYPE_TRAINING:
             training_type = turn_op.training_type
+            idx = training_type.value - 1
+            if 0 <= idx < 5:
+                if not getattr(ctx.cultivate_detail.turn_info, 'facility_click_logged', False):
+                    facility_keys = ["speed", "stamina", "power", "guts", "wits"]
+                    key = facility_keys[idx]
+                    if not hasattr(ctx.cultivate_detail, "facility_clicks"):
+                        ctx.cultivate_detail.facility_clicks = {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}
+                    ctx.cultivate_detail.facility_clicks[key] += 1
+                    ctx.cultivate_detail.turn_info.facility_click_logged = True
+                    try:
+                        from module.umamusume.persistence import save_career_data
+                        save_career_data(ctx)
+                    except Exception:
+                        pass
             ctx.ctrl.click_by_point(TRAINING_POINT_LIST[training_type.value - 1])
             time.sleep(TRAINING_CLICK_DELAY)
             ctx.ctrl.click_by_point(TRAINING_POINT_LIST[training_type.value - 1])
@@ -1016,6 +1030,11 @@ def script_cultivate_training_select(ctx: UmamusumeContext):
                     ctx.cultivate_detail.facility_clicks = {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0}
                 ctx.cultivate_detail.facility_clicks[key] += 1
                 ctx.cultivate_detail.turn_info.facility_click_logged = True
+                try:
+                    from module.umamusume.persistence import save_career_data
+                    save_career_data(ctx)
+                except Exception:
+                    pass
 
         ctx.ctrl.click_by_point(TRAINING_POINT_LIST[op.training_type.value - 1])
         time.sleep(0.15)

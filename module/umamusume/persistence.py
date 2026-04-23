@@ -41,7 +41,8 @@ def save_career_data(ctx):
                 log.info("Career data cleared from memory")
                 return
             score_history = getattr(ctx.cultivate_detail, 'score_history', [])
-            if not score_history:
+            facility_clicks = getattr(ctx.cultivate_detail, 'facility_clicks', None)
+            if not score_history and not facility_clicks:
                 return
             scores = score_history[-MAX_DATAPOINTS:]
             stat_only_history = getattr(ctx.cultivate_detail, 'stat_only_history', [])
@@ -62,6 +63,7 @@ def save_career_data(ctx):
                 'action_history': actions,
                 'raw_stat_history': raw_stats,
                 'date_history': dates,
+                'facility_clicks': getattr(ctx.cultivate_detail, 'facility_clicks', {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0})
             }
             with open(PERSISTENCE_FILE, 'w') as f:
                 json.dump(data, f)
@@ -82,7 +84,7 @@ def load_career_data(ctx):
             clear_career_data()
             return False
 
-        required_keys = {'score_history', 'stat_only_history', 'energy_history', 'action_history', 'raw_stat_history', 'date_history'}
+        required_keys = {'score_history', 'stat_only_history', 'energy_history', 'action_history', 'raw_stat_history', 'date_history', 'facility_clicks'}
         if not required_keys.issubset(data.keys()):
             log.info("Career data format mismatch - clearing old data")
             clear_career_data()
@@ -107,6 +109,7 @@ def load_career_data(ctx):
         ctx.cultivate_detail.action_history = actions
         ctx.cultivate_detail.raw_stat_history = raw_stats
         ctx.cultivate_detail.date_history = dates
+        ctx.cultivate_detail.facility_clicks = data.get('facility_clicks', {"speed": 0, "stamina": 0, "power": 0, "guts": 0, "wits": 0})
         ctx.cultivate_detail.percentile_history = rebuild_percentile_history(scores)
         log.info(f"Restored career data: {len(scores)} datapoints")
         return True

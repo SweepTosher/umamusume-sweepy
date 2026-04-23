@@ -18,7 +18,7 @@ from module.umamusume.asset.point import (
     GOAL_ACHIEVE_CONFIRM, GOAL_FAIL_CONFIRM, NEXT_GOAL_CONFIRM
 )
 from module.umamusume.asset.template import (
-    UI_SCENARIO, REF_CULTIVATE_SUPPORT_CARD_EMPTY
+    UI_SCENARIO, REF_CULTIVATE_SUPPORT_CARD_EMPTY, UI_CULTIVATE_UMAMUSUME_SELECT
 )
 from module.umamusume.script.cultivate_task.parse import parse_factor
 
@@ -97,11 +97,8 @@ def script_scenario_select(ctx: UmamusumeContext):
 
 def script_umamusume_select(ctx: UmamusumeContext):
     time.sleep(2)
-    img_gray = ctx.ctrl.get_screen(to_gray=True)
-    if image_match(img_gray, UI_CULTIVATE_UMAMUSUME_SELECT).find_match:
-        ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
-    else:
-        ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
+    ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
+
 
 
 def script_extend_umamusume_select(ctx: UmamusumeContext):

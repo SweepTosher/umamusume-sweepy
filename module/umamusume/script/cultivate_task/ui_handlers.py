@@ -78,11 +78,19 @@ def script_main_menu(ctx: UmamusumeContext):
 def script_scenario_select(ctx: UmamusumeContext):
     target_scenario = ctx.cultivate_detail.scenario.scenario_type()
     time.sleep(2)
+    
+    img = ctx.ctrl.get_screen()
+    title_area = img[35:90, 250:470]
+    from bot.recog.ocr import ocr_line
+    title_text = ocr_line(cv2.cvtColor(title_area, cv2.COLOR_BGR2GRAY)).lower()
+    
+    if "parent" in title_text or "selection" in title_text or "umamusume" in title_text:
+        return
 
     for i in range(1, 15):
-        img = ctx.ctrl.get_screen(to_gray=True)
+        img_gray = ctx.ctrl.get_screen(to_gray=True)
 
-        if image_match(img, UI_SCENARIO[target_scenario]).find_match:
+        if image_match(img_gray, UI_SCENARIO[target_scenario]).find_match:
             log.info(f"Found target cultivation scenario {ctx.cultivate_detail.scenario.scenario_name()}")
             ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
             return
@@ -125,6 +133,16 @@ def script_support_card_select(ctx: UmamusumeContext):
         time.sleep(1.0)
         state["input_blocked"] = False
         return
+    
+    img_color = ctx.ctrl.get_screen()
+    title_area = img_color[35:90, 250:470]
+    from bot.recog.ocr import ocr_line
+    title_text = ocr_line(cv2.cvtColor(title_area, cv2.COLOR_BGR2GRAY)).lower()
+    
+    if "support" in title_text or "card" in title_text:
+        if image_match(cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY), REF_CULTIVATE_SUPPORT_CARD_EMPTY).find_match:
+            return
+
     ctx.ctrl.click_by_point(TO_CULTIVATE_PREPARE_NEXT)
 
 

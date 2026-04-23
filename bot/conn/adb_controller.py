@@ -62,6 +62,10 @@ class AdbController(AndroidController):
 
     def click(self, x, y, name="", random_offset=True, hold_duration=0):
         from bot.base.runtime_state import get_state
+        if get_state().get("input_blocked"): return
+        if random_offset:
+            x += int(max(-8, min(8, random.gauss(0, 3))))
+            y += int(max(-8, min(8, random.gauss(0, 3))))
         x, y = max(1, min(719, x)), max(1, min(1279, y))
         elapsed = time.time() - self.last_click
         wait = max(0.0, random.uniform(0.06, 0.09) - elapsed)

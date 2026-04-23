@@ -149,12 +149,6 @@ def handle_mant_shop_scan(ctx, current_date):
         shop_available = {name for name, _, _, _, buyable in items_list if buyable}
         shop_slugs = {display_to_slug(n) for n in shop_available}
         
-        log.info(f"[shop] shop_slugs from scan: {sorted(shop_slugs)}")
-        log.info(f"[shop] configured item_tiers: {dict(mant_cfg.item_tiers)}")
-        missing_from_shop = {s for s in mant_cfg.item_tiers if s not in shop_slugs}
-        if missing_from_shop:
-            log.info(f"[shop] configured items NOT seen in shop scan: {missing_from_shop}")
-        
         shop_copy_counts = {}
         for name, _, _, _, buyable in items_list:
             if buyable:
@@ -232,31 +226,23 @@ def handle_mant_shop_scan(ctx, current_date):
 
         def should_skip(display_name):
             if display_name in priority_set:
-                log.debug(f"[shop skip] '{display_name}' → already in priority_set")
                 return True
             if display_name in ONE_TIME_BUFF_ITEMS and display_name in used_buffs:
-                log.info(f"[shop skip] '{display_name}' → one-time buff already used")
                 return True
             if ignore_cat and display_name == "Yummy Cat Food":
-                log.debug(f"[shop skip] '{display_name}' → ignore_cat_food flag set")
                 return True
             if ignore_carrots:
                 bbq_slug = display_to_slug(display_name)
                 if bbq_slug == "grilled_carrots":
-                    log.debug(f"[shop skip] '{display_name}' → ignore_grilled_carrots flag set")
                     return True
             if display_name in all_cures:
                 if has_miracle_cure:
-                    log.info(f"[shop skip] '{display_name}' → already have Miracle Cure")
                     return True
                 if owned_map.get(display_name, 0) > 0:
-                    log.info(f"[shop skip] '{display_name}' → already own specific cure")
                     return True
             if display_name == AILMENT_CURE_ALL and has_miracle_cure:
-                log.info(f"[shop skip] '{display_name}' → already own Miracle Cure")
                 return True
             if display_name == "Energy Drink MAX" and owned_map.get("Energy Drink MAX", 0) > 0:
-                log.info(f"[shop skip] '{display_name}' → already own Energy Drink MAX")
                 return True
             return False
 
@@ -359,26 +345,17 @@ def handle_mant_shop_scan(ctx, current_date):
                 for i in range(actual_copies):
                     remaining_after = budget - cost
                     if remaining_after < 0:
-                        log.info(f"[shop] SKIP '{display}' tier={tier} — insufficient budget ({budget} < {cost})")
                         break
                     threshold = 0
                     if tier > 1 and not post_senior_summer:
                         raw_threshold = mant_cfg.tier_thresholds.get(tier, (tier - 1) * 50)
                         threshold = raw_threshold * sale_modifier
                     if threshold > 0 and remaining_after < threshold:
-                        log.info(f"[shop] SKIP '{display}' tier={tier} — remaining after purchase ({remaining_after}) < threshold ({threshold:.0f})")
                         break
                     tier_targets.append(display)
                     budget -= cost
 
         targets = priority_targets + tier_targets
-        
-        log.info(f"[shop] items visible in shop this scan ({len(items_list)}):")
-        for name, conf, gy, turns, buyable in items_list:
-            log.info(f"[shop]   '{name}' turns={turns} buyable={buyable}")
-        log.info(f"[shop] budget={ctx.cultivate_detail.mant_coins} priority_targets={priority_targets} tier_targets={tier_targets}")
-        log.info(f"[shop] final purchase targets: {targets}")
-        
         if targets:
             bought, held_items = buy_shop_items(ctx, targets, items_list, ratio, drag_ratio, first_item_gy)
             if bought:

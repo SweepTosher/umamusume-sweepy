@@ -1,6 +1,6 @@
 fastapi==0.136.1
 frida==17.9.1
-msgpack_python==0.5.6
+msgpack==1.1.0
 pycryptodome==3.14.1
 pydantic==2.13.4
 Requests==2.33.1

@@ -992,6 +992,7 @@ async def login(req: LoginRequest):
     except Exception as e:
         msg = str(e)
         if "STEAM_GUARD_REQUIRED" in msg:
+             pending_game_auth_config = cfg
              return {"success": False, "needs_2fa": True}
         return {"success": False, "detail": str(e)}
 

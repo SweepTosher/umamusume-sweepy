@@ -360,6 +360,7 @@ const state = {
         function showTwoFactorPrompt() {
             setLoadingScreen(false);
             state.needs2fa = true;
+            state.isLoading = false;
             els.standardFields.style.display = 'none';
             els.faFields.style.display = 'block';
             els.loginBtn.innerText = 'VALIDATE';

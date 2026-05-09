@@ -444,7 +444,7 @@ class MantItemManager:
                 skip_reason = "expired"
             elif current_num >= limit:
                 skip_reason = "limit_reached"
-            elif self._skip_buy(name, owned, preset, current_turn, start_budget):
+            elif self._skip_buy(name, owned, preset, current_turn, start_budget, data, race_planner):
                 skip_reason = "skip_buy"
             self.last_buy_options.append({
                 "name": name,
@@ -954,6 +954,7 @@ class MantItemManager:
         cfg.setdefault("mega_small_threshold", 11)
         cfg.setdefault("mega_medium_threshold", 21)
         cfg.setdefault("mega_large_threshold", 35)
+        cfg.setdefault("mega_late_buy_buffer", 5)
         cfg.setdefault("training_weights_threshold", 40)
         return cfg
 
@@ -1094,10 +1095,30 @@ class MantItemManager:
         medium_threshold = float(cfg.get("mega_medium_threshold") or 21)
         large_threshold = float(cfg.get("mega_large_threshold") or 35)
         dump_mode = self._megaphone_dump_mode(data, owned, turn, race_planner, preset)
+        slots_left = self._remaining_megaphone_slots(data, turn, race_planner, preset)
+        owned_count = self._owned_megaphone_count(owned)
+        inventory_pressure = slots_left > 0 and owned_count >= slots_left
+        has_upgrade_pair = owned.get("Motivating Megaphone", 0) > 0 and owned.get("Empowering Megaphone", 0) > 0 and slots_left >= 2
 
         target_tier = 0
         if current_mega_tier <= 0:
-            if dump_mode:
+            if has_upgrade_pair and score >= medium_threshold:
+                return ("Motivating Megaphone", 1)
+            if score >= large_threshold and owned.get("Empowering Megaphone", 0) > 0:
+                return ("Empowering Megaphone", 1)
+            if score >= medium_threshold and owned.get("Motivating Megaphone", 0) > 0:
+                return ("Motivating Megaphone", 1)
+            if score >= small_threshold and owned.get("Coaching Megaphone", 0) > 0:
+                return ("Coaching Megaphone", 1)
+            if inventory_pressure or dump_mode:
+                if has_upgrade_pair:
+                    return ("Motivating Megaphone", 1)
+                if owned.get("Empowering Megaphone", 0) > 0:
+                    return ("Empowering Megaphone", 1)
+                if score >= medium_threshold and owned.get("Motivating Megaphone", 0) > 0:
+                    return ("Motivating Megaphone", 1)
+                if score >= small_threshold and owned.get("Coaching Megaphone", 0) > 0:
+                    return ("Coaching Megaphone", 1)
                 if owned.get("Coaching Megaphone", 0) > 0:
                     return ("Coaching Megaphone", 1)
                 if owned.get("Motivating Megaphone", 0) > 0:
@@ -1130,32 +1151,71 @@ class MantItemManager:
         return None
 
     def _megaphone_dump_mode(self, data, owned, turn, race_planner, preset):
-        training_turns_left = self._remaining_training_turns_to_77(data, turn, race_planner, preset)
+        training_turns_left = self._remaining_megaphone_slots(data, turn, race_planner, preset)
         total_duration = 0
         for name, (_, duration) in MEGAPHONE_TIERS.items():
             total_duration += int(owned.get(name, 0) or 0) * duration
         return training_turns_left > 0 and total_duration >= training_turns_left
 
+    def _owned_megaphone_count(self, owned):
+        total = 0
+        for name in MEGAPHONE_TIERS:
+            total += int(owned.get(name, 0) or 0)
+        return total
+
+    def _megaphone_buy_surplus(self, data, owned, turn, race_planner, preset):
+        slots_left = self._remaining_megaphone_slots(data, turn, race_planner, preset)
+        if slots_left <= 0:
+            return False
+        cfg = self._mant_cfg(preset)
+        buffer = int(cfg.get("mega_late_buy_buffer") or 3)
+        target = max(0, slots_left - buffer)
+        return self._owned_megaphone_count(owned) >= target
+
+    def _remaining_megaphone_slots(self, data, turn, race_planner, preset):
+        return self._remaining_training_turns_to_77(data, turn, race_planner, preset)
+
     def _remaining_training_turns_to_77(self, data, turn, race_planner, preset):
+        planned_race_turns = self._planned_race_turns_to_77(data, turn, race_planner, preset)
+        race_condition_array = data.get("race_condition_array") or []
+        remaining = 0
+        for t in range(int(turn or 0), 77):
+            if t in (74, 76):
+                continue
+            if t not in planned_race_turns:
+                remaining += 1
+        return remaining
+
+    def _planned_race_turns_to_77(self, data, turn, race_planner, preset):
+        current_turn = int(turn or 0)
         wanted_pids = set()
         if race_planner and preset:
             wanted_pids = race_planner.wanted_programs(preset)
-        race_condition_array = data.get("race_condition_array") or []
-        remaining = 0
-        for t in range(int(turn or 0), 78):
-            if t in (74, 76):
-                continue
-            is_race = False
-            if wanted_pids:
-                for item in race_condition_array:
-                    if int(item.get("turn") or 0) != t:
-                        continue
-                    if int(item.get("program_id") or 0) in wanted_pids:
-                        is_race = True
-                        break
-            if not is_race:
-                remaining += 1
-        return remaining
+        result = set()
+        for item in data.get("race_condition_array") or []:
+            item_turn = int(item.get("turn") or 0)
+            program_id = int(item.get("program_id") or 0)
+            if item_turn >= current_turn and item_turn < 77 and (not wanted_pids or program_id in wanted_pids):
+                result.add(item_turn)
+        if race_planner and wanted_pids:
+            for program_id in wanted_pids:
+                info = (race_planner.program or {}).get(int(program_id or 0)) or {}
+                race_turn = self._program_turn_from_month_half(info, current_turn)
+                if race_turn >= current_turn and race_turn < 77:
+                    result.add(race_turn)
+        return result
+
+    def _program_turn_from_month_half(self, program_info, current_turn):
+        month = int((program_info or {}).get("month") or 0)
+        half = int((program_info or {}).get("half") or 0)
+        if month <= 0 or half <= 0:
+            return 0
+        base_turn = (month - 1) * 2 + half
+        candidates = [base_turn + 24 * year for year in range(4)]
+        for candidate in candidates:
+            if candidate >= int(current_turn or 0):
+                return candidate
+        return candidates[-1]
 
     def _anklet_target(self, state, best_command, owned, preset):
         if not best_command or int(best_command.get("command_type") or 0) != 1:
@@ -1215,7 +1275,9 @@ class MantItemManager:
                 result.append((name, actual))
         return result
 
-    def _skip_buy(self, name, owned, preset=None, turn=0, budget=0):
+    def _skip_buy(self, name, owned, preset=None, turn=0, budget=0, data=None, race_planner=None):
+        if name in MEGAPHONE_TIERS and self._megaphone_buy_surplus(data or {}, owned, turn, race_planner, preset):
+            return True
         if name in CURE_ITEMS:
             if owned.get(name, 0) > 0 or (name != AILMENT_CURE_ALL and owned.get(AILMENT_CURE_ALL, 0) > 0):
                 return True

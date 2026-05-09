@@ -13,7 +13,7 @@
 ---
 
 
-uses lobotobized/halfported sweepy decision engine, no intention of fully porting/upgrading it as I will me migrating to MCTS soon.
+uses lobotobized/halfported sweepy decision engine, no intention of fully porting/upgrading it as I will be migrating to MCTS soon.
 
 oh and uh looping removed lest someone tries to be funny (takes like 2 mins to figure out anyways but at least it wont be my fault)
 

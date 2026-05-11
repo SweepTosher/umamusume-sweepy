@@ -1,3406 +1,5268 @@
 {
   "races": [
     {
-      "id": 2003,
-      "name": "Chukyo Junior Stakes",
-      "date": "Junior Year Late Jul",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2004,
+      "id": 100628,
+      "program_id": 628,
+      "turn": 14,
       "name": "Hakodate Junior Stakes",
       "date": "Junior Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hakodate"
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2004
+      ]
     },
     {
-      "id": 2005,
+      "id": 100637,
+      "program_id": 637,
+      "turn": 14,
+      "name": "Chukyo Junior Stakes",
+      "date": "Junior Year Late Jul",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2003
+      ]
+    },
+    {
+      "id": 100640,
+      "program_id": 640,
+      "turn": 15,
       "name": "Cosmos Sho",
       "date": "Junior Year Early Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2005
+      ]
     },
     {
-      "id": 2006,
+      "id": 100638,
+      "program_id": 638,
+      "turn": 15,
       "name": "Dahlia Sho",
       "date": "Junior Year Early Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2006
+      ]
     },
     {
-      "id": 2007,
+      "id": 100639,
+      "program_id": 639,
+      "turn": 15,
       "name": "Phoenix Sho",
       "date": "Junior Year Early Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kokura"
+      "venue": "Kokura",
+      "legacy_ids": [
+        2007
+      ]
     },
     {
-      "id": 2008,
-      "name": "Clover Sho",
-      "date": "Junior Year Late Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Sapporo"
-    },
-    {
-      "id": 2009,
+      "id": 100629,
+      "program_id": 629,
+      "turn": 16,
       "name": "Niigata Junior Stakes",
       "date": "Junior Year Late Aug",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2009
+      ]
     },
     {
-      "id": 2010,
-      "name": "Aster Sho",
-      "date": "Junior Year Early Sep",
-      "type": "PRE-OP",
+      "id": 100641,
+      "program_id": 641,
+      "turn": 16,
+      "name": "Clover Sho",
+      "date": "Junior Year Late Aug",
+      "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2008
+      ]
     },
     {
-      "id": 2011,
+      "id": 100631,
+      "program_id": 631,
+      "turn": 17,
       "name": "Kokura Junior Stakes",
       "date": "Junior Year Early Sep",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kokura"
+      "venue": "Kokura",
+      "legacy_ids": [
+        2011
+      ]
     },
     {
-      "id": 2012,
-      "name": "Nojigiku Stakes",
-      "date": "Junior Year Early Sep",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2013,
+      "id": 100630,
+      "program_id": 630,
+      "turn": 17,
       "name": "Sapporo Junior Stakes",
       "date": "Junior Year Early Sep",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2013
+      ]
     },
     {
-      "id": 2014,
+      "id": 100644,
+      "program_id": 644,
+      "turn": 17,
+      "name": "Nojigiku Stakes",
+      "date": "Junior Year Early Sep",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2012
+      ]
+    },
+    {
+      "id": 100643,
+      "program_id": 643,
+      "turn": 17,
       "name": "Suzuran Sho",
       "date": "Junior Year Early Sep",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2014
+      ]
     },
     {
-      "id": 2015,
+      "id": 101031,
+      "program_id": 1031,
+      "turn": 17,
+      "name": "Aster Sho",
+      "date": "Junior Year Early Sep",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2010
+      ]
+    },
+    {
+      "id": 100647,
+      "program_id": 647,
+      "turn": 18,
       "name": "Canna Stakes",
       "date": "Junior Year Late Sep",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2015
+      ]
     },
     {
-      "id": 2016,
+      "id": 100646,
+      "program_id": 646,
+      "turn": 18,
       "name": "Fuyo Stakes",
       "date": "Junior Year Late Sep",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2016
+      ]
     },
     {
-      "id": 2017,
+      "id": 100645,
+      "program_id": 645,
+      "turn": 18,
       "name": "Kikyo Stakes",
       "date": "Junior Year Late Sep",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2017
+      ]
     },
     {
-      "id": 2018,
+      "id": 101032,
+      "program_id": 1032,
+      "turn": 18,
       "name": "Saffron Sho",
       "date": "Junior Year Late Sep",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2018
+      ]
     },
     {
-      "id": 2019,
-      "name": "Momiji Stakes",
-      "date": "Junior Year Early Oct",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2020,
-      "name": "Platanus Sho",
-      "date": "Junior Year Early Oct",
-      "type": "PRE-OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2021,
-      "name": "Rindo Sho",
-      "date": "Junior Year Early Oct",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2022,
+      "id": 100632,
+      "program_id": 632,
+      "turn": 19,
       "name": "Saudi Arabia Royal Cup",
       "date": "Junior Year Early Oct",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2022
+      ]
     },
     {
-      "id": 2023,
+      "id": 100648,
+      "program_id": 648,
+      "turn": 19,
+      "name": "Momiji Stakes",
+      "date": "Junior Year Early Oct",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2019
+      ]
+    },
+    {
+      "id": 101035,
+      "program_id": 1035,
+      "turn": 19,
+      "name": "Platanus Sho",
+      "date": "Junior Year Early Oct",
+      "type": "PRE-OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2020
+      ]
+    },
+    {
+      "id": 101033,
+      "program_id": 1033,
+      "turn": 19,
+      "name": "Rindo Sho",
+      "date": "Junior Year Early Oct",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2021
+      ]
+    },
+    {
+      "id": 101034,
+      "program_id": 1034,
+      "turn": 19,
       "name": "Shigiku Sho",
       "date": "Junior Year Early Oct",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2023
+      ]
     },
     {
-      "id": 2024,
+      "id": 100633,
+      "program_id": 633,
+      "turn": 20,
       "name": "Artemis Stakes",
       "date": "Junior Year Late Oct",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2024
+      ]
     },
     {
-      "id": 2025,
+      "id": 100650,
+      "program_id": 650,
+      "turn": 20,
       "name": "Hagi Stakes",
       "date": "Junior Year Late Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2025
+      ]
     },
     {
-      "id": 2026,
+      "id": 100649,
+      "program_id": 649,
+      "turn": 20,
       "name": "Ivy Stakes",
       "date": "Junior Year Late Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2026
+      ]
     },
     {
-      "id": 2027,
+      "id": 101036,
+      "program_id": 1036,
+      "turn": 20,
       "name": "Nadeshiko Sho",
       "date": "Junior Year Late Oct",
       "type": "PRE-OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2027
+      ]
     },
     {
-      "id": 2028,
+      "id": 100627,
+      "program_id": 627,
+      "turn": 21,
       "name": "Daily Hai Junior Stakes",
       "date": "Junior Year Early Nov",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2028
+      ]
     },
     {
-      "id": 2029,
-      "name": "Fantasy Stakes",
-      "date": "Junior Year Early Nov",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2030,
-      "name": "Fukushima Junior Stakes",
-      "date": "Junior Year Early Nov",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2031,
-      "name": "Hyakunichiso Tokubetsu",
-      "date": "Junior Year Early Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2032,
+      "id": 100626,
+      "program_id": 626,
+      "turn": 21,
       "name": "Keio Hai Junior Stakes",
       "date": "Junior Year Early Nov",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2032
+      ]
     },
     {
-      "id": 2033,
+      "id": 100634,
+      "program_id": 634,
+      "turn": 21,
+      "name": "Fantasy Stakes",
+      "date": "Junior Year Early Nov",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2029
+      ]
+    },
+    {
+      "id": 100651,
+      "program_id": 651,
+      "turn": 21,
+      "name": "Fukushima Junior Stakes",
+      "date": "Junior Year Early Nov",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2030
+      ]
+    },
+    {
+      "id": 101037,
+      "program_id": 1037,
+      "turn": 21,
+      "name": "Hyakunichiso Tokubetsu",
+      "date": "Junior Year Early Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2031
+      ]
+    },
+    {
+      "id": 101040,
+      "program_id": 1040,
+      "turn": 21,
       "name": "Kigiku Sho",
       "date": "Junior Year Early Nov",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2033
+      ]
     },
     {
-      "id": 2034,
+      "id": 101038,
+      "program_id": 1038,
+      "turn": 21,
       "name": "Kimmokusei Tokubetsu",
       "date": "Junior Year Early Nov",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Fukushima"
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2034
+      ]
     },
     {
-      "id": 2035,
+      "id": 101039,
+      "program_id": 1039,
+      "turn": 21,
       "name": "Oxalis Sho",
       "date": "Junior Year Early Nov",
       "type": "PRE-OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2035
+      ]
     },
     {
-      "id": 2036,
-      "name": "Akamatsu Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2037,
-      "name": "Begonia Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2038,
-      "name": "Cattleya Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2039,
-      "name": "Habotan Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2040,
-      "name": "Koyamaki Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2041,
+      "id": 100636,
+      "program_id": 636,
+      "turn": 22,
       "name": "Kyoto Junior Stakes",
       "date": "Junior Year Late Nov",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2041
+      ]
     },
     {
-      "id": 2042,
-      "name": "Mochinoki Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2043,
-      "name": "Shiragiku Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2044,
-      "name": "Shumeigiku Sho",
-      "date": "Junior Year Late Nov",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2045,
+      "id": 100635,
+      "program_id": 635,
+      "turn": 22,
       "name": "Tokyo Sports Hai Junior Stakes",
       "date": "Junior Year Late Nov",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2045
+      ]
     },
     {
-      "id": 2046,
+      "id": 101042,
+      "program_id": 1042,
+      "turn": 22,
+      "name": "Akamatsu Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2036
+      ]
+    },
+    {
+      "id": 101045,
+      "program_id": 1045,
+      "turn": 22,
+      "name": "Begonia Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2037
+      ]
+    },
+    {
+      "id": 101044,
+      "program_id": 1044,
+      "turn": 22,
+      "name": "Cattleya Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2038
+      ]
+    },
+    {
+      "id": 101047,
+      "program_id": 1047,
+      "turn": 22,
+      "name": "Habotan Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2039
+      ]
+    },
+    {
+      "id": 101048,
+      "program_id": 1048,
+      "turn": 22,
+      "name": "Koyamaki Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2040
+      ]
+    },
+    {
+      "id": 101041,
+      "program_id": 1041,
+      "turn": 22,
+      "name": "Mochinoki Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2042
+      ]
+    },
+    {
+      "id": 101046,
+      "program_id": 1046,
+      "turn": 22,
+      "name": "Shiragiku Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2043
+      ]
+    },
+    {
+      "id": 101043,
+      "program_id": 1043,
+      "turn": 22,
+      "name": "Shumeigiku Sho",
+      "date": "Junior Year Late Nov",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2044
+      ]
+    },
+    {
+      "id": 100624,
+      "program_id": 624,
+      "turn": 23,
       "name": "Asahi Hai Futurity Stakes",
       "date": "Junior Year Early Dec",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2046
+      ]
     },
     {
-      "id": 2047,
-      "name": "Erica Sho",
-      "date": "Junior Year Early Dec",
-      "type": "PRE-OP",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2048,
+      "id": 100623,
+      "program_id": 623,
+      "turn": 23,
       "name": "Hanshin Juvenile Fillies",
       "date": "Junior Year Early Dec",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2048
+      ]
     },
     {
-      "id": 2049,
+      "id": 101051,
+      "program_id": 1051,
+      "turn": 23,
+      "name": "Erica Sho",
+      "date": "Junior Year Early Dec",
+      "type": "PRE-OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2047
+      ]
+    },
+    {
+      "id": 101053,
+      "program_id": 1053,
+      "turn": 23,
       "name": "Hiiragi Sho",
       "date": "Junior Year Early Dec",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2049
+      ]
     },
     {
-      "id": 2050,
+      "id": 101055,
+      "program_id": 1055,
+      "turn": 23,
       "name": "Kantsubaki Sho",
       "date": "Junior Year Early Dec",
       "type": "PRE-OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2050
+      ]
     },
     {
-      "id": 2051,
+      "id": 101050,
+      "program_id": 1050,
+      "turn": 23,
       "name": "Kuromatsu Sho",
       "date": "Junior Year Early Dec",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2051
+      ]
     },
     {
-      "id": 2052,
+      "id": 101049,
+      "program_id": 1049,
+      "turn": 23,
       "name": "Manryo Sho",
       "date": "Junior Year Early Dec",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2052
+      ]
     },
     {
-      "id": 2053,
+      "id": 101054,
+      "program_id": 1054,
+      "turn": 23,
       "name": "Sazanka Sho",
       "date": "Junior Year Early Dec",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2053
+      ]
     },
     {
-      "id": 2054,
+      "id": 101052,
+      "program_id": 1052,
+      "turn": 23,
       "name": "Tsuwabuki Sho",
       "date": "Junior Year Early Dec",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2054
+      ]
     },
     {
-      "id": 2055,
-      "name": "Christmas Rose Stakes",
-      "date": "Junior Year Late Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2056,
+      "id": 100625,
+      "program_id": 625,
+      "turn": 24,
       "name": "Hopeful Stakes",
       "date": "Junior Year Late Dec",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2056
+      ]
     },
     {
-      "id": 2057,
+      "id": 100652,
+      "program_id": 652,
+      "turn": 24,
+      "name": "Christmas Rose Stakes",
+      "date": "Junior Year Late Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2055
+      ]
+    },
+    {
+      "id": 101056,
+      "program_id": 1056,
+      "turn": 24,
       "name": "Senryo Sho",
       "date": "Junior Year Late Dec",
       "type": "PRE-OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2057
+      ]
     },
     {
-      "id": 2058,
+      "id": 200179,
+      "program_id": 179,
+      "turn": 25,
       "name": "Fairy Stakes",
       "date": "Classic Year Early Jan",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2058
+      ]
     },
     {
-      "id": 2059,
-      "name": "Junior Cup",
-      "date": "Classic Year Early Jan",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2060,
+      "id": 200180,
+      "program_id": 180,
+      "turn": 25,
       "name": "Keisei Hai",
       "date": "Classic Year Early Jan",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2060
+      ]
     },
     {
-      "id": 2061,
-      "name": "Kobai Stakes",
-      "date": "Classic Year Early Jan",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2062,
+      "id": 200178,
+      "program_id": 178,
+      "turn": 25,
       "name": "Shinzan Kinen",
       "date": "Classic Year Early Jan",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2062
+      ]
     },
     {
-      "id": 2063,
+      "id": 200193,
+      "program_id": 193,
+      "turn": 25,
+      "name": "Junior Cup",
+      "date": "Classic Year Early Jan",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2059
+      ]
+    },
+    {
+      "id": 200194,
+      "program_id": 194,
+      "turn": 25,
+      "name": "Kobai Stakes",
+      "date": "Classic Year Early Jan",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2061
+      ]
+    },
+    {
+      "id": 200196,
+      "program_id": 196,
+      "turn": 26,
       "name": "Crocus Stakes",
       "date": "Classic Year Late Jan",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2063
+      ]
     },
     {
-      "id": 2064,
+      "id": 200195,
+      "program_id": 195,
+      "turn": 26,
       "name": "Wakagoma Stakes",
       "date": "Classic Year Late Jan",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2064
+      ]
     },
     {
-      "id": 2065,
-      "name": "Elfin Stakes",
-      "date": "Classic Year Early Feb",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2066,
+      "id": 200181,
+      "program_id": 181,
+      "turn": 27,
       "name": "Kisaragi Sho",
       "date": "Classic Year Early Feb",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2066
+      ]
     },
     {
-      "id": 2067,
+      "id": 200183,
+      "program_id": 183,
+      "turn": 27,
       "name": "Kyodo News Hai",
       "date": "Classic Year Early Feb",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2067
+      ]
     },
     {
-      "id": 2068,
+      "id": 200182,
+      "program_id": 182,
+      "turn": 27,
       "name": "Queen Cup",
       "date": "Classic Year Early Feb",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2068
+      ]
     },
     {
-      "id": 2069,
+      "id": 200197,
+      "program_id": 197,
+      "turn": 27,
+      "name": "Elfin Stakes",
+      "date": "Classic Year Early Feb",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2065
+      ]
+    },
+    {
+      "id": 200198,
+      "program_id": 198,
+      "turn": 28,
       "name": "Hyacinth Stakes",
       "date": "Classic Year Late Feb",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2069
+      ]
     },
     {
-      "id": 2070,
+      "id": 200203,
+      "program_id": 203,
+      "turn": 28,
       "name": "Marguerite Stakes",
       "date": "Classic Year Late Feb",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2070
+      ]
     },
     {
-      "id": 2071,
+      "id": 200199,
+      "program_id": 199,
+      "turn": 28,
       "name": "Sumire Stakes",
       "date": "Classic Year Late Feb",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2071
+      ]
     },
     {
-      "id": 2072,
-      "name": "Anemone Stakes",
-      "date": "Classic Year Early Mar",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2073,
-      "name": "Fillies/Revue",
+      "id": 200170,
+      "program_id": 170,
+      "turn": 29,
+      "name": "Fillies' Revue",
       "date": "Classic Year Early Mar",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2073
+      ]
     },
     {
-      "id": 2074,
-      "name": "Shoryu Stakes",
-      "date": "Classic Year Early Mar",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2075,
+      "id": 200185,
+      "program_id": 185,
+      "turn": 29,
       "name": "Tulip Sho",
       "date": "Classic Year Early Mar",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2075
+      ]
     },
     {
-      "id": 2076,
+      "id": 200169,
+      "program_id": 169,
+      "turn": 29,
       "name": "Yayoi Sho",
       "date": "Classic Year Early Mar",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2076
+      ]
     },
     {
-      "id": 2077,
-      "name": "Falcon Stakes",
-      "date": "Classic Year Late Mar",
-      "type": "G3",
+      "id": 200200,
+      "program_id": 200,
+      "turn": 29,
+      "name": "Anemone Stakes",
+      "date": "Classic Year Early Mar",
+      "type": "OP",
       "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2072
+      ]
+    },
+    {
+      "id": 200201,
+      "program_id": 201,
+      "turn": 29,
+      "name": "Shoryu Stakes",
+      "date": "Classic Year Early Mar",
+      "type": "OP",
+      "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2074
+      ]
     },
     {
-      "id": 2078,
-      "name": "Flower Cup",
-      "date": "Classic Year Late Mar",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2079,
-      "name": "Mainichi Hai",
-      "date": "Classic Year Late Mar",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2080,
+      "id": 200171,
+      "program_id": 171,
+      "turn": 30,
       "name": "Spring Stakes",
       "date": "Classic Year Late Mar",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2080
+      ]
     },
     {
-      "id": 2081,
+      "id": 200186,
+      "program_id": 186,
+      "turn": 30,
+      "name": "Falcon Stakes",
+      "date": "Classic Year Late Mar",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2077
+      ]
+    },
+    {
+      "id": 200187,
+      "program_id": 187,
+      "turn": 30,
+      "name": "Flower Cup",
+      "date": "Classic Year Late Mar",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2078
+      ]
+    },
+    {
+      "id": 200188,
+      "program_id": 188,
+      "turn": 30,
+      "name": "Mainichi Hai",
+      "date": "Classic Year Late Mar",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2079
+      ]
+    },
+    {
+      "id": 200202,
+      "program_id": 202,
+      "turn": 30,
       "name": "Wakaba Stakes",
       "date": "Classic Year Late Mar",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2081
+      ]
     },
     {
-      "id": 2082,
-      "name": "Arlington Cup",
-      "date": "Classic Year Early Apr",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2083,
-      "name": "Fukuryu Stakes",
-      "date": "Classic Year Early Apr",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2084,
-      "name": "New Zealand Trophy",
-      "date": "Classic Year Early Apr",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2085,
+      "id": 200162,
+      "program_id": 162,
+      "turn": 31,
       "name": "Oka Sho",
       "date": "Classic Year Early Apr",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2085
+      ]
     },
     {
-      "id": 2086,
+      "id": 200163,
+      "program_id": 163,
+      "turn": 31,
       "name": "Satsuki Sho",
       "date": "Classic Year Early Apr",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2086
+      ]
     },
     {
-      "id": 2087,
+      "id": 200172,
+      "program_id": 172,
+      "turn": 31,
+      "name": "New Zealand Trophy",
+      "date": "Classic Year Early Apr",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2084
+      ]
+    },
+    {
+      "id": 200184,
+      "program_id": 184,
+      "turn": 31,
+      "name": "Arlington Cup",
+      "date": "Classic Year Early Apr",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2082
+      ]
+    },
+    {
+      "id": 200204,
+      "program_id": 204,
+      "turn": 31,
+      "name": "Fukuryu Stakes",
+      "date": "Classic Year Early Apr",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2083
+      ]
+    },
+    {
+      "id": 200205,
+      "program_id": 205,
+      "turn": 31,
       "name": "Wasurenagusa Sho",
       "date": "Classic Year Early Apr",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2087
+      ]
     },
     {
-      "id": 2088,
+      "id": 200174,
+      "program_id": 174,
+      "turn": 32,
       "name": "Aoba Sho",
       "date": "Classic Year Late Apr",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2088
+      ]
     },
     {
-      "id": 2089,
+      "id": 200173,
+      "program_id": 173,
+      "turn": 32,
       "name": "Flora Stakes",
       "date": "Classic Year Late Apr",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2089
+      ]
     },
     {
-      "id": 2090,
+      "id": 200208,
+      "program_id": 208,
+      "turn": 32,
       "name": "Sweetpea Stakes",
       "date": "Classic Year Late Apr",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2090
+      ]
     },
     {
-      "id": 2091,
+      "id": 200206,
+      "program_id": 206,
+      "turn": 32,
       "name": "Tachibana Stakes",
       "date": "Classic Year Late Apr",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2091
+      ]
     },
     {
-      "id": 2092,
+      "id": 200207,
+      "program_id": 207,
+      "turn": 32,
       "name": "Tango Stakes",
       "date": "Classic Year Late Apr",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2092
+      ]
     },
     {
-      "id": 2093,
-      "name": "Kyoto Shimbun Hai",
-      "date": "Classic Year Early May",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2094,
+      "id": 200164,
+      "program_id": 164,
+      "turn": 33,
       "name": "NHK Mile Cup",
       "date": "Classic Year Early May",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2094
+      ]
     },
     {
-      "id": 2095,
+      "id": 200175,
+      "program_id": 175,
+      "turn": 33,
+      "name": "Kyoto Shimbun Hai",
+      "date": "Classic Year Early May",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2093
+      ]
+    },
+    {
+      "id": 200209,
+      "program_id": 209,
+      "turn": 33,
       "name": "Principal Stakes",
       "date": "Classic Year Early May",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2095
+      ]
     },
     {
-      "id": 2096,
+      "id": 200211,
+      "program_id": 211,
+      "turn": 33,
       "name": "Seiryu Stakes",
       "date": "Classic Year Early May",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2096
+      ]
     },
     {
-      "id": 2097,
-      "name": "Aoi Stakes",
-      "date": "Classic Year Late May",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2098,
-      "name": "Hosu Stakes",
-      "date": "Classic Year Late May",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2099,
+      "id": 200165,
+      "program_id": 165,
+      "turn": 34,
       "name": "Japanese Oaks",
       "date": "Classic Year Late May",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2099
+      ]
     },
     {
-      "id": 2100,
-      "name": "Shirayuri Stakes",
-      "date": "Classic Year Late May",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2101,
+      "id": 200166,
+      "program_id": 166,
+      "turn": 34,
       "name": "Tokyo Yushun (Japanese Derby)",
       "date": "Classic Year Late May",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2101
+      ]
     },
     {
-      "id": 2102,
-      "name": "Epsom Cup",
-      "date": "Classic Year Early Jun",
+      "id": 200210,
+      "program_id": 210,
+      "turn": 34,
+      "name": "Aoi Stakes",
+      "date": "Classic Year Late May",
       "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2097
+      ]
+    },
+    {
+      "id": 200212,
+      "program_id": 212,
+      "turn": 34,
+      "name": "Hosu Stakes",
+      "date": "Classic Year Late May",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2098
+      ]
+    },
+    {
+      "id": 200213,
+      "program_id": 213,
+      "turn": 34,
+      "name": "Shirayuri Stakes",
+      "date": "Classic Year Late May",
+      "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2100
+      ]
     },
     {
-      "id": 2103,
-      "name": "Mermaid Stakes",
-      "date": "Classic Year Early Jun",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2104,
-      "name": "Naruo Kinen",
-      "date": "Classic Year Early Jun",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2105,
-      "name": "Sleipnir Stakes",
-      "date": "Classic Year Early Jun",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2106,
-      "name": "Tempozan Stakes",
-      "date": "Classic Year Early Jun",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2107,
+      "id": 200073,
+      "program_id": 73,
+      "turn": 35,
       "name": "Yasuda Kinen",
       "date": "Classic Year Early Jun",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2107
+      ]
     },
     {
-      "id": 2108,
-      "name": "Akhalteke Stakes",
-      "date": "Classic Year Late Jun",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2109,
-      "name": "Hakodate Sprint Stakes",
-      "date": "Classic Year Late Jun",
+      "id": 200095,
+      "program_id": 95,
+      "turn": 35,
+      "name": "Epsom Cup",
+      "date": "Classic Year Early Jun",
       "type": "G3",
       "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Hakodate"
-    },
-    {
-      "id": 2110,
-      "name": "Onuma Stakes",
-      "date": "Classic Year Late Jun",
-      "type": "OP",
-      "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Hakodate"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2102
+      ]
     },
     {
-      "id": 2111,
-      "name": "Paradise Stakes",
-      "date": "Classic Year Late Jun",
-      "type": "OP",
+      "id": 200094,
+      "program_id": 94,
+      "turn": 35,
+      "name": "Mermaid Stakes",
+      "date": "Classic Year Early Jun",
+      "type": "G3",
       "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Tokyo"
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2103
+      ]
     },
     {
-      "id": 2112,
-      "name": "Sannomiya Stakes",
-      "date": "Classic Year Late Jun",
+      "id": 200093,
+      "program_id": 93,
+      "turn": 35,
+      "name": "Naruo Kinen",
+      "date": "Classic Year Early Jun",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2104
+      ]
+    },
+    {
+      "id": 201059,
+      "program_id": 1059,
+      "turn": 35,
+      "name": "Sleipnir Stakes",
+      "date": "Classic Year Early Jun",
       "type": "OP",
       "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Hanshin"
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2105
+      ]
     },
     {
-      "id": 2113,
+      "id": 200122,
+      "program_id": 122,
+      "turn": 35,
+      "name": "Tempozan Stakes",
+      "date": "Classic Year Early Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2106
+      ]
+    },
+    {
+      "id": 200074,
+      "program_id": 74,
+      "turn": 36,
       "name": "Takarazuka Kinen",
       "date": "Classic Year Late Jun",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2113
+      ]
     },
     {
-      "id": 2114,
+      "id": 200096,
+      "program_id": 96,
+      "turn": 36,
+      "name": "Hakodate Sprint Stakes",
+      "date": "Classic Year Late Jun",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2109
+      ]
+    },
+    {
+      "id": 200189,
+      "program_id": 189,
+      "turn": 36,
       "name": "Unicorn Stakes",
       "date": "Classic Year Late Jun",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2114
+      ]
     },
     {
-      "id": 2115,
+      "id": 200121,
+      "program_id": 121,
+      "turn": 36,
+      "name": "Akhalteke Stakes",
+      "date": "Classic Year Late Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2108
+      ]
+    },
+    {
+      "id": 200124,
+      "program_id": 124,
+      "turn": 36,
+      "name": "Onuma Stakes",
+      "date": "Classic Year Late Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2110
+      ]
+    },
+    {
+      "id": 200125,
+      "program_id": 125,
+      "turn": 36,
+      "name": "Paradise Stakes",
+      "date": "Classic Year Late Jun",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2111
+      ]
+    },
+    {
+      "id": 201060,
+      "program_id": 1060,
+      "turn": 36,
+      "name": "Sannomiya Stakes",
+      "date": "Classic Year Late Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2112
+      ]
+    },
+    {
+      "id": 200123,
+      "program_id": 123,
+      "turn": 36,
       "name": "Yonago Stakes",
       "date": "Classic Year Late Jun",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2115
+      ]
     },
     {
-      "id": 2116,
-      "name": "CBC Sho",
-      "date": "Classic Year Early Jul",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2117,
-      "name": "Hakodate Kinen",
-      "date": "Classic Year Early Jul",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hakodate"
-    },
-    {
-      "id": 2118,
+      "id": 201023,
+      "program_id": 1023,
+      "turn": 37,
       "name": "Japan Dirt Derby",
       "date": "Classic Year Early Jul",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2118
+      ]
     },
     {
-      "id": 2119,
-      "name": "Marine Stakes",
+      "id": 200097,
+      "program_id": 97,
+      "turn": 37,
+      "name": "CBC Sho",
       "date": "Classic Year Early Jul",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Hakodate"
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2116
+      ]
     },
     {
-      "id": 2120,
-      "name": "Meitetsu Hai",
+      "id": 200100,
+      "program_id": 100,
+      "turn": 37,
+      "name": "Hakodate Kinen",
       "date": "Classic Year Early Jul",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Chukyo"
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2117
+      ]
     },
     {
-      "id": 2121,
+      "id": 200098,
+      "program_id": 98,
+      "turn": 37,
       "name": "Procyon Stakes",
       "date": "Classic Year Early Jul",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2121
+      ]
     },
     {
-      "id": 2122,
+      "id": 200190,
+      "program_id": 190,
+      "turn": 37,
       "name": "Radio Nikkei Sho",
       "date": "Classic Year Early Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Fukushima"
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2122
+      ]
     },
     {
-      "id": 2123,
+      "id": 200099,
+      "program_id": 99,
+      "turn": 37,
       "name": "Tanabata Sho",
       "date": "Classic Year Early Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Fukushima"
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2123
+      ]
     },
     {
-      "id": 2124,
+      "id": 200127,
+      "program_id": 127,
+      "turn": 37,
+      "name": "Marine Stakes",
+      "date": "Classic Year Early Jul",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2119
+      ]
+    },
+    {
+      "id": 201064,
+      "program_id": 1064,
+      "turn": 37,
+      "name": "Meitetsu Hai",
+      "date": "Classic Year Early Jul",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2120
+      ]
+    },
+    {
+      "id": 200126,
+      "program_id": 126,
+      "turn": 37,
       "name": "Tomoe Sho",
       "date": "Classic Year Early Jul",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hakodate"
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2124
+      ]
     },
     {
-      "id": 2125,
+      "id": 200101,
+      "program_id": 101,
+      "turn": 38,
       "name": "Chukyo Kinen",
       "date": "Classic Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2125
+      ]
     },
     {
-      "id": 2126,
-      "name": "Fukushima TV Open",
-      "date": "Classic Year Late Jul",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2127,
+      "id": 200102,
+      "program_id": 102,
+      "turn": 38,
       "name": "Ibis Summer Dash",
       "date": "Classic Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2127
+      ]
     },
     {
-      "id": 2128,
+      "id": 200103,
+      "program_id": 103,
+      "turn": 38,
       "name": "Queen Stakes",
       "date": "Classic Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2128
+      ]
     },
     {
-      "id": 2129,
-      "name": "Aso Stakes",
-      "date": "Classic Year Early Aug",
+      "id": 200129,
+      "program_id": 129,
+      "turn": 38,
+      "name": "Fukushima TV Open",
+      "date": "Classic Year Late Jul",
       "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Kokura"
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2126
+      ]
     },
     {
-      "id": 2130,
+      "id": 200106,
+      "program_id": 106,
+      "turn": 39,
       "name": "Elm Stakes",
       "date": "Classic Year Early Aug",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2130
+      ]
     },
     {
-      "id": 2131,
-      "name": "Kanetsu Stakes",
-      "date": "Classic Year Early Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2132,
+      "id": 200104,
+      "program_id": 104,
+      "turn": 39,
       "name": "Kokura Kinen",
       "date": "Classic Year Early Aug",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kokura"
+      "venue": "Kokura",
+      "legacy_ids": [
+        2132
+      ]
     },
     {
-      "id": 2133,
+      "id": 200191,
+      "program_id": 191,
+      "turn": 39,
       "name": "Leopard Stakes",
       "date": "Classic Year Early Aug",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2133
+      ]
     },
     {
-      "id": 2134,
-      "name": "Sapporo Nikkei Open",
-      "date": "Classic Year Early Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Sapporo"
-    },
-    {
-      "id": 2135,
+      "id": 200105,
+      "program_id": 105,
+      "turn": 39,
       "name": "Sekiya Kinen",
       "date": "Classic Year Early Aug",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2135
+      ]
     },
     {
-      "id": 2136,
+      "id": 200132,
+      "program_id": 132,
+      "turn": 39,
+      "name": "Aso Stakes",
+      "date": "Classic Year Early Aug",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2129
+      ]
+    },
+    {
+      "id": 201061,
+      "program_id": 1061,
+      "turn": 39,
+      "name": "Kanetsu Stakes",
+      "date": "Classic Year Early Aug",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2131
+      ]
+    },
+    {
+      "id": 200130,
+      "program_id": 130,
+      "turn": 39,
+      "name": "Sapporo Nikkei Open",
+      "date": "Classic Year Early Aug",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2134
+      ]
+    },
+    {
+      "id": 200131,
+      "program_id": 131,
+      "turn": 39,
       "name": "UHB Sho",
       "date": "Classic Year Early Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2136
+      ]
     },
     {
-      "id": 2137,
-      "name": "BSN Sho",
-      "date": "Classic Year Late Aug",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2138,
-      "name": "Keeneland Cup",
-      "date": "Classic Year Late Aug",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Sapporo"
-    },
-    {
-      "id": 2139,
-      "name": "Kitakyushu Kinen",
-      "date": "Classic Year Late Aug",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kokura"
-    },
-    {
-      "id": 2140,
-      "name": "Kokura Nikkei Open",
-      "date": "Classic Year Late Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kokura"
-    },
-    {
-      "id": 2141,
-      "name": "NST Sho",
-      "date": "Classic Year Late Aug",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2142,
+      "id": 200082,
+      "program_id": 82,
+      "turn": 40,
       "name": "Sapporo Kinen",
       "date": "Classic Year Late Aug",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2142
+      ]
     },
     {
-      "id": 2143,
+      "id": 200108,
+      "program_id": 108,
+      "turn": 40,
+      "name": "Keeneland Cup",
+      "date": "Classic Year Late Aug",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2138
+      ]
+    },
+    {
+      "id": 200107,
+      "program_id": 107,
+      "turn": 40,
+      "name": "Kitakyushu Kinen",
+      "date": "Classic Year Late Aug",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2139
+      ]
+    },
+    {
+      "id": 200134,
+      "program_id": 134,
+      "turn": 40,
+      "name": "BSN Sho",
+      "date": "Classic Year Late Aug",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2137
+      ]
+    },
+    {
+      "id": 200135,
+      "program_id": 135,
+      "turn": 40,
+      "name": "Kokura Nikkei Open",
+      "date": "Classic Year Late Aug",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2140
+      ]
+    },
+    {
+      "id": 200133,
+      "program_id": 133,
+      "turn": 40,
+      "name": "NST Sho",
+      "date": "Classic Year Late Aug",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2141
+      ]
+    },
+    {
+      "id": 200136,
+      "program_id": 136,
+      "turn": 40,
       "name": "Toki Stakes",
       "date": "Classic Year Late Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2143
+      ]
     },
     {
-      "id": 2144,
+      "id": 200083,
+      "program_id": 83,
+      "turn": 41,
       "name": "Centaur Stakes",
       "date": "Classic Year Early Sep",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2144
+      ]
     },
     {
-      "id": 2145,
-      "name": "Enif Stakes",
-      "date": "Classic Year Early Sep",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2146,
-      "name": "Keisei Hai Autumn Handicap",
-      "date": "Classic Year Early Sep",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2147,
-      "name": "Niigata Kinen",
-      "date": "Classic Year Early Sep",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2148,
-      "name": "Prix Niel (Don't Choose This)",
-      "date": "Classic Year Early Sep",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Longchamp"
-    },
-    {
-      "id": 2149,
-      "name": "Radio Nippon Sho",
-      "date": "Classic Year Early Sep",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2150,
+      "id": 200176,
+      "program_id": 176,
+      "turn": 41,
       "name": "Rose Stakes",
       "date": "Classic Year Early Sep",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2150
+      ]
     },
     {
-      "id": 2151,
+      "id": 200110,
+      "program_id": 110,
+      "turn": 41,
+      "name": "Keisei Hai Autumn Handicap",
+      "date": "Classic Year Early Sep",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2146
+      ]
+    },
+    {
+      "id": 200109,
+      "program_id": 109,
+      "turn": 41,
+      "name": "Niigata Kinen",
+      "date": "Classic Year Early Sep",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2147
+      ]
+    },
+    {
+      "id": 200192,
+      "program_id": 192,
+      "turn": 41,
       "name": "Shion Stakes",
       "date": "Classic Year Early Sep",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2151
+      ]
     },
     {
-      "id": 2152,
+      "id": 200138,
+      "program_id": 138,
+      "turn": 41,
+      "name": "Enif Stakes",
+      "date": "Classic Year Early Sep",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2145
+      ]
+    },
+    {
+      "id": 200139,
+      "program_id": 139,
+      "turn": 41,
+      "name": "Radio Nippon Sho",
+      "date": "Classic Year Early Sep",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2149
+      ]
+    },
+    {
+      "id": 200137,
+      "program_id": 137,
+      "turn": 41,
       "name": "Tancho Stakes",
       "date": "Classic Year Early Sep",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2152
+      ]
     },
     {
-      "id": 2153,
+      "id": 200075,
+      "program_id": 75,
+      "turn": 42,
+      "name": "Sprinters Stakes",
+      "date": "Classic Year Late Sep",
+      "type": "G1",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2158
+      ]
+    },
+    {
+      "id": 200085,
+      "program_id": 85,
+      "turn": 42,
       "name": "All Comers",
       "date": "Classic Year Late Sep",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2153
+      ]
     },
     {
-      "id": 2154,
+      "id": 200084,
+      "program_id": 84,
+      "turn": 42,
       "name": "Kobe Shimbun Hai",
       "date": "Classic Year Late Sep",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2154
+      ]
     },
     {
-      "id": 2155,
-      "name": "Nagatsuki Stakes",
-      "date": "Classic Year Late Sep",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2156,
-      "name": "Port Island Stakes",
-      "date": "Classic Year Late Sep",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2157,
-      "name": "Sirius Stakes",
-      "date": "Classic Year Late Sep",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2158,
-      "name": "Sprinters Stakes",
-      "date": "Classic Year Late Sep",
-      "type": "G1",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2159,
+      "id": 200177,
+      "program_id": 177,
+      "turn": 42,
       "name": "St. Lite Kinen",
       "date": "Classic Year Late Sep",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2159
+      ]
     },
     {
-      "id": 2160,
+      "id": 200111,
+      "program_id": 111,
+      "turn": 42,
+      "name": "Sirius Stakes",
+      "date": "Classic Year Late Sep",
+      "type": "G3",
+      "terrain": "Dirt",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2157
+      ]
+    },
+    {
+      "id": 201062,
+      "program_id": 1062,
+      "turn": 42,
+      "name": "Nagatsuki Stakes",
+      "date": "Classic Year Late Sep",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2155
+      ]
+    },
+    {
+      "id": 200140,
+      "program_id": 140,
+      "turn": 42,
+      "name": "Port Island Stakes",
+      "date": "Classic Year Late Sep",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2156
+      ]
+    },
+    {
+      "id": 200088,
+      "program_id": 88,
+      "turn": 43,
       "name": "Fuchu Umamusume Stakes",
       "date": "Classic Year Early Oct",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2160
+      ]
     },
     {
-      "id": 2161,
-      "name": "Green Channel Cup",
-      "date": "Classic Year Early Oct",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2162,
+      "id": 200087,
+      "program_id": 87,
+      "turn": 43,
       "name": "Kyoto Daishoten",
       "date": "Classic Year Early Oct",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2162
+      ]
     },
     {
-      "id": 2163,
+      "id": 200086,
+      "program_id": 86,
+      "turn": 43,
       "name": "Mainichi Okan",
       "date": "Classic Year Early Oct",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2163
+      ]
     },
     {
-      "id": 2164,
+      "id": 200142,
+      "program_id": 142,
+      "turn": 43,
+      "name": "Green Channel Cup",
+      "date": "Classic Year Early Oct",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2161
+      ]
+    },
+    {
+      "id": 200143,
+      "program_id": 143,
+      "turn": 43,
       "name": "October Stakes",
       "date": "Classic Year Early Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2164
+      ]
     },
     {
-      "id": 2165,
+      "id": 200141,
+      "program_id": 141,
+      "turn": 43,
       "name": "Opal Stakes",
       "date": "Classic Year Early Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2165
+      ]
     },
     {
-      "id": 2166,
+      "id": 200144,
+      "program_id": 144,
+      "turn": 43,
       "name": "Shinetsu Stakes",
       "date": "Classic Year Early Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2166
+      ]
     },
     {
-      "id": 2167,
+      "id": 201063,
+      "program_id": 1063,
+      "turn": 43,
       "name": "Uzumasa Stakes",
       "date": "Classic Year Early Oct",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2167
+      ]
     },
     {
-      "id": 2168,
-      "name": "Brazil Cup",
-      "date": "Classic Year Late Oct",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2169,
-      "name": "Cassiopeia Stakes",
-      "date": "Classic Year Late Oct",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2170,
-      "name": "Fuji Stakes",
-      "date": "Classic Year Late Oct",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2171,
+      "id": 200168,
+      "program_id": 168,
+      "turn": 44,
       "name": "Kikuka Sho",
       "date": "Classic Year Late Oct",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2171
+      ]
     },
     {
-      "id": 2172,
-      "name": "Lumiere Autumn Dash",
-      "date": "Classic Year Late Oct",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2173,
-      "name": "Muromachi Stakes",
-      "date": "Classic Year Late Oct",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2174,
+      "id": 200167,
+      "program_id": 167,
+      "turn": 44,
       "name": "Shuka Sho",
       "date": "Classic Year Late Oct",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2174
+      ]
     },
     {
-      "id": 2175,
-      "name": "Swan Stakes",
-      "date": "Classic Year Late Oct",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2176,
+      "id": 200076,
+      "program_id": 76,
+      "turn": 44,
       "name": "Tenno Sho (Autumn)",
       "date": "Classic Year Late Oct",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2176
+      ]
     },
     {
-      "id": 2177,
-      "name": "Copa Republica Argentina",
-      "date": "Classic Year Early Nov",
+      "id": 200112,
+      "program_id": 112,
+      "turn": 44,
+      "name": "Fuji Stakes",
+      "date": "Classic Year Late Oct",
       "type": "G2",
       "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Tokyo"
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2170
+      ]
     },
     {
-      "id": 2178,
-      "name": "Fukushima Kinen",
-      "date": "Classic Year Early Nov",
-      "type": "G3",
+      "id": 200089,
+      "program_id": 89,
+      "turn": 44,
+      "name": "Swan Stakes",
+      "date": "Classic Year Late Oct",
+      "type": "G2",
       "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Fukushima"
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2175
+      ]
     },
     {
-      "id": 2179,
+      "id": 200146,
+      "program_id": 146,
+      "turn": 44,
+      "name": "Brazil Cup",
+      "date": "Classic Year Late Oct",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2168
+      ]
+    },
+    {
+      "id": 200147,
+      "program_id": 147,
+      "turn": 44,
+      "name": "Cassiopeia Stakes",
+      "date": "Classic Year Late Oct",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2169
+      ]
+    },
+    {
+      "id": 200148,
+      "program_id": 148,
+      "turn": 44,
+      "name": "Lumiere Autumn Dash",
+      "date": "Classic Year Late Oct",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2172
+      ]
+    },
+    {
+      "id": 200145,
+      "program_id": 145,
+      "turn": 44,
+      "name": "Muromachi Stakes",
+      "date": "Classic Year Late Oct",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2173
+      ]
+    },
+    {
+      "id": 201026,
+      "program_id": 1026,
+      "turn": 45,
       "name": "JBC Classic",
       "date": "Classic Year Early Nov",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2179
+      ]
     },
     {
-      "id": 2180,
+      "id": 201024,
+      "program_id": 1024,
+      "turn": 45,
       "name": "JBC Ladies’ Classic",
       "date": "Classic Year Early Nov",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2180
+      ]
     },
     {
-      "id": 2181,
+      "id": 201025,
+      "program_id": 1025,
+      "turn": 45,
       "name": "JBC Sprint",
       "date": "Classic Year Early Nov",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2181
+      ]
     },
     {
-      "id": 2182,
-      "name": "Miyako Stakes",
-      "date": "Classic Year Early Nov",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2183,
-      "name": "Musashino Stakes",
-      "date": "Classic Year Early Nov",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2184,
-      "name": "Oro Cup",
-      "date": "Classic Year Early Nov",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2185,
+      "id": 200077,
+      "program_id": 77,
+      "turn": 45,
       "name": "Queen Elizabeth II Cup",
       "date": "Classic Year Early Nov",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2185
+      ]
     },
     {
-      "id": 2186,
-      "name": "Andromeda Stakes",
-      "date": "Classic Year Late Nov",
-      "type": "OP",
+      "id": 200090,
+      "program_id": 90,
+      "turn": 45,
+      "name": "Copa Republica Argentina",
+      "date": "Classic Year Early Nov",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2177
+      ]
+    },
+    {
+      "id": 200115,
+      "program_id": 115,
+      "turn": 45,
+      "name": "Fukushima Kinen",
+      "date": "Classic Year Early Nov",
+      "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2178
+      ]
     },
     {
-      "id": 2187,
-      "name": "Autumn Leaf Stakes",
-      "date": "Classic Year Late Nov",
-      "type": "OP",
+      "id": 200113,
+      "program_id": 113,
+      "turn": 45,
+      "name": "Miyako Stakes",
+      "date": "Classic Year Early Nov",
+      "type": "G3",
       "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Kyoto"
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2182
+      ]
     },
     {
-      "id": 2188,
-      "name": "Capital Stakes",
-      "date": "Classic Year Late Nov",
+      "id": 200114,
+      "program_id": 114,
+      "turn": 45,
+      "name": "Musashino Stakes",
+      "date": "Classic Year Early Nov",
+      "type": "G3",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2183
+      ]
+    },
+    {
+      "id": 200149,
+      "program_id": 149,
+      "turn": 45,
+      "name": "Oro Cup",
+      "date": "Classic Year Early Nov",
       "type": "OP",
       "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2184
+      ]
     },
     {
-      "id": 2189,
-      "name": "Fukushima Minyu Cup",
-      "date": "Classic Year Late Nov",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2190,
+      "id": 200079,
+      "program_id": 79,
+      "turn": 46,
       "name": "Japan Cup",
       "date": "Classic Year Late Nov",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2190
+      ]
     },
     {
-      "id": 2191,
-      "name": "Keihan Hai",
-      "date": "Classic Year Late Nov",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2192,
+      "id": 200078,
+      "program_id": 78,
+      "turn": 46,
       "name": "Mile Championship",
       "date": "Classic Year Late Nov",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2192
+      ]
     },
     {
-      "id": 2193,
+      "id": 200116,
+      "program_id": 116,
+      "turn": 46,
+      "name": "Keihan Hai",
+      "date": "Classic Year Late Nov",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2191
+      ]
+    },
+    {
+      "id": 200150,
+      "program_id": 150,
+      "turn": 46,
+      "name": "Andromeda Stakes",
+      "date": "Classic Year Late Nov",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2186
+      ]
+    },
+    {
+      "id": 200154,
+      "program_id": 154,
+      "turn": 46,
+      "name": "Autumn Leaf Stakes",
+      "date": "Classic Year Late Nov",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2187
+      ]
+    },
+    {
+      "id": 200153,
+      "program_id": 153,
+      "turn": 46,
+      "name": "Capital Stakes",
+      "date": "Classic Year Late Nov",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2188
+      ]
+    },
+    {
+      "id": 200152,
+      "program_id": 152,
+      "turn": 46,
+      "name": "Fukushima Minyu Cup",
+      "date": "Classic Year Late Nov",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2189
+      ]
+    },
+    {
+      "id": 200151,
+      "program_id": 151,
+      "turn": 46,
       "name": "Shimotsuki Stakes",
       "date": "Classic Year Late Nov",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2193
+      ]
     },
     {
-      "id": 2194,
-      "name": "Capella Stakes",
-      "date": "Classic Year Early Dec",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2195,
-      "name": "Challenge Cup",
-      "date": "Classic Year Early Dec",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2196,
+      "id": 200080,
+      "program_id": 80,
+      "turn": 47,
       "name": "Champions Cup",
       "date": "Classic Year Early Dec",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2196
+      ]
     },
     {
-      "id": 2197,
-      "name": "Chunichi Shimbun Hai",
-      "date": "Classic Year Early Dec",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2198,
-      "name": "December Stakes",
-      "date": "Classic Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2199,
-      "name": "Lapis Lazuli Stakes",
-      "date": "Classic Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2200,
-      "name": "Rigel Stakes",
-      "date": "Classic Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2201,
-      "name": "Shiwasu Stakes",
-      "date": "Classic Year Early Dec",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2202,
+      "id": 200091,
+      "program_id": 91,
+      "turn": 47,
       "name": "Stayers Stakes",
       "date": "Classic Year Early Dec",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2202
+      ]
     },
     {
-      "id": 2203,
-      "name": "Tanzanite Stakes",
+      "id": 200119,
+      "program_id": 119,
+      "turn": 47,
+      "name": "Capella Stakes",
       "date": "Classic Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
+      "type": "G3",
+      "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2194
+      ]
     },
     {
-      "id": 2204,
+      "id": 200117,
+      "program_id": 117,
+      "turn": 47,
+      "name": "Challenge Cup",
+      "date": "Classic Year Early Dec",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2195
+      ]
+    },
+    {
+      "id": 200118,
+      "program_id": 118,
+      "turn": 47,
+      "name": "Chunichi Shimbun Hai",
+      "date": "Classic Year Early Dec",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2197
+      ]
+    },
+    {
+      "id": 200120,
+      "program_id": 120,
+      "turn": 47,
       "name": "Turquoise Stakes",
       "date": "Classic Year Early Dec",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2204
+      ]
     },
     {
-      "id": 2205,
+      "id": 200159,
+      "program_id": 159,
+      "turn": 47,
+      "name": "December Stakes",
+      "date": "Classic Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2198
+      ]
+    },
+    {
+      "id": 200155,
+      "program_id": 155,
+      "turn": 47,
+      "name": "Lapis Lazuli Stakes",
+      "date": "Classic Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2199
+      ]
+    },
+    {
+      "id": 200157,
+      "program_id": 157,
+      "turn": 47,
+      "name": "Rigel Stakes",
+      "date": "Classic Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2200
+      ]
+    },
+    {
+      "id": 200156,
+      "program_id": 156,
+      "turn": 47,
+      "name": "Shiwasu Stakes",
+      "date": "Classic Year Early Dec",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2201
+      ]
+    },
+    {
+      "id": 200158,
+      "program_id": 158,
+      "turn": 47,
+      "name": "Tanzanite Stakes",
+      "date": "Classic Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2203
+      ]
+    },
+    {
+      "id": 200081,
+      "program_id": 81,
+      "turn": 48,
       "name": "Arima Kinen",
       "date": "Classic Year Late Dec",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2205
+      ]
     },
     {
-      "id": 2206,
-      "name": "Betelgeuse Stakes",
-      "date": "Classic Year Late Dec",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2207,
-      "name": "Galaxy Stakes",
-      "date": "Classic Year Late Dec",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2208,
-      "name": "Hanshin Cup",
-      "date": "Classic Year Late Dec",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2209,
+      "id": 201027,
+      "program_id": 1027,
+      "turn": 48,
       "name": "Tokyo Daishoten",
       "date": "Classic Year Late Dec",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2209
+      ]
     },
     {
-      "id": 2210,
-      "name": "Aichi Hai",
-      "date": "Senior Year Early Jan",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2211,
-      "name": "Carbuncle Stakes",
-      "date": "Senior Year Early Jan",
-      "type": "OP",
+      "id": 200092,
+      "program_id": 92,
+      "turn": 48,
+      "name": "Hanshin Cup",
+      "date": "Classic Year Late Dec",
+      "type": "G2",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2208
+      ]
     },
     {
-      "id": 2212,
-      "name": "January Stakes",
-      "date": "Senior Year Early Jan",
+      "id": 200161,
+      "program_id": 161,
+      "turn": 48,
+      "name": "Betelgeuse Stakes",
+      "date": "Classic Year Late Dec",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2206
+      ]
+    },
+    {
+      "id": 200160,
+      "program_id": 160,
+      "turn": 48,
+      "name": "Galaxy Stakes",
+      "date": "Classic Year Late Dec",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2207
+      ]
     },
     {
-      "id": 2213,
-      "name": "Kyoto Kimpai",
-      "date": "Senior Year Early Jan",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2214,
-      "name": "Manyo Stakes",
-      "date": "Senior Year Early Jan",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2215,
-      "name": "Nakayama Kimpai",
-      "date": "Senior Year Early Jan",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2216,
-      "name": "New Year Stakes",
-      "date": "Senior Year Early Jan",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2217,
+      "id": 300006,
+      "program_id": 6,
+      "turn": 49,
       "name": "Nikkei Shinshun Hai",
       "date": "Senior Year Early Jan",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2217
+      ]
     },
     {
-      "id": 2218,
+      "id": 300020,
+      "program_id": 20,
+      "turn": 49,
+      "name": "Aichi Hai",
+      "date": "Senior Year Early Jan",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2210
+      ]
+    },
+    {
+      "id": 300018,
+      "program_id": 18,
+      "turn": 49,
+      "name": "Kyoto Kimpai",
+      "date": "Senior Year Early Jan",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2213
+      ]
+    },
+    {
+      "id": 300019,
+      "program_id": 19,
+      "turn": 49,
+      "name": "Nakayama Kimpai",
+      "date": "Senior Year Early Jan",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2215
+      ]
+    },
+    {
+      "id": 300042,
+      "program_id": 42,
+      "turn": 49,
+      "name": "Carbuncle Stakes",
+      "date": "Senior Year Early Jan",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2211
+      ]
+    },
+    {
+      "id": 300039,
+      "program_id": 39,
+      "turn": 49,
+      "name": "January Stakes",
+      "date": "Senior Year Early Jan",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2212
+      ]
+    },
+    {
+      "id": 300036,
+      "program_id": 36,
+      "turn": 49,
+      "name": "Manyo Stakes",
+      "date": "Senior Year Early Jan",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2214
+      ]
+    },
+    {
+      "id": 300040,
+      "program_id": 40,
+      "turn": 49,
+      "name": "New Year Stakes",
+      "date": "Senior Year Early Jan",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2216
+      ]
+    },
+    {
+      "id": 300038,
+      "program_id": 38,
+      "turn": 49,
       "name": "Pollux Stakes",
       "date": "Senior Year Early Jan",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2218
+      ]
     },
     {
-      "id": 2219,
+      "id": 300037,
+      "program_id": 37,
+      "turn": 49,
       "name": "Yodo Tankyori Stakes",
       "date": "Senior Year Early Jan",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2219
+      ]
     },
     {
-      "id": 2220,
+      "id": 300008,
+      "program_id": 8,
+      "turn": 50,
       "name": "American JCC",
       "date": "Senior Year Late Jan",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2220
+      ]
     },
     {
-      "id": 2221,
-      "name": "Negishi Stakes",
-      "date": "Senior Year Late Jan",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2222,
-      "name": "Shirafuji Stakes",
-      "date": "Senior Year Late Jan",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2223,
-      "name": "Silk Road Stakes",
-      "date": "Senior Year Late Jan",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2224,
-      "name": "Subaru Stakes",
-      "date": "Senior Year Late Jan",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2225,
+      "id": 300007,
+      "program_id": 7,
+      "turn": 50,
       "name": "Tokai Stakes",
       "date": "Senior Year Late Jan",
       "type": "G2",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2225
+      ]
     },
     {
-      "id": 2226,
-      "name": "Aldebaran Stakes",
-      "date": "Senior Year Early Feb",
+      "id": 300022,
+      "program_id": 22,
+      "turn": 50,
+      "name": "Negishi Stakes",
+      "date": "Senior Year Late Jan",
+      "type": "G3",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2221
+      ]
+    },
+    {
+      "id": 300021,
+      "program_id": 21,
+      "turn": 50,
+      "name": "Silk Road Stakes",
+      "date": "Senior Year Late Jan",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2223
+      ]
+    },
+    {
+      "id": 300043,
+      "program_id": 43,
+      "turn": 50,
+      "name": "Shirafuji Stakes",
+      "date": "Senior Year Late Jan",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2222
+      ]
+    },
+    {
+      "id": 300041,
+      "program_id": 41,
+      "turn": 50,
+      "name": "Subaru Stakes",
+      "date": "Senior Year Late Jan",
       "type": "OP",
       "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Kyoto"
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2224
+      ]
     },
     {
-      "id": 2227,
+      "id": 300009,
+      "program_id": 9,
+      "turn": 51,
       "name": "Kyoto Kinen",
       "date": "Senior Year Early Feb",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2227
+      ]
     },
     {
-      "id": 2228,
-      "name": "Rakuyo Stakes",
-      "date": "Senior Year Early Feb",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2229,
+      "id": 300023,
+      "program_id": 23,
+      "turn": 51,
       "name": "Tokyo Shimbun Hai",
       "date": "Senior Year Early Feb",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2229
+      ]
     },
     {
-      "id": 2230,
+      "id": 300046,
+      "program_id": 46,
+      "turn": 51,
+      "name": "Aldebaran Stakes",
+      "date": "Senior Year Early Feb",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Medium",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2226
+      ]
+    },
+    {
+      "id": 300045,
+      "program_id": 45,
+      "turn": 51,
+      "name": "Rakuyo Stakes",
+      "date": "Senior Year Early Feb",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2228
+      ]
+    },
+    {
+      "id": 300047,
+      "program_id": 47,
+      "turn": 51,
       "name": "Valentine Stakes",
       "date": "Senior Year Early Feb",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2230
+      ]
     },
     {
-      "id": 2231,
+      "id": 300044,
+      "program_id": 44,
+      "turn": 51,
       "name": "Yamato Stakes",
       "date": "Senior Year Early Feb",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2231
+      ]
     },
     {
-      "id": 2232,
-      "name": "Diamond Stakes",
-      "date": "Senior Year Late Feb",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2233,
+      "id": 300001,
+      "program_id": 1,
+      "turn": 52,
       "name": "February Stakes",
       "date": "Senior Year Late Feb",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2233
+      ]
     },
     {
-      "id": 2234,
-      "name": "Hankyu Hai",
-      "date": "Senior Year Late Feb",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2235,
-      "name": "Kitakyushu Tankyori Stakes",
-      "date": "Senior Year Late Feb",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kokura"
-    },
-    {
-      "id": 2236,
-      "name": "Kokura Daishoten",
-      "date": "Senior Year Late Feb",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kokura"
-    },
-    {
-      "id": 2237,
-      "name": "Kyoto Umamusume Stakes",
-      "date": "Senior Year Late Feb",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2238,
+      "id": 300010,
+      "program_id": 10,
+      "turn": 52,
       "name": "Nakayama Kinen",
       "date": "Senior Year Late Feb",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2238
+      ]
     },
     {
-      "id": 2239,
+      "id": 300025,
+      "program_id": 25,
+      "turn": 52,
+      "name": "Diamond Stakes",
+      "date": "Senior Year Late Feb",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2232
+      ]
+    },
+    {
+      "id": 300027,
+      "program_id": 27,
+      "turn": 52,
+      "name": "Hankyu Hai",
+      "date": "Senior Year Late Feb",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2234
+      ]
+    },
+    {
+      "id": 300026,
+      "program_id": 26,
+      "turn": 52,
+      "name": "Kokura Daishoten",
+      "date": "Senior Year Late Feb",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2236
+      ]
+    },
+    {
+      "id": 300024,
+      "program_id": 24,
+      "turn": 52,
+      "name": "Kyoto Umamusume Stakes",
+      "date": "Senior Year Late Feb",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2237
+      ]
+    },
+    {
+      "id": 301057,
+      "program_id": 1057,
+      "turn": 52,
+      "name": "Kitakyushu Tankyori Stakes",
+      "date": "Senior Year Late Feb",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2235
+      ]
+    },
+    {
+      "id": 300048,
+      "program_id": 48,
+      "turn": 52,
       "name": "Sobu Stakes",
       "date": "Senior Year Late Feb",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2239
+      ]
     },
     {
-      "id": 2240,
+      "id": 300011,
+      "program_id": 11,
+      "turn": 53,
       "name": "Kinko Sho",
       "date": "Senior Year Early Mar",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2240
+      ]
     },
     {
-      "id": 2241,
-      "name": "Kochi Stakes",
-      "date": "Senior Year Early Mar",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2242,
+      "id": 300029,
+      "program_id": 29,
+      "turn": 53,
       "name": "Nakayama Umamusume Stakes",
       "date": "Senior Year Early Mar",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2242
+      ]
     },
     {
-      "id": 2243,
-      "name": "Nigawa Stakes",
-      "date": "Senior Year Early Mar",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2244,
+      "id": 300028,
+      "program_id": 28,
+      "turn": 53,
       "name": "Ocean Stakes",
       "date": "Senior Year Early Mar",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2244
+      ]
     },
     {
-      "id": 2245,
+      "id": 300052,
+      "program_id": 52,
+      "turn": 53,
+      "name": "Kochi Stakes",
+      "date": "Senior Year Early Mar",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2241
+      ]
+    },
+    {
+      "id": 300051,
+      "program_id": 51,
+      "turn": 53,
+      "name": "Nigawa Stakes",
+      "date": "Senior Year Early Mar",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2243
+      ]
+    },
+    {
+      "id": 300049,
+      "program_id": 49,
+      "turn": 53,
       "name": "Osakajo Stakes",
       "date": "Senior Year Early Mar",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2245
+      ]
     },
     {
-      "id": 2246,
+      "id": 300050,
+      "program_id": 50,
+      "turn": 53,
       "name": "Polaris Stakes",
       "date": "Senior Year Early Mar",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2246
+      ]
     },
     {
-      "id": 2247,
-      "name": "Chiba Stakes",
-      "date": "Senior Year Late Mar",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2248,
-      "name": "Hanshin Daishoten",
-      "date": "Senior Year Late Mar",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2249,
-      "name": "March Stakes",
-      "date": "Senior Year Late Mar",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2250,
-      "name": "Nikkei Sho",
-      "date": "Senior Year Late Mar",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2251,
+      "id": 300003,
+      "program_id": 3,
+      "turn": 54,
       "name": "Osaka Hai",
       "date": "Senior Year Late Mar",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2251
+      ]
     },
     {
-      "id": 2252,
-      "name": "Rokko Stakes",
-      "date": "Senior Year Late Mar",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2253,
+      "id": 300002,
+      "program_id": 2,
+      "turn": 54,
       "name": "Takamatsunomiya Kinen",
       "date": "Senior Year Late Mar",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2253
+      ]
     },
     {
-      "id": 2254,
-      "name": "Antares Stakes",
-      "date": "Senior Year Early Apr",
+      "id": 300012,
+      "program_id": 12,
+      "turn": 54,
+      "name": "Hanshin Daishoten",
+      "date": "Senior Year Late Mar",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2248
+      ]
+    },
+    {
+      "id": 300013,
+      "program_id": 13,
+      "turn": 54,
+      "name": "Nikkei Sho",
+      "date": "Senior Year Late Mar",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2250
+      ]
+    },
+    {
+      "id": 300030,
+      "program_id": 30,
+      "turn": 54,
+      "name": "March Stakes",
+      "date": "Senior Year Late Mar",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2249
+      ]
     },
     {
-      "id": 2255,
-      "name": "Azumakofuji Stakes",
-      "date": "Senior Year Early Apr",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2256,
-      "name": "Coral Stakes",
-      "date": "Senior Year Early Apr",
+      "id": 300053,
+      "program_id": 53,
+      "turn": 54,
+      "name": "Chiba Stakes",
+      "date": "Senior Year Late Mar",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2247
+      ]
     },
     {
-      "id": 2257,
-      "name": "Fukushima Mimpo Hai",
-      "date": "Senior Year Early Apr",
+      "id": 300055,
+      "program_id": 55,
+      "turn": 54,
+      "name": "Rokko Stakes",
+      "date": "Senior Year Late Mar",
       "type": "OP",
       "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Fukushima"
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2252
+      ]
     },
     {
-      "id": 2258,
+      "id": 300014,
+      "program_id": 14,
+      "turn": 55,
       "name": "Hanshin Umamusume Stakes",
       "date": "Senior Year Early Apr",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2258
+      ]
     },
     {
-      "id": 2259,
-      "name": "Keiyo Stakes",
+      "id": 300032,
+      "program_id": 32,
+      "turn": 55,
+      "name": "Antares Stakes",
       "date": "Senior Year Early Apr",
-      "type": "OP",
+      "type": "G3",
       "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Nakayama"
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2254
+      ]
     },
     {
-      "id": 2260,
+      "id": 300031,
+      "program_id": 31,
+      "turn": 55,
       "name": "Lord Derby Challenge Trophy",
       "date": "Senior Year Early Apr",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2260
+      ]
     },
     {
-      "id": 2261,
+      "id": 301058,
+      "program_id": 1058,
+      "turn": 55,
+      "name": "Azumakofuji Stakes",
+      "date": "Senior Year Early Apr",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2255
+      ]
+    },
+    {
+      "id": 300056,
+      "program_id": 56,
+      "turn": 55,
+      "name": "Coral Stakes",
+      "date": "Senior Year Early Apr",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2256
+      ]
+    },
+    {
+      "id": 300060,
+      "program_id": 60,
+      "turn": 55,
+      "name": "Fukushima Mimpo Hai",
+      "date": "Senior Year Early Apr",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2257
+      ]
+    },
+    {
+      "id": 300058,
+      "program_id": 58,
+      "turn": 55,
+      "name": "Keiyo Stakes",
+      "date": "Senior Year Early Apr",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2259
+      ]
+    },
+    {
+      "id": 300059,
+      "program_id": 59,
+      "turn": 55,
       "name": "Shunrai Stakes",
       "date": "Senior Year Early Apr",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2261
+      ]
     },
     {
-      "id": 2262,
-      "name": "Fukushima Umamusume Stakes",
-      "date": "Senior Year Late Apr",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2263,
-      "name": "Milers Cup",
-      "date": "Senior Year Late Apr",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2264,
-      "name": "Oasis Stakes",
-      "date": "Senior Year Late Apr",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2265,
+      "id": 300004,
+      "program_id": 4,
+      "turn": 56,
       "name": "Tenno Sho (Spring)",
       "date": "Senior Year Late Apr",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2265
+      ]
     },
     {
-      "id": 2266,
+      "id": 300015,
+      "program_id": 15,
+      "turn": 56,
+      "name": "Milers Cup",
+      "date": "Senior Year Late Apr",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2263
+      ]
+    },
+    {
+      "id": 300033,
+      "program_id": 33,
+      "turn": 56,
+      "name": "Fukushima Umamusume Stakes",
+      "date": "Senior Year Late Apr",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2262
+      ]
+    },
+    {
+      "id": 300061,
+      "program_id": 61,
+      "turn": 56,
+      "name": "Oasis Stakes",
+      "date": "Senior Year Late Apr",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2264
+      ]
+    },
+    {
+      "id": 300062,
+      "program_id": 62,
+      "turn": 56,
       "name": "Tennozan Stakes",
       "date": "Senior Year Late Apr",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2266
+      ]
     },
     {
-      "id": 2267,
-      "name": "Brilliant Stakes",
-      "date": "Senior Year Early May",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2268,
-      "name": "Keio Hai Spring Cup",
-      "date": "Senior Year Early May",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2269,
-      "name": "Kurama Stakes",
-      "date": "Senior Year Early May",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2270,
-      "name": "Metropolitan Stakes",
-      "date": "Senior Year Early May",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2271,
-      "name": "Miyakooji Stakes",
-      "date": "Senior Year Early May",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2272,
-      "name": "Niigata Daishoten",
-      "date": "Senior Year Early May",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2273,
-      "name": "Ritto Stakes",
-      "date": "Senior Year Early May",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2274,
-      "name": "Tanigawadake Stakes",
-      "date": "Senior Year Early May",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2275,
+      "id": 300005,
+      "program_id": 5,
+      "turn": 57,
       "name": "Victoria Mile",
       "date": "Senior Year Early May",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2275
+      ]
     },
     {
-      "id": 2276,
-      "name": "Azuchijo Stakes",
-      "date": "Senior Year Late May",
-      "type": "OP",
+      "id": 300016,
+      "program_id": 16,
+      "turn": 57,
+      "name": "Keio Hai Spring Cup",
+      "date": "Senior Year Early May",
+      "type": "G2",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2268
+      ]
     },
     {
-      "id": 2277,
-      "name": "Heian Stakes",
-      "date": "Senior Year Late May",
+      "id": 300034,
+      "program_id": 34,
+      "turn": 57,
+      "name": "Niigata Daishoten",
+      "date": "Senior Year Early May",
       "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2272
+      ]
+    },
+    {
+      "id": 300066,
+      "program_id": 66,
+      "turn": 57,
+      "name": "Brilliant Stakes",
+      "date": "Senior Year Early May",
+      "type": "OP",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2267
+      ]
     },
     {
-      "id": 2278,
-      "name": "Idaten Stakes",
-      "date": "Senior Year Late May",
+      "id": 300065,
+      "program_id": 65,
+      "turn": 57,
+      "name": "Kurama Stakes",
+      "date": "Senior Year Early May",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2269
+      ]
     },
     {
-      "id": 2279,
-      "name": "Keyaki Stakes",
-      "date": "Senior Year Late May",
+      "id": 300064,
+      "program_id": 64,
+      "turn": 57,
+      "name": "Metropolitan Stakes",
+      "date": "Senior Year Early May",
       "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Tokyo"
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2270
+      ]
     },
     {
-      "id": 2280,
-      "name": "May Stakes",
-      "date": "Senior Year Late May",
+      "id": 300067,
+      "program_id": 67,
+      "turn": 57,
+      "name": "Miyakooji Stakes",
+      "date": "Senior Year Early May",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2271
+      ]
     },
     {
-      "id": 2281,
+      "id": 300068,
+      "program_id": 68,
+      "turn": 57,
+      "name": "Ritto Stakes",
+      "date": "Senior Year Early May",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2273
+      ]
+    },
+    {
+      "id": 300063,
+      "program_id": 63,
+      "turn": 57,
+      "name": "Tanigawadake Stakes",
+      "date": "Senior Year Early May",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2274
+      ]
+    },
+    {
+      "id": 300017,
+      "program_id": 17,
+      "turn": 58,
       "name": "Meguro Kinen",
       "date": "Senior Year Late May",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2281
+      ]
     },
     {
-      "id": 2282,
-      "name": "Epsom Cup",
-      "date": "Senior Year Early Jun",
+      "id": 300035,
+      "program_id": 35,
+      "turn": 58,
+      "name": "Heian Stakes",
+      "date": "Senior Year Late May",
       "type": "G3",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2283,
-      "name": "Mermaid Stakes",
-      "date": "Senior Year Early Jun",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2284,
-      "name": "Naruo Kinen",
-      "date": "Senior Year Early Jun",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2285,
-      "name": "Sleipnir Stakes",
-      "date": "Senior Year Early Jun",
-      "type": "OP",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2277
+      ]
     },
     {
-      "id": 2286,
-      "name": "Tempozan Stakes",
-      "date": "Senior Year Early Jun",
+      "id": 300072,
+      "program_id": 72,
+      "turn": 58,
+      "name": "Azuchijo Stakes",
+      "date": "Senior Year Late May",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2276
+      ]
+    },
+    {
+      "id": 300070,
+      "program_id": 70,
+      "turn": 58,
+      "name": "Idaten Stakes",
+      "date": "Senior Year Late May",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2278
+      ]
+    },
+    {
+      "id": 300071,
+      "program_id": 71,
+      "turn": 58,
+      "name": "Keyaki Stakes",
+      "date": "Senior Year Late May",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2279
+      ]
     },
     {
-      "id": 2287,
+      "id": 300069,
+      "program_id": 69,
+      "turn": 58,
+      "name": "May Stakes",
+      "date": "Senior Year Late May",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2280
+      ]
+    },
+    {
+      "id": 300073,
+      "program_id": 73,
+      "turn": 59,
       "name": "Yasuda Kinen",
       "date": "Senior Year Early Jun",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2287
+      ]
     },
     {
-      "id": 2288,
-      "name": "Akhalteke Stakes",
-      "date": "Senior Year Late Jun",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2289,
-      "name": "Hakodate Sprint Stakes",
-      "date": "Senior Year Late Jun",
+      "id": 300095,
+      "program_id": 95,
+      "turn": 59,
+      "name": "Epsom Cup",
+      "date": "Senior Year Early Jun",
       "type": "G3",
       "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Hakodate"
-    },
-    {
-      "id": 2290,
-      "name": "Onuma Stakes",
-      "date": "Senior Year Late Jun",
-      "type": "OP",
-      "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Hakodate"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2282
+      ]
     },
     {
-      "id": 2291,
-      "name": "Paradise Stakes",
-      "date": "Senior Year Late Jun",
-      "type": "OP",
+      "id": 300094,
+      "program_id": 94,
+      "turn": 59,
+      "name": "Mermaid Stakes",
+      "date": "Senior Year Early Jun",
+      "type": "G3",
       "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Tokyo"
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2283
+      ]
     },
     {
-      "id": 2292,
-      "name": "Sannomiya Stakes",
-      "date": "Senior Year Late Jun",
+      "id": 300093,
+      "program_id": 93,
+      "turn": 59,
+      "name": "Naruo Kinen",
+      "date": "Senior Year Early Jun",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2284
+      ]
+    },
+    {
+      "id": 301059,
+      "program_id": 1059,
+      "turn": 59,
+      "name": "Sleipnir Stakes",
+      "date": "Senior Year Early Jun",
       "type": "OP",
       "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Hanshin"
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2285
+      ]
     },
     {
-      "id": 2293,
+      "id": 300122,
+      "program_id": 122,
+      "turn": 59,
+      "name": "Tempozan Stakes",
+      "date": "Senior Year Early Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2286
+      ]
+    },
+    {
+      "id": 300074,
+      "program_id": 74,
+      "turn": 60,
       "name": "Takarazuka Kinen",
       "date": "Senior Year Late Jun",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2293
+      ]
     },
     {
-      "id": 2294,
+      "id": 301022,
+      "program_id": 1022,
+      "turn": 60,
       "name": "Teio Sho",
       "date": "Senior Year Late Jun",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2294
+      ]
     },
     {
-      "id": 2295,
+      "id": 300096,
+      "program_id": 96,
+      "turn": 60,
+      "name": "Hakodate Sprint Stakes",
+      "date": "Senior Year Late Jun",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2289
+      ]
+    },
+    {
+      "id": 300121,
+      "program_id": 121,
+      "turn": 60,
+      "name": "Akhalteke Stakes",
+      "date": "Senior Year Late Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2288
+      ]
+    },
+    {
+      "id": 300124,
+      "program_id": 124,
+      "turn": 60,
+      "name": "Onuma Stakes",
+      "date": "Senior Year Late Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2290
+      ]
+    },
+    {
+      "id": 300125,
+      "program_id": 125,
+      "turn": 60,
+      "name": "Paradise Stakes",
+      "date": "Senior Year Late Jun",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2291
+      ]
+    },
+    {
+      "id": 301060,
+      "program_id": 1060,
+      "turn": 60,
+      "name": "Sannomiya Stakes",
+      "date": "Senior Year Late Jun",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2292
+      ]
+    },
+    {
+      "id": 300123,
+      "program_id": 123,
+      "turn": 60,
       "name": "Yonago Stakes",
       "date": "Senior Year Late Jun",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2295
+      ]
     },
     {
-      "id": 2296,
+      "id": 300097,
+      "program_id": 97,
+      "turn": 61,
       "name": "CBC Sho",
       "date": "Senior Year Early Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2296
+      ]
     },
     {
-      "id": 2297,
+      "id": 300100,
+      "program_id": 100,
+      "turn": 61,
       "name": "Hakodate Kinen",
       "date": "Senior Year Early Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Hakodate"
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2297
+      ]
     },
     {
-      "id": 2298,
-      "name": "Marine Stakes",
-      "date": "Senior Year Early Jul",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Hakodate"
-    },
-    {
-      "id": 2299,
-      "name": "Meitetsu Hai",
-      "date": "Senior Year Early Jul",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2300,
+      "id": 300098,
+      "program_id": 98,
+      "turn": 61,
       "name": "Procyon Stakes",
       "date": "Senior Year Early Jul",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2300
+      ]
     },
     {
-      "id": 2301,
+      "id": 300099,
+      "program_id": 99,
+      "turn": 61,
       "name": "Tanabata Sho",
       "date": "Senior Year Early Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Fukushima"
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2301
+      ]
     },
     {
-      "id": 2302,
+      "id": 300127,
+      "program_id": 127,
+      "turn": 61,
+      "name": "Marine Stakes",
+      "date": "Senior Year Early Jul",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2298
+      ]
+    },
+    {
+      "id": 301064,
+      "program_id": 1064,
+      "turn": 61,
+      "name": "Meitetsu Hai",
+      "date": "Senior Year Early Jul",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2299
+      ]
+    },
+    {
+      "id": 300126,
+      "program_id": 126,
+      "turn": 61,
       "name": "Tomoe Sho",
       "date": "Senior Year Early Jul",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Hakodate"
+      "venue": "Hakodate",
+      "legacy_ids": [
+        2302
+      ]
     },
     {
-      "id": 2303,
+      "id": 300101,
+      "program_id": 101,
+      "turn": 62,
       "name": "Chukyo Kinen",
       "date": "Senior Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2303
+      ]
     },
     {
-      "id": 2304,
-      "name": "Fukushima TV Open",
-      "date": "Senior Year Late Jul",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2305,
+      "id": 300102,
+      "program_id": 102,
+      "turn": 62,
       "name": "Ibis Summer Dash",
       "date": "Senior Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2305
+      ]
     },
     {
-      "id": 2306,
+      "id": 300103,
+      "program_id": 103,
+      "turn": 62,
       "name": "Queen Stakes",
       "date": "Senior Year Late Jul",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2306
+      ]
     },
     {
-      "id": 2307,
-      "name": "Aso Stakes",
-      "date": "Senior Year Early Aug",
+      "id": 300129,
+      "program_id": 129,
+      "turn": 62,
+      "name": "Fukushima TV Open",
+      "date": "Senior Year Late Jul",
       "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Kokura"
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2304
+      ]
     },
     {
-      "id": 2308,
+      "id": 300106,
+      "program_id": 106,
+      "turn": 63,
       "name": "Elm Stakes",
       "date": "Senior Year Early Aug",
       "type": "G3",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2308
+      ]
     },
     {
-      "id": 2309,
-      "name": "Kanetsu Stakes",
-      "date": "Senior Year Early Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2310,
+      "id": 300104,
+      "program_id": 104,
+      "turn": 63,
       "name": "Kokura Kinen",
       "date": "Senior Year Early Aug",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kokura"
+      "venue": "Kokura",
+      "legacy_ids": [
+        2310
+      ]
     },
     {
-      "id": 2311,
-      "name": "Sapporo Nikkei Open",
-      "date": "Senior Year Early Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Sapporo"
-    },
-    {
-      "id": 2312,
+      "id": 300105,
+      "program_id": 105,
+      "turn": 63,
       "name": "Sekiya Kinen",
       "date": "Senior Year Early Aug",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2312
+      ]
     },
     {
-      "id": 2313,
+      "id": 300132,
+      "program_id": 132,
+      "turn": 63,
+      "name": "Aso Stakes",
+      "date": "Senior Year Early Aug",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2307
+      ]
+    },
+    {
+      "id": 301061,
+      "program_id": 1061,
+      "turn": 63,
+      "name": "Kanetsu Stakes",
+      "date": "Senior Year Early Aug",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2309
+      ]
+    },
+    {
+      "id": 300130,
+      "program_id": 130,
+      "turn": 63,
+      "name": "Sapporo Nikkei Open",
+      "date": "Senior Year Early Aug",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2311
+      ]
+    },
+    {
+      "id": 300131,
+      "program_id": 131,
+      "turn": 63,
       "name": "UHB Sho",
       "date": "Senior Year Early Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2313
+      ]
     },
     {
-      "id": 2314,
-      "name": "BSN Sho",
-      "date": "Senior Year Late Aug",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2315,
-      "name": "Keeneland Cup",
-      "date": "Senior Year Late Aug",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Sapporo"
-    },
-    {
-      "id": 2316,
-      "name": "Kitakyushu Kinen",
-      "date": "Senior Year Late Aug",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kokura"
-    },
-    {
-      "id": 2317,
-      "name": "Kokura Nikkei Open",
-      "date": "Senior Year Late Aug",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kokura"
-    },
-    {
-      "id": 2318,
-      "name": "NST Sho",
-      "date": "Senior Year Late Aug",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2319,
+      "id": 300082,
+      "program_id": 82,
+      "turn": 64,
       "name": "Sapporo Kinen",
       "date": "Senior Year Late Aug",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2319
+      ]
     },
     {
-      "id": 2320,
+      "id": 300108,
+      "program_id": 108,
+      "turn": 64,
+      "name": "Keeneland Cup",
+      "date": "Senior Year Late Aug",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2315
+      ]
+    },
+    {
+      "id": 300107,
+      "program_id": 107,
+      "turn": 64,
+      "name": "Kitakyushu Kinen",
+      "date": "Senior Year Late Aug",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2316
+      ]
+    },
+    {
+      "id": 300134,
+      "program_id": 134,
+      "turn": 64,
+      "name": "BSN Sho",
+      "date": "Senior Year Late Aug",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2314
+      ]
+    },
+    {
+      "id": 300135,
+      "program_id": 135,
+      "turn": 64,
+      "name": "Kokura Nikkei Open",
+      "date": "Senior Year Late Aug",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kokura",
+      "legacy_ids": [
+        2317
+      ]
+    },
+    {
+      "id": 300133,
+      "program_id": 133,
+      "turn": 64,
+      "name": "NST Sho",
+      "date": "Senior Year Late Aug",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2318
+      ]
+    },
+    {
+      "id": 300136,
+      "program_id": 136,
+      "turn": 64,
       "name": "Toki Stakes",
       "date": "Senior Year Late Aug",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2320
+      ]
     },
     {
-      "id": 2321,
+      "id": 300083,
+      "program_id": 83,
+      "turn": 65,
       "name": "Centaur Stakes",
       "date": "Senior Year Early Sep",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2321
+      ]
     },
     {
-      "id": 2322,
-      "name": "Enif Stakes",
-      "date": "Senior Year Early Sep",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2323,
+      "id": 300110,
+      "program_id": 110,
+      "turn": 65,
       "name": "Keisei Hai Autumn Handicap",
       "date": "Senior Year Early Sep",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2323
+      ]
     },
     {
-      "id": 2324,
+      "id": 300109,
+      "program_id": 109,
+      "turn": 65,
       "name": "Niigata Kinen",
       "date": "Senior Year Early Sep",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2324
+      ]
     },
     {
-      "id": 2325,
-      "name": "Prix Foy (Don't Choose This)",
+      "id": 300138,
+      "program_id": 138,
+      "turn": 65,
+      "name": "Enif Stakes",
       "date": "Senior Year Early Sep",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Longchamp"
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2322
+      ]
     },
     {
-      "id": 2326,
+      "id": 300139,
+      "program_id": 139,
+      "turn": 65,
       "name": "Radio Nippon Sho",
       "date": "Senior Year Early Sep",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2326
+      ]
     },
     {
-      "id": 2327,
+      "id": 300137,
+      "program_id": 137,
+      "turn": 65,
       "name": "Tancho Stakes",
       "date": "Senior Year Early Sep",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Sapporo"
+      "venue": "Sapporo",
+      "legacy_ids": [
+        2327
+      ]
     },
     {
-      "id": 2328,
-      "name": "All Comers",
-      "date": "Senior Year Late Sep",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2329,
-      "name": "Nagatsuki Stakes",
-      "date": "Senior Year Late Sep",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2330,
-      "name": "Port Island Stakes",
-      "date": "Senior Year Late Sep",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2331,
-      "name": "Sirius Stakes",
-      "date": "Senior Year Late Sep",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2332,
+      "id": 300075,
+      "program_id": 75,
+      "turn": 66,
       "name": "Sprinters Stakes",
       "date": "Senior Year Late Sep",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2332
+      ]
     },
     {
-      "id": 2333,
+      "id": 300085,
+      "program_id": 85,
+      "turn": 66,
+      "name": "All Comers",
+      "date": "Senior Year Late Sep",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2328
+      ]
+    },
+    {
+      "id": 300111,
+      "program_id": 111,
+      "turn": 66,
+      "name": "Sirius Stakes",
+      "date": "Senior Year Late Sep",
+      "type": "G3",
+      "terrain": "Dirt",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2331
+      ]
+    },
+    {
+      "id": 301062,
+      "program_id": 1062,
+      "turn": 66,
+      "name": "Nagatsuki Stakes",
+      "date": "Senior Year Late Sep",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2329
+      ]
+    },
+    {
+      "id": 300140,
+      "program_id": 140,
+      "turn": 66,
+      "name": "Port Island Stakes",
+      "date": "Senior Year Late Sep",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2330
+      ]
+    },
+    {
+      "id": 300088,
+      "program_id": 88,
+      "turn": 67,
       "name": "Fuchu Umamusume Stakes",
       "date": "Senior Year Early Oct",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2333
+      ]
     },
     {
-      "id": 2334,
-      "name": "Green Channel Cup",
-      "date": "Senior Year Early Oct",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2335,
+      "id": 300087,
+      "program_id": 87,
+      "turn": 67,
       "name": "Kyoto Daishoten",
       "date": "Senior Year Early Oct",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2335
+      ]
     },
     {
-      "id": 2336,
+      "id": 300086,
+      "program_id": 86,
+      "turn": 67,
       "name": "Mainichi Okan",
       "date": "Senior Year Early Oct",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2336
+      ]
     },
     {
-      "id": 2337,
+      "id": 300142,
+      "program_id": 142,
+      "turn": 67,
+      "name": "Green Channel Cup",
+      "date": "Senior Year Early Oct",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2334
+      ]
+    },
+    {
+      "id": 300143,
+      "program_id": 143,
+      "turn": 67,
       "name": "October Stakes",
       "date": "Senior Year Early Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2337
+      ]
     },
     {
-      "id": 2338,
+      "id": 300141,
+      "program_id": 141,
+      "turn": 67,
       "name": "Opal Stakes",
       "date": "Senior Year Early Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2338
+      ]
     },
     {
-      "id": 2339,
+      "id": 300144,
+      "program_id": 144,
+      "turn": 67,
       "name": "Shinetsu Stakes",
       "date": "Senior Year Early Oct",
       "type": "OP",
       "terrain": "Turf",
       "distance": "Sprint",
-      "venue": "Niigata"
+      "venue": "Niigata",
+      "legacy_ids": [
+        2339
+      ]
     },
     {
-      "id": 2340,
+      "id": 301063,
+      "program_id": 1063,
+      "turn": 67,
       "name": "Uzumasa Stakes",
       "date": "Senior Year Early Oct",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2340
+      ]
     },
     {
-      "id": 2341,
-      "name": "Brazil Cup",
-      "date": "Senior Year Late Oct",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Medium",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2342,
-      "name": "Cassiopeia Stakes",
-      "date": "Senior Year Late Oct",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2343,
-      "name": "Fuji Stakes",
-      "date": "Senior Year Late Oct",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2344,
-      "name": "Lumiere Autumn Dash",
-      "date": "Senior Year Late Oct",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Niigata"
-    },
-    {
-      "id": 2345,
-      "name": "Muromachi Stakes",
-      "date": "Senior Year Late Oct",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2346,
-      "name": "Swan Stakes",
-      "date": "Senior Year Late Oct",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2347,
+      "id": 300076,
+      "program_id": 76,
+      "turn": 68,
       "name": "Tenno Sho (Autumn)",
       "date": "Senior Year Late Oct",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2347
+      ]
     },
     {
-      "id": 2348,
-      "name": "Copa Republica Argentina",
-      "date": "Senior Year Early Nov",
+      "id": 300112,
+      "program_id": 112,
+      "turn": 68,
+      "name": "Fuji Stakes",
+      "date": "Senior Year Late Oct",
       "type": "G2",
       "terrain": "Turf",
-      "distance": "Long",
-      "venue": "Tokyo"
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2343
+      ]
     },
     {
-      "id": 2349,
-      "name": "Fukushima Kinen",
-      "date": "Senior Year Early Nov",
-      "type": "G3",
+      "id": 300089,
+      "program_id": 89,
+      "turn": 68,
+      "name": "Swan Stakes",
+      "date": "Senior Year Late Oct",
+      "type": "G2",
       "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Fukushima"
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2346
+      ]
     },
     {
-      "id": 2350,
+      "id": 300146,
+      "program_id": 146,
+      "turn": 68,
+      "name": "Brazil Cup",
+      "date": "Senior Year Late Oct",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Medium",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2341
+      ]
+    },
+    {
+      "id": 300147,
+      "program_id": 147,
+      "turn": 68,
+      "name": "Cassiopeia Stakes",
+      "date": "Senior Year Late Oct",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2342
+      ]
+    },
+    {
+      "id": 300148,
+      "program_id": 148,
+      "turn": 68,
+      "name": "Lumiere Autumn Dash",
+      "date": "Senior Year Late Oct",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Niigata",
+      "legacy_ids": [
+        2344
+      ]
+    },
+    {
+      "id": 300145,
+      "program_id": 145,
+      "turn": 68,
+      "name": "Muromachi Stakes",
+      "date": "Senior Year Late Oct",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2345
+      ]
+    },
+    {
+      "id": 301026,
+      "program_id": 1026,
+      "turn": 69,
       "name": "JBC Classic",
       "date": "Senior Year Early Nov",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2350
+      ]
     },
     {
-      "id": 2351,
+      "id": 301024,
+      "program_id": 1024,
+      "turn": 69,
       "name": "JBC Ladies’ Classic",
       "date": "Senior Year Early Nov",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2351
+      ]
     },
     {
-      "id": 2352,
+      "id": 301025,
+      "program_id": 1025,
+      "turn": 69,
       "name": "JBC Sprint",
       "date": "Senior Year Early Nov",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2352
+      ]
     },
     {
-      "id": 2353,
-      "name": "Miyako Stakes",
-      "date": "Senior Year Early Nov",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2354,
-      "name": "Musashino Stakes",
-      "date": "Senior Year Early Nov",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2355,
-      "name": "Oro Cup",
-      "date": "Senior Year Early Nov",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Tokyo"
-    },
-    {
-      "id": 2356,
+      "id": 300077,
+      "program_id": 77,
+      "turn": 69,
       "name": "Queen Elizabeth II Cup",
       "date": "Senior Year Early Nov",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2356
+      ]
     },
     {
-      "id": 2357,
-      "name": "Andromeda Stakes",
-      "date": "Senior Year Late Nov",
-      "type": "OP",
+      "id": 300090,
+      "program_id": 90,
+      "turn": 69,
+      "name": "Copa Republica Argentina",
+      "date": "Senior Year Early Nov",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Long",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2348
+      ]
+    },
+    {
+      "id": 300115,
+      "program_id": 115,
+      "turn": 69,
+      "name": "Fukushima Kinen",
+      "date": "Senior Year Early Nov",
+      "type": "G3",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Kyoto"
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2349
+      ]
     },
     {
-      "id": 2358,
-      "name": "Autumn Leaf Stakes",
-      "date": "Senior Year Late Nov",
-      "type": "OP",
+      "id": 300113,
+      "program_id": 113,
+      "turn": 69,
+      "name": "Miyako Stakes",
+      "date": "Senior Year Early Nov",
+      "type": "G3",
       "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Kyoto"
+      "distance": "Mile",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2353
+      ]
     },
     {
-      "id": 2359,
-      "name": "Capital Stakes",
-      "date": "Senior Year Late Nov",
+      "id": 300114,
+      "program_id": 114,
+      "turn": 69,
+      "name": "Musashino Stakes",
+      "date": "Senior Year Early Nov",
+      "type": "G3",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2354
+      ]
+    },
+    {
+      "id": 300149,
+      "program_id": 149,
+      "turn": 69,
+      "name": "Oro Cup",
+      "date": "Senior Year Early Nov",
       "type": "OP",
       "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Tokyo"
+      "distance": "Sprint",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2355
+      ]
     },
     {
-      "id": 2360,
-      "name": "Fukushima Minyu Cup",
-      "date": "Senior Year Late Nov",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Fukushima"
-    },
-    {
-      "id": 2361,
+      "id": 300079,
+      "program_id": 79,
+      "turn": 70,
       "name": "Japan Cup",
       "date": "Senior Year Late Nov",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Medium",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2361
+      ]
     },
     {
-      "id": 2362,
-      "name": "Keihan Hai",
-      "date": "Senior Year Late Nov",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Kyoto"
-    },
-    {
-      "id": 2363,
+      "id": 300078,
+      "program_id": 78,
+      "turn": 70,
       "name": "Mile Championship",
       "date": "Senior Year Late Nov",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Kyoto"
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2363
+      ]
     },
     {
-      "id": 2364,
+      "id": 300116,
+      "program_id": 116,
+      "turn": 70,
+      "name": "Keihan Hai",
+      "date": "Senior Year Late Nov",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2362
+      ]
+    },
+    {
+      "id": 300150,
+      "program_id": 150,
+      "turn": 70,
+      "name": "Andromeda Stakes",
+      "date": "Senior Year Late Nov",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2357
+      ]
+    },
+    {
+      "id": 300154,
+      "program_id": 154,
+      "turn": 70,
+      "name": "Autumn Leaf Stakes",
+      "date": "Senior Year Late Nov",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Kyoto",
+      "legacy_ids": [
+        2358
+      ]
+    },
+    {
+      "id": 300153,
+      "program_id": 153,
+      "turn": 70,
+      "name": "Capital Stakes",
+      "date": "Senior Year Late Nov",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2359
+      ]
+    },
+    {
+      "id": 300152,
+      "program_id": 152,
+      "turn": 70,
+      "name": "Fukushima Minyu Cup",
+      "date": "Senior Year Late Nov",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Fukushima",
+      "legacy_ids": [
+        2360
+      ]
+    },
+    {
+      "id": 300151,
+      "program_id": 151,
+      "turn": 70,
       "name": "Shimotsuki Stakes",
       "date": "Senior Year Late Nov",
       "type": "OP",
       "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Tokyo"
+      "venue": "Tokyo",
+      "legacy_ids": [
+        2364
+      ]
     },
     {
-      "id": 2365,
-      "name": "Capella Stakes",
-      "date": "Senior Year Early Dec",
-      "type": "G3",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2366,
-      "name": "Challenge Cup",
-      "date": "Senior Year Early Dec",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2367,
+      "id": 300080,
+      "program_id": 80,
+      "turn": 71,
       "name": "Champions Cup",
       "date": "Senior Year Early Dec",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Mile",
-      "venue": "Chukyo"
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2367
+      ]
     },
     {
-      "id": 2368,
-      "name": "Chunichi Shimbun Hai",
-      "date": "Senior Year Early Dec",
-      "type": "G3",
-      "terrain": "Turf",
-      "distance": "Medium",
-      "venue": "Chukyo"
-    },
-    {
-      "id": 2369,
-      "name": "December Stakes",
-      "date": "Senior Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2370,
-      "name": "Lapis Lazuli Stakes",
-      "date": "Senior Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2371,
-      "name": "Rigel Stakes",
-      "date": "Senior Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2372,
-      "name": "Shiwasu Stakes",
-      "date": "Senior Year Early Dec",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Nakayama"
-    },
-    {
-      "id": 2373,
+      "id": 300091,
+      "program_id": 91,
+      "turn": 71,
       "name": "Stayers Stakes",
       "date": "Senior Year Early Dec",
       "type": "G2",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2373
+      ]
     },
     {
-      "id": 2374,
-      "name": "Tanzanite Stakes",
+      "id": 300119,
+      "program_id": 119,
+      "turn": 71,
+      "name": "Capella Stakes",
       "date": "Senior Year Early Dec",
-      "type": "OP",
-      "terrain": "Turf",
+      "type": "G3",
+      "terrain": "Dirt",
       "distance": "Sprint",
-      "venue": "Hanshin"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2365
+      ]
     },
     {
-      "id": 2375,
+      "id": 300117,
+      "program_id": 117,
+      "turn": 71,
+      "name": "Challenge Cup",
+      "date": "Senior Year Early Dec",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2366
+      ]
+    },
+    {
+      "id": 300118,
+      "program_id": 118,
+      "turn": 71,
+      "name": "Chunichi Shimbun Hai",
+      "date": "Senior Year Early Dec",
+      "type": "G3",
+      "terrain": "Turf",
+      "distance": "Medium",
+      "venue": "Chukyo",
+      "legacy_ids": [
+        2368
+      ]
+    },
+    {
+      "id": 300120,
+      "program_id": 120,
+      "turn": 71,
       "name": "Turquoise Stakes",
       "date": "Senior Year Early Dec",
       "type": "G3",
       "terrain": "Turf",
       "distance": "Mile",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2375
+      ]
     },
     {
-      "id": 2376,
+      "id": 300159,
+      "program_id": 159,
+      "turn": 71,
+      "name": "December Stakes",
+      "date": "Senior Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2369
+      ]
+    },
+    {
+      "id": 300155,
+      "program_id": 155,
+      "turn": 71,
+      "name": "Lapis Lazuli Stakes",
+      "date": "Senior Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2370
+      ]
+    },
+    {
+      "id": 300157,
+      "program_id": 157,
+      "turn": 71,
+      "name": "Rigel Stakes",
+      "date": "Senior Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2371
+      ]
+    },
+    {
+      "id": 300156,
+      "program_id": 156,
+      "turn": 71,
+      "name": "Shiwasu Stakes",
+      "date": "Senior Year Early Dec",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2372
+      ]
+    },
+    {
+      "id": 300158,
+      "program_id": 158,
+      "turn": 71,
+      "name": "Tanzanite Stakes",
+      "date": "Senior Year Early Dec",
+      "type": "OP",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2374
+      ]
+    },
+    {
+      "id": 300081,
+      "program_id": 81,
+      "turn": 72,
       "name": "Arima Kinen",
       "date": "Senior Year Late Dec",
       "type": "G1",
       "terrain": "Turf",
       "distance": "Long",
-      "venue": "Nakayama"
+      "venue": "Nakayama",
+      "legacy_ids": [
+        2376
+      ]
     },
     {
-      "id": 2377,
-      "name": "Betelgeuse Stakes",
-      "date": "Senior Year Late Dec",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Mile",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2378,
-      "name": "Galaxy Stakes",
-      "date": "Senior Year Late Dec",
-      "type": "OP",
-      "terrain": "Dirt",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2379,
-      "name": "Hanshin Cup",
-      "date": "Senior Year Late Dec",
-      "type": "G2",
-      "terrain": "Turf",
-      "distance": "Sprint",
-      "venue": "Hanshin"
-    },
-    {
-      "id": 2380,
+      "id": 301027,
+      "program_id": 1027,
+      "turn": 72,
       "name": "Tokyo Daishoten",
       "date": "Senior Year Late Dec",
       "type": "G1",
       "terrain": "Dirt",
       "distance": "Medium",
-      "venue": "Ooi"
+      "venue": "Ooi",
+      "legacy_ids": [
+        2380
+      ]
+    },
+    {
+      "id": 300092,
+      "program_id": 92,
+      "turn": 72,
+      "name": "Hanshin Cup",
+      "date": "Senior Year Late Dec",
+      "type": "G2",
+      "terrain": "Turf",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2379
+      ]
+    },
+    {
+      "id": 300161,
+      "program_id": 161,
+      "turn": 72,
+      "name": "Betelgeuse Stakes",
+      "date": "Senior Year Late Dec",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Mile",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2377
+      ]
+    },
+    {
+      "id": 300160,
+      "program_id": 160,
+      "turn": 72,
+      "name": "Galaxy Stakes",
+      "date": "Senior Year Late Dec",
+      "type": "OP",
+      "terrain": "Dirt",
+      "distance": "Sprint",
+      "venue": "Hanshin",
+      "legacy_ids": [
+        2378
+      ]
     }
   ]
 }

@@ -5,13 +5,6 @@ from datetime import datetime
 from pathlib import Path
 
 
-RELEVANT_ENDPOINTS = {
-    "single_mode_free/gain_skills",
-    "single_mode_free/multi_item_exchange",
-    "single_mode_free/multi_item_use",
-}
-
-
 def now_iso():
     return datetime.now().isoformat(timespec="seconds")
 
@@ -99,9 +92,6 @@ def add_event(report, row):
 
 
 def add_api_call(report, event):
-    ep = event.get("endpoint")
-    if ep not in RELEVANT_ENDPOINTS:
-        return
     turn = get_turn(report, turn_from_event(event))
     turn.setdefault("api_calls", []).append(event)
     report["final_turn"] = max(safe_int(report.get("final_turn")), safe_int(turn.get("turn")))

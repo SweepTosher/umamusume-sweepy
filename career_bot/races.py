@@ -20,14 +20,29 @@ class RacePlanner:
         self.program = {int(k): v for k, v in (data.get("program") or {}).items()}
         self.instance = {int(k): [int(item) for item in v] for k, v in (data.get("instance") or {}).items()}
 
+    def get_rival_race_map(self, state):
+        rivals = (
+            state.get("data", {})
+            .get("free_data_set", {})
+            .get("rival_race_info_array", [])
+        )
+        return {
+            int(r["program_id"]): int(r["chara_id"])
+            for r in rivals
+            if "program_id" in r and "chara_id" in r
+        }
+
     def wanted_programs(self, preset, turn=None):
-        result = set()
+        result = []
+        seen = set()
         current_turn = int(turn or 0)
         for value in preset.get("extra_race_list") or []:
             try:
                 race_id = int(value)
             except (TypeError, ValueError):
                 continue
+            
+            pids = []
             if race_id in self.meta:
                 info = self.meta[race_id]
                 occurrence_turn = int(info.get("turn") or 0)
@@ -35,13 +50,17 @@ class RacePlanner:
                     continue
                 pid = info.get("program_id")
                 if pid:
-                    result.add(pid)
-                continue
-            if race_id in self.program:
-                result.add(race_id)
-                continue
-            for program_id in self.instance.get(race_id, []):
-                result.add(program_id)
+                    pids.append(pid)
+            elif race_id in self.program:
+                pids.append(race_id)
+            else:
+                for program_id in self.instance.get(race_id, []):
+                    pids.append(program_id)
+            
+            for pid in pids:
+                if pid not in seen:
+                    seen.add(pid)
+                    result.append(pid)
         return result
 
     def available_programs(self, state):
@@ -84,10 +103,26 @@ class RacePlanner:
             return 0
     
         wanted = self.wanted_programs(preset, turn)
-        for program_id in sorted(wanted):
-            if program_id in available and (turn, program_id) not in self.rejected:
-                return program_id
-        return 0
+        valid_wanted = [pid for pid in wanted if pid in available and (turn, pid) not in self.rejected]
+        
+        if not valid_wanted:
+            return 0
+            
+        is_mant = int((data.get("chara_info") or {}).get("scenario_id") or 0) == 4
+        if not is_mant:
+            return valid_wanted[0]
+            
+        main_race_id = valid_wanted[0]
+        rival_map = self.get_rival_race_map(state)
+        
+        if main_race_id in rival_map:
+            return main_race_id
+            
+        for overwrite_pid in valid_wanted[1:]:
+            if overwrite_pid in rival_map:
+                return overwrite_pid
+                
+        return main_race_id
 
     def reject(self, turn, program_id):
         self.rejected.add((int(turn or 0), int(program_id or 0)))

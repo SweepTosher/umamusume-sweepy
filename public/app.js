@@ -11,7 +11,8 @@ const state = {
     runnerTimer: 0, 
     isSavingPreset: false,
     raceData: [],
-    selectedRaces: new Set(),
+    selectedRaces: [],
+    scenarioType: "Mant",
     burnClocks: false,
     displayedClocksUsed: 0
 };
@@ -991,7 +992,7 @@ const els = {
                 if (presetRes.success) {
                     const xguri = (presetRes.presets || []).find(p => p.name === "xguri parent");
                     if (xguri && xguri.extra_race_list) {
-                        state.selectedRaces = new Set(xguri.extra_race_list.map(id => parseInt(id)));
+                        state.selectedRaces = xguri.extra_race_list.map(id => parseInt(id));
                     }
                 }
                 renderRaces();
@@ -1022,7 +1023,7 @@ const els = {
         }
 
         function raceSelected(race) {
-            return raceKeys(race).some(id => state.selectedRaces.has(id));
+            return raceKeys(race).some(id => state.selectedRaces.includes(id));
         }
 
         function renderRaces() {
@@ -1042,7 +1043,11 @@ const els = {
                 slots.forEach((slot, si) => {
                     const cell = document.createElement('div');
                     cell.className = 'race-time-cell';
-                    const selected = slot.races.find(r => raceSelected(r));
+                    
+                    const slotIds = slot.races.flatMap(r => raceKeys(r));
+                    const selectedInSlot = state.selectedRaces.filter(id => slotIds.includes(id));
+                    const mainRaceId = selectedInSlot[0];
+                    const selected = slot.races.find(r => raceKeys(r).includes(mainRaceId));
                     
                     let html = `<div class="race-time-label">${slot.period}</div>`;
                     if (selected) {
@@ -1078,9 +1083,26 @@ const els = {
             } else {
                 const list = document.createElement('div');
                 list.className = 'race-slot-popup-list';
+                
+                const slotIds = slot.races.flatMap(r => raceKeys(r));
+                
                 slot.races.forEach(race => {
+                    const myIds = raceKeys(race);
+                    const selectedInSlot = state.selectedRaces.filter(id => slotIds.includes(id));
+                    const selIndex = selectedInSlot.findIndex(id => myIds.includes(id));
+                    const isSelected = selIndex !== -1;
+                    
+                    let badgeHtml = '<div class="race-slot-popup-check">✓</div>';
+                    if (isSelected && state.scenarioType === "Mant" && selectedInSlot.length > 0) {
+                        if (selIndex === 0) {
+                            badgeHtml = '<div class="race-slot-popup-check main-race" style="font-size: 0.7rem; font-weight: bold; width: auto; padding: 0 8px; border-radius: 12px; background: rgba(255,255,255,0.2);">MAIN</div>';
+                        } else {
+                            badgeHtml = `<div class="race-slot-popup-check overwrite-race" style="font-size: 0.7rem; font-weight: bold; width: auto; padding: 0 8px; border-radius: 12px; background: rgba(255,255,255,0.1);">RIVAL OVERWRITE ${selIndex}</div>`;
+                        }
+                    }
+                    
                     const item = document.createElement('div');
-                    item.className = `race-slot-popup-item ${raceSelected(race) ? 'on' : ''}`;
+                    item.className = `race-slot-popup-item ${isSelected ? 'on' : ''}`;
                     item.innerHTML = `
                         <div class="race-slot-popup-img">
                             <img src="/races/${encodeURIComponent(race.name)}.png" onerror="this.src='/broom.png'">
@@ -1095,16 +1117,20 @@ const els = {
                                 <span class="race-slot-popup-distance">${race.distance}</span>
                             </div>
                         </div>
-                        <div class="race-slot-popup-check">✓</div>
+                        ${badgeHtml}
                     `;
                     item.onclick = async () => {
-                        const slotIds = slot.races.flatMap(r => raceKeys(r));
-                        if (raceSelected(race)) {
-                            raceKeys(race).forEach(id => state.selectedRaces.delete(id));
+                        const isMant = state.scenarioType === "Mant";
+                        
+                        if (isSelected) {
+                            state.selectedRaces = state.selectedRaces.filter(id => !myIds.includes(id));
                         } else {
-                            slotIds.forEach(id => state.selectedRaces.delete(id));
-                            state.selectedRaces.add(race.id);
+                            if (!isMant) {
+                                state.selectedRaces = state.selectedRaces.filter(id => !slotIds.includes(id));
+                            }
+                            state.selectedRaces.push(parseInt(race.id));
                         }
+                        
                         openSlotPopup(slot, yearIdx);
                         renderRaces();
                         await autoSaveRaces();
@@ -1122,7 +1148,7 @@ const els = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        races: Array.from(state.selectedRaces)
+                        races: state.selectedRaces
                     })
                 });
             } catch (e) {

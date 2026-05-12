@@ -15,7 +15,7 @@ from career_bot.skills import SkillBuyer
 from career_bot.items import MantItemManager, ITEM_NAMES, SHOP_ITEM_COSTS, DISPLAY_TO_ID, display_to_slug
 
 
-from career_bot.report import new_report, add_event, add_decision, finish_report, write_report, set_error
+from career_bot.report import new_report, add_event, add_api_call, add_decision, finish_report, write_report, set_error
 
 
 STRATEGIES = {
@@ -126,6 +126,18 @@ class CareerRunner:
             self.report = new_report(preset, scenario_id)
             if client:
                 client.report = self.report
+                def _on_api_log(direction, ep, data, req_id=None):
+                    if self.report:
+                        import time
+                        add_api_call(self.report, {
+                            "ts": time.time(),
+                            "direction": direction,
+                            "endpoint": ep,
+                            "data": data,
+                            "req_id": req_id,
+                            "turn": self.status.get("turn", 0)
+                        })
+                client.on_api_log = _on_api_log
             self._log_locked("started", 0, f"preset {preset.get('name', '')} (burn_clocks={burn_clocks})")
             self.thread = threading.Thread(target=self._run, args=(client, preset, initial_result, strategy_cls(self.race_planner), max_steps), daemon=True)
             self.thread.start()

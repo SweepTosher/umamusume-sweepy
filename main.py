@@ -769,7 +769,7 @@ async def save_races(req: SaveRacesRequest):
     preset = preset_store.read_one("xguri parent")
     if not preset:
         return {"success": False, "detail": "xguri parent preset missing"}
-    preset["race_list"] = req.races
+    preset["extra_race_list"] = req.races
     preset_store.write(preset)
     return {"success": True}
 

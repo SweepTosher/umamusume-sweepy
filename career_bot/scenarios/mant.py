@@ -32,6 +32,52 @@ BAD_EFFECT_NAMES = {
 class MantStrategy(ScenarioStrategy):
     scenario_id = 4
 
+    @staticmethod
+    def _deep_has_finish_marker(obj, depth=0, max_depth=10):
+        """Ищет single_mode_finish_common в любом месте ответа (в т.ч. вложенные структуры)."""
+        if depth > max_depth:
+            return False
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if isinstance(k, str):
+                    if k == "single_mode_finish_common" and v is not None:
+                        return True
+                    if "single_mode_finish" in k and "common" in k.lower() and v is not None:
+                        return True
+                if MantStrategy._deep_has_finish_marker(v, depth + 1, max_depth):
+                    return True
+        elif isinstance(obj, list):
+            for item in obj:
+                if MantStrategy._deep_has_finish_marker(item, depth + 1, max_depth):
+                    return True
+        return False
+
+    def _finish_screen_ready(self, state):
+        return MantStrategy._deep_has_finish_marker(state or {})
+
+    def _should_force_finish_epilogue(self, data, chara, home):
+        """
+        После финальной гонки (78) сервер иногда не кладёт маркер в ожидаемое место.
+        Если уже отмечен заезд (78,0), нет активной гонки и дом/результат — вызываем ветку finish API.
+        """
+        turn = int(chara.get("turn") or 0)
+        if turn < 78 or not self.race_planner:
+            return False
+        if (turn, 0) not in self.race_planner._completed_race_on_turn:
+            return False
+        ps = int(chara.get("playing_state") or 1)
+        # load/race_out могут бесконечно оставлять ps=5 при уже помеченной неделе (см. debug-5cc868).
+        if ps == 5:
+            return True
+        if ps not in (1, 7):
+            return False
+        race = data.get("race_start_info") or {}
+        rpid = int(race.get("program_id") or 0)
+        if ps in (2, 3, 4, 5) and rpid:
+            if not self.race_planner.should_skip_stale_race_start(turn, rpid):
+                return False
+        return True
+
     def __init__(self, race_planner=None):
         self.race_planner = race_planner
         self.event_manager = None
@@ -42,7 +88,7 @@ class MantStrategy(ScenarioStrategy):
         data = state.get("data") or {}
         chara = data.get("chara_info") or {}
         home = data.get("home_info") or {}
-        if "single_mode_finish_common" in data:
+        if self._finish_screen_ready(state):
             return Decision("finish", {"current_turn": chara.get("turn", 78)}, "finished")
         events = data.get("unchecked_event_array") or []
         if events:
@@ -52,14 +98,21 @@ class MantStrategy(ScenarioStrategy):
             if choice is None:
                 payload = {"event_id": event.get("event_id"), "_event": event, "_current_turn": chara.get("turn", 1)}
             return Decision("event", payload, "event")
+        if self._should_force_finish_epilogue(data, chara, home):
+            return Decision("finish", {"current_turn": chara.get("turn", 78)}, "epilogue_force_finish")
         race = data.get("race_start_info")
         playing_state = (chara.get("playing_state") or 0)
         if playing_state == 3:
-            return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "start", "race_start_info": race, "chara_info": chara}, "resume race start")
+            return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "start", "race_start_info": race, "chara_info": chara, "_strategy": self}, "resume race start")
         if playing_state == 5:
-            return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "end", "chara_info": chara}, "resume race out")
+            return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "end", "chara_info": chara, "_strategy": self}, "resume race out")
         if race and race.get("program_id") and playing_state in (2, 4):
-            return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "start", "race_start_info": race, "chara_info": chara}, "race start")
+            if self.race_planner and self.race_planner.should_skip_stale_race_start(
+                chara.get("turn", 0), race.get("program_id")
+            ):
+                pass
+            else:
+                return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "start", "race_start_info": race, "chara_info": chara, "_strategy": self}, "race start")
         if self.race_planner:
             forced_program_id = self.race_planner.forced_program(state)
             if forced_program_id:
@@ -139,7 +192,18 @@ class MantStrategy(ScenarioStrategy):
         if not training:
             if medic and bad_status and vital <= ENERGY_MEDIC_GENERAL:
                 return medic
-            return rest or recreation
+            fb = rest or recreation
+            if fb:
+                return fb
+            # Epilogue (turn 78+): server often exposes only non-training commands (story / advance).
+            if turn >= 78:
+                for cmd in enabled:
+                    ct = int(cmd.get("command_type") or 0)
+                    cid = int(cmd.get("command_id") or 0)
+                    if ct == 4 and cid == 401:
+                        continue
+                    return cmd
+            return None
         scored = [(self._score_command(cmd, data, chara, preset), cmd) for cmd in training]
         if 48 < turn <= 72:
             stat_keys = ["speed", "stamina", "power", "guts", "wiz"]

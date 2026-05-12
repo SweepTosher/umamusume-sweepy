@@ -11,63 +11,121 @@ const state = {
     runnerTimer: 0, 
     isSavingPreset: false,
     raceData: [],
+    trackblazerRacesList: [],
     selectedRaces: new Set(),
+    raceSchedulePresetsList: [],
     burnClocks: false,
-    displayedClocksUsed: 0
+    tbLockSummers: false,
+    displayedClocksUsed: 0,
+    /** Dedupe flash for repeated runner.last_error while polling */
+    runnerErrorFlashed: null
 };
-const els = {
-    loadingScreen: document.getElementById('loading-screen'),
-    navbar: document.querySelector('.navbar'),
-    themeToggle: document.getElementById('theme-toggle'),
-    brandMark: document.querySelector('.title span'),
-    loginBtn: document.getElementById('login-btn'),
-    logoutBtn: document.getElementById('logout-btn'),
-    turnDelayMin: document.getElementById('turn-delay-min'),
-    turnDelayMax: document.getElementById('turn-delay-max'),
-    temptFateBtn: document.getElementById('tempt-fate-btn'),
-    burnClocksBtn: document.getElementById('burn-clocks-btn'),
-    loginView: document.getElementById('login-view'),
-    dashboardView: document.getElementById('dashboard-view'),
-    errorMsg: document.getElementById('error-msg'),
-    standardFields: document.getElementById('standard-fields'),
-    faFields: document.getElementById('2fa-fields'),
-    umaGrid: document.getElementById('uma-grid'),
-    cardGrid: document.getElementById('card-grid'),
-    cardGridWrapper: document.getElementById('card-grid-wrapper'),
-    cardsToggle: document.getElementById('cards-toggle'),
-    cardsChevron: document.getElementById('cards-chevron'),
-    parentGrid: document.getElementById('parent-grid'),
-    friendGrid: document.getElementById('friend-grid'),
-    deckList: document.getElementById('deck-list'),
-    umaCount: document.getElementById('uma-count'),
-    cardCount: document.getElementById('card-count'),
-    parentCount: document.getElementById('parent-count'),
-    friendCount: document.getElementById('friend-count'),
-    friendStatus: document.getElementById('friend-status'),
-    friendRefreshBtn: document.getElementById('friend-refresh-btn'),
-    presetSelect: document.getElementById('preset-select'),
-    startCareerBtn: document.getElementById('start-career-btn'),
-    startStatus: document.getElementById('start-status'),
-    accountStrip: document.getElementById('account-strip'),
-    careerModal: document.getElementById('career-modal'),
-    careerModalCopy: document.getElementById('career-modal-copy'),
-    careerCancelBtn: document.getElementById('career-cancel-btn'),
-    careerDeleteBtn: document.getElementById('career-delete-btn'),
-    raceToggle: document.getElementById('race-toggle'),
-    raceChevron: document.getElementById('race-chevron'),
-    raceBody: document.getElementById('race-body'),
-    saveRacesBtn: document.getElementById('save-races-btn'),
-    raceOptionsContent: document.getElementById('race-options-content'),
-    racePopupOverlay: document.getElementById('race-slot-popup-overlay'),
-    racePopupTitle: document.getElementById('race-slot-popup-title'),
-    racePopupBody: document.getElementById('race-slot-popup-body'),
-    racePopupClose: document.getElementById('race-slot-popup-close'),
-    masterDataPath: document.getElementById('master-data-path'),
-    masterDataSaveBtn: document.getElementById('master-data-save-btn'),
-    masterDataStatus: document.getElementById('master-data-status')
-};
+        const els = {
+            loadingScreen: document.getElementById('loading-screen'),
+            navbar: document.querySelector('.navbar'),
+            themeToggle: document.getElementById('theme-toggle'),
+            brandMark: document.querySelector('.title span'),
+            loginBtn: document.getElementById('login-btn'),
+            logoutBtn: document.getElementById('logout-btn'),
+            turnDelayMin: document.getElementById('turn-delay-min'),
+            turnDelayMax: document.getElementById('turn-delay-max'),
+            temptFateBtn: document.getElementById('tempt-fate-btn'),
+            burnClocksBtn: document.getElementById('burn-clocks-btn'),
+            loginView: document.getElementById('login-view'),
+            dashboardView: document.getElementById('dashboard-view'),
+            errorMsg: document.getElementById('error-msg'),
+            standardFields: document.getElementById('standard-fields'),
+            faFields: document.getElementById('2fa-fields'),
+            accountStrip: document.getElementById('account-strip'),
+            careerModal: document.getElementById('career-modal'),
+            careerModalCopy: document.getElementById('career-modal-copy'),
+            careerCancelBtn: document.getElementById('career-cancel-btn'),
+            careerDeleteBtn: document.getElementById('career-delete-btn'),
+            masterDataModal: document.getElementById('master-data-modal'),
+            masterDataAnchor: document.getElementById('master-data-anchor'),
+            masterDataOpenBtn: document.getElementById('master-data-open-btn'),
+            raceToggle: document.getElementById('race-toggle'),
+            raceChevron: document.getElementById('race-chevron'),
+            raceBody: document.getElementById('race-body'),
+            saveRacesBtn: document.getElementById('save-races-btn'),
+            raceOptionsContent: document.getElementById('race-options-content'),
+            racePopupOverlay: document.getElementById('race-slot-popup-overlay'),
+            racePopupTitle: document.getElementById('race-slot-popup-title'),
+            racePopupBody: document.getElementById('race-slot-popup-body'),
+            racePopupClose: document.getElementById('race-slot-popup-close'),
+            raceCalendarCard: document.getElementById('race-calendar-card'),
+            rscRaces: document.getElementById('rsc-races'),
+            rscRaceStats: document.getElementById('rsc-race-stats'),
+            rscG1: document.getElementById('rsc-g1'),
+            rscG23: document.getElementById('rsc-g23'),
+            rscEpithetStats: document.getElementById('rsc-epithet-stats'),
+            rscFans: document.getElementById('rsc-fans'),
+            rssRaces: document.getElementById('rss-races'),
+            rssRaceStats: document.getElementById('rss-race-stats'),
+            rssEpithetStats: document.getElementById('rss-epithet-stats'),
+            rssFans: document.getElementById('rss-fans'),
+            raceScheduleModal: document.getElementById('race-schedule-modal'),
+            raceScheduleModalClose: document.getElementById('race-schedule-modal-close'),
+            trackblazerFillBtn: document.getElementById('trackblazer-fill-btn'),
+            tbLockSummersCheckbox: document.getElementById('tb-lock-summers-checkbox'),
+            raceSchedulePresetSelect: document.getElementById('race-schedule-preset-select'),
+            raceSchedulePresetLoadBtn: document.getElementById('race-schedule-preset-load-btn'),
+            raceSchedulePresetSaveBtn: document.getElementById('race-schedule-preset-save-btn'),
+            raceSchedulePresetDeleteBtn: document.getElementById('race-schedule-preset-delete-btn'),
+            raceSchedulePresetNameInput: document.getElementById('race-schedule-preset-name-input'),
+            masterDataPath: document.getElementById('master-data-path'),
+            masterDataSaveBtn: document.getElementById('master-data-save-btn'),
+            startCareerBtn: document.getElementById('start-career-btn'),
+            startStatus: document.getElementById('start-status'),
+            careerRunLog: document.getElementById('career-run-log'),
+            friendRefreshBtn: document.getElementById('friend-refresh-btn'),
+            friendCount: document.getElementById('friend-count'),
+            selectionModalBackdrop: document.getElementById('selection-modal-backdrop'),
+            selectionModalClose: document.querySelector('.selection-panel .modal-close'),
+            flashContainer: document.getElementById('flash-container')
+        };
         const delaySettingsStorageKey = 'uma_turn_delay_settings';
         const burnClocksStorageKey = 'uma_burn_clocks';
+        const accentThemeStorageKey = 'uma_accent_theme';
+        const tbLockSummersStorageKey = 'uma_tb_lock_summers';
+        const ACCENT_CYCLE = ['green', 'blue', 'pink'];
+        function syncThemeToggleTitle() {
+            if (!els.themeToggle) return;
+            const cur = document.documentElement.dataset.accent || 'green';
+            const next = ACCENT_CYCLE[(ACCENT_CYCLE.indexOf(cur) + 1) % ACCENT_CYCLE.length];
+            const names = { green: 'green', blue: 'blue (#00f2ff)', pink: 'pink (#ff2da3)' };
+            const nextName = names[next] || next;
+            els.themeToggle.title = `Accent: ${names[cur] || cur}. Click for ${nextName}.`;
+        }
+        function cycleAccentTheme() {
+            const cur = document.documentElement.dataset.accent || 'green';
+            const i = ACCENT_CYCLE.indexOf(cur);
+            const next = ACCENT_CYCLE[i === -1 ? 0 : (i + 1) % ACCENT_CYCLE.length];
+            document.documentElement.dataset.accent = next;
+            try {
+                localStorage.setItem(accentThemeStorageKey, next);
+            } catch (e) { /* ignore */ }
+            syncThemeToggleTitle();
+        }
+        function bindAccentThemeControls() {
+            if (!els.themeToggle) return;
+            syncThemeToggleTitle();
+            els.themeToggle.addEventListener('click', event => {
+                event.preventDefault();
+                cycleAccentTheme();
+            });
+            els.themeToggle.addEventListener('keydown', event => {
+                if (event.key !== 'Enter' && event.key !== ' ') return;
+                event.preventDefault();
+                cycleAccentTheme();
+            });
+            window.addEventListener('storage', event => {
+                if (event.key !== accentThemeStorageKey || !event.newValue) return;
+                if (!ACCENT_CYCLE.includes(event.newValue)) return;
+                document.documentElement.dataset.accent = event.newValue;
+                syncThemeToggleTitle();
+            });
+        }
         function setLoadingScreen(visible) {
             if (!els.loadingScreen) return;
             els.loadingScreen.classList.toggle('hidden', !visible);
@@ -92,134 +150,14 @@ const els = {
             const navbarHeight = navbar ? navbar.getBoundingClientRect().height : 0;
             const availableHeight = Math.max(360, Math.floor(window.innerHeight - navbarHeight));
             document.documentElement.style.setProperty('--dashboard-height', `${availableHeight}px`);
-            syncDashboardCollapseState(false);
+            if (els.dashboardView) {
+                els.dashboardView.style.gridTemplateColumns = '';
+                els.dashboardView.style.gridTemplateRows = '';
+            }
         }
         window.addEventListener('resize', syncDashboardHeight);
         window.addEventListener('orientationchange', syncDashboardHeight);
         syncDashboardHeight();
-        const panelToggleSyncers = [];
-        const dashboardMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        let dashboardLayoutAnimation = 0;
-        const dashboardAnimationMs = 420;
-        function isCompactDashboard() {
-            return window.matchMedia('(max-width: 850px)').matches;
-        }
-        function getPanelLayoutTarget(setupCollapsed, contentCollapsed) {
-            const compact = isCompactDashboard();
-            const gutter = document.querySelector('.split-gutter-controls');
-            const dashboardRect = els.dashboardView.getBoundingClientRect();
-            const gutterRect = gutter.getBoundingClientRect();
-            const gutterSize = compact ? gutterRect.height : gutterRect.width;
-            const available = Math.max(0, (compact ? dashboardRect.height : dashboardRect.width) - gutterSize);
-            if (compact) {
-                const setupSize = setupCollapsed ? 0 : contentCollapsed ? available : available * 0.34;
-                const contentSize = contentCollapsed ? 0 : setupCollapsed ? available : Math.max(340, available - setupSize);
-                return { compact, gutterSize, setupSize, contentSize };
-            }
-            const setupSize = setupCollapsed ? 0 : contentCollapsed ? available : Math.min(available * 0.62, available - 340);
-            const contentSize = contentCollapsed ? 0 : setupCollapsed ? available : Math.max(340, available - setupSize);
-            return { compact, gutterSize, setupSize, contentSize };
-        }
-        function setDashboardTemplate(layout, setupSize, contentSize) {
-            const safeSetup = Math.max(0, setupSize);
-            const safeContent = Math.max(0, contentSize);
-            if (layout.compact) {
-                els.dashboardView.style.gridTemplateColumns = '';
-                els.dashboardView.style.gridTemplateRows = `${safeSetup}px ${layout.gutterSize}px ${safeContent}px`;
-            } else {
-                els.dashboardView.style.gridTemplateRows = '';
-                els.dashboardView.style.gridTemplateColumns = `${safeSetup}px ${layout.gutterSize}px ${safeContent}px`;
-            }
-        }
-        function easeDashboardLayout(t) {
-            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        }
-        function syncDashboardCollapseState(animate = false) {
-            const setupPanel = document.getElementById('setup-panel');
-            const contentPanel = document.getElementById('content-panel');
-            if (!setupPanel || !contentPanel || !els.dashboardView) return;
-            if (setupPanel.classList.contains('collapsed') && contentPanel.classList.contains('collapsed')) {
-                contentPanel.classList.remove('collapsed');
-            }
-            const setupCollapsed = setupPanel.classList.contains('collapsed');
-            const contentCollapsed = contentPanel.classList.contains('collapsed');
-            els.dashboardView.classList.toggle('setup-collapsed', setupCollapsed);
-            els.dashboardView.classList.toggle('content-collapsed', contentCollapsed);
-            if (!els.dashboardView.classList.contains('active')) return;
-            const layout = getPanelLayoutTarget(setupCollapsed, contentCollapsed);
-            if (dashboardLayoutAnimation) {
-                cancelAnimationFrame(dashboardLayoutAnimation);
-                dashboardLayoutAnimation = 0;
-            }
-            els.dashboardView.style.transition = 'none';
-            if (!animate || dashboardMotion.matches) {
-                setDashboardTemplate(layout, layout.setupSize, layout.contentSize);
-                return;
-            }
-            const compact = layout.compact;
-            const setupRect = setupPanel.getBoundingClientRect();
-            const contentRect = contentPanel.getBoundingClientRect();
-            const startSetup = compact ? setupRect.height : setupRect.width;
-            const startContent = compact ? contentRect.height : contentRect.width;
-            const targetSetup = layout.setupSize;
-            const targetContent = layout.contentSize;
-            if (Math.abs(startSetup - targetSetup) < 0.5 && Math.abs(startContent - targetContent) < 0.5) {
-                setDashboardTemplate(layout, targetSetup, targetContent);
-                return;
-            }
-            const startedAt = performance.now();
-            const step = now => {
-                const t = Math.min(1, (now - startedAt) / dashboardAnimationMs);
-                const eased = easeDashboardLayout(t);
-                setDashboardTemplate(
-                    layout,
-                    startSetup + (targetSetup - startSetup) * eased,
-                    startContent + (targetContent - startContent) * eased
-                );
-                if (t < 1) {
-                    dashboardLayoutAnimation = requestAnimationFrame(step);
-                } else {
-                    setDashboardTemplate(layout, targetSetup, targetContent);
-                    dashboardLayoutAnimation = 0;
-                }
-            };
-            setDashboardTemplate(layout, startSetup, startContent);
-            dashboardLayoutAnimation = requestAnimationFrame(step);
-        }
-        function syncPanelToggleButtons() {
-            panelToggleSyncers.forEach(sync => sync());
-        }
-        function makePanelToggle(panelId, btnId, collapseIcon, expandIcon) {
-            const panel = document.getElementById(panelId);
-            const btn = document.getElementById(btnId);
-            const label = (btn.dataset.panelLabel || 'panel').toLowerCase();
-            const renderChevrons = icon => `
-                <span class="panel-collapse-btn-chevron-stack" aria-hidden="true">
-                    <span>${icon}</span>
-                    <span>${icon}</span>
-                    <span>${icon}</span>
-                </span>
-            `;
-            const syncButton = () => {
-                const isCollapsed = panel.classList.contains('collapsed');
-                const icon = isCollapsed ? expandIcon : collapseIcon;
-                btn.classList.toggle('is-collapsed', isCollapsed);
-                btn.innerHTML = renderChevrons(icon);
-                btn.setAttribute('title', `${isCollapsed ? 'Expand' : 'Collapse'} ${label}`);
-                btn.setAttribute('aria-label', `${isCollapsed ? 'Expand' : 'Collapse'} ${label}`);
-                btn.setAttribute('aria-expanded', String(!isCollapsed));
-            };
-            panelToggleSyncers.push(syncButton);
-            btn.addEventListener('click', () => {
-                panel.classList.toggle('collapsed');
-                syncDashboardCollapseState(true);
-                syncPanelToggleButtons();
-            });
-            syncDashboardCollapseState(false);
-            syncButton();
-        }
-        makePanelToggle('setup-panel',   'setup-collapse-btn',   '&lt;', '&gt;');
-        makePanelToggle('content-panel', 'content-collapse-btn', '&gt;', '&lt;');
         function makeSectionToggle(toggleId, chevronId, bodyId, startExpanded) {
             const toggle  = document.getElementById(toggleId);
             const chevron = document.getElementById(chevronId);
@@ -253,28 +191,10 @@ const els = {
             });
             setInitial();
         }
-        makeSectionToggle('decks-toggle',    'decks-chevron',    'decks-body',    true);
-        makeSectionToggle('friends-toggle',  'friends-chevron',  'friends-body',  true);
-        makeSectionToggle('trainees-toggle', 'trainees-chevron', 'trainees-body', true);
-        makeSectionToggle('parents-toggle',  'parents-chevron',  'parents-body',  true);
-        makeSectionToggle('cards-toggle',    'cards-chevron',    'card-grid-wrapper', false);
-        const applyTheme = theme => {
-            const nextTheme = theme === 'blue' ? 'blue' : 'pink';
-            document.documentElement.dataset.theme = nextTheme;
-            document.documentElement.classList.toggle('theme-blue', nextTheme === 'blue');
-            document.body.classList.toggle('theme-blue', nextTheme === 'blue');
-            return nextTheme;
-        };
-        applyTheme(localStorage.getItem('theme'));
         const savedUsername = localStorage.getItem('saved_username');
         const savedPassword = localStorage.getItem('saved_password');
         if (savedUsername) document.getElementById('username').value = savedUsername;
         if (savedPassword) document.getElementById('password').value = savedPassword;
-        els.themeToggle.addEventListener('click', () => {
-            const nextTheme = document.body.classList.contains('theme-blue') ? 'pink' : 'blue';
-            applyTheme(nextTheme);
-            localStorage.setItem('theme', nextTheme);
-        });
         const sleep = ms => new Promise(resolve => window.setTimeout(resolve, ms));
         const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
         async function waitForDomPaint(frames = 2) {
@@ -284,11 +204,6 @@ const els = {
             const res = await fetch(url, options);
             return res.json();
         }
-        function setMasterDataStatus(message, stateName = '') {
-            if (!els.masterDataStatus) return;
-            els.masterDataStatus.textContent = message || '';
-            els.masterDataStatus.className = `master-data-status ${stateName}`.trim();
-        }
         function applyMasterDataStatus(data) {
             if (!data) return;
             if (els.masterDataPath && data.master_mdb_path) {
@@ -297,36 +212,23 @@ const els = {
             if (els.masterDataPath) {
                 els.masterDataPath.classList.toggle('needs-action', !data.exists);
             }
-            if (data.exists) {
-                if (data.generation_error) {
-                    setMasterDataStatus(data.generation_error, 'needs-action');
-                } else if (data.generated) {
-                    setMasterDataStatus('master.mdb found; data generated', 'ok');
-                } else {
-                    setMasterDataStatus('master.mdb found', 'ok');
-                }
-            } else {
-                setMasterDataStatus(data.access_error || 'master.mdb not found; update the path', 'needs-action');
-            }
         }
         async function loadMasterDataStatus() {
             if (!els.masterDataPath) return;
             try {
                 applyMasterDataStatus(await apiJson('/api/master-data/status'));
             } catch (e) {
-                setMasterDataStatus('Unable to read master data status', 'needs-action');
+                flashError(e, 'Master data status failed', 4000);
             }
         }
         async function saveMasterDataPath() {
             if (!els.masterDataPath) return null;
             const master_mdb_path = els.masterDataPath.value.trim();
             if (!master_mdb_path) {
-                setMasterDataStatus('Enter the full path to master.mdb', 'needs-action');
+                showFlash('Required', 'error', 2000);
                 els.masterDataPath.classList.add('needs-action');
                 return null;
             }
-            if (els.masterDataSaveBtn) els.masterDataSaveBtn.disabled = true;
-            setMasterDataStatus('Saving path and generating data...', 'working');
             const data = await apiJson('/api/master-data/path', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -335,24 +237,33 @@ const els = {
             applyMasterDataStatus(data);
             if (data.exists && !data.generation_error) {
                 await loadRaceData();
+                closeMasterDataModal();
+            } else if (data.generation_error) {
+                showFlash(data.generation_error, 'error', 5000);
+            } else {
+                showFlash(data.access_error || 'Not found', 'error', 3500);
             }
-            if (els.masterDataSaveBtn) els.masterDataSaveBtn.disabled = false;
             return data;
         }
         function bindMasterDataControls() {
             if (!els.masterDataPath) return;
-            if (els.masterDataSaveBtn) {
-                els.masterDataSaveBtn.addEventListener('click', async () => {
-                    try {
-                        await saveMasterDataPath();
-                    } catch (e) {
-                        setMasterDataStatus(e.message || 'Unable to save master.mdb path', 'needs-action');
-                        if (els.masterDataPath) els.masterDataPath.classList.add('needs-action');
-                    } finally {
-                        if (els.masterDataSaveBtn) els.masterDataSaveBtn.disabled = false;
-                    }
-                });
+            async function trySaveMasterDataPath() {
+                try {
+                    await saveMasterDataPath();
+                } catch (e) {
+                    flashError(e, 'Save failed', 3500);
+                    if (els.masterDataPath) els.masterDataPath.classList.add('needs-action');
+                }
             }
+            if (els.masterDataSaveBtn) {
+                els.masterDataSaveBtn.addEventListener('click', () => trySaveMasterDataPath());
+            }
+            els.masterDataPath.addEventListener('keydown', ev => {
+                if (ev.key === 'Enter') {
+                    ev.preventDefault();
+                    trySaveMasterDataPath();
+                }
+            });
             els.masterDataPath.addEventListener('input', () => {
                 els.masterDataPath.classList.remove('needs-action');
             });
@@ -407,15 +318,23 @@ const els = {
             els.temptFateBtn.innerText = disabled ? 'FATE TEMPTED' : 'TEMPT FATE';
         }
         async function saveDelaySettings(settings) {
-            setDelayControls(settings);
-            const data = await apiJson('/api/settings/turn-delay', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(settings)
-            });
-            const normalized = normalizeDelayBounds(data.min, data.max, data.disabled, data.restore_min, data.restore_max);
-            setDelayControls(normalized);
-            writeLocalSetting(delaySettingsStorageKey, normalized);
+            try {
+                setDelayControls(settings);
+                const data = await apiJson('/api/settings/turn-delay', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settings)
+                });
+                const normalized = normalizeDelayBounds(data.min, data.max, data.disabled, data.restore_min, data.restore_max);
+                setDelayControls(normalized);
+                writeLocalSetting(delaySettingsStorageKey, normalized);
+            } catch (e) {
+                flashError(e, 'Turn delay save failed', 4500);
+                try {
+                    const data = await apiJson('/api/settings/turn-delay');
+                    setDelayControls(normalizeDelayBounds(data.min, data.max, data.disabled, data.restore_min, data.restore_max));
+                } catch (_) { /* keep last optimistic controls */ }
+            }
         }
         async function loadDelaySettings() {
             if (!els.turnDelayMin || !els.turnDelayMax || !els.temptFateBtn) return;
@@ -423,6 +342,7 @@ const els = {
                 const data = await apiJson('/api/settings/turn-delay');
                 setDelayControls(normalizeDelayBounds(data.min, data.max, data.disabled, data.restore_min, data.restore_max));
             } catch (e) {
+                flashError(e, 'Turn delay load failed', 4000);
                 setDelayControls({ min: 1.6, max: 3.7, restoreMin: 1.6, restoreMax: 3.7, disabled: false });
             }
         }
@@ -459,8 +379,10 @@ const els = {
         }
         function showLoginError(message) {
             setLoadingScreen(false);
-            els.errorMsg.innerText = String(message || 'FAIL').toUpperCase();
+            const text = String(message || 'FAIL');
+            els.errorMsg.innerText = text.toUpperCase();
             els.errorMsg.style.display = 'block';
+            flashError(text, 'Login failed', 5500);
             resetLoginState();
         }
         function showTwoFactorPrompt() {
@@ -516,7 +438,7 @@ const els = {
                     showLoginError(data.detail || 'FAIL');
                 }
             } catch (e) {
-                showLoginError('NETWORK ERROR');
+                showLoginError(formatAppError(e, 'NETWORK ERROR'));
             }
         });
 
@@ -524,13 +446,17 @@ const els = {
             setLoadingScreen(false);
             try {
                 await apiJson('/api/logout', { method: 'POST' });
-            } catch (e) {}
+            } catch (e) {
+                flashError(e, 'Logout request failed', 3500);
+            }
             document.body.classList.remove('dashboard-mode');
             hideNavbar();
-            els.loginView.style.display = 'flex';
+            els.loginView.style.display = '';
             els.dashboardView.style.display = 'none';
             els.dashboardView.classList.remove('active');
             els.logoutBtn.style.display = 'none';
+            if (els.masterDataOpenBtn) els.masterDataOpenBtn.style.display = 'none';
+            closeMasterDataModal();
             els.standardFields.style.display = 'block';
             els.faFields.style.display = 'none';
             els.loginBtn.innerText = 'LOGIN';
@@ -573,6 +499,7 @@ const els = {
                 renderAccountStrip(data.account);
                 closeCareerModal();
             } catch (e) {
+                flashError(e, 'Career delete failed', 5000);
                 els.careerModalCopy.innerText = e.message || 'Delete failed';
                 els.careerDeleteBtn.innerText = 'RETRY';
                 state.isDeletingCareer = false;
@@ -583,6 +510,44 @@ const els = {
         els.careerModal.addEventListener('click', event => {
             if (event.target === els.careerModal) closeCareerModal();
         });
+        let masterDataOutsideDown = null;
+        function onMasterDataEscapeKey(ev) {
+            if (ev.key === 'Escape') closeMasterDataModal();
+        }
+        function closeMasterDataModal() {
+            if (!els.masterDataAnchor || !els.masterDataAnchor.classList.contains('is-open')) return;
+            els.masterDataAnchor.classList.remove('is-open');
+            if (els.masterDataOpenBtn) els.masterDataOpenBtn.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('keydown', onMasterDataEscapeKey, true);
+            if (masterDataOutsideDown) {
+                document.removeEventListener('mousedown', masterDataOutsideDown, true);
+                masterDataOutsideDown = null;
+            }
+        }
+        function openMasterDataModal(ev) {
+            if (ev) ev.stopPropagation();
+            if (!els.masterDataAnchor || !els.masterDataModal) return;
+            if (els.masterDataAnchor.classList.contains('is-open')) {
+                closeMasterDataModal();
+                return;
+            }
+            els.masterDataAnchor.classList.add('is-open');
+            if (els.masterDataOpenBtn) els.masterDataOpenBtn.setAttribute('aria-expanded', 'true');
+            loadMasterDataStatus();
+            document.addEventListener('keydown', onMasterDataEscapeKey, true);
+            setTimeout(() => {
+                masterDataOutsideDown = e => {
+                    if (els.masterDataAnchor && !els.masterDataAnchor.contains(e.target)) closeMasterDataModal();
+                };
+                document.addEventListener('mousedown', masterDataOutsideDown, true);
+            }, 0);
+            window.requestAnimationFrame(() => {
+                if (els.masterDataPath) els.masterDataPath.focus();
+            });
+        }
+        if (els.masterDataOpenBtn) {
+            els.masterDataOpenBtn.addEventListener('click', openMasterDataModal);
+        }
         function syncBurnClocksControls() {
             if (!els.burnClocksBtn) return;
             const clocks = state.account ? Number(state.account.clocks || 0) : 0;
@@ -608,6 +573,20 @@ const els = {
             if (state.runner && state.runner.running) return;
             const stored = readLocalSetting(localStorage.getItem(burnClocksStorageKey));
             if (stored !== null) setBurnClocks(stored);
+        }
+
+        function syncTbLockSummersControls() {
+            if (!els.tbLockSummersCheckbox) return;
+            els.tbLockSummersCheckbox.checked = state.tbLockSummers;
+        }
+        function setTbLockSummers(value, options = {}) {
+            state.tbLockSummers = Boolean(value);
+            syncTbLockSummersControls();
+            if (options.persist) writeLocalSetting(tbLockSummersStorageKey, state.tbLockSummers);
+        }
+        function loadStoredTbLockSummers() {
+            const stored = readLocalSetting(localStorage.getItem(tbLockSummersStorageKey));
+            if (stored !== null) setTbLockSummers(stored);
         }
 
         function renderAccountStrip(account) {
@@ -653,6 +632,8 @@ const els = {
             if (careerPill) careerPill.addEventListener('click', openCareerModal);
             loadStoredBurnClocks();
             syncBurnClocksControls();
+            loadStoredTbLockSummers();
+            syncTbLockSummersControls();
         }
 
         els.burnClocksBtn.addEventListener('click', async () => {
@@ -667,12 +648,16 @@ const els = {
                     if (!data.success) throw new Error(data.detail || 'Failed to update burn_clocks');
                     if (data.runner) applyRunnerSnapshot(data.runner);
                 } catch (e) {
-                    console.error("Failed to update burn_clocks mid-run", e);
+                    flashError(e, 'Burn clocks update failed', 4500);
                     if (state.runner && state.runner.burn_clocks !== undefined) {
                         setBurnClocks(state.runner.burn_clocks, { persist: true });
                     }
                 }
             }
+        });
+
+        els.tbLockSummersCheckbox?.addEventListener('change', () => {
+            setTbLockSummers(!state.tbLockSummers, { persist: true });
         });
 
         const rankMap = {
@@ -683,6 +668,96 @@ const els = {
         };
         let dashData = null;
         const selection = { deck: null, friend: null, trainee: null, veterans: [] };
+        let currentStep = 0;
+        const steps = ['trainee', 'veterans', 'deck', 'friend'];
+        /** When set, selection modal shows this picker without clearing team board first. */
+        let selectionModalFocus = null;
+        /** Parent slot index (0 or 1) when selectionModalFocus === 'parent'. */
+        let selectionModalVetSlot = null;
+        
+        function normalizedCardName(value) {
+            return String(value || '').toLowerCase().replace(/\([^)]*\)/g, '').replace(/[^a-z0-9]+/g, '');
+        }
+
+        function canSelectTrainee(trainee) {
+            if (!trainee) return false;
+            // Can always select trainee on first step
+            return true;
+        }
+
+        function canSelectParent(parent, options = {}) {
+            if (!parent) return true;
+            if (!selection.trainee) return true;
+            const ignoreVetSlotIndex = options.ignoreVetSlotIndex;
+            
+            const traineeNorm = normalizedCardName(selection.trainee.name);
+            const parentNorm = normalizedCardName(parent.name);
+            
+            // Can't select trainee as parent
+            if (traineeNorm === parentNorm) return false;
+            
+            // Can't select same parent twice
+            for (let vi = 0; vi < selection.veterans.length; vi++) {
+                if (ignoreVetSlotIndex != null && vi === ignoreVetSlotIndex) continue;
+                const vet = selection.veterans[vi];
+                if (!vet) continue;
+                const vetNorm = normalizedCardName(vet.name);
+                if (parentNorm === vetNorm) return false;
+            }
+            
+            // Can't select if in deck
+            if (selection.deck) {
+                const deckNames = new Set(selection.deck.cards.map(card => normalizedCardName(card.name)));
+                if (deckNames.has(parentNorm)) return false;
+            }
+            
+            return true;
+        }
+
+        function canSelectDeck(deck) {
+            if (!deck) return false;
+            if (!selection.trainee) return true;
+            
+            const traineeName = normalizedCardName(selection.trainee.name);
+            
+            // Can't select deck containing trainee
+            const deckHasSame = deck.cards.some(card => normalizedCardName(card.name) === traineeName);
+            if (deckHasSame) return false;
+            
+            // Can't select deck if any card is a selected parent
+            const deckCardNames = new Set(deck.cards.map(card => normalizedCardName(card.name)));
+            for (const vet of selection.veterans) {
+                const vetNorm = normalizedCardName(vet.name);
+                if (deckCardNames.has(vetNorm)) return false;
+            }
+            
+            // Can't select deck if any card is friend support
+            if (selection.friend) {
+                const friendNorm = normalizedCardName(selection.friend.support_name);
+                if (deckCardNames.has(friendNorm)) return false;
+            }
+            
+            return true;
+        }
+
+        function canSelectFriend(friend) {
+            if (!friend) return false;
+            if (!selection.trainee) return true;
+            
+            const traineeName = normalizedCardName(selection.trainee.name);
+            const friendName = normalizedCardName(friend.support_name);
+            
+            // Can't select if is trainee
+            if (traineeName === friendName) return false;
+            
+            // Can't select if in deck
+            if (selection.deck) {
+                const deckNames = new Set(selection.deck.cards.map(card => normalizedCardName(card.name)));
+                if (deckNames.has(friendName)) return false;
+            }
+            
+            return true;
+        }
         
         async function syncSelectionToServer() {
             try {
@@ -697,7 +772,9 @@ const els = {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ selection: payload })
                 });
-            } catch (e) {}
+            } catch (e) {
+                flashError(e, 'Selection sync failed', 4000);
+            }
         }
 
         function deselect(action, idx) {
@@ -742,6 +819,155 @@ const els = {
                 .map(key => Number(parent.tree[key] && parent.tree[key].card_id))
                 .filter(Boolean);
         }
+        /** Hint / “white” skill factors (○) — not red inheritance skills */
+        function isHintWhiteSkillFactor(factor) {
+            const name = String(factor.name || '');
+            return name.includes('○') || name.includes('◯');
+        }
+        function includeInheritanceSparkFactor(factor) {
+            const cat = String(factor.category || '');
+            if (cat !== 'stat' && cat !== 'aptitude' && cat !== 'skill' && cat !== 'unique') return false;
+            if (cat === 'skill' && isHintWhiteSkillFactor(factor)) return false;
+            return Math.max(0, Math.min(9, Number(factor.stars) || 0)) > 0;
+        }
+        function filterInheritanceSparkFactors(factors) {
+            return (factors || []).filter(includeInheritanceSparkFactor);
+        }
+        /** Team board strip: stat / aptitude / unique only (no generic skills). */
+        function includeTeamBoardInlineFactor(factor) {
+            const cat = String(factor.category || '');
+            if (cat !== 'stat' && cat !== 'aptitude' && cat !== 'unique') return false;
+            return Math.max(0, Math.min(9, Number(factor.stars) || 0)) > 0;
+        }
+        const TEAM_BOARD_SPARK_ORDER = { stat: 1, aptitude: 2, unique: 3 };
+        /** Trainee base aptitudes from master.mdb (letters G–A); order matches game strip. */
+        const TRAINEE_APT_ORDER = ['Sprint', 'Mile', 'Medium', 'Long', 'Turf', 'Dirt'];
+        /**
+         * Red aptitude sparks for preview: each selected parent P contributes only P + P’s two parents
+         * (tree self + p1 + p2), not grandparents-of-grandparents. Same for the second parent.
+         */
+        const PARENT_RED_SPARK_TRIAD_KEYS = ['self', 'p1', 'p2'];
+        const RED_APTITUDE_STAR_CAP = 9;
+
+        const APT_RANK_TO_LETTER = ['', 'G', 'F', 'E', 'D', 'C', 'B', 'A', 'S'];
+
+        function aptitudeLetterRank(letter) {
+            const ch = String(letter || '').toUpperCase().replace(/[^SABCDEFG]/g, '').slice(0, 1);
+            if (!ch) return 0;
+            const idx = 'GFEDCBA'.indexOf(ch);
+            if (idx >= 0) return idx + 1;
+            if (ch === 'S') return 8;
+            return 0;
+        }
+
+        /** Distance / surface (red) ★ after cap; pre-run rank steps (max pool 9 → top tier at 9). */
+        function parentRedStarsToRankUps(starTotal) {
+            const n = Math.min(RED_APTITUDE_STAR_CAP, Math.max(0, Number(starTotal) || 0));
+            if (n >= 9) return 4;
+            if (n >= 7) return 3;
+            if (n >= 4) return 2;
+            if (n >= 1) return 1;
+            return 0;
+        }
+
+        /** Red sparks = aptitude category matching displayed distance/surface labels (not running style). */
+        function isRedTraineeAptitudeFactor(factor) {
+            if (String(factor.category || '') !== 'aptitude') return false;
+            const name = String(factor.name || '');
+            return TRAINEE_APT_ORDER.includes(name);
+        }
+
+        function sumRedAptitudeStarsByLabel(veterans) {
+            const totals = Object.create(null);
+            for (const vet of veterans || []) {
+                if (!vet || !vet.tree) continue;
+                for (const tk of PARENT_RED_SPARK_TRIAD_KEYS) {
+                    const node = vet.tree[tk];
+                    if (!node || !node.factors) continue;
+                    for (const f of filterInheritanceSparkFactors(node.factors)) {
+                        if (!isRedTraineeAptitudeFactor(f)) continue;
+                        const stars = Math.max(0, Math.min(9, Number(f.stars) || 0));
+                        totals[f.name] = (totals[f.name] || 0) + stars;
+                    }
+                }
+            }
+            for (const key of TRAINEE_APT_ORDER) {
+                if (totals[key] == null) continue;
+                totals[key] = Math.min(RED_APTITUDE_STAR_CAP, totals[key]);
+            }
+            return totals;
+        }
+
+        /**
+         * Merge trainee base aptitudes with red (distance/surface) factor ★ from both parents’ triads.
+         * Caps at A before a run; S on trainee is left unchanged.
+         */
+        function computeTraineeAptitudesWithParentSparks(baseAptitudes, veterans) {
+            if (!baseAptitudes || typeof baseAptitudes !== 'object') return baseAptitudes;
+            const starsBy = sumRedAptitudeStarsByLabel(veterans);
+            const out = { ...baseAptitudes };
+            for (const key of TRAINEE_APT_ORDER) {
+                const letter = baseAptitudes[key];
+                if (!letter) continue;
+                const baseR = aptitudeLetterRank(letter);
+                if (!baseR) continue;
+                if (baseR >= 8) continue;
+                const st = starsBy[key] || 0;
+                const up = parentRedStarsToRankUps(st);
+                if (!up) continue;
+                const merged = Math.min(7, baseR + up);
+                if (merged !== baseR) out[key] = APT_RANK_TO_LETTER[merged];
+            }
+            return out;
+        }
+
+        function aptitudeGradeSpan(rawGrade, baseGradeOpt) {
+            const ch = String(rawGrade).toUpperCase().replace(/[^SABCDEFG]/g, '').slice(0, 1);
+            if (!ch) return '';
+            const safe = escapeHtml(ch);
+            let boosted = '';
+            if (baseGradeOpt != null && baseGradeOpt !== '') {
+                const br = aptitudeLetterRank(baseGradeOpt);
+                const nr = aptitudeLetterRank(ch);
+                if (nr > br) boosted = ' apt-letter-boosted';
+            }
+            return `<span class="apt-letter apt-letter-${ch}${boosted}">${safe}</span>`;
+        }
+
+        /** Plain text line; grade letters colored via .apt-letter-* */
+        function renderTraineeAptitudesHtml(aptitudes, options) {
+            if (!aptitudes || typeof aptitudes !== 'object') return '';
+            const compareBase = options && options.compareBase;
+            const parts = [];
+            for (const key of TRAINEE_APT_ORDER) {
+                const gr = aptitudes[key];
+                if (!gr) continue;
+                const name = escapeHtml(key);
+                const baseGr = compareBase && compareBase[key] != null ? compareBase[key] : null;
+                const grade = aptitudeGradeSpan(gr, baseGr);
+                if (!grade) continue;
+                parts.push(`${name} ${grade}`);
+            }
+            if (!parts.length) return '';
+            const tip = compareBase
+                ? ' title="Distance / surface preview from red factors (P + P’s parents per side, ★ sum cap 9, approx.)"'
+                : '';
+            return `<span class="team-item-sub trainee-apt-plain"${tip}>${parts.join(' · ')}</span>`;
+        }
+        /** Compact factor badges on parent row in Team board. */
+        function renderTeamBoardSparksInline(parent) {
+            const raw = (parent && parent.tree && parent.tree.self && parent.tree.self.factors) || [];
+            const filtered = [];
+            raw.forEach((factor, idx) => {
+                if (!includeTeamBoardInlineFactor(factor)) return;
+                const cat = String(factor.category || '');
+                filtered.push({ sort: (TEAM_BOARD_SPARK_ORDER[cat] || 99) * 1000 + idx, factor });
+            });
+            filtered.sort((a, b) => a.sort - b.sort);
+            if (!filtered.length) return '';
+            const factors = filtered.map(x => x.factor);
+            return `<div class="spark-factor-list">${renderFactors(factors)}</div>`;
+        }
         function getParentSelectionError() {
             if (!selection.trainee) return '';
             const traineeId = Number(selection.trainee.id);
@@ -768,9 +994,9 @@ const els = {
             document.getElementById('dashboard-view').classList.add('active');
             function setSlot(id, role, content, action, idx, emptyText = 'select') {
                 const el = document.getElementById(id);
+                if (!el) return;
                 el.className = content ? 'team-item filled' : 'team-item';
-                el.onclick = content ? () => deselect(action, idx) : null;
-                const clear = content ? '<span class="team-item-clear">clear</span>' : '';
+                const clear = content ? '<span class="team-item-clear">Change</span>' : '';
                 const empty = `<div class="team-item-empty">${emptyText}</div>`;
                 el.innerHTML = `
                     <div class="team-item-head">
@@ -779,7 +1005,20 @@ const els = {
                     </div>
                     ${content || empty}
                 `;
+                el.onclick = () => openEditMode(action, idx);
             }
+            
+            function openEditMode(action, idx) {
+                if (action === 'deck') selectionModalFocus = 'deck';
+                else if (action === 'friend') selectionModalFocus = 'friend';
+                else if (action === 'trainee') selectionModalFocus = 'trainee';
+                else if (action === 'vet') {
+                    selectionModalFocus = 'parent';
+                    selectionModalVetSlot = idx;
+                }
+                openSelectionModal();
+            }
+
             if (selection.deck) {
                 const thumbs = selection.deck.cards.map(c =>
                     `<img class="team-item-thumb" src="/api/images/${c.id || '10001'}.png" onerror="hideBrokenImage(this)">`
@@ -810,11 +1049,17 @@ const els = {
                 setSlot('team-slot-friend', 'Friend', null, 'friend', null, 'select friend');
             }
             if (selection.trainee) {
+                const baseApt = selection.trainee.aptitudes;
+                const previewApt = computeTraineeAptitudesWithParentSparks(baseApt, selection.veterans);
+                const aptHtml = renderTraineeAptitudesHtml(previewApt, {
+                    compareBase: selection.veterans.length ? baseApt : null
+                });
                 setSlot('team-slot-trainee', 'Trainee', `
                     <div class="team-item-body">
                         <img class="team-item-portrait" src="/api/images/${selection.trainee.id || '100101'}.png" onerror="hideBrokenImage(this)">
                         <div class="team-item-text">
                             <span class="team-item-name">${selection.trainee.name || 'Unknown'}</span>
+                            ${aptHtml ? aptHtml : ''}
                         </div>
                     </div>
                 `, 'trainee', null, 'select trainee');
@@ -829,12 +1074,14 @@ const els = {
                             <img class="team-item-portrait" src="/api/images/${vet.card_id || '100101'}.png" onerror="hideBrokenImage(this)">
                             <div class="team-item-text">
                                 <span class="team-item-name">${vet.name || 'Unknown'}</span>
-                                <span class="team-item-sub">${rankMap[vet.rank] || '??'}</span>
+                                <span class="team-item-sub team-item-sub-parent">
+                                    ${renderTeamBoardSparksInline(vet)}
+                                </span>
                             </div>
                         </div>
-                    `, 'vet', i, 'select parent');
+                    `, 'vet', i, i === 0 ? 'select first parent' : 'select second parent');
                 } else {
-                    setSlot(id, `Parent ${i + 1}`, null, 'vet', i, 'select parent');
+                    setSlot(id, `Parent ${i + 1}`, null, 'vet', i, i === 0 ? 'select first parent' : 'select second parent');
                 }
             });
             syncStartButton();
@@ -853,6 +1100,174 @@ const els = {
         function clampValue(value, min, max) {
             return Math.min(Math.max(value, min), max);
         }
+
+        function renderFactors(factors) {
+            const star = String.fromCharCode(9733);
+            return (factors || []).map(factor => {
+                const cat = String(factor.category || 'other').replace(/[^a-z0-9_-]/gi, '') || 'other';
+                return `
+                <div class="factor-badge f-${cat}">
+                    ${escapeHtml(factor.name)} <span class="stars">${star.repeat(Math.max(0, Math.min(9, Number(factor.stars) || 0)))}</span>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function renderWins(wins) {
+            if (!wins || !wins.total) return '<span class="spark-win-chip">Wins --</span>';
+            return `
+                <span class="spark-win-chip">G1 ${wins.g1 || 0}</span>
+                <span class="spark-win-chip">G2 ${wins.g2 || 0}</span>
+                <span class="spark-win-chip">G3 ${wins.g3 || 0}</span>
+            `;
+        }
+
+        /** Spark preview in parent picker: self + two parents only (no grandparents). */
+        const PARENT_SPARK_FLYOUT_KEYS = ['self', 'p1', 'p2'];
+
+        function buildSparkTreeNodeHtml(key, node, fallbackImgId) {
+            if (!node || !node.factors || !node.factors.length) return '';
+            const displayFactors = filterInheritanceSparkFactors(node.factors);
+            if (!displayFactors.length) return '';
+            const nodeImg = node.card_id || fallbackImgId;
+            const nodeClass = key === 'self' ? 'spark-node spark-node-self' : 'spark-node';
+            return `<div class="${nodeClass}" style="--node-bg: url('/api/images/${nodeImg}.png')">
+                    <div class="spark-node-header">
+                        <img class="spark-node-portrait" src="/api/images/${nodeImg}.png" onerror="hideBrokenImage(this)">
+                        <div class="spark-node-meta">
+                            <div class="spark-node-title">${escapeHtml(node.name || `Card ${node.card_id || '?'}`)}</div>
+                            <div class="spark-win-row">${renderWins(node.wins)}</div>
+                        </div>
+                    </div>
+                    <div class="spark-factor-list">
+                        ${renderFactors(displayFactors)}
+                    </div>
+                </div>`;
+        }
+
+        function renderParentSparkTree(parent, fallbackImgId, keys = PARENT_SPARK_FLYOUT_KEYS) {
+            const tree = parent.tree || {};
+            const parts = keys.map(key => buildSparkTreeNodeHtml(key, tree[key], fallbackImgId)).filter(Boolean);
+            if (!parts.length) return '';
+            return `<div class="sparks-lineage-grid">${parts.join('')}</div>`;
+        }
+
+        const PARENT_SPARK_FLYOUT_MS = 280;
+
+        let parentSparkFlyoutHideTimer = 0;
+        let parentSparkFlyoutOnTransitionEnd = null;
+
+        function parentSparkFlyoutElements() {
+            return {
+                shell: document.getElementById('selection-modal-shell'),
+                container: document.getElementById('selection-modal-container'),
+                fly: document.getElementById('parent-spark-flyout'),
+                body: document.getElementById('parent-spark-flyout-body')
+            };
+        }
+
+        function cancelParentSparkFlyoutTransition() {
+            if (parentSparkFlyoutHideTimer) {
+                window.clearTimeout(parentSparkFlyoutHideTimer);
+                parentSparkFlyoutHideTimer = 0;
+            }
+            if (parentSparkFlyoutOnTransitionEnd) {
+                const { fly, handler } = parentSparkFlyoutOnTransitionEnd;
+                if (fly && handler) fly.removeEventListener('transitionend', handler);
+                parentSparkFlyoutOnTransitionEnd = null;
+            }
+        }
+
+        function collapseParentSparkFlyoutDom() {
+            const { fly, body } = parentSparkFlyoutElements();
+            if (!fly) return;
+            fly.classList.remove('parent-spark-flyout--open');
+            fly.setAttribute('aria-hidden', 'true');
+            if (body) {
+                body.hidden = true;
+                body.innerHTML = '';
+            }
+        }
+
+        function collapseParentSparkFlyoutImmediate() {
+            cancelParentSparkFlyoutTransition();
+            collapseParentSparkFlyoutDom();
+        }
+
+        function collapseParentSparkFlyoutAnimated() {
+            const { fly } = parentSparkFlyoutElements();
+            if (!fly || !fly.classList.contains('parent-spark-flyout--open')) {
+                collapseParentSparkFlyoutImmediate();
+                return;
+            }
+            cancelParentSparkFlyoutTransition();
+            fly.classList.remove('parent-spark-flyout--open');
+
+            let settled = false;
+            const finish = () => {
+                if (settled) return;
+                settled = true;
+                cancelParentSparkFlyoutTransition();
+                collapseParentSparkFlyoutDom();
+            };
+
+            const handler = event => {
+                if (event.target !== fly || event.propertyName !== 'opacity') return;
+                finish();
+            };
+            fly.addEventListener('transitionend', handler);
+            parentSparkFlyoutOnTransitionEnd = { fly, handler };
+
+            parentSparkFlyoutHideTimer = window.setTimeout(finish, PARENT_SPARK_FLYOUT_MS + 60);
+        }
+
+        function expandParentSparkFlyout(html) {
+            const { fly, body } = parentSparkFlyoutElements();
+            if (!fly || !body) return;
+            cancelParentSparkFlyoutTransition();
+            body.innerHTML = html;
+            body.hidden = false;
+            const wasOpen = fly.classList.contains('parent-spark-flyout--open');
+            fly.setAttribute('aria-hidden', 'false');
+            if (!wasOpen) {
+                fly.classList.remove('parent-spark-flyout--open');
+                void fly.offsetWidth;
+                window.requestAnimationFrame(() => fly.classList.add('parent-spark-flyout--open'));
+            }
+        }
+
+        function syncParentSparkFlyoutStep(isParentStep) {
+            if (!isParentStep) collapseParentSparkFlyoutImmediate();
+        }
+
+        function resetParentSparkFlyout() {
+            collapseParentSparkFlyoutImmediate();
+        }
+
+        function updateParentSparkFlyoutFromParent(parent) {
+            const { body } = parentSparkFlyoutElements();
+            if (!body) return;
+            const imgId = parent.card_id || '100101';
+            const html = renderParentSparkTree(parent, imgId, PARENT_SPARK_FLYOUT_KEYS);
+            if (!html) {
+                collapseParentSparkFlyoutAnimated();
+                return;
+            }
+            expandParentSparkFlyout(html);
+        }
+
+        function ensureParentSparkFlyoutHandlers() {
+            const { shell } = parentSparkFlyoutElements();
+            if (!shell || shell.dataset.sparkFlyoutBound === '1') return;
+            shell.dataset.sparkFlyoutBound = '1';
+            shell.addEventListener('mouseleave', event => {
+                const fly = document.getElementById('parent-spark-flyout');
+                if (!fly || !fly.classList.contains('parent-spark-flyout--open')) return;
+                if (shell.contains(event.relatedTarget)) return;
+                collapseParentSparkFlyoutAnimated();
+            });
+        }
+
         let activeSparkCard = null;
         let activeSparkTooltip = null;
         function positionSparkTooltip(card, tooltip = card.querySelector('.sparks-tooltip')) {
@@ -866,8 +1281,17 @@ const els = {
             tooltip.style.setProperty('--tooltip-left', `${x}px`);
             tooltip.style.setProperty('--tooltip-top', `${y}px`);
         }
+        function disposeSparksTooltips() {
+            document.querySelectorAll('body > .sparks-tooltip').forEach(tooltip => {
+                tooltip.classList.remove('is-visible');
+                tooltip.remove();
+            });
+            activeSparkCard = null;
+            activeSparkTooltip = null;
+        }
+
         function bindSparkTooltips() {
-            document.querySelectorAll('body > .sparks-tooltip').forEach(tooltip => tooltip.remove());
+            disposeSparksTooltips();
             document.querySelectorAll('#parent-grid .grid-card').forEach(card => {
                 const tooltip = card.querySelector('.sparks-tooltip');
                 if (!tooltip) return;
@@ -900,6 +1324,404 @@ const els = {
         window.addEventListener('resize', () => {
             if (activeSparkCard && activeSparkTooltip) positionSparkTooltip(activeSparkCard, activeSparkTooltip);
         });
+        function getStepSubtitle() {
+            if (selectionModalFocus === 'trainee') return 'Select trainee';
+            if (selectionModalFocus === 'parent') {
+                if (selectionModalVetSlot === 0) return 'Select first parent';
+                if (selectionModalVetSlot === 1) return 'Select second parent';
+                return 'Select parent';
+            }
+            if (selectionModalFocus === 'deck') return 'Select deck';
+            if (selectionModalFocus === 'friend') return 'Select friend support';
+            if (!selection.trainee) return 'Step 1: Choose trainee';
+            if (selection.veterans.length < 2) return `Step 2: Choose 2 parents (${selection.veterans.length}/2)`;
+            if (!selection.deck) return 'Step 3: Choose deck';
+            if (!selection.friend) return 'Step 4: Choose friend support';
+            return 'All slots filled';
+        }
+
+        function openSelectionModal() {
+            if (!els.selectionModalBackdrop) return;
+            renderSelectionModal();
+            const container = els.selectionModalBackdrop.querySelector('.selection-modal-container');
+            if (container) {
+                container.style.left = '';
+                container.style.top = '';
+            }
+            els.selectionModalBackdrop.classList.add('visible');
+        }
+
+        function closeSelectionModal() {
+            if (!els.selectionModalBackdrop) return;
+            els.selectionModalBackdrop.classList.remove('visible');
+            disposeSparksTooltips();
+            collapseParentSparkFlyoutImmediate();
+            selectionModalFocus = null;
+            selectionModalVetSlot = null;
+        }
+
+        function setupSelectionModalHandlers() {
+            if (els.selectionModalBackdrop) {
+                els.selectionModalBackdrop.addEventListener('click', event => {
+                    if (event.target === els.selectionModalBackdrop) closeSelectionModal();
+                });
+            }
+            if (els.selectionModalClose) {
+                els.selectionModalClose.addEventListener('click', closeSelectionModal);
+            }
+        }
+
+        function showFlash(message, type = 'success', duration = 3000) {
+            if (!els.flashContainer) return;
+            const flash = document.createElement('div');
+            flash.className = `flash-message ${type}`;
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠'
+            };
+            flash.innerHTML = `
+                <span class="flash-icon">${icons[type] || '•'}</span>
+                <span>${escapeHtml(message)}</span>
+            `;
+            els.flashContainer.appendChild(flash);
+            if (duration > 0) {
+                window.setTimeout(() => {
+                    flash.classList.add('removing');
+                    window.setTimeout(() => flash.remove(), 160);
+                }, duration);
+            }
+        }
+
+        function formatAppError(reason, fallback = 'Error') {
+            if (reason == null || reason === '') return fallback;
+            if (typeof reason === 'string') return reason || fallback;
+            if (typeof reason === 'object') {
+                if (reason.detail != null && reason.detail !== '') {
+                    return typeof reason.detail === 'string' ? reason.detail : String(reason.detail);
+                }
+                if (reason.message) return String(reason.message);
+            }
+            const s = String(reason);
+            return s && s !== '[object Object]' ? s : fallback;
+        }
+
+        function flashError(reason, fallback = 'Error', duration = 5000) {
+            showFlash(formatAppError(reason, fallback), 'error', duration);
+        }
+
+        function syncFriendModalHeader() {
+            const friends = (dashData && dashData.friends) || [];
+            const visibleFriends = getVisibleFriends();
+            if (els.friendCount) {
+                els.friendCount.textContent = `(${visibleFriends.length}/${friends.length})`;
+            }
+            if (els.friendRefreshBtn) {
+                els.friendRefreshBtn.disabled = Boolean(state.isFetchingFriends);
+            }
+        }
+
+        function renderSelectionModal() {
+            const modal = document.getElementById('selection-modal');
+            const subtitle = document.getElementById('step-subtitle');
+            if (!modal) return;
+
+            disposeSparksTooltips();
+
+            subtitle.textContent = getStepSubtitle();
+
+            const focus = selectionModalFocus;
+            const showTrainee = focus === 'trainee' || (!focus && !selection.trainee);
+            const showParent = focus === 'parent' || (!focus && selection.trainee && selection.veterans.length < 2);
+            const showDeck = focus === 'deck' || (!focus && selection.trainee && selection.veterans.length >= 2 && !selection.deck);
+            const showFriend = focus === 'friend' || (!focus && selection.deck && !selection.friend);
+
+            const friendToolbar = document.getElementById('selection-modal-friend-toolbar');
+            if (friendToolbar) friendToolbar.hidden = !showFriend;
+            if (showFriend) syncFriendModalHeader();
+
+            if (showTrainee) {
+                renderTraineeSelection(modal);
+            } else if (showParent) {
+                renderParentSelection(modal);
+            } else if (showDeck) {
+                renderDeckSelection(modal);
+            } else if (showFriend) {
+                renderFriendSelection(modal);
+            } else {
+                modal.innerHTML = '';
+                if (els.selectionModalBackdrop && els.selectionModalBackdrop.classList.contains('visible')) {
+                    closeSelectionModal();
+                    if (!focus) showFlash('Team ready', 'success', 2200);
+                }
+            }
+            syncParentSparkFlyoutStep(showParent);
+        }
+
+        function renderTraineeSelection(modal) {
+            const umas = dashData.umas || [];
+            modal.innerHTML = `
+                <div class="selection-grid">
+                    ${umas.map((uma, idx) => {
+                        const imgId = uma.id || '100101';
+                        const canSelect = canSelectTrainee(uma);
+                        return `
+                            <div class="selection-card ${canSelect ? 'selectable' : 'disabled'}" data-trainee-idx="${idx}">
+                                <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
+                                <div class="selection-card-overlay">
+                                    <span class="selection-card-name">${uma.name || 'Unknown'}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            document.querySelectorAll('[data-trainee-idx]').forEach(card => {
+                const idx = Number(card.dataset.traineeIdx);
+                const uma = umas[idx];
+                const canSelect = canSelectTrainee(uma);
+                if (canSelect) {
+                    card.addEventListener('click', () => selectTraineeStep(idx));
+                }
+            });
+        }
+
+        function renderParentSelection(modal) {
+            resetParentSparkFlyout();
+            const parents = dashData.parents || [];
+            const selected = new Set(selection.veterans.map(v => v._gridIdx));
+            const replaceVetSlot = (selectionModalFocus === 'parent' && selectionModalVetSlot != null)
+                ? selectionModalVetSlot
+                : null;
+            modal.innerHTML = `
+                <div class="selection-grid">
+                    ${parents.map((parent, idx) => {
+                        const imgId = parent.card_id || '100101';
+                        const isCurrentReplaceSlot = replaceVetSlot != null
+                            && selection.veterans[replaceVetSlot]
+                            && selection.veterans[replaceVetSlot]._gridIdx === idx;
+                        const isOtherSelectedParent = selected.has(idx) && !isCurrentReplaceSlot;
+                        let canSelect;
+                        if (replaceVetSlot != null) {
+                            if (isCurrentReplaceSlot) canSelect = true;
+                            else if (isOtherSelectedParent) canSelect = false;
+                            else canSelect = canSelectParent(parent, { ignoreVetSlotIndex: replaceVetSlot });
+                        } else {
+                            canSelect = canSelectParent(parent) && !selected.has(idx);
+                        }
+                        const isSelected = selected.has(idx);
+                        const lineActive = replaceVetSlot != null
+                            ? (canSelect || isCurrentReplaceSlot)
+                            : (canSelect || isSelected);
+                        return `
+                            <div class="selection-card ${isSelected ? 'selected' : ''} ${lineActive ? 'selectable' : 'disabled'}" 
+                                 data-parent-idx="${idx}">
+                                <div class="rank-badge">${escapeHtml(rankMap[parent.rank] || '??')}</div>
+                                <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
+                                <div class="selection-card-overlay">
+                                    <span class="selection-card-sub">ID: ${parent.instance_id || '?'}</span>
+                                    <span class="selection-card-name">${parent.name || 'Unknown'}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            document.querySelectorAll('[data-parent-idx]').forEach(card => {
+                const idx = Number(card.dataset.parentIdx);
+                const parent = parents[idx];
+                const isCurrentReplaceSlot = replaceVetSlot != null
+                    && selection.veterans[replaceVetSlot]
+                    && selection.veterans[replaceVetSlot]._gridIdx === idx;
+                const isOtherSelectedParent = selected.has(idx) && !isCurrentReplaceSlot;
+                let clickable;
+                if (replaceVetSlot != null) {
+                    if (isCurrentReplaceSlot) clickable = true;
+                    else if (isOtherSelectedParent) clickable = false;
+                    else clickable = canSelectParent(parent, { ignoreVetSlotIndex: replaceVetSlot });
+                } else {
+                    clickable = (canSelectParent(parent) && !selected.has(idx)) || selected.has(idx);
+                }
+                if (clickable) {
+                    card.addEventListener('click', () => selectParentStep(idx));
+                }
+            });
+            document.querySelectorAll('[data-parent-idx].selectable').forEach(card => {
+                const idx = Number(card.dataset.parentIdx);
+                const parent = parents[idx];
+                if (!parent) return;
+                card.addEventListener('mouseenter', () => updateParentSparkFlyoutFromParent(parent));
+            });
+        }
+
+        function renderDeckSelection(modal) {
+            const decks = dashData.validDecks || [];
+            modal.innerHTML = `
+                <div class="selection-grid deck-selection-grid">
+                    ${decks.map((deck, idx) => {
+                        const canSelect = canSelectDeck(deck);
+                        const cards = deck.cards.map(c =>
+                            `<img class="deck-thumb" src="/api/images/${c.id || '10001'}.png" onerror="hideBrokenImage(this)">`
+                        ).join('');
+                        return `
+                            <div class="selection-card deck-selection-card ${canSelect ? 'selectable' : 'disabled'}" 
+                                 data-deck-idx="${idx}">
+                                <div class="deck-selection-thumbs">${cards}</div>
+                                <div class="selection-card-overlay">
+                                    <span class="selection-card-sub">Slot ${deck.id}</span>
+                                    <span class="selection-card-name">${deck.name}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            document.querySelectorAll('[data-deck-idx]').forEach(card => {
+                const idx = Number(card.dataset.deckIdx);
+                const deck = decks[idx];
+                const canSelect = canSelectDeck(deck);
+                if (canSelect) {
+                    card.addEventListener('click', () => selectDeckStep(idx));
+                }
+            });
+        }
+
+        function renderFriendSelection(modal) {
+            const friends = getVisibleFriends();
+            modal.innerHTML = `
+                <div class="selection-grid">
+                    ${friends.map((friend, idx) => {
+                        const imgId = friend.support_card_id || '10001';
+                        const lb = friend.limit_break_count ?? '?';
+                        return `
+                            <div class="selection-card selectable" data-friend-idx="${idx}">
+                                <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
+                                <div class="selection-card-overlay">
+                                    <span class="selection-card-sub">${friend.type || '?'} | LB${lb}</span>
+                                    <span class="selection-card-name">${friend.support_name || 'Unknown'}</span>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            document.querySelectorAll('[data-friend-idx]').forEach(card => {
+                const idx = Number(card.dataset.friendIdx);
+                card.addEventListener('click', () => selectFriendStep(idx));
+            });
+        }
+
+        function selectTraineeStep(idx) {
+            selection.trainee = dashData.umas[idx];
+            const traineeName = normalizedCardName(selection.trainee.name);
+            
+            // Clear deck if it contains the new trainee
+            if (selection.deck) {
+                const deckHasSame = selection.deck.cards.some(card => normalizedCardName(card.name) === traineeName);
+                if (deckHasSame) {
+                    selection.deck = null;
+                }
+            }
+            
+            // Clear friend if it's the same as trainee
+            if (selection.friend) {
+                const friendName = normalizedCardName(selection.friend.support_name);
+                if (traineeName === friendName) {
+                    selection.friend = null;
+                }
+            }
+            
+            // Clear any parents that are the same as trainee
+            selection.veterans = selection.veterans.filter(vet => {
+                return normalizedCardName(vet.name) !== traineeName;
+            });
+            
+            renderTeamPanel();
+            if (selectionModalFocus === 'trainee') closeSelectionModal();
+            else renderSelectionModal();
+            syncSelectionToServer();
+        }
+
+        function selectParentStep(idx) {
+            const vet = dashData.parents[idx];
+            const replaceVetSlot = (selectionModalFocus === 'parent' && selectionModalVetSlot != null)
+                ? selectionModalVetSlot
+                : null;
+
+            if (replaceVetSlot != null) {
+                const atSlot = selection.veterans[replaceVetSlot];
+                if (atSlot && atSlot._gridIdx === idx) {
+                    closeSelectionModal();
+                    return;
+                }
+                if (!canSelectParent(vet, { ignoreVetSlotIndex: replaceVetSlot })) return;
+                const next = selection.veterans.slice();
+                for (let i = 0; i < next.length; i++) {
+                    if (i !== replaceVetSlot && next[i] && next[i]._gridIdx === idx) {
+                        next[i] = undefined;
+                    }
+                }
+                while (next.length <= replaceVetSlot) next.push(undefined);
+                vet._gridIdx = idx;
+                next[replaceVetSlot] = vet;
+                selection.veterans = next.filter(v => v != null);
+                updateVetSelectability();
+                renderTeamPanel();
+                if (selectionModalFocus === 'parent') closeSelectionModal();
+                else renderSelectionModal();
+                syncSelectionToServer();
+                return;
+            }
+
+            const existing = selection.veterans.find(v => v._gridIdx === idx);
+            if (existing) {
+                selection.veterans = selection.veterans.filter(v => v._gridIdx !== idx);
+            } else if (selection.veterans.length < 2) {
+                // Validate parent can be selected
+                if (canSelectParent(vet)) {
+                    vet._gridIdx = idx;
+                    selection.veterans.push(vet);
+                }
+            }
+            renderTeamPanel();
+            renderSelectionModal();
+            syncSelectionToServer();
+        }
+
+        function selectDeckStep(idx) {
+            selection.deck = dashData.validDecks[idx];
+            
+            const deckCardNames = new Set(selection.deck.cards.map(card => normalizedCardName(card.name)));
+            
+            // Clear any parents that are in the new deck
+            selection.veterans = selection.veterans.filter(vet => {
+                return !deckCardNames.has(normalizedCardName(vet.name));
+            });
+            
+            // Clear friend if it's in the new deck
+            if (selection.friend) {
+                const friendName = normalizedCardName(selection.friend.support_name);
+                if (deckCardNames.has(friendName)) {
+                    selection.friend = null;
+                }
+            }
+            
+            renderTeamPanel();
+            if (selectionModalFocus === 'deck') closeSelectionModal();
+            else renderSelectionModal();
+            syncSelectionToServer();
+        }
+
+        function selectFriendStep(idx) {
+            const friends = getVisibleFriends();
+            selection.friend = friends[idx];
+            
+            renderTeamPanel();
+            if (selectionModalFocus === 'friend') closeSelectionModal();
+            else renderSelectionModal();
+            syncSelectionToServer();
+        }
+
         function friendKey(friend) {
             return `${friend.viewer_id}:${friend.support_card_id}`;
         }
@@ -994,9 +1816,20 @@ const els = {
                         state.selectedRaces = new Set(xguri.extra_race_list.map(id => parseInt(id)));
                     }
                 }
+                try {
+                    const tbRes = await fetch('/vendor/trackblazer/races.json');
+                    if (tbRes.ok) {
+                        const tb = await tbRes.json();
+                        state.trackblazerRacesList = Array.isArray(tb) ? tb : [];
+                    } else {
+                        state.trackblazerRacesList = [];
+                    }
+                } catch (e) {
+                    state.trackblazerRacesList = [];
+                }
                 renderRaces();
             } catch (e) {
-                console.error("Failed to load race data", e);
+                flashError(e, 'Race data load failed', 6000);
             }
         }
 
@@ -1019,6 +1852,12 @@ const els = {
         function raceKeys(race) {
             const keys = [race.id, ...(race.legacy_ids || [])];
             return keys.map(id => parseInt(id)).filter(id => Number.isFinite(id));
+        }
+
+        function findUmaRaceForSelectedId(selId) {
+            const id = typeof selId === 'number' ? selId : parseInt(selId, 10);
+            if (!Number.isFinite(id)) return null;
+            return state.raceData.find(r => raceKeys(r).includes(id)) || null;
         }
 
         function raceSelected(race) {
@@ -1066,6 +1905,39 @@ const els = {
                 block.appendChild(grid);
                 els.raceOptionsContent.appendChild(block);
             });
+            void refreshRaceScheduleMetrics();
+        }
+
+        function getRaceGradeColor(type) {
+            const gradeMap = {
+                'G1': '#4a8fd4',
+                'G2': '#d75b85',
+                'G3': '#3a8a4f',
+                'OP': '#d4a020',
+                'PRE-OP': '#d4a020'
+            };
+            return gradeMap[type] || '#6a6280';
+        }
+
+        function forEachUniqueSelectedUmaRace(callback) {
+            const seen = new Set();
+            for (const selId of state.selectedRaces) {
+                const uma = findUmaRaceForSelectedId(selId);
+                if (!uma || seen.has(uma.id)) continue;
+                seen.add(uma.id);
+                callback(uma);
+            }
+        }
+
+        function countGradeTiersFromSelection() {
+            let g1 = 0;
+            let g23 = 0;
+            forEachUniqueSelectedUmaRace(uma => {
+                const t = String(uma.type || '').toUpperCase().replace(/\s+/g, '');
+                if (t === 'G1') g1 += 1;
+                else if (t === 'G2' || t === 'G3') g23 += 1;
+            });
+            return { g1, g23 };
         }
 
         function openSlotPopup(slot, yearIdx) {
@@ -1126,7 +1998,279 @@ const els = {
                     })
                 });
             } catch (e) {
-                console.error("Auto-save failed:", e);
+                flashError(e, 'Race preset save failed', 6000);
+            }
+        }
+
+        async function refreshRaceSchedulePresetsList() {
+            try {
+                const data = await apiJson('/api/race-schedule-presets');
+                if (!data.success) {
+                    flashError(data.detail || data, 'Failed to load presets', 4000);
+                    return;
+                }
+                state.raceSchedulePresetsList = Array.isArray(data.presets) ? data.presets : [];
+                populateRaceSchedulePresetSelect();
+            } catch (e) {
+                flashError(e, 'Failed to load presets', 4000);
+            }
+        }
+
+        function populateRaceSchedulePresetSelect() {
+            const sel = els.raceSchedulePresetSelect;
+            if (!sel) return;
+            const prev = sel.value;
+            sel.innerHTML = '';
+            const head = document.createElement('option');
+            head.value = '';
+            head.textContent = '— preset —';
+            sel.appendChild(head);
+            for (const p of state.raceSchedulePresetsList) {
+                const o = document.createElement('option');
+                o.value = p.name;
+                o.textContent = p.name;
+                sel.appendChild(o);
+            }
+            if (prev && [...sel.options].some(opt => opt.value === prev)) {
+                sel.value = prev;
+            }
+        }
+
+        const TRACKBLAZER_FILL_BTN_LABEL = 'Auto-fill schedule';
+
+        /** If solver race names diverge from uma_race_data, add pairs: [nameInSolver, nameInSweepy]. */
+        const TRACKBLAZER_RACE_NAME_ALIASES = [
+            ['Japanese Derby (Tokyo Yushun)', 'Tokyo Yushun (Japanese Derby)']
+        ];
+
+        function parseUmaRaceYearPeriod(dateStr) {
+            const m = String(dateStr || '').match(/^(Junior|Classic|Senior) Year (.+)$/);
+            if (!m) return null;
+            return { year: m[1], period: m[2] };
+        }
+
+        function umaTypeToTrackblazerGrade(type) {
+            const t = String(type || '');
+            if (t === 'PRE-OP') return 'Pre-OP';
+            return t;
+        }
+
+        function solverRaceNameFromUmaName(umaName) {
+            for (const pair of TRACKBLAZER_RACE_NAME_ALIASES) {
+                if (pair && pair[1] === umaName) return pair[0];
+            }
+            return umaName;
+        }
+
+        function findTrackblazerRaceRow(year, period, solverName, umaName) {
+            const list = state.trackblazerRacesList;
+            if (!Array.isArray(list) || !list.length) return null;
+            const pick = n => list.find(r => r.year === year && r.period === period && r.name === n);
+            return pick(solverName) || pick(umaName) || null;
+        }
+
+        function buildTrackblazerRaceRowFromUma(uma) {
+            const parts = parseUmaRaceYearPeriod(uma.date);
+            if (!parts) return null;
+            const solverName = solverRaceNameFromUmaName(uma.name);
+            const tb = findTrackblazerRaceRow(parts.year, parts.period, solverName, uma.name);
+            const grade = umaTypeToTrackblazerGrade(uma.type);
+            const surf = String(uma.terrain || '') === 'Dirt' ? 'Dirt' : 'Turf';
+            return {
+                name: solverName,
+                grade,
+                distance: uma.distance,
+                surface: surf,
+                track: uma.venue || '',
+                length: tb && Number.isFinite(tb.length) ? tb.length : 0,
+                year: parts.year,
+                period: parts.period,
+                fans: tb && tb.fans != null ? tb.fans : undefined
+            };
+        }
+
+        async function refreshRaceScheduleMetrics() {
+            const rscTargets = [els.rscRaces, els.rscRaceStats, els.rscEpithetStats, els.rscFans];
+            const rssTargets = [els.rssRaces, els.rssRaceStats, els.rssEpithetStats, els.rssFans];
+            const setRscMetric = (idx, text) => {
+                const el = rscTargets[idx];
+                if (el) el.textContent = text;
+            };
+            const setRssMetric = (idx, text) => {
+                const el = rssTargets[idx];
+                if (el) el.textContent = text;
+            };
+            const { g1, g23 } = countGradeTiersFromSelection();
+            if (els.rscG1) els.rscG1.textContent = String(g1);
+            if (els.rscG23) els.rscG23.textContent = String(g23);
+
+            if (!els.rscRaces) return;
+            const rows = [];
+            for (const selId of state.selectedRaces) {
+                const uma = findUmaRaceForSelectedId(selId);
+                if (uma) {
+                    const row = buildTrackblazerRaceRowFromUma(uma);
+                    if (row) rows.push(row);
+                }
+            }
+            const zeros = () => {
+                setRscMetric(0, '0');
+                setRscMetric(1, '0');
+                setRscMetric(2, '0');
+                setRscMetric(3, '0');
+                setRssMetric(0, '0');
+                setRssMetric(1, '0');
+                setRssMetric(2, '0');
+                setRssMetric(3, '0');
+            };
+            if (!rows.length) {
+                zeros();
+                return;
+            }
+            try {
+                const mod = await import('/vendor/trackblazer/solver-browser.js');
+                const summary = await mod.summarizeScheduleTrackRaces(rows, mod.defaultSettings());
+                const races = String(summary.raceCount);
+                const stats = String(summary.raceStats);
+                const epithets = summary.epithetCount
+                    ? `${summary.epithetStatPoints} (${summary.epithetCount} epithets)`
+                    : String(summary.epithetStatPoints);
+                const fans = Number(summary.estimatedFans || 0).toLocaleString();
+                setRscMetric(0, races);
+                setRscMetric(1, stats);
+                setRscMetric(2, epithets);
+                setRscMetric(3, fans);
+                setRssMetric(0, races);
+                setRssMetric(1, stats);
+                setRssMetric(2, epithets);
+                setRssMetric(3, fans);
+            } catch (e) {
+                setRscMetric(0, '—');
+                setRscMetric(1, '—');
+                setRscMetric(2, '—');
+                setRscMetric(3, '—');
+                setRssMetric(0, '—');
+                setRssMetric(1, '—');
+                setRssMetric(2, '—');
+                setRssMetric(3, '—');
+            }
+        }
+
+        /** Same window order as getYearSlots / trackblazer YEARS × MONTHS × HALVES. */
+        function trackblazerDatePrefixFromWindowIndex(i) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const yearLabels = ['Junior Year', 'Classic Year', 'Senior Year'];
+            const yi = Math.floor(i / 24);
+            const slot = i % 24;
+            const monthIdx = Math.floor(slot / 2);
+            const isEarly = slot % 2 === 0;
+            const label = (isEarly ? 'Early ' : 'Late ') + months[monthIdx];
+            return `${yearLabels[yi]} ${label}`;
+        }
+
+        function normalizeGradeForTrackblazerMatch(s) {
+            return String(s || '').toUpperCase().replace(/-/g, '').replace(/\s+/g, '');
+        }
+
+        function normalizeSolverAptitudeLetter(letter) {
+            const ch = String(letter || '').toUpperCase().replace(/[^SABCDEFG]/g, '').slice(0, 1);
+            return ch || 'G';
+        }
+
+        function resolveTrackblazerRaceName(name) {
+            for (const pair of TRACKBLAZER_RACE_NAME_ALIASES) {
+                if (pair && pair[0] === name) return pair[1];
+            }
+            return name;
+        }
+
+        function pickUmaRaceForTrackblazerChoice(choiceName, datePrefix, solverGrade) {
+            const resolved = resolveTrackblazerRaceName(choiceName);
+            const candidates = state.raceData.filter(
+                r => r.name === resolved && String(r.date || '').startsWith(datePrefix)
+            );
+            if (!candidates.length) return null;
+            if (candidates.length === 1) return candidates[0];
+            const sg = normalizeGradeForTrackblazerMatch(solverGrade);
+            const byGrade = candidates.filter(r => normalizeGradeForTrackblazerMatch(r.type) === sg);
+            if (byGrade.length === 1) return byGrade[0];
+            if (byGrade.length > 1) return byGrade[0];
+            return candidates[0];
+        }
+
+        async function fillRaceScheduleFromTrackblazer() {
+            const btn = els.trackblazerFillBtn;
+            if (!selection.trainee || !selection.trainee.aptitudes) {
+                flashError(new Error('no trainee'), 'Select a trainee with aptitudes first', 4500);
+                return;
+            }
+            const merged = computeTraineeAptitudesWithParentSparks(selection.trainee.aptitudes, selection.veterans);
+            const aptitudes = {};
+            for (const k of TRAINEE_APT_ORDER) {
+                aptitudes[k] = normalizeSolverAptitudeLetter(merged[k]);
+            }
+            const prevLabel = btn ? btn.textContent : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Calculating…';
+            }
+            try {
+                const mod = await import('/vendor/trackblazer/solver-browser.js');
+                const { solveWithManualLocks, defaultSettings, NO_RACE, AUTO } = mod;
+                const settings = { ...defaultSettings(), aptitudes };
+                
+                // Build manualLocks for summer periods if enabled
+                const manualLocks = {};
+                if (state.tbLockSummers) {
+                    // July-August in Classic and Senior Year
+                    // slot = i % 24, monthIdx = floor(slot/2)
+                    // July=month 6 (0-indexed), monthIdx 6 -> slots 12-13
+                    // August=month 7, monthIdx 7 -> slots 14-15
+                    // Classic Year (year idx 1): i = 24 + slot, slot 12-15 -> i = 36-39
+                    // Senior Year (year idx 2): i = 48 + slot, slot 12-15 -> i = 60-63
+                    const summerIndices = [36, 37, 38, 39, 60, 61, 62, 63];
+                    for (const idx of summerIndices) {
+                        manualLocks[idx] = NO_RACE;
+                    }
+                }
+                
+                const payload = await solveWithManualLocks(settings, [], manualLocks, null, {});
+                const st = payload.summary && payload.summary.status;
+                if (!['OPTIMAL', 'FEASIBLE'].includes(st)) {
+                    const msg = (payload.summary && payload.summary.message) || st || 'solver failed';
+                    flashError(new Error(msg), `Trackblazer: ${st || 'UNKNOWN'}`, 9000);
+                    return;
+                }
+                const choices = payload.current_selected || [];
+                const next = new Set();
+                const missing = [];
+                for (let i = 0; i < choices.length; i += 1) {
+                    const choice = choices[i];
+                    if (!choice || choice === NO_RACE || choice === AUTO) continue;
+                    const datePrefix = trackblazerDatePrefixFromWindowIndex(i);
+                    const winRow = (payload.windows && payload.windows[i]) || {};
+                    const race = pickUmaRaceForTrackblazerChoice(choice, datePrefix, winRow.grade);
+                    if (race) next.add(race.id);
+                    else missing.push({ choice, datePrefix });
+                }
+                state.selectedRaces = next;
+                renderRaces();
+                await autoSaveRaces();
+                showFlash(`Schedule updated: ${next.size} race(s)`, 'success', 3200);
+                if (missing.length) {
+                    showFlash(
+                        `Could not match ${missing.length} race(s) to uma_race_data: ${missing.slice(0, 5).map(m => m.choice).join(', ')}${missing.length > 5 ? '...' : ''}`,
+                        'warning',
+                        8000
+                    );
+                }
+            } catch (e) {
+                flashError(e, 'Trackblazer: load or solve failed', 8000);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = prevLabel || TRACKBLAZER_FILL_BTN_LABEL;
+                }
             }
         }
 
@@ -1146,8 +2290,111 @@ const els = {
             els.racePopupOverlay?.addEventListener('click', (e) => {
                 if (e.target === els.racePopupOverlay) els.racePopupOverlay.style.display = 'none';
             });
+            els.trackblazerFillBtn?.addEventListener('click', () => {
+                fillRaceScheduleFromTrackblazer();
+            });
+
+            els.raceSchedulePresetSelect?.addEventListener('change', () => {
+                const name = els.raceSchedulePresetSelect?.value;
+                if (els.raceSchedulePresetNameInput && name) {
+                    els.raceSchedulePresetNameInput.value = name;
+                }
+            });
+
+            els.raceSchedulePresetLoadBtn?.addEventListener('click', async () => {
+                const name = els.raceSchedulePresetSelect?.value?.trim();
+                if (!name) {
+                    showFlash('Select a preset from the list', 'error', 2500);
+                    return;
+                }
+                const preset = state.raceSchedulePresetsList.find(p => p.name === name);
+                if (!preset || !Array.isArray(preset.races)) {
+                    showFlash('Preset not found', 'error', 2500);
+                    await refreshRaceSchedulePresetsList();
+                    return;
+                }
+                const ids = preset.races.map(id => parseInt(id, 10)).filter(Number.isFinite);
+                state.selectedRaces = new Set(ids);
+                renderRaces();
+                await autoSaveRaces();
+                showFlash(`Loaded ${ids.length} races`, 'success', 2200);
+            });
+
+            els.raceSchedulePresetSaveBtn?.addEventListener('click', async () => {
+                const name = (els.raceSchedulePresetNameInput?.value || '').trim();
+                if (!name) {
+                    showFlash('Enter a preset name', 'error', 2500);
+                    return;
+                }
+                try {
+                    const res = await apiJson('/api/race-schedule-presets/save', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name,
+                            races: Array.from(state.selectedRaces)
+                        })
+                    });
+                    if (res.success !== true) {
+                        flashError(res.detail || res, 'Save failed', 4000);
+                        return;
+                    }
+                    const savedName = (res.preset && res.preset.name) ? res.preset.name : name;
+                    await refreshRaceSchedulePresetsList();
+                    if (els.raceSchedulePresetSelect) els.raceSchedulePresetSelect.value = savedName;
+                    if (els.raceSchedulePresetNameInput) els.raceSchedulePresetNameInput.value = savedName;
+                    showFlash('Preset saved', 'success', 2200);
+                } catch (e) {
+                    flashError(e, 'Save failed', 4000);
+                }
+            });
+
+            els.raceSchedulePresetDeleteBtn?.addEventListener('click', async () => {
+                let name = els.raceSchedulePresetSelect?.value?.trim();
+                if (!name) name = (els.raceSchedulePresetNameInput?.value || '').trim();
+                if (!name) {
+                    showFlash('Select a preset or enter a name', 'error', 2500);
+                    return;
+                }
+                if (!window.confirm(`Delete preset "${name}"?`)) return;
+                try {
+                    const res = await apiJson('/api/race-schedule-presets/delete', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name })
+                    });
+                    if (res.success !== true) {
+                        flashError(res.detail || res, 'Delete failed', 4000);
+                        return;
+                    }
+                    if (els.raceSchedulePresetNameInput) els.raceSchedulePresetNameInput.value = '';
+                    await refreshRaceSchedulePresetsList();
+                    showFlash('Preset deleted', 'success', 2200);
+                } catch (e) {
+                    flashError(e, 'Delete failed', 4000);
+                }
+            });
             
-            makeSectionToggle('race-toggle', 'race-chevron', 'race-body', false);
+            const openRaceScheduleModal = () => {
+                if (!els.raceScheduleModal) return;
+                els.raceScheduleModal.style.display = 'flex';
+                void refreshRaceSchedulePresetsList();
+                renderRaces();
+            };
+            els.raceCalendarCard?.addEventListener('click', openRaceScheduleModal);
+            els.raceCalendarCard?.addEventListener('keydown', e => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                e.preventDefault();
+                openRaceScheduleModal();
+            });
+            
+            els.raceScheduleModalClose?.addEventListener('click', () => {
+                els.raceScheduleModal.style.display = 'none';
+            });
+            
+            els.raceScheduleModal?.addEventListener('click', (e) => {
+                if (e.target === els.raceScheduleModal) els.raceScheduleModal.style.display = 'none';
+            });
         }
 
         async function loadPresets() {
@@ -1173,21 +2420,10 @@ const els = {
                 }
             }
 
-            els.friendCount.innerText = `(${visibleFriends.length}/${friends.length})`;
-            els.friendGrid.innerHTML = visibleFriends.map(friend => {
-                const imgId = friend.support_card_id || '10001';
-                const lb = friend.limit_break_count ?? '?';
-                return `<div class="grid-card friend-card">
-                    <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
-                    <div class="grid-card-overlay">
-                        <span class="grid-card-name">${friend.support_name || 'Unknown'}</span>
-                        <span class="grid-card-kicker">${friend.type || '?'} | LB${lb}</span>
-                    </div>
-                </div>`;
-            }).filter(Boolean).join('');
-            attachFriendHandlers();
+            syncFriendModalHeader();
             syncFriendSelection();
             renderTeamPanel();
+            renderSelectionModal();
         }
         function appendSeenFriendIds(ids) {
             if (!dashData) return;
@@ -1200,9 +2436,7 @@ const els = {
         async function loadFriends(refresh = false) {
             if (!dashData || state.isFetchingFriends) return;
             state.isFetchingFriends = true;
-            els.friendRefreshBtn.disabled = true;
-            els.friendStatus.classList.remove('error');
-            els.friendStatus.innerText = refresh ? 'Refreshing friends...' : 'Loading friends...';
+            if (els.friendRefreshBtn) els.friendRefreshBtn.disabled = true;
             const excludeIds = refresh ? (dashData.friendExcludeIds || []) : [];
             try {
                 const data = await apiJson('/api/career/friends', {
@@ -1214,30 +2448,12 @@ const els = {
                 dashData.friends = data.friends || [];
                 appendSeenFriendIds(data.exclude_viewer_ids || []);
                 renderFriends();
-                const source = data.source === 'initial' ? 'initial' : 'refresh';
-                const visibleCount = ((dashData && dashData.visibleFriends) || []).length;
-                els.friendStatus.innerText = `${source} list: ${visibleCount}/${dashData.friends.length} cards`;
             } catch (e) {
-                els.friendStatus.innerText = e.message || 'Friend load failed';
-                els.friendStatus.classList.add('error');
+                flashError(e, 'Friend list load failed', 5000);
             } finally {
                 state.isFetchingFriends = false;
-                els.friendRefreshBtn.disabled = false;
+                if (els.friendRefreshBtn) els.friendRefreshBtn.disabled = false;
             }
-        }
-        function attachFriendHandlers() {
-            const visibleFriends = (dashData && dashData.visibleFriends) || [];
-            document.querySelectorAll('#friend-grid .grid-card').forEach((el, i) => {
-                el.classList.add('selectable');
-                el.addEventListener('click', () => {
-                    const friend = visibleFriends[i];
-                    const already = selection.friend && friendKey(selection.friend) === friendKey(friend);
-                    document.querySelectorAll('#friend-grid .grid-card').forEach(c => c.classList.remove('selected'));
-                    selection.friend = already ? null : friend;
-                    if (!already) el.classList.add('selected');
-                    renderTeamPanel();
-                });
-            });
         }
         async function startCareer() {
             const reason = getStartMissingReason();
@@ -1285,6 +2501,8 @@ const els = {
                     autoLoadCareerSelection();
                     renderFriends();
                 }
+                if (els.careerRunLog) els.careerRunLog.innerHTML = '';
+                state.runnerErrorFlashed = null;
                 startRunnerPolling();
                 finalMessage = 'Career runner started';
             } catch (e) {
@@ -1296,6 +2514,7 @@ const els = {
                 if (finalMessage) {
                     els.startStatus.innerText = finalMessage;
                     els.startStatus.classList.toggle('error', finalIsError);
+                    if (finalIsError) flashError(finalMessage, 'Start career failed', 7000);
                 }
             }
         }
@@ -1331,7 +2550,13 @@ const els = {
                 applyRunnerSnapshot(runner);
 
                 const rows = (runner.action_history && runner.action_history.length) ? runner.action_history : deriveActionHistory(runner.log || []);
-                if (rows.length) renderActionHistory(rows);
+                if (rows.length) {
+                    renderActionHistory(rows);
+                    if (els.startStatus) {
+                        els.startStatus.textContent = '';
+                        els.startStatus.classList.remove('error');
+                    }
+                }
                 if (runner.running) {
                     els.startStatus.classList.toggle('error', false);
                     if (!rows.length) els.startStatus.innerText = `Turn ${runner.turn || '?'} / ${runner.last_action || 'running'} / ${runner.steps || 0}`;
@@ -1341,19 +2566,40 @@ const els = {
                     window.clearInterval(state.runnerTimer);
                     state.runnerTimer = 0;
                 }
+                if (runner.finished) {
+                    try {
+                        const sess = await apiJson('/api/session?t=' + Date.now());
+                        if (sess && sess.success && sess.account) {
+                            renderAccountStrip(sess.account);
+                            syncStartButton();
+                        }
+                    } catch (e) {
+                        flashError(e, 'Session refresh failed', 4000);
+                    }
+                }
                 if (runner.last_error) {
                     els.startStatus.classList.toggle('error', true);
                     if (!rows.length) els.startStatus.innerText = runner.last_error;
-                } else if (runner.steps) {
-                    els.startStatus.classList.toggle('error', false);
-                    if (!rows.length) els.startStatus.innerText = `Runner stopped after ${runner.steps} steps`;
+                    if (state.runnerErrorFlashed !== runner.last_error) {
+                        state.runnerErrorFlashed = runner.last_error;
+                        flashError(runner.last_error, 'Runner error', 8000);
+                    }
+                } else {
+                    state.runnerErrorFlashed = null;
+                    if (runner.steps) {
+                        els.startStatus.classList.toggle('error', false);
+                        if (!rows.length) els.startStatus.innerText = `Runner stopped after ${runner.steps} steps`;
+                    }
                 }
-            } catch (e) {}
+            } catch (e) {
+                flashError(e, 'Runner status refresh failed', 4000);
+            }
         }
         function renderActionHistory(rows) {
-            if (!els.startStatus) return;
+            const logHost = els.careerRunLog || els.startStatus;
+            if (!logHost) return;
             if (!rows.length) {
-                els.startStatus.innerText = '';
+                logHost.innerHTML = '';
                 return;
             }
             const formatStatsDetail = row => {
@@ -1373,7 +2619,7 @@ const els = {
                         <td class="action-history-detail">${escapeHtml(formatStatsDetail(row))}</td>
                     </tr>
                 `).join('');
-            els.startStatus.innerHTML = `
+            logHost.innerHTML = `
                 <div class="action-history-wrap">
                     <table class="action-history-table">
                         <thead>
@@ -1388,7 +2634,7 @@ const els = {
                     </table>
                 </div>
             `;
-            const wrap = els.startStatus.querySelector('.action-history-wrap');
+            const wrap = logHost.querySelector('.action-history-wrap');
             if (wrap) wrap.scrollTop = wrap.scrollHeight;
         }
         function deriveActionHistory(log) {
@@ -1431,62 +2677,19 @@ const els = {
             refreshRunnerStatus();
             state.runnerTimer = window.setInterval(refreshRunnerStatus, 1500);
         }
-        els.friendRefreshBtn.addEventListener('click', event => {
-            event.stopPropagation();
-            loadFriends(true);
-        });
+        if (els.friendRefreshBtn) {
+            els.friendRefreshBtn.addEventListener('click', event => {
+                event.stopPropagation();
+                loadFriends(true);
+            });
+        }
         els.startCareerBtn.addEventListener('click', startCareer);
 
-        function selectDeck(index, element) {
-            const alreadySelected = element.classList.contains('selected');
-            document.querySelectorAll('.deck-container.selected').forEach(card => card.classList.remove('selected'));
-            selection.deck = null;
-            if (!alreadySelected) {
-                element.classList.add('selected');
-                selection.deck = dashData.validDecks[index];
-            }
-            renderFriends();
-            renderTeamPanel();
-            syncSelectionToServer();
-        }
-        function selectTrainee(index, element) {
-            const alreadySelected = element.classList.contains('selected');
-            document.querySelectorAll('#uma-grid .grid-card.selected').forEach(card => card.classList.remove('selected'));
-            selection.trainee = null;
-            if (!alreadySelected) {
-                element.classList.add('selected');
-                selection.trainee = dashData.umas[index];
-            }
-            renderFriends();
-            updateVetSelectability();
-            renderTeamPanel();
-            syncSelectionToServer();
-        }
-        function selectParent(index, element) {
-            if (element.classList.contains('vet-full')) return;
-            if (element.classList.contains('selected')) {
-                element.classList.remove('selected');
-                selection.veterans = selection.veterans.filter(parent => parent._gridIdx !== index);
-            } else if (selection.veterans.length < 2) {
-                element.classList.add('selected');
-                selection.veterans.push({ ...dashData.parents[index], _gridIdx: index });
-            }
-            updateVetSelectability();
-            renderTeamPanel();
-            syncSelectionToServer();
-        }
         function attachSelectionHandlers() {
-            document.querySelectorAll('.deck-container').forEach((element, index) => {
-                element.addEventListener('click', () => selectDeck(index, element));
-            });
-            document.querySelectorAll('#uma-grid .grid-card').forEach((element, index) => {
-                element.classList.add('selectable');
-                element.addEventListener('click', () => selectTrainee(index, element));
-            });
-            document.querySelectorAll('#parent-grid .grid-card').forEach((element, index) => {
-                element.classList.add('selectable');
-                element.addEventListener('click', () => selectParent(index, element));
-            });
+            // No longer used in step-by-step interface
+        }
+        function attachFriendHandlers() {
+            // No longer used in step-by-step interface
         }
         function isValidDeck(deck) {
             return deck.cards.every(card => {
@@ -1496,109 +2699,7 @@ const els = {
             });
         }
         function renderCounts(data) {
-            els.umaCount.innerText = `(${data.umas.length})`;
-            els.cardCount.innerText = `(${data.supports.length})`;
-            els.parentCount.innerText = `(${data.parents.length})`;
-        }
-        function renderDecks(decks) {
-            els.deckList.innerHTML = decks.map(deck => {
-                const cards = deck.cards.map(card => {
-                    const imgId = card.id || '10001';
-                    return `<div class="grid-card deck-card">
-                        <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
-                        <div class="grid-card-overlay">
-                            <span class="grid-card-kicker">${card.type || '?'} | ${card.rarity || '?'}</span>
-                            <span class="grid-card-name">${card.name || 'Unknown'}</span>
-                        </div>
-                    </div>`;
-                }).join('');
-                return `<div class="deck-container">
-                    <div class="deck-header">
-                        <span>${deck.name.toUpperCase()}</span>
-                        <span style="font-size:0.85rem; opacity:0.8">SLOT ${deck.id}</span>
-                    </div>
-                    <div class="deck-cards">${cards}</div>
-                </div>`;
-            }).join('');
-        }
-        function renderFactors(factors) {
-            const star = String.fromCharCode(9733);
-            return factors.map(factor => `
-                <div class="factor-badge f-${factor.category}">
-                    ${factor.name} <span class="stars">${star.repeat(factor.stars)}</span>
-                </div>
-            `).join('');
-        }
-        function renderWins(wins) {
-            if (!wins || !wins.total) return '<span class="spark-win-chip">Wins --</span>';
-            return `
-                <span class="spark-win-chip">G1 ${wins.g1 || 0}</span>
-                <span class="spark-win-chip">G2 ${wins.g2 || 0}</span>
-                <span class="spark-win-chip">G3 ${wins.g3 || 0}</span>
-            `;
-        }
-        function renderParentSparks(parent, fallbackImgId) {
-            const tree = parent.tree || {};
-            return ['self', 'p1', 'p2'].map(key => {
-                const node = tree[key];
-                if (!node || !node.factors || node.factors.length === 0) return '';
-                const nodeImg = node.card_id || fallbackImgId;
-                const nodeClass = key === 'self' ? 'spark-node spark-node-self' : 'spark-node';
-                return `<div class="${nodeClass}" style="--node-bg: url('/api/images/${nodeImg}.png')">
-                    <div class="spark-node-header">
-                        <img class="spark-node-portrait" src="/api/images/${nodeImg}.png" onerror="hideBrokenImage(this)">
-                        <div class="spark-node-meta">
-                            <div class="spark-node-title">${node.name || `Card ${node.card_id || '?'}`}</div>
-                            <div class="spark-win-row">${renderWins(node.wins)}</div>
-                        </div>
-                    </div>
-                    <div class="spark-factor-list">
-                        ${renderFactors(node.factors)}
-                    </div>
-                </div>`;
-            }).join('');
-        }
-        function renderParents(parents) {
-            els.parentGrid.innerHTML = parents.map(parent => {
-                const imgId = parent.card_id || '100101';
-                return `<div class="grid-card">
-                    <div class="rank-badge">${rankMap[parent.rank] || '??'}</div>
-                    <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
-                    <div class="sparks-tooltip" style="--spark-bg: url('/api/images/${imgId}.png')">
-                        <div class="sparks-tooltip-title"></div>
-                        <div class="sparks-tooltip-scroll">
-                            <div class="sparks-lineage-grid">
-                                ${renderParentSparks(parent, imgId)}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid-card-overlay">
-                        <span class="grid-card-kicker">ID: ${parent.instance_id || '?'}</span>
-                        <span class="grid-card-name">${parent.name || 'Unknown'}</span>
-                    </div>
-                </div>`;
-            }).join('');
-        }
-        function renderTrainees(umas) {
-            els.umaGrid.innerHTML = umas.map(uma => {
-                const imgId = uma.id || '100101';
-                return `<div class="grid-card">
-                    <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
-                    <div class="grid-card-overlay"><span class="grid-card-name">${uma.name || 'Unknown'}</span></div>
-                </div>`;
-            }).join('');
-        }
-        function renderSupports(supports) {
-            els.cardGrid.innerHTML = supports.map(card => {
-                const imgId = card.id || '10001';
-                return `<div class="grid-card support-card">
-                    <img src="/api/images/${imgId}.png" onerror="hideBrokenImage(this)">
-                    <div class="grid-card-overlay">
-                        <span class="grid-card-kicker">${(card.rarity || '?') + ' | ' + (card.type || '?')}</span>
-                        <span class="grid-card-name">${card.name || 'Unknown'}</span>
-                    </div>
-                </div>`;
-            }).join('');
+            // No longer used in step-by-step interface
         }
         function showDashboardView(data) {
             document.body.classList.add('dashboard-mode');
@@ -1606,6 +2707,7 @@ const els = {
             els.dashboardView.style.display = '';
             els.dashboardView.classList.add('active');
             els.logoutBtn.style.display = 'block';
+            if (els.masterDataOpenBtn) els.masterDataOpenBtn.style.display = 'block';
             showNavbar();
             renderAccountStrip(data.account);
             syncDashboardHeight();
@@ -1699,11 +2801,6 @@ const els = {
             dashData.friends = data.friends || [];
             dashData.friendExcludeIds = data.friendExcludeIds || [];
             showDashboardView(data);
-            renderCounts(data);
-            renderDecks(dashData.validDecks);
-            renderParents(data.parents);
-            renderTrainees(dashData.umas);
-            renderSupports(data.supports);
             resetSelection();
             if (data.selection) applyServerSelection(data.selection);
             autoLoadCareerSelection();
@@ -1711,12 +2808,11 @@ const els = {
             await loadPresets();
             if (!dashData.friends.length) {
                 loadFriends(false);
-            } else {
-                renderFriends();
             }
             bindSparkTooltips();
-            attachSelectionHandlers();
+            ensureParentSparkFlyoutHandlers();
             bindRaceHandlers();
+            setupSelectionModalHandlers();
             renderTeamPanel();
             
             startRunnerPolling();
@@ -1738,12 +2834,14 @@ const els = {
                     setLoadingScreen(false);
                 }
             } catch (e) {
+                flashError(e, 'Session restore failed', 4000);
                 hideNavbar();
                 setLoadingScreen(false);
             }
         }
         bindDelayControls();
         bindMasterDataControls();
+        bindAccentThemeControls();
         setLoadingScreen(true);
         restoreSession();
 })();

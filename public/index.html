@@ -4,219 +4,286 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        try {
-            const theme = localStorage.getItem('theme') === 'blue' ? 'blue' : 'pink';
-            document.documentElement.dataset.theme = theme;
-            document.documentElement.classList.toggle('theme-blue', theme === 'blue');
-        } catch (e) {}
+        (function () {
+            try {
+                var k = 'uma_accent_theme';
+                var v = localStorage.getItem(k);
+                document.documentElement.dataset.accent = (v === 'blue' || v === 'pink' || v === 'green') ? v : 'green';
+            } catch (e) {
+                document.documentElement.dataset.accent = 'green';
+            }
+            document.documentElement.dataset.theme = 'dark';
+            document.documentElement.classList.add('theme-dark');
+        })();
     </script>
     <title>Sweepy改二</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-
 </head>
 <body>
-        <div id="loading-screen" class="loading-screen">
+    <a class="skip-link" href="#main-content">Skip to main</a>
+
+    <div id="loading-screen" class="loading-screen">
         <div class="loading-shell">
-            <div class="loading-art">
+            <div class="loading-art" aria-hidden="true">
                 <div class="loading-broom-aura"></div>
                 <img class="loading-broom" src="/broom.png" alt="">
                 <img class="loading-sweep" src="/sweep.png" alt="">
             </div>
-            <div class="loading-text">Girls are preparing<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+            <div class="loading-text">Girls are preparing <span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
         </div>
     </div>
+
     <div id="app">
         <header class="navbar">
             <div class="navbar-title">
-                <h1 id="theme-toggle" class="title">SWEEPY<span>改二</span></h1>
+                <p class="eyebrow">Automation magic</p>
+                <h1 id="theme-toggle" class="title" role="button" tabindex="0" title="Accent theme: click to cycle">Sweepy<span>改二</span></h1>
             </div>
 
             <div class="navbar-main">
-                <div id="account-strip" class="account-strip"></div>
-                
-                <div id="turn-delay-control" class="turn-delay-control">
+                <div id="account-strip" class="account-strip" aria-label="Account summary"></div>
+
+                <div id="turn-delay-control" class="turn-delay-control" aria-label="Runner settings">
                     <div class="delay-group">
-                        <span class="turn-delay-label">DELAY(S)</span>
-                        <input id="turn-delay-min" class="turn-delay-input" type="number" min="0" step="0.1" value="1.6">
-                        <span class="turn-delay-separator">–</span>
-                        <input id="turn-delay-max" class="turn-delay-input" type="number" min="0" step="0.1" value="3.7">
+                        <span class="turn-delay-label">Turn delay</span>
+                        <input id="turn-delay-min" class="turn-delay-input" type="number" min="0" step="0.1" value="1.6" aria-label="Minimum turn delay">
+                        <span class="turn-delay-separator">to</span>
+                        <input id="turn-delay-max" class="turn-delay-input" type="number" min="0" step="0.1" value="3.7" aria-label="Maximum turn delay">
+                        <span class="turn-delay-unit">sec</span>
                     </div>
                     <div class="control-btns">
-                        <button id="tempt-fate-btn" class="btn btn-sm turn-delay-button" type="button">TEMPT FATE</button>
-                        <button id="burn-clocks-btn" class="btn btn-sm turn-delay-button" type="button">BURN CLOCKS: OFF</button>
+                        <button id="tempt-fate-btn" class="btn btn-sm turn-delay-button" type="button">Tempt fate</button>
+                        <button id="burn-clocks-btn" class="btn btn-sm turn-delay-button" type="button">Burn clocks: off</button>
                     </div>
                 </div>
             </div>
 
             <div class="navbar-meta">
-                <button id="logout-btn" class="btn btn-sm logout-btn" style="display:none">LOGOUT</button>
+                <div class="master-data-anchor" id="master-data-anchor">
+                    <button id="master-data-open-btn" class="btn btn-sm" type="button" style="display:none" aria-haspopup="dialog" aria-expanded="false" aria-controls="master-data-modal">Master data</button>
+                    <div id="master-data-modal" class="master-data-popover" role="dialog" aria-modal="true" aria-label="master.mdb path">
+                        <div class="master-data-row master-data-popover-row">
+                            <input id="master-data-path" class="form-input master-data-input" type="text" spellcheck="false" autocomplete="off" placeholder="" title="Path to master.mdb">
+                            <button id="master-data-save-btn" class="btn btn-sm" type="button">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn btn-sm logout-btn" style="display:none">Logout</button>
             </div>
         </header>
-        <main class="main-container">
-            <div id="login-view" class="login-wrapper">
+
+        <main id="main-content" class="main-container" tabindex="-1">
+            <section id="login-view" class="login-wrapper">
+                <div class="login-hero" aria-hidden="true">
+                    <div class="orb orb-a"></div>
+                    <div class="orb orb-b"></div>
+                    <div class="login-hero-art">
+                        <img class="login-hero-broom" src="/broom.png" alt="">
+                        <img class="login-hero-sweep" src="/sweep.png" alt="">
+                    </div>
+                </div>
                 <div class="login-panel">
+                    <div class="login-copy">
+                        <p class="eyebrow">Steam login</p>
+                        <h2>Ready room</h2>
+                        <p>Sign in, choose deck, friend support, trainee, parents, then launch career runner.</p>
+                    </div>
                     <form id="login-form" autocomplete="on">
                         <div id="standard-fields">
                             <div class="form-group">
-                                <label class="form-label" for="username">STEAM USERNAME</label>
-                                <input id="username" name="username" type="text" class="form-input" placeholder="..." autocomplete="username">
+                                <label class="form-label" for="username">Steam username</label>
+                                <input id="username" name="username" type="text" class="form-input" placeholder="Your Steam login" autocomplete="username">
                             </div>
                             <div class="form-group">
-                                <label class="form-label" for="password">STEAM PASSWORD</label>
-                                <input id="password" name="password" type="password" class="form-input" placeholder="..." autocomplete="current-password">
+                                <label class="form-label" for="password">Steam password</label>
+                                <input id="password" name="password" type="password" class="form-input" placeholder="Your password" autocomplete="current-password">
                             </div>
                         </div>
                         <div id="2fa-fields" style="display:none">
                             <div class="form-group">
-                                <label class="form-label" for="code">STEAM GUARD CODE</label>
-                                <input id="code" name="code" type="text" class="form-input" placeholder="..." maxlength="5" autocomplete="one-time-code">
+                                <label class="form-label" for="code">Steam Guard code</label>
+                                <input id="code" name="code" type="text" class="form-input" placeholder="ABCDE" maxlength="5" autocomplete="one-time-code">
                             </div>
                         </div>
                         <div id="error-msg" class="status-msg"></div>
-                        <button id="login-btn" type="submit" class="btn btn-primary">LOGIN</button>
+                        <button id="login-btn" type="submit" class="btn btn-primary">Login</button>
                     </form>
                 </div>
-            </div>
-            <div id="dashboard-view" class="dashboard-container">
-                <div class="split-left" id="setup-panel">
+            </section>
+
+            <section id="dashboard-view" class="dashboard-container" aria-label="Career dashboard">
+                <aside class="split-left" id="setup-panel">
                     <div class="panel-header">
-                        <span class="panel-header-title">SETUP</span>
+                        <div>
+                            <span class="panel-header-title">Run setup</span>
+                            <p class="panel-header-subtitle">Pick required pieces, then start career.</p>
+                        </div>
                     </div>
                     <div class="panel-body">
-                        <div class="team-slots">
-                            <div class="team-item" id="team-slot-deck">
-                                <span class="team-item-role">Deck</span>
-                                <span class="team-item-empty">select a deck</span>
-                            </div>
-                            <div class="team-item" id="team-slot-friend">
-                                <span class="team-item-role">Friend</span>
-                                <span class="team-item-empty">select a friend support</span>
-                            </div>
-                            <div class="team-item" id="team-slot-trainee">
-                                <span class="team-item-role">Trainee</span>
-                                <span class="team-item-empty">select a trainee</span>
-                            </div>
-                            <div class="team-item" id="team-slot-vet1">
-                                <span class="team-item-role">Parent 1</span>
-                                <span class="team-item-empty">select a parent</span>
-                            </div>
-                            <div class="team-item" id="team-slot-vet2">
-                                <span class="team-item-role">Parent 2</span>
-                                <span class="team-item-empty">select a parent</span>
-                            </div>
-                        </div>
-
-                        <section class="dashboard-section" id="master-data-section">
-                            <h2 class="dashboard-section-title">MASTER DATA</h2>
-                            <div class="master-data-panel">
-                                <label class="form-label" for="master-data-path">MASTER.MDB PATH</label>
-                                <div class="master-data-row">
-                                    <input id="master-data-path" class="form-input master-data-input" type="text" spellcheck="false">
-                                    <button id="master-data-save-btn" class="btn btn-sm" type="button">SAVE</button>
+                        <section class="setup-card setup-card-primary" aria-label="Selected run pieces">
+                            <div class="setup-card-head">
+                                <div>
+                                    <p class="eyebrow">Current picks</p>
+                                    <h2>Team board</h2>
                                 </div>
-                                <div id="master-data-status" class="master-data-status"></div>
+                            </div>
+                <div class="team-slots">
+                    <div class="team-item" id="team-slot-trainee">
+                        <span class="team-item-role">Trainee</span>
+                        <span class="team-item-empty">Select trainee</span>
+                    </div>
+                    <div class="team-item" id="team-slot-vet1">
+                        <span class="team-item-role">Parent 1</span>
+                        <span class="team-item-empty">Select first parent</span>
+                    </div>
+                    <div class="team-item" id="team-slot-vet2">
+                        <span class="team-item-role">Parent 2</span>
+                        <span class="team-item-empty">Select second parent</span>
+                    </div>
+                    <div class="team-item" id="team-slot-deck">
+                        <span class="team-item-role">Deck</span>
+                        <span class="team-item-empty">Select deck</span>
+                    </div>
+                    <div class="team-item" id="team-slot-friend">
+                        <span class="team-item-role">Friend</span>
+                        <span class="team-item-empty">Select friend support</span>
+                    </div>
+                </div>
+
+                        <section id="race-calendar-card" class="race-calendar-card race-calendar-card--in-team" aria-label="Race schedule overview" role="button" tabindex="0" title="Open full race schedule (Enter or Space)">
+                            <div class="race-calendar-card-head">
+                                <span class="race-calendar-card-title">Race schedule</span>
+                                <span class="race-calendar-card-hint" aria-hidden="true">Open</span>
+                            </div>
+                            <div id="race-schedule-card-summary" class="race-schedule-card-summary" role="region" aria-label="Race schedule summary">
+                                <div class="rsc-cell"><span class="rsc-label">Races</span><span class="rsc-val" id="rsc-races">—</span></div>
+                                <div class="rsc-cell"><span class="rsc-label">Race stats</span><span class="rsc-val" id="rsc-race-stats">—</span></div>
+                                <div class="rsc-cell"><span class="rsc-label">G1 Races</span><span class="rsc-val" id="rsc-g1">—</span></div>
+                                <div class="rsc-cell"><span class="rsc-label">Est. fans</span><span class="rsc-val" id="rsc-fans">—</span></div>
+                                <div class="rsc-cell"><span class="rsc-label">Epithet stats</span><span class="rsc-val" id="rsc-epithet-stats">—</span></div>
+                                <div class="rsc-cell"><span class="rsc-label">G2/G3 Races</span><span class="rsc-val" id="rsc-g23">—</span></div>
                             </div>
                         </section>
-
-                        <section class="dashboard-section" id="race-schedule-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="race-toggle">
-                                <span class="collapse-chevron" id="race-chevron">&#9658;</span>
-                                RACE SCHEDULE
-                            </h2>
-                            <div id="race-body" class="collapsible-body">
-                                <div id="race-slot-popup-overlay" class="race-slot-popup-overlay" style="display: none;">
-                                    <div class="race-slot-popup">
-                                        <div class="race-slot-popup-header">
-                                            <div id="race-slot-popup-title" class="race-slot-popup-title">Select Race</div>
-                                            <button id="race-slot-popup-close" class="race-slot-popup-close">&times;</button>
-                                        </div>
-                                        <div id="race-slot-popup-body" class="race-slot-popup-body"></div>
-                                    </div>
-                                </div>
-                                <div class="race-options-content" id="race-options-content"></div>
-                            </div>
                         </section>
 
                         <div class="start-panel">
-                            <button id="start-career-btn" class="btn btn-primary" type="button" disabled>RUN CAREER</button>
-                            <div id="start-status" class="start-status"></div>
+                            <button id="start-career-btn" class="btn btn-primary" type="button" disabled>Run career</button>
+                            <div id="start-status" class="start-status" aria-live="polite"></div>
                         </div>
                     </div>
-                </div>
-                <div class="split-right" id="content-panel">
+                </aside>
+
+                <aside class="split-right" id="career-log-panel" aria-label="Career runner log">
                     <div class="panel-header">
-                        <span class="panel-header-title">LIBRARY</span>
+                        <div>
+                            <span class="panel-header-title">Career log</span>
+                            <p class="panel-header-subtitle">Runner actions for the current session.</p>
+                        </div>
                     </div>
-                    <div class="panel-body">
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="decks-toggle">
-                                <span class="collapse-chevron expanded" id="decks-chevron">&#9658;</span>
-                                DECKS
-                            </h2>
-                            <div id="decks-body" class="collapsible-body expanded">
-                                <div id="deck-list"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="friends-toggle">
-                                <span class="collapse-chevron expanded" id="friends-chevron">&#9658;</span>
-                                FRIEND SUPPORTS <span id="friend-count"></span>
-                                <button id="friend-refresh-btn" class="btn btn-sm section-title-action" type="button">REFRESH</button>
-                            </h2>
-                            <div id="friends-body" class="collapsible-body expanded">
-                                <div class="friend-toolbar">
-                                    <div id="friend-status" class="friend-status">Loading friends...</div>
+                    <div class="panel-body career-log-body">
+                        <div id="career-run-log" class="career-run-log" aria-live="polite"></div>
+                    </div>
+                </aside>
+            </section>
+
+    <div id="selection-modal-backdrop" class="modal-backdrop">
+                <div id="selection-modal-shell" class="selection-modal-shell">
+                    <div class="selection-modal-container" id="selection-modal-container">
+                        <div class="selection-modal-row" id="selection-modal-row">
+                            <div class="modal-panel selection-panel" role="dialog" aria-modal="true">
+                                <div class="modal-header">
+                                    <div class="modal-header-main">
+                                        <span class="panel-header-title" id="step-subtitle">Choose trainee first</span>
+                                        <div id="selection-modal-friend-toolbar" class="selection-modal-friend-toolbar" hidden>
+                                            <span id="friend-count" class="friend-count-badge" aria-live="polite"></span>
+                                            <button type="button" id="friend-refresh-btn" class="friend-modal-refresh" aria-label="Refresh friend list" title="Refresh">↻</button>
+                                        </div>
+                                    </div>
+                                    <button class="modal-close" type="button" aria-label="Close">&times;</button>
                                 </div>
-                                <div id="friend-grid" class="data-grid"></div>
+                                <div class="modal-body">
+                                    <div id="selection-modal" class="selection-modal">
+                                        <!-- Dynamic content based on step -->
+                                    </div>
+                                </div>
                             </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="trainees-toggle">
-                                <span class="collapse-chevron expanded" id="trainees-chevron">&#9658;</span>
-                                TRAINEES <span id="uma-count"></span>
-                            </h2>
-                            <div id="trainees-body" class="collapsible-body expanded">
-                                <div id="uma-grid" class="data-grid"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="parents-toggle">
-                                <span class="collapse-chevron expanded" id="parents-chevron">&#9658;</span>
-                                PARENTS <span id="parent-count"></span>
-                            </h2>
-                            <div id="parents-body" class="collapsible-body expanded">
-                                <div id="parent-grid" class="data-grid"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="cards-toggle">
-                                <span class="collapse-chevron" id="cards-chevron">&#9658;</span>
-                                OWNED CARDS <span id="card-count"></span>
-                            </h2>
-                            <div id="card-grid-wrapper" class="collapsible-body">
-                                <div id="card-grid" class="data-grid"></div>
-                            </div>
-                        </section>
+                        </div>
                     </div>
-                </div>
-                <div class="split-gutter-controls" aria-label="Panel controls">
-                    <button class="panel-collapse-btn panel-collapse-btn-left" id="setup-collapse-btn" type="button" data-panel-label="Setup" title="Collapse setup" aria-label="Collapse setup"></button>
-                    <button class="panel-collapse-btn panel-collapse-btn-right" id="content-collapse-btn" type="button" data-panel-label="Library" title="Collapse library" aria-label="Collapse library"></button>
+                    <aside id="parent-spark-flyout" class="parent-spark-flyout" aria-label="Spark tree preview" aria-hidden="true">
+                        <div class="parent-spark-flyout-head">Sparks</div>
+                        <div class="parent-spark-flyout-scroll sparks-tooltip-scroll">
+                            <div class="parent-spark-flyout-body" id="parent-spark-flyout-body" hidden></div>
+                        </div>
+                    </aside>
                 </div>
             </div>
+
+            <div id="flash-container" class="flash-container" aria-live="polite" aria-atomic="true">
+                <!-- Flash messages will be added here -->
+            </div>
         </main>
-        <div id="career-modal" class="modal-backdrop">
-            <div class="modal-panel">
-                <div class="modal-title">Delete Career?</div>
-                <div id="career-modal-copy" class="modal-copy">This will force-delete the ongoing career.</div>
-                <div class="modal-actions">
-                    <button id="career-cancel-btn" type="button" class="btn btn-sm">CANCEL</button>
-                    <button id="career-delete-btn" type="button" class="btn btn-sm btn-danger">DELETE</button>
+
+        <div id="race-schedule-modal" class="modal-backdrop" style="display: none;">
+            <div class="modal-panel race-schedule-modal-panel" role="dialog" aria-modal="true" aria-labelledby="race-schedule-modal-title">
+                <div class="modal-header race-schedule-modal-header">
+                    <div id="race-schedule-modal-title" class="modal-title race-schedule-modal-title">Race schedule</div>
+                    <button id="race-schedule-modal-close" class="modal-close" type="button" aria-label="Close">&times;</button>
+                </div>
+                <div class="race-schedule-modal-toolbar">
+                    <div class="race-schedule-toolbar-left">
+                        <button id="trackblazer-fill-btn" class="btn btn-sm" type="button">Auto-fill schedule</button>
+                        <label class="tb-lock-summers-label" title="Block summer training days (Early JUL - Late AUG) in Classic and Senior year from solver">
+                            <input id="tb-lock-summers-checkbox" type="checkbox" class="tb-lock-summers-checkbox">
+                            <span>Lock summer</span>
+                        </label>
+                    </div>
+                    <div class="race-schedule-toolbar-stats">
+                        <div class="rss-cell"><span class="rss-label">Races</span><span class="rss-val" id="rss-races">—</span></div>
+                        <div class="rss-cell"><span class="rss-label">Race stats</span><span class="rss-val" id="rss-race-stats">—</span></div>
+                        <div class="rss-cell"><span class="rss-label">Epithet stats</span><span class="rss-val" id="rss-epithet-stats">—</span></div>
+                        <div class="rss-cell"><span class="rss-label">Est. fans</span><span class="rss-val" id="rss-fans">—</span></div>
+                    </div>
+                </div>
+                <div class="race-schedule-preset-toolbar" role="group" aria-label="Race schedule presets">
+                    <label class="race-schedule-preset-label" for="race-schedule-preset-select">Preset</label>
+                    <select id="race-schedule-preset-select" class="race-schedule-preset-select" title="Saved race schedules"></select>
+                    <button id="race-schedule-preset-load-btn" class="btn btn-sm" type="button">Load</button>
+                    <input id="race-schedule-preset-name-input" class="race-schedule-preset-name-input" type="text" maxlength="120" placeholder="Preset name" autocomplete="off" aria-label="New preset name">
+                    <button id="race-schedule-preset-save-btn" class="btn btn-sm" type="button">Save</button>
+                    <button id="race-schedule-preset-delete-btn" class="btn btn-sm btn-danger" type="button">Delete</button>
+                </div>
+                <div class="modal-body">
+                    <div id="race-slot-popup-overlay" class="race-slot-popup-overlay" style="display: none;">
+                        <div class="race-slot-popup" role="dialog" aria-modal="true" aria-labelledby="race-slot-popup-title">
+                            <div class="race-slot-popup-header">
+                                <div id="race-slot-popup-title" class="race-slot-popup-title">Select race</div>
+                                <button id="race-slot-popup-close" class="race-slot-popup-close" type="button" aria-label="Close">&times;</button>
+                            </div>
+                            <div id="race-slot-popup-body" class="race-slot-popup-body"></div>
+                        </div>
+                    </div>
+                    <div class="race-options-content" id="race-options-content"></div>
                 </div>
             </div>
         </div>
+
+        <div id="career-modal" class="modal-backdrop">
+            <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="career-modal-title">
+                <div id="career-modal-title" class="modal-title">Delete career?</div>
+                <div id="career-modal-copy" class="modal-copy">This will force-delete the ongoing career.</div>
+                <div class="modal-actions">
+                    <button id="career-cancel-btn" type="button" class="btn btn-sm">Cancel</button>
+                    <button id="career-delete-btn" type="button" class="btn btn-sm btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <script src="app.js?v=2"></script>
+
+    <script src="app.js?v=31"></script>
 </body>
 </html>
 

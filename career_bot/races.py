@@ -9,7 +9,38 @@ class RacePlanner:
         self.program = {}
         self.instance = {}
         self.rejected = set()
+        # (turn, program_id) — заезд уже отыгран и race_out выполнен; не предлагать снова (эпилог 78).
+        self._completed_race_on_turn = set()
         self._load()
+
+    def clear_completed_races(self):
+        self._completed_race_on_turn.clear()
+
+    def mark_race_completed(self, turn, program_id):
+        tid = int(turn or 0)
+        pid = int(program_id or 0)
+        if tid and pid:
+            self._completed_race_on_turn.add((tid, pid))
+            # Финальная неделя: один заезд; блокирует повторный forced/choose и «ghost» race_start_info.
+            if tid >= 78:
+                self._completed_race_on_turn.add((tid, 0))
+
+    def mark_epilogue_week_cleared(self, turn):
+        """Если финал недели прошёл только через resume race_out (без _race), всё равно ставим сентинел 78+."""
+        t = int(turn or 0)
+        if t >= 78:
+            self._completed_race_on_turn.add((t, 0))
+
+    def should_skip_stale_race_start(self, turn, program_id):
+        t = int(turn or 0)
+        pid = int(program_id or 0)
+        if not pid:
+            return False
+        if (t, pid) in self._completed_race_on_turn:
+            return True
+        if t >= 78 and (t, 0) in self._completed_race_on_turn:
+            return True
+        return False
 
     def _load(self):
         path = self.base_dir / "data" / "race_map.json"
@@ -56,23 +87,31 @@ class RacePlanner:
 
     def forced_program(self, state):
         data = state.get("data") or {}
+        turn = int((data.get("chara_info") or {}).get("turn") or 0)
         home = data.get("home_info") or {}
         commands = home.get("command_info_array") or []
         race_enabled = any(cmd.get("command_type") == 4 and cmd.get("command_id") == 401 and cmd.get("is_enable", 0) for cmd in commands)
         other_enabled = any(cmd.get("command_type") != 4 and cmd.get("is_enable", 0) for cmd in commands)
         if not race_enabled or other_enabled:
             return 0
+        if turn >= 78 and (turn, 0) in self._completed_race_on_turn:
+            return 0
         for item in data.get("race_condition_array") or []:
             pid = int(item.get("program_id") or 0)
-            if pid:
+            if pid and (turn, pid) not in self._completed_race_on_turn:
                 return pid
         race = data.get("race_start_info") or {}
-        return int(race.get("program_id") or 0)
+        fb = int(race.get("program_id") or 0)
+        if fb and (turn, fb) not in self._completed_race_on_turn:
+            return fb
+        return 0
 
     def choose(self, state, preset):
         data = state.get("data") or {}
         turn = int((data.get("chara_info") or {}).get("turn") or 0)
-        
+        if turn >= 78 and (turn, 0) in self._completed_race_on_turn:
+            return 0
+
         home = data.get("home_info") or {}
         commands = home.get("command_info_array") or []
         race_enabled = any(cmd.get("command_type") == 4 and cmd.get("command_id") == 401 and cmd.get("is_enable", 0) for cmd in commands)
@@ -85,7 +124,11 @@ class RacePlanner:
     
         wanted = self.wanted_programs(preset, turn)
         for program_id in sorted(wanted):
-            if program_id in available and (turn, program_id) not in self.rejected:
+            if (
+                program_id in available
+                and (turn, program_id) not in self.rejected
+                and (turn, program_id) not in self._completed_race_on_turn
+            ):
                 return program_id
         return 0
 

@@ -1,4 +1,67 @@
-*.pyc
-/node_modules
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+.env/
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.cover
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm/
+
+# Secrets / local env (keep example if you add one)
+.env
+.env.*
+!.env.example
+
+# Local app config (paths, delays — never commit real machine paths)
+/settings.json
+
+# User-created race schedule presets (UI saves under data/)
+/data/race_schedule_presets/
+
+# IDE / editor
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# Cursor (local rules / agent state)
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Logs / scratch
+*.log
+logs/
+tmp/
+temp/
+*.bak
+*.orig
+*~
+
+# Project-specific (runtime & local tooling)
 /uma_runtime
 /tools

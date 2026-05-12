@@ -1,6 +1,5 @@
 import gzip
 import base64
-import msgpack
 import threading
 import time
 import json
@@ -59,6 +58,7 @@ class CareerRunner:
         self.race_planner = RacePlanner(base_dir)
         self.skill_buyer = SkillBuyer(base_dir)
         self.item_manager = MantItemManager()
+        self._on_finished_refresh = None
         self.status = {
             "running": False,
             "preset": "",
@@ -97,10 +97,11 @@ class CareerRunner:
         if self.report:
             add_event(self.report, row)
 
-    def start(self, client, preset, initial_result, max_steps=2500, burn_clocks=False):
+    def start(self, client, preset, initial_result, max_steps=2500, burn_clocks=False, on_finished_refresh=None):
         with self.lock:
             if self.status["running"]:
                 raise RuntimeError("Career runner already active")
+            self._on_finished_refresh = on_finished_refresh
             scenario_id = int(preset.get("scenario_id") or 4)
             strategy_cls = STRATEGIES.get(scenario_id)
             if not strategy_cls:
@@ -122,11 +123,14 @@ class CareerRunner:
                 "clocks_used": 0,
                 "log": [],
                 "action_history": [],
+                "_race_resume_out_streak": 0,
+                "_race_streak_turn": -1,
             }
             self.report = new_report(preset, scenario_id)
             if client:
                 client.report = self.report
             self._log_locked("started", 0, f"preset {preset.get('name', '')} (burn_clocks={burn_clocks})")
+            self.race_planner.clear_completed_races()
             self.thread = threading.Thread(target=self._run, args=(client, preset, initial_result, strategy_cls(self.race_planner), max_steps), daemon=True)
             self.thread.start()
 
@@ -149,6 +153,7 @@ class CareerRunner:
 
         state = result or {}
         last_turn = -1
+        idle_reload_turn = None
         try:
             for i in range(max_steps):
                 if self._should_stop():
@@ -169,7 +174,7 @@ class CareerRunner:
                     print("Turn 77 reached terminating", flush=True)
                     self.stop()
                     break
-                
+
                 self.skill_buyer.last_attempt = []
                 self.skill_buyer.last_result = {}
                 self.item_manager.last_buy_attempt = []
@@ -219,8 +224,36 @@ class CareerRunner:
                     if self.report:
                         add_decision(self.report, state, decision)
                 
+                d_eff = state.get("data") or {}
+                ch_eff = d_eff.get("chara_info") or {}
+                turn_eff = int(ch_eff.get("turn") or 0)
+                if turn_eff != self.status.get("_race_streak_turn", -1):
+                    self.status["_race_resume_out_streak"] = 0
+                    self.status["_race_streak_turn"] = turn_eff
+                if decision.action == "race_progress" and "race out" in (decision.reason or ""):
+                    self.status["_race_resume_out_streak"] = int(self.status.get("_race_resume_out_streak", 0)) + 1
+                else:
+                    self.status["_race_resume_out_streak"] = 0
+                if turn_eff >= 78 and int(self.status.get("_race_resume_out_streak", 0)) >= 4:
+                    st = self._reload_career_safe(client, strategy)
+                    if st is not None:
+                        state = st
+                    if self.race_planner:
+                        self.race_planner.mark_epilogue_week_cleared(turn_eff)
+                    self.status["_race_resume_out_streak"] = 0
+                    continue
+
                 self._log(decision.action, chara.get("turn", 0), decision.reason)
                 if decision.action == "idle":
+                    t_idle = int(chara.get("turn") or 0)
+                    if t_idle >= 78 and idle_reload_turn != t_idle:
+                        try:
+                            state = self._fresh_career_state(client, strategy)
+                            idle_reload_turn = t_idle
+                            self._log("idle_reload", t_idle, "post-epilogue state refresh")
+                            continue
+                        except Exception as exc:
+                            self._log("idle_reload_failed", t_idle, str(exc))
                     self._mark(last_action=decision.reason)
                     break
                 if decision.action == "done":
@@ -261,7 +294,19 @@ class CareerRunner:
 
                     self._record_action(decision, chara)
 
-                    state = self._buy_skills(client, state, preset, True)
+                    if decision.reason == "epilogue_force_finish":
+                        st0 = self._reload_career_safe(client, strategy)
+                        if st0 is not None:
+                            state = st0
+                        try:
+                            state = self._buy_skills(client, state, preset, True)
+                        except Exception:
+                            try:
+                                state = self._reload_career_safe(client, strategy) or state
+                            except Exception:
+                                pass
+                    else:
+                        state = self._buy_skills(client, state, preset, True)
 
                     data = state.get("data") or {}
                     if data.get("race_start_info"):
@@ -279,6 +324,11 @@ class CareerRunner:
                     if int(chara.get("skill_point") or 0) > 200:
                         print(f"SP still high ({chara.get('skill_point')}), retrying final purchase...")
                         state = self._buy_skills(client, state, preset, True)
+
+                    if decision.reason == "epilogue_force_finish":
+                        stf = self._reload_career_safe(client, strategy)
+                        if stf is not None:
+                            state = stf
 
                     try:
                         state = client.finish_career(current_turn=decision.payload.get("current_turn", 78), is_force_delete=False)
@@ -327,6 +377,12 @@ class CareerRunner:
             else:
                 if self.report:
                     finish_report(self.report, "finished" if self.status["finished"] else "error")
+            cb = getattr(self, "_on_finished_refresh", None)
+            if cb and self.status.get("finished"):
+                try:
+                    cb()
+                except Exception as e:
+                    print(f"on_finished_refresh failed: {e}", flush=True)
             self._mark(running=False)
             if self.report:
                 try:
@@ -441,7 +497,8 @@ class CareerRunner:
 
     def _blocked_playing_state(self, chara):
         playing_state = int((chara or {}).get("playing_state") or 1)
-        return playing_state not in {1, 2, 3, 4, 5}
+        # 7: часто экран итогов/эпилога перед завершением — не считать блоком (иначе recover и выход).
+        return playing_state not in {1, 2, 3, 4, 5, 7}
 
     def _recover_blocked_state(self, client, strategy, state):
         data = state.get("data") or {}
@@ -695,6 +752,33 @@ class CareerRunner:
                 errors.append(str(exc))
         raise RuntimeError("career recovery failed: " + " | ".join(errors))
 
+    def _reload_career_safe(self, client, strategy=None):
+        try:
+            return self._fresh_career_state(client, strategy)
+        except Exception:
+            pass
+        try:
+            if hasattr(client, "load_career"):
+                return client.load_career()
+            return client.call("single_mode_free/load", {})
+        except Exception:
+            return None
+
+    def _post_race_out_sync(self, client, strategy, out, current_turn):
+        """После race_out: если ответ всё ещё playing_state 5 — load; на 78+ помечаем неделю при выходе из 5."""
+        t = int(current_turn or 0)
+        data = (out or {}).get("data") or {}
+        ps = int((data.get("chara_info") or {}).get("playing_state") or 0)
+        if ps == 5:
+            out2 = self._reload_career_safe(client, strategy)
+            if out2:
+                out = out2
+                data = (out or {}).get("data") or {}
+                ps = int((data.get("chara_info") or {}).get("playing_state") or 0)
+        if self.race_planner and t >= 78 and ps != 5:
+            self.race_planner.mark_epilogue_week_cleared(t)
+        return out
+
     def _event(self, client, strategy, payload):
         data = dict(payload)
         event = data.pop("_event", None)
@@ -932,17 +1016,27 @@ class CareerRunner:
                 out_data = out.get("data") or {}
                 if out_data.get("unchecked_event_array"):
                     out = self._drain_events(client, strategy, out)
+            out = self._post_race_out_sync(client, strategy, out, current_turn)
         except Exception as e:
             if "102" in str(e):
                 self._log("race_out_reconciled", current_turn, "server already done (102)")
+                out2 = self._reload_career_safe(client, strategy)
+                if out2 is not None:
+                    out = self._post_race_out_sync(client, strategy, out2, current_turn)
+                else:
+                    out = res
             else:
                 raise
+
+        if self.race_planner and program_id:
+            self.race_planner.mark_race_completed(current_turn, program_id)
 
         return out
 
     def _race_progress(self, client, payload):
         current_turn = payload.get("current_turn") or 1
         phase = payload.get("phase")
+        strategy = payload.get("_strategy")
         chara = (payload.get("chara_info") or {})
         playing_state = chara.get("playing_state") or 0
         if playing_state not in {2, 3, 4, 5}:
@@ -962,20 +1056,34 @@ class CareerRunner:
                     else:
                         raise
             try:
-                return client.race_out(current_turn=current_turn)
+                out = client.race_out(current_turn=current_turn)
+                return self._post_race_out_sync(client, strategy, out, current_turn)
             except Exception as e:
                 if any(err in str(e) for err in ("102", "201", "StateRecoveryError")):
                     self._log("race_out_reconciled", current_turn, f"graceful exit: {e}")
-                    return payload
+                    out2 = self._reload_career_safe(client, strategy)
+                    if out2 is not None:
+                        return self._post_race_out_sync(client, strategy, out2, current_turn)
+                    try:
+                        return self._fresh_career_state(client, strategy)
+                    except Exception:
+                        return payload
                 raise
         if phase == "out":
             self._log("race_out", current_turn, "resume")
             try:
-                return client.race_out(current_turn=current_turn)
+                out = client.race_out(current_turn=current_turn)
+                return self._post_race_out_sync(client, strategy, out, current_turn)
             except Exception as e:
                 if any(err in str(e) for err in ("102", "201", "StateRecoveryError")):
                     self._log("race_out_reconciled", current_turn, f"graceful exit: {e}")
-                    return payload
+                    out2 = self._reload_career_safe(client, strategy)
+                    if out2 is not None:
+                        return self._post_race_out_sync(client, strategy, out2, current_turn)
+                    try:
+                        return self._fresh_career_state(client, strategy)
+                    except Exception:
+                        return payload
                 raise
         client.race_start(is_short=1, current_turn=current_turn)
         self._log("race_start", current_turn, "resume")
@@ -991,11 +1099,18 @@ class CareerRunner:
                 else:
                     raise
         try:
-            return client.race_out(current_turn=current_turn)
+            out = client.race_out(current_turn=current_turn)
+            return self._post_race_out_sync(client, strategy, out, current_turn)
         except Exception as e:
             if any(err in str(e) for err in ("102", "201", "StateRecoveryError")):
                 self._log("race_out_reconciled", current_turn, f"graceful exit: {e}")
-                return payload
+                out2 = self._reload_career_safe(client, strategy)
+                if out2 is not None:
+                    return self._post_race_out_sync(client, strategy, out2, current_turn)
+                try:
+                    return self._fresh_career_state(client, strategy)
+                except Exception:
+                    return payload
             raise
 
     def _buy_skills(self, client, state, preset, force):

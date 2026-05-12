@@ -5,5 +5,8 @@
     "min": 3.0,
     "restore_max": 5.0,
     "restore_min": 3.0
+  },
+  "master_data": {
+    "master_mdb_path": ""
   }
 }

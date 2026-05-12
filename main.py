@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import sqlite3
 import subprocess
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
@@ -11,9 +12,12 @@ import random
 import subprocess
 import time
 import sys
+import threading
+import webbrowser
 import frida
 from career_bot import master_data
 from career_bot.presets import PresetStore
+from career_bot.race_schedule_presets import RaceSchedulePresetStore
 from career_bot.runner import CareerRunner
 from uma_api.client import UmaClient
 
@@ -193,6 +197,7 @@ turn_delay_restore_min_sec = 3.0
 turn_delay_restore_max_sec = 5.0
 turn_delay_disabled = False
 preset_store = PresetStore(DIR)
+race_schedule_preset_store = RaceSchedulePresetStore(DIR)
 career_runner = CareerRunner(DIR)
 
 base_dir = Path(__file__).parent.absolute()
@@ -215,6 +220,115 @@ if chara_path.exists():
 if support_path.exists():
     with open(support_path, 'r', encoding='utf-8') as f:
         support_map = json.load(f)
+
+
+def proper_aptitude_int_to_letter(value):
+    """Map card_rarity_data proper_* ints (1–7) to G…A; 8 → S if ever used."""
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return None
+    if n == 8:
+        return "S"
+    if 1 <= n <= 7:
+        return "GFEDCBA"[n - 1]
+    return None
+
+
+def fetch_uma_aptitudes_from_mdb(mdb_path, card_list):
+    """
+    Read base aptitudes from master.mdb card_rarity_data.
+    Returns { card_id_str: { "Sprint": "F", "Mile": "C", ... } }.
+    """
+    out = {}
+    if not card_list or not mdb_path:
+        return out
+    path = Path(str(mdb_path))
+    if not path.is_file():
+        return out
+
+    target_rarity = {}
+    unique_ids = []
+    seen = set()
+    for card in card_list:
+        raw = card.get("card_id", card.get("id"))
+        if raw is None:
+            continue
+        s = str(raw).strip()
+        if not s.isdigit():
+            continue
+        cid = int(s)
+        if cid not in seen:
+            seen.add(cid)
+            unique_ids.append(cid)
+        r = card.get("rarity")
+        if r is None:
+            r = card.get("rarity_type")
+        if r is not None:
+            try:
+                target_rarity[cid] = int(r)
+            except (TypeError, ValueError):
+                pass
+
+    if not unique_ids:
+        return out
+
+    placeholders = ",".join("?" * len(unique_ids))
+    sql = (
+        f"SELECT card_id, rarity, proper_distance_short, proper_distance_mile, "
+        f"proper_distance_middle, proper_distance_long, proper_ground_turf, proper_ground_dirt "
+        f"FROM card_rarity_data WHERE card_id IN ({placeholders})"
+    )
+    conn = None
+    rows = []
+    try:
+        conn = sqlite3.connect(str(path))
+        rows = conn.execute(sql, unique_ids).fetchall()
+    except Exception:
+        return out
+    finally:
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                pass
+
+    by_cid = {}
+    for row in rows:
+        cid = row[0]
+        by_cid.setdefault(cid, []).append(row)
+
+    labels = (
+        ("Sprint", 2),
+        ("Mile", 3),
+        ("Medium", 4),
+        ("Long", 5),
+        ("Turf", 6),
+        ("Dirt", 7),
+    )
+
+    for cid in unique_ids:
+        row_list = by_cid.get(cid)
+        if not row_list:
+            continue
+        want = target_rarity.get(cid)
+        chosen = None
+        if want is not None:
+            for row in row_list:
+                if row[1] == want:
+                    chosen = row
+                    break
+        if chosen is None:
+            chosen = max(row_list, key=lambda r: r[1])
+        apt = {}
+        for name, idx in labels:
+            letter = proper_aptitude_int_to_letter(chosen[idx])
+            if letter:
+                apt[name] = letter
+        if apt:
+            out[str(cid)] = apt
+    return out
+
 
 def display_support_type(value):
     return {
@@ -709,6 +823,13 @@ class RunCareerRequest(BaseModel):
 class SaveRacesRequest(BaseModel):
     races: list[int]
 
+class SaveRaceSchedulePresetRequest(BaseModel):
+    name: str
+    races: list[int]
+
+class DeleteRaceSchedulePresetRequest(BaseModel):
+    name: str
+
 class SavePresetRequest(BaseModel):
     preset: dict
 
@@ -773,6 +894,24 @@ async def save_races(req: SaveRacesRequest):
     preset_store.write(preset)
     return {"success": True}
 
+@app.get("/api/race-schedule-presets")
+async def list_race_schedule_presets():
+    return {"success": True, "presets": race_schedule_preset_store.read_all()}
+
+@app.post("/api/race-schedule-presets/save")
+async def save_race_schedule_preset(req: SaveRaceSchedulePresetRequest):
+    try:
+        saved = race_schedule_preset_store.save(req.name, req.races)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"success": True, "preset": saved}
+
+@app.post("/api/race-schedule-presets/delete")
+async def delete_race_schedule_preset(req: DeleteRaceSchedulePresetRequest):
+    if not race_schedule_preset_store.delete(req.name):
+        raise HTTPException(status_code=404, detail="preset not found")
+    return {"success": True}
+
 @app.get("/api/presets")
 async def get_presets():
     return {"success": True, "presets": preset_store.read_all()}
@@ -824,6 +963,23 @@ def start_career_from_request(req):
     )
     return {"success": True, "result": result}
 
+def refresh_active_account_from_load_index():
+    """Sync active_account after in-game career ends (runner finish_career, etc.)."""
+    global active_account, active_dashboard_data
+    if not active_client:
+        return
+    try:
+        index_result = active_client.call('load/index', {'adid': ''})
+        load_data = index_result.get('data', {}) or {}
+        update_start_state(load_data)
+        active_client.refresh_cached_account_state(load_data)
+        account = get_account_status(load_data)
+        active_account = account
+        if active_dashboard_data:
+            active_dashboard_data["account"] = account
+    except Exception as e:
+        print(f"refresh_active_account_from_load_index: {e}", flush=True)
+
 def apply_career_result(result):
     global active_account, active_dashboard_data
     result_data = result.get('data', {})
@@ -847,6 +1003,30 @@ def apply_career_result(result):
     if active_dashboard_data:
         active_dashboard_data["account"] = account
     return account, chara_info
+
+
+def refresh_active_account_with_career_load():
+    """
+    Wallet + career UI from load/index and single_mode_free/load.
+    Use after single_mode_free/start: that response has no coin_info / item_list for get_account_status.
+    Career runner should still receive start API result as initial state (see run_career).
+    """
+    global active_account, active_dashboard_data
+    if not active_client:
+        return None, None, None
+    index_result = active_client.call('load/index', {'adid': ''})
+    load_data = index_result.get('data', {}) or {}
+    update_start_state(load_data)
+    active_client.refresh_cached_account_state(load_data)
+    career_result = active_client.load_career()
+    career_data = career_result.get('data', {})
+    account = get_account_status(load_data, career_result)
+    active_account = account
+    if active_dashboard_data:
+        active_dashboard_data["account"] = account
+    chara_info = career_data.get('chara_info') or {}
+    return account, chara_info, career_result
+
 
 @app.post("/api/login")
 async def login(req: LoginRequest):
@@ -914,13 +1094,19 @@ async def login(req: LoginRequest):
         
         umas = []
         card_list = d.get('card_list', [])
+        mdb_for_apt = master_data.configured_master_mdb_path(base_dir)
+        apt_by_cid = fetch_uma_aptitudes_from_mdb(mdb_for_apt, card_list)
         for card in card_list:
             cid = str(card.get('card_id', card.get('id', '')))
-            umas.append({
-                'id': cid, 
-                'name': chara_map.get(cid, f"Unknown ({cid})")
-            })
-            
+            entry = {
+                'id': cid,
+                'name': chara_map.get(cid, f"Unknown ({cid})"),
+            }
+            apt = apt_by_cid.get(cid)
+            if apt:
+                entry['aptitudes'] = apt
+            umas.append(entry)
+
         supports = []
         support_card_list = d.get('support_card_list', [])
         for s in support_card_list:
@@ -1096,7 +1282,7 @@ async def start_career(req: StartCareerRequest):
         started = start_career_from_request(req)
         if not started.get("success"):
             return started
-        account, chara_info = apply_career_result(started["result"])
+        account, chara_info, _ = refresh_active_account_with_career_load()
         return {"success": True, "account": account, "chara_info": chara_info}
     except Exception as e:
         return {"success": False, "detail": str(e)}
@@ -1117,10 +1303,10 @@ async def run_career(req: RunCareerRequest):
             index_result = active_client.call('load/index')
             load_data = index_result.get('data', {})
             update_start_state(load_data)
-            
+
             career_result = active_client.load_career()
             career_data = career_result.get('data', {})
-            
+
             account = get_account_status(load_data, career_result)
             active_account = account
             chara_info = career_data.get('chara_info') or {}
@@ -1132,10 +1318,17 @@ async def run_career(req: RunCareerRequest):
             if not started.get("success"):
                 return started
             result = started["result"]
-            account, chara_info = apply_career_result(result)
+            account, chara_info, _ = refresh_active_account_with_career_load()
 
         apply_deck_type_counts(preset, req=req, chara_info=chara_info)
-        career_runner.start(active_client, preset, result, max(1, min(int(req.max_steps or 2500), 3000)), burn_clocks=req.burn_clocks)
+        career_runner.start(
+            active_client,
+            preset,
+            result,
+            max(1, min(int(req.max_steps or 2500), 3000)),
+            burn_clocks=req.burn_clocks,
+            on_finished_refresh=refresh_active_account_from_load_index,
+        )
         return {"success": True, "account": account, "chara_info": chara_info, "runner": career_runner.snapshot()}
     except Exception as e:
         return {"success": False, "detail": str(e)}
@@ -1296,6 +1489,29 @@ async def broom_png():
     if path.exists():
         return FileResponse(path, media_type="image/png", headers={"Cache-Control": "no-cache"})
     raise HTTPException(status_code=404, detail="broom.png not found")
+
+
+_TRACKBLAZER_VENDOR_FILES = frozenset(
+    {"solver-browser.js", "races.json", "epithets.json"}
+)
+
+
+@app.get("/vendor/trackblazer/{file_name}")
+async def trackblazer_vendor_file(file_name: str):
+    if file_name not in _TRACKBLAZER_VENDOR_FILES or "/" in file_name or "\\" in file_name:
+        raise HTTPException(status_code=404, detail="Not found")
+    path = base_dir / "public" / "vendor" / "trackblazer" / file_name
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Not found")
+    suffix = path.suffix.lower()
+    media = {
+        ".mjs": "text/javascript",
+        ".js": "text/javascript",
+        ".json": "application/json",
+        ".txt": "text/plain",
+    }.get(suffix, "application/octet-stream")
+    return FileResponse(path, media_type=media, headers={"Cache-Control": "no-cache"})
+
 
 @app.get("/assets/data/{file_name}")
 async def get_asset_data(file_name: str):
@@ -1486,5 +1702,16 @@ if __name__ == "__main__":
     kill_listeners_on_port(1616)
     if not refresh_auth_before_serving():
         raise SystemExit(1)
-    print("Access the Web UI at: http://127.0.0.1:1616", flush=True)
-    uvicorn.run(app, host="127.0.0.1", port=1616, log_level="error")
+    _web_host, _web_port = "127.0.0.1", 1616
+    _web_url = f"http://{_web_host}:{_web_port}"
+    print(f"Access the Web UI at: {_web_url}", flush=True)
+
+    def _open_browser_after_server_ready():
+        time.sleep(1.5)
+        try:
+            webbrowser.open(_web_url)
+        except Exception:
+            pass
+
+    threading.Thread(target=_open_browser_after_server_ready, daemon=True).start()
+    uvicorn.run(app, host=_web_host, port=_web_port, log_level="error")

@@ -1,5 +1,3563 @@
 {
   "meta": {
+    "300001": {
+      "program_id": 1,
+      "race_instance_id": 100101,
+      "turn": 52,
+      "name": "February Stakes"
+    },
+    "300002": {
+      "program_id": 2,
+      "race_instance_id": 100201,
+      "turn": 54,
+      "name": "Takamatsunomiya Kinen"
+    },
+    "300003": {
+      "program_id": 3,
+      "race_instance_id": 100301,
+      "turn": 54,
+      "name": "Osaka Hai"
+    },
+    "300004": {
+      "program_id": 4,
+      "race_instance_id": 100601,
+      "turn": 56,
+      "name": "Tenno Sho (Spring)"
+    },
+    "300005": {
+      "program_id": 5,
+      "race_instance_id": 100801,
+      "turn": 57,
+      "name": "Victoria Mile"
+    },
+    "300006": {
+      "program_id": 6,
+      "race_instance_id": 200101,
+      "turn": 49,
+      "name": "Nikkei Shinshun Hai"
+    },
+    "300007": {
+      "program_id": 7,
+      "race_instance_id": 200201,
+      "turn": 50,
+      "name": "Tokai Stakes"
+    },
+    "300008": {
+      "program_id": 8,
+      "race_instance_id": 200301,
+      "turn": 50,
+      "name": "American JCC"
+    },
+    "300009": {
+      "program_id": 9,
+      "race_instance_id": 200401,
+      "turn": 51,
+      "name": "Kyoto Kinen"
+    },
+    "300010": {
+      "program_id": 10,
+      "race_instance_id": 200501,
+      "turn": 52,
+      "name": "Nakayama Kinen"
+    },
+    "300011": {
+      "program_id": 11,
+      "race_instance_id": 200701,
+      "turn": 53,
+      "name": "Kinko Sho"
+    },
+    "300012": {
+      "program_id": 12,
+      "race_instance_id": 200901,
+      "turn": 54,
+      "name": "Hanshin Daishoten"
+    },
+    "300013": {
+      "program_id": 13,
+      "race_instance_id": 201101,
+      "turn": 54,
+      "name": "Nikkei Sho"
+    },
+    "300014": {
+      "program_id": 14,
+      "race_instance_id": 201201,
+      "turn": 55,
+      "name": "Hanshin Umamusume Stakes"
+    },
+    "300015": {
+      "program_id": 15,
+      "race_instance_id": 201401,
+      "turn": 56,
+      "name": "Milers Cup"
+    },
+    "300016": {
+      "program_id": 16,
+      "race_instance_id": 201801,
+      "turn": 57,
+      "name": "Keio Hai Spring Cup"
+    },
+    "300017": {
+      "program_id": 17,
+      "race_instance_id": 201901,
+      "turn": 58,
+      "name": "Meguro Kinen"
+    },
+    "300018": {
+      "program_id": 18,
+      "race_instance_id": 300101,
+      "turn": 49,
+      "name": "Kyoto Kimpai"
+    },
+    "300019": {
+      "program_id": 19,
+      "race_instance_id": 300201,
+      "turn": 49,
+      "name": "Nakayama Kimpai"
+    },
+    "300020": {
+      "program_id": 20,
+      "race_instance_id": 300501,
+      "turn": 49,
+      "name": "Aichi Hai"
+    },
+    "300021": {
+      "program_id": 21,
+      "race_instance_id": 300701,
+      "turn": 50,
+      "name": "Silk Road Stakes"
+    },
+    "300022": {
+      "program_id": 22,
+      "race_instance_id": 300801,
+      "turn": 50,
+      "name": "Negishi Stakes"
+    },
+    "300023": {
+      "program_id": 23,
+      "race_instance_id": 301001,
+      "turn": 51,
+      "name": "Tokyo Shimbun Hai"
+    },
+    "300024": {
+      "program_id": 24,
+      "race_instance_id": 301301,
+      "turn": 52,
+      "name": "Kyoto Umamusume Stakes"
+    },
+    "300025": {
+      "program_id": 25,
+      "race_instance_id": 301401,
+      "turn": 52,
+      "name": "Diamond Stakes"
+    },
+    "300026": {
+      "program_id": 26,
+      "race_instance_id": 301501,
+      "turn": 52,
+      "name": "Kokura Daishoten"
+    },
+    "300027": {
+      "program_id": 27,
+      "race_instance_id": 301701,
+      "turn": 52,
+      "name": "Hankyu Hai"
+    },
+    "300028": {
+      "program_id": 28,
+      "race_instance_id": 301901,
+      "turn": 53,
+      "name": "Ocean Stakes"
+    },
+    "300029": {
+      "program_id": 29,
+      "race_instance_id": 302001,
+      "turn": 53,
+      "name": "Nakayama Umamusume Stakes"
+    },
+    "300030": {
+      "program_id": 30,
+      "race_instance_id": 302401,
+      "turn": 54,
+      "name": "March Stakes"
+    },
+    "300031": {
+      "program_id": 31,
+      "race_instance_id": 302501,
+      "turn": 55,
+      "name": "Lord Derby Challenge Trophy"
+    },
+    "300032": {
+      "program_id": 32,
+      "race_instance_id": 302601,
+      "turn": 55,
+      "name": "Antares Stakes"
+    },
+    "300033": {
+      "program_id": 33,
+      "race_instance_id": 302701,
+      "turn": 56,
+      "name": "Fukushima Umamusume Stakes"
+    },
+    "300034": {
+      "program_id": 34,
+      "race_instance_id": 302801,
+      "turn": 57,
+      "name": "Niigata Daishoten"
+    },
+    "300035": {
+      "program_id": 35,
+      "race_instance_id": 302901,
+      "turn": 58,
+      "name": "Heian Stakes"
+    },
+    "300036": {
+      "program_id": 36,
+      "race_instance_id": 400101,
+      "turn": 49,
+      "name": "Manyo Stakes"
+    },
+    "300037": {
+      "program_id": 37,
+      "race_instance_id": 400301,
+      "turn": 49,
+      "name": "Yodo Tankyori Stakes"
+    },
+    "300038": {
+      "program_id": 38,
+      "race_instance_id": 400401,
+      "turn": 49,
+      "name": "Pollux Stakes"
+    },
+    "300039": {
+      "program_id": 39,
+      "race_instance_id": 400501,
+      "turn": 49,
+      "name": "January Stakes"
+    },
+    "300040": {
+      "program_id": 40,
+      "race_instance_id": 400601,
+      "turn": 49,
+      "name": "New Year Stakes"
+    },
+    "300041": {
+      "program_id": 41,
+      "race_instance_id": 400801,
+      "turn": 50,
+      "name": "Subaru Stakes"
+    },
+    "300042": {
+      "program_id": 42,
+      "race_instance_id": 401001,
+      "turn": 49,
+      "name": "Carbuncle Stakes"
+    },
+    "300043": {
+      "program_id": 43,
+      "race_instance_id": 401101,
+      "turn": 50,
+      "name": "Shirafuji Stakes"
+    },
+    "300044": {
+      "program_id": 44,
+      "race_instance_id": 401301,
+      "turn": 51,
+      "name": "Yamato Stakes"
+    },
+    "300045": {
+      "program_id": 45,
+      "race_instance_id": 401501,
+      "turn": 51,
+      "name": "Rakuyo Stakes"
+    },
+    "300046": {
+      "program_id": 46,
+      "race_instance_id": 401601,
+      "turn": 51,
+      "name": "Aldebaran Stakes"
+    },
+    "300047": {
+      "program_id": 47,
+      "race_instance_id": 401701,
+      "turn": 51,
+      "name": "Valentine Stakes"
+    },
+    "300048": {
+      "program_id": 48,
+      "race_instance_id": 401901,
+      "turn": 52,
+      "name": "Sobu Stakes"
+    },
+    "300049": {
+      "program_id": 49,
+      "race_instance_id": 402101,
+      "turn": 53,
+      "name": "Osakajo Stakes"
+    },
+    "300050": {
+      "program_id": 50,
+      "race_instance_id": 402201,
+      "turn": 53,
+      "name": "Polaris Stakes"
+    },
+    "300051": {
+      "program_id": 51,
+      "race_instance_id": 402301,
+      "turn": 53,
+      "name": "Nigawa Stakes"
+    },
+    "300052": {
+      "program_id": 52,
+      "race_instance_id": 402601,
+      "turn": 53,
+      "name": "Kochi Stakes"
+    },
+    "300053": {
+      "program_id": 53,
+      "race_instance_id": 402801,
+      "turn": 54,
+      "name": "Chiba Stakes"
+    },
+    "300055": {
+      "program_id": 55,
+      "race_instance_id": 403001,
+      "turn": 54,
+      "name": "Rokko Stakes"
+    },
+    "300056": {
+      "program_id": 56,
+      "race_instance_id": 403101,
+      "turn": 55,
+      "name": "Coral Stakes"
+    },
+    "300058": {
+      "program_id": 58,
+      "race_instance_id": 403601,
+      "turn": 55,
+      "name": "Keiyo Stakes"
+    },
+    "300059": {
+      "program_id": 59,
+      "race_instance_id": 403701,
+      "turn": 55,
+      "name": "Shunrai Stakes"
+    },
+    "300060": {
+      "program_id": 60,
+      "race_instance_id": 403801,
+      "turn": 55,
+      "name": "Fukushima Mimpo Hai"
+    },
+    "300061": {
+      "program_id": 61,
+      "race_instance_id": 404001,
+      "turn": 56,
+      "name": "Oasis Stakes"
+    },
+    "300062": {
+      "program_id": 62,
+      "race_instance_id": 404101,
+      "turn": 56,
+      "name": "Tennozan Stakes"
+    },
+    "300063": {
+      "program_id": 63,
+      "race_instance_id": 404401,
+      "turn": 57,
+      "name": "Tanigawadake Stakes"
+    },
+    "300064": {
+      "program_id": 64,
+      "race_instance_id": 404601,
+      "turn": 57,
+      "name": "Metropolitan Stakes"
+    },
+    "300065": {
+      "program_id": 65,
+      "race_instance_id": 404701,
+      "turn": 57,
+      "name": "Kurama Stakes"
+    },
+    "300066": {
+      "program_id": 66,
+      "race_instance_id": 404801,
+      "turn": 57,
+      "name": "Brilliant Stakes"
+    },
+    "300067": {
+      "program_id": 67,
+      "race_instance_id": 404901,
+      "turn": 57,
+      "name": "Miyakooji Stakes"
+    },
+    "300068": {
+      "program_id": 68,
+      "race_instance_id": 405101,
+      "turn": 57,
+      "name": "Ritto Stakes"
+    },
+    "300069": {
+      "program_id": 69,
+      "race_instance_id": 405301,
+      "turn": 58,
+      "name": "May Stakes"
+    },
+    "300070": {
+      "program_id": 70,
+      "race_instance_id": 405501,
+      "turn": 58,
+      "name": "Idaten Stakes"
+    },
+    "300071": {
+      "program_id": 71,
+      "race_instance_id": 405701,
+      "turn": 58,
+      "name": "Keyaki Stakes"
+    },
+    "300072": {
+      "program_id": 72,
+      "race_instance_id": 405801,
+      "turn": 58,
+      "name": "Azuchijo Stakes"
+    },
+    "200073": {
+      "program_id": 73,
+      "race_instance_id": 101101,
+      "turn": 35,
+      "name": "Yasuda Kinen"
+    },
+    "300073": {
+      "program_id": 73,
+      "race_instance_id": 101101,
+      "turn": 59,
+      "name": "Yasuda Kinen"
+    },
+    "200074": {
+      "program_id": 74,
+      "race_instance_id": 101201,
+      "turn": 36,
+      "name": "Takarazuka Kinen"
+    },
+    "300074": {
+      "program_id": 74,
+      "race_instance_id": 101201,
+      "turn": 60,
+      "name": "Takarazuka Kinen"
+    },
+    "200075": {
+      "program_id": 75,
+      "race_instance_id": 101301,
+      "turn": 42,
+      "name": "Sprinters Stakes"
+    },
+    "300075": {
+      "program_id": 75,
+      "race_instance_id": 101301,
+      "turn": 66,
+      "name": "Sprinters Stakes"
+    },
+    "200076": {
+      "program_id": 76,
+      "race_instance_id": 101601,
+      "turn": 44,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "300076": {
+      "program_id": 76,
+      "race_instance_id": 101601,
+      "turn": 68,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "200077": {
+      "program_id": 77,
+      "race_instance_id": 101701,
+      "turn": 45,
+      "name": "Queen Elizabeth II Cup"
+    },
+    "300077": {
+      "program_id": 77,
+      "race_instance_id": 101701,
+      "turn": 69,
+      "name": "Queen Elizabeth II Cup"
+    },
+    "200078": {
+      "program_id": 78,
+      "race_instance_id": 101801,
+      "turn": 46,
+      "name": "Mile Championship"
+    },
+    "300078": {
+      "program_id": 78,
+      "race_instance_id": 101801,
+      "turn": 70,
+      "name": "Mile Championship"
+    },
+    "200079": {
+      "program_id": 79,
+      "race_instance_id": 101901,
+      "turn": 46,
+      "name": "Japan Cup"
+    },
+    "300079": {
+      "program_id": 79,
+      "race_instance_id": 101901,
+      "turn": 70,
+      "name": "Japan Cup"
+    },
+    "200080": {
+      "program_id": 80,
+      "race_instance_id": 102001,
+      "turn": 47,
+      "name": "Champions Cup"
+    },
+    "300080": {
+      "program_id": 80,
+      "race_instance_id": 102001,
+      "turn": 71,
+      "name": "Champions Cup"
+    },
+    "200081": {
+      "program_id": 81,
+      "race_instance_id": 102301,
+      "turn": 48,
+      "name": "Arima Kinen"
+    },
+    "300081": {
+      "program_id": 81,
+      "race_instance_id": 102301,
+      "turn": 72,
+      "name": "Arima Kinen"
+    },
+    "200082": {
+      "program_id": 82,
+      "race_instance_id": 202001,
+      "turn": 40,
+      "name": "Sapporo Kinen"
+    },
+    "300082": {
+      "program_id": 82,
+      "race_instance_id": 202001,
+      "turn": 64,
+      "name": "Sapporo Kinen"
+    },
+    "200083": {
+      "program_id": 83,
+      "race_instance_id": 202101,
+      "turn": 41,
+      "name": "Centaur Stakes"
+    },
+    "300083": {
+      "program_id": 83,
+      "race_instance_id": 202101,
+      "turn": 65,
+      "name": "Centaur Stakes"
+    },
+    "200084": {
+      "program_id": 84,
+      "race_instance_id": 202401,
+      "turn": 42,
+      "name": "Kobe Shimbun Hai"
+    },
+    "200085": {
+      "program_id": 85,
+      "race_instance_id": 202501,
+      "turn": 42,
+      "name": "All Comers"
+    },
+    "300085": {
+      "program_id": 85,
+      "race_instance_id": 202501,
+      "turn": 66,
+      "name": "All Comers"
+    },
+    "200086": {
+      "program_id": 86,
+      "race_instance_id": 202601,
+      "turn": 43,
+      "name": "Mainichi Okan"
+    },
+    "300086": {
+      "program_id": 86,
+      "race_instance_id": 202601,
+      "turn": 67,
+      "name": "Mainichi Okan"
+    },
+    "200087": {
+      "program_id": 87,
+      "race_instance_id": 202701,
+      "turn": 43,
+      "name": "Kyoto Daishoten"
+    },
+    "300087": {
+      "program_id": 87,
+      "race_instance_id": 202701,
+      "turn": 67,
+      "name": "Kyoto Daishoten"
+    },
+    "200088": {
+      "program_id": 88,
+      "race_instance_id": 202801,
+      "turn": 43,
+      "name": "Fuchu Umamusume Stakes"
+    },
+    "300088": {
+      "program_id": 88,
+      "race_instance_id": 202801,
+      "turn": 67,
+      "name": "Fuchu Umamusume Stakes"
+    },
+    "200089": {
+      "program_id": 89,
+      "race_instance_id": 202901,
+      "turn": 44,
+      "name": "Swan Stakes"
+    },
+    "300089": {
+      "program_id": 89,
+      "race_instance_id": 202901,
+      "turn": 68,
+      "name": "Swan Stakes"
+    },
+    "200090": {
+      "program_id": 90,
+      "race_instance_id": 203101,
+      "turn": 45,
+      "name": "Copa Republica Argentina"
+    },
+    "300090": {
+      "program_id": 90,
+      "race_instance_id": 203101,
+      "turn": 69,
+      "name": "Copa Republica Argentina"
+    },
+    "200091": {
+      "program_id": 91,
+      "race_instance_id": 203301,
+      "turn": 47,
+      "name": "Stayers Stakes"
+    },
+    "300091": {
+      "program_id": 91,
+      "race_instance_id": 203301,
+      "turn": 71,
+      "name": "Stayers Stakes"
+    },
+    "200092": {
+      "program_id": 92,
+      "race_instance_id": 203401,
+      "turn": 48,
+      "name": "Hanshin Cup"
+    },
+    "300092": {
+      "program_id": 92,
+      "race_instance_id": 203401,
+      "turn": 72,
+      "name": "Hanshin Cup"
+    },
+    "200093": {
+      "program_id": 93,
+      "race_instance_id": 303001,
+      "turn": 35,
+      "name": "Naruo Kinen"
+    },
+    "300093": {
+      "program_id": 93,
+      "race_instance_id": 303001,
+      "turn": 59,
+      "name": "Naruo Kinen"
+    },
+    "200094": {
+      "program_id": 94,
+      "race_instance_id": 303101,
+      "turn": 35,
+      "name": "Mermaid Stakes"
+    },
+    "300094": {
+      "program_id": 94,
+      "race_instance_id": 303101,
+      "turn": 59,
+      "name": "Mermaid Stakes"
+    },
+    "200095": {
+      "program_id": 95,
+      "race_instance_id": 303201,
+      "turn": 35,
+      "name": "Epsom Cup"
+    },
+    "300095": {
+      "program_id": 95,
+      "race_instance_id": 303201,
+      "turn": 59,
+      "name": "Epsom Cup"
+    },
+    "200096": {
+      "program_id": 96,
+      "race_instance_id": 303401,
+      "turn": 36,
+      "name": "Hakodate Sprint Stakes"
+    },
+    "300096": {
+      "program_id": 96,
+      "race_instance_id": 303401,
+      "turn": 60,
+      "name": "Hakodate Sprint Stakes"
+    },
+    "200097": {
+      "program_id": 97,
+      "race_instance_id": 303501,
+      "turn": 37,
+      "name": "CBC Sho"
+    },
+    "300097": {
+      "program_id": 97,
+      "race_instance_id": 303501,
+      "turn": 61,
+      "name": "CBC Sho"
+    },
+    "200098": {
+      "program_id": 98,
+      "race_instance_id": 303701,
+      "turn": 37,
+      "name": "Procyon Stakes"
+    },
+    "300098": {
+      "program_id": 98,
+      "race_instance_id": 303701,
+      "turn": 61,
+      "name": "Procyon Stakes"
+    },
+    "200099": {
+      "program_id": 99,
+      "race_instance_id": 303801,
+      "turn": 37,
+      "name": "Tanabata Sho"
+    },
+    "300099": {
+      "program_id": 99,
+      "race_instance_id": 303801,
+      "turn": 61,
+      "name": "Tanabata Sho"
+    },
+    "200100": {
+      "program_id": 100,
+      "race_instance_id": 303901,
+      "turn": 37,
+      "name": "Hakodate Kinen"
+    },
+    "300100": {
+      "program_id": 100,
+      "race_instance_id": 303901,
+      "turn": 61,
+      "name": "Hakodate Kinen"
+    },
+    "200101": {
+      "program_id": 101,
+      "race_instance_id": 304001,
+      "turn": 38,
+      "name": "Chukyo Kinen"
+    },
+    "300101": {
+      "program_id": 101,
+      "race_instance_id": 304001,
+      "turn": 62,
+      "name": "Chukyo Kinen"
+    },
+    "200102": {
+      "program_id": 102,
+      "race_instance_id": 304201,
+      "turn": 38,
+      "name": "Ibis Summer Dash"
+    },
+    "300102": {
+      "program_id": 102,
+      "race_instance_id": 304201,
+      "turn": 62,
+      "name": "Ibis Summer Dash"
+    },
+    "200103": {
+      "program_id": 103,
+      "race_instance_id": 304301,
+      "turn": 38,
+      "name": "Queen Stakes"
+    },
+    "300103": {
+      "program_id": 103,
+      "race_instance_id": 304301,
+      "turn": 62,
+      "name": "Queen Stakes"
+    },
+    "200104": {
+      "program_id": 104,
+      "race_instance_id": 304401,
+      "turn": 39,
+      "name": "Kokura Kinen"
+    },
+    "300104": {
+      "program_id": 104,
+      "race_instance_id": 304401,
+      "turn": 63,
+      "name": "Kokura Kinen"
+    },
+    "200105": {
+      "program_id": 105,
+      "race_instance_id": 304601,
+      "turn": 39,
+      "name": "Sekiya Kinen"
+    },
+    "300105": {
+      "program_id": 105,
+      "race_instance_id": 304601,
+      "turn": 63,
+      "name": "Sekiya Kinen"
+    },
+    "200106": {
+      "program_id": 106,
+      "race_instance_id": 304701,
+      "turn": 39,
+      "name": "Elm Stakes"
+    },
+    "300106": {
+      "program_id": 106,
+      "race_instance_id": 304701,
+      "turn": 63,
+      "name": "Elm Stakes"
+    },
+    "200107": {
+      "program_id": 107,
+      "race_instance_id": 304801,
+      "turn": 40,
+      "name": "Kitakyushu Kinen"
+    },
+    "300107": {
+      "program_id": 107,
+      "race_instance_id": 304801,
+      "turn": 64,
+      "name": "Kitakyushu Kinen"
+    },
+    "200108": {
+      "program_id": 108,
+      "race_instance_id": 305001,
+      "turn": 40,
+      "name": "Keeneland Cup"
+    },
+    "300108": {
+      "program_id": 108,
+      "race_instance_id": 305001,
+      "turn": 64,
+      "name": "Keeneland Cup"
+    },
+    "200109": {
+      "program_id": 109,
+      "race_instance_id": 305301,
+      "turn": 41,
+      "name": "Niigata Kinen"
+    },
+    "300109": {
+      "program_id": 109,
+      "race_instance_id": 305301,
+      "turn": 65,
+      "name": "Niigata Kinen"
+    },
+    "200110": {
+      "program_id": 110,
+      "race_instance_id": 305501,
+      "turn": 41,
+      "name": "Keisei Hai Autumn Handicap"
+    },
+    "300110": {
+      "program_id": 110,
+      "race_instance_id": 305501,
+      "turn": 65,
+      "name": "Keisei Hai Autumn Handicap"
+    },
+    "200111": {
+      "program_id": 111,
+      "race_instance_id": 305601,
+      "turn": 42,
+      "name": "Sirius Stakes"
+    },
+    "300111": {
+      "program_id": 111,
+      "race_instance_id": 305601,
+      "turn": 66,
+      "name": "Sirius Stakes"
+    },
+    "200112": {
+      "program_id": 112,
+      "race_instance_id": 305801,
+      "turn": 44,
+      "name": "Fuji Stakes"
+    },
+    "300112": {
+      "program_id": 112,
+      "race_instance_id": 305801,
+      "turn": 68,
+      "name": "Fuji Stakes"
+    },
+    "200113": {
+      "program_id": 113,
+      "race_instance_id": 306101,
+      "turn": 45,
+      "name": "Miyako Stakes"
+    },
+    "300113": {
+      "program_id": 113,
+      "race_instance_id": 306101,
+      "turn": 69,
+      "name": "Miyako Stakes"
+    },
+    "200114": {
+      "program_id": 114,
+      "race_instance_id": 306201,
+      "turn": 45,
+      "name": "Musashino Stakes"
+    },
+    "300114": {
+      "program_id": 114,
+      "race_instance_id": 306201,
+      "turn": 69,
+      "name": "Musashino Stakes"
+    },
+    "200115": {
+      "program_id": 115,
+      "race_instance_id": 306301,
+      "turn": 45,
+      "name": "Fukushima Kinen"
+    },
+    "300115": {
+      "program_id": 115,
+      "race_instance_id": 306301,
+      "turn": 69,
+      "name": "Fukushima Kinen"
+    },
+    "200116": {
+      "program_id": 116,
+      "race_instance_id": 306601,
+      "turn": 46,
+      "name": "Keihan Hai"
+    },
+    "300116": {
+      "program_id": 116,
+      "race_instance_id": 306601,
+      "turn": 70,
+      "name": "Keihan Hai"
+    },
+    "200117": {
+      "program_id": 117,
+      "race_instance_id": 306701,
+      "turn": 47,
+      "name": "Challenge Cup"
+    },
+    "300117": {
+      "program_id": 117,
+      "race_instance_id": 306701,
+      "turn": 71,
+      "name": "Challenge Cup"
+    },
+    "200118": {
+      "program_id": 118,
+      "race_instance_id": 306801,
+      "turn": 47,
+      "name": "Chunichi Shimbun Hai"
+    },
+    "300118": {
+      "program_id": 118,
+      "race_instance_id": 306801,
+      "turn": 71,
+      "name": "Chunichi Shimbun Hai"
+    },
+    "200119": {
+      "program_id": 119,
+      "race_instance_id": 306901,
+      "turn": 47,
+      "name": "Capella Stakes"
+    },
+    "300119": {
+      "program_id": 119,
+      "race_instance_id": 306901,
+      "turn": 71,
+      "name": "Capella Stakes"
+    },
+    "200120": {
+      "program_id": 120,
+      "race_instance_id": 307001,
+      "turn": 47,
+      "name": "Turquoise Stakes"
+    },
+    "300120": {
+      "program_id": 120,
+      "race_instance_id": 307001,
+      "turn": 71,
+      "name": "Turquoise Stakes"
+    },
+    "200121": {
+      "program_id": 121,
+      "race_instance_id": 405901,
+      "turn": 36,
+      "name": "Akhalteke Stakes"
+    },
+    "300121": {
+      "program_id": 121,
+      "race_instance_id": 405901,
+      "turn": 60,
+      "name": "Akhalteke Stakes"
+    },
+    "200122": {
+      "program_id": 122,
+      "race_instance_id": 406001,
+      "turn": 35,
+      "name": "Tempozan Stakes"
+    },
+    "300122": {
+      "program_id": 122,
+      "race_instance_id": 406001,
+      "turn": 59,
+      "name": "Tempozan Stakes"
+    },
+    "200123": {
+      "program_id": 123,
+      "race_instance_id": 406101,
+      "turn": 36,
+      "name": "Yonago Stakes"
+    },
+    "300123": {
+      "program_id": 123,
+      "race_instance_id": 406101,
+      "turn": 60,
+      "name": "Yonago Stakes"
+    },
+    "200124": {
+      "program_id": 124,
+      "race_instance_id": 406201,
+      "turn": 36,
+      "name": "Onuma Stakes"
+    },
+    "300124": {
+      "program_id": 124,
+      "race_instance_id": 406201,
+      "turn": 60,
+      "name": "Onuma Stakes"
+    },
+    "200125": {
+      "program_id": 125,
+      "race_instance_id": 406301,
+      "turn": 36,
+      "name": "Paradise Stakes"
+    },
+    "300125": {
+      "program_id": 125,
+      "race_instance_id": 406301,
+      "turn": 60,
+      "name": "Paradise Stakes"
+    },
+    "200126": {
+      "program_id": 126,
+      "race_instance_id": 406401,
+      "turn": 37,
+      "name": "Tomoe Sho"
+    },
+    "300126": {
+      "program_id": 126,
+      "race_instance_id": 406401,
+      "turn": 61,
+      "name": "Tomoe Sho"
+    },
+    "200127": {
+      "program_id": 127,
+      "race_instance_id": 406501,
+      "turn": 37,
+      "name": "Marine Stakes"
+    },
+    "300127": {
+      "program_id": 127,
+      "race_instance_id": 406501,
+      "turn": 61,
+      "name": "Marine Stakes"
+    },
+    "200129": {
+      "program_id": 129,
+      "race_instance_id": 406901,
+      "turn": 38,
+      "name": "Fukushima TV Open"
+    },
+    "300129": {
+      "program_id": 129,
+      "race_instance_id": 406901,
+      "turn": 62,
+      "name": "Fukushima TV Open"
+    },
+    "200130": {
+      "program_id": 130,
+      "race_instance_id": 407101,
+      "turn": 39,
+      "name": "Sapporo Nikkei Open"
+    },
+    "300130": {
+      "program_id": 130,
+      "race_instance_id": 407101,
+      "turn": 63,
+      "name": "Sapporo Nikkei Open"
+    },
+    "200131": {
+      "program_id": 131,
+      "race_instance_id": 407201,
+      "turn": 39,
+      "name": "UHB Sho"
+    },
+    "300131": {
+      "program_id": 131,
+      "race_instance_id": 407201,
+      "turn": 63,
+      "name": "UHB Sho"
+    },
+    "200132": {
+      "program_id": 132,
+      "race_instance_id": 407301,
+      "turn": 39,
+      "name": "Aso Stakes"
+    },
+    "300132": {
+      "program_id": 132,
+      "race_instance_id": 407301,
+      "turn": 63,
+      "name": "Aso Stakes"
+    },
+    "200133": {
+      "program_id": 133,
+      "race_instance_id": 407601,
+      "turn": 40,
+      "name": "NST Sho"
+    },
+    "300133": {
+      "program_id": 133,
+      "race_instance_id": 407601,
+      "turn": 64,
+      "name": "NST Sho"
+    },
+    "200134": {
+      "program_id": 134,
+      "race_instance_id": 407901,
+      "turn": 40,
+      "name": "BSN Sho"
+    },
+    "300134": {
+      "program_id": 134,
+      "race_instance_id": 407901,
+      "turn": 64,
+      "name": "BSN Sho"
+    },
+    "200135": {
+      "program_id": 135,
+      "race_instance_id": 408001,
+      "turn": 40,
+      "name": "Kokura Nikkei Open"
+    },
+    "300135": {
+      "program_id": 135,
+      "race_instance_id": 408001,
+      "turn": 64,
+      "name": "Kokura Nikkei Open"
+    },
+    "200136": {
+      "program_id": 136,
+      "race_instance_id": 408101,
+      "turn": 40,
+      "name": "Toki Stakes"
+    },
+    "300136": {
+      "program_id": 136,
+      "race_instance_id": 408101,
+      "turn": 64,
+      "name": "Toki Stakes"
+    },
+    "200137": {
+      "program_id": 137,
+      "race_instance_id": 408201,
+      "turn": 41,
+      "name": "Tancho Stakes"
+    },
+    "300137": {
+      "program_id": 137,
+      "race_instance_id": 408201,
+      "turn": 65,
+      "name": "Tancho Stakes"
+    },
+    "200138": {
+      "program_id": 138,
+      "race_instance_id": 408401,
+      "turn": 41,
+      "name": "Enif Stakes"
+    },
+    "300138": {
+      "program_id": 138,
+      "race_instance_id": 408401,
+      "turn": 65,
+      "name": "Enif Stakes"
+    },
+    "200139": {
+      "program_id": 139,
+      "race_instance_id": 408601,
+      "turn": 41,
+      "name": "Radio Nippon Sho"
+    },
+    "300139": {
+      "program_id": 139,
+      "race_instance_id": 408601,
+      "turn": 65,
+      "name": "Radio Nippon Sho"
+    },
+    "200140": {
+      "program_id": 140,
+      "race_instance_id": 409001,
+      "turn": 42,
+      "name": "Port Island Stakes"
+    },
+    "300140": {
+      "program_id": 140,
+      "race_instance_id": 409001,
+      "turn": 66,
+      "name": "Port Island Stakes"
+    },
+    "200141": {
+      "program_id": 141,
+      "race_instance_id": 409101,
+      "turn": 43,
+      "name": "Opal Stakes"
+    },
+    "300141": {
+      "program_id": 141,
+      "race_instance_id": 409101,
+      "turn": 67,
+      "name": "Opal Stakes"
+    },
+    "200142": {
+      "program_id": 142,
+      "race_instance_id": 409201,
+      "turn": 43,
+      "name": "Green Channel Cup"
+    },
+    "300142": {
+      "program_id": 142,
+      "race_instance_id": 409201,
+      "turn": 67,
+      "name": "Green Channel Cup"
+    },
+    "200143": {
+      "program_id": 143,
+      "race_instance_id": 409401,
+      "turn": 43,
+      "name": "October Stakes"
+    },
+    "300143": {
+      "program_id": 143,
+      "race_instance_id": 409401,
+      "turn": 67,
+      "name": "October Stakes"
+    },
+    "200144": {
+      "program_id": 144,
+      "race_instance_id": 409501,
+      "turn": 43,
+      "name": "Shinetsu Stakes"
+    },
+    "300144": {
+      "program_id": 144,
+      "race_instance_id": 409501,
+      "turn": 67,
+      "name": "Shinetsu Stakes"
+    },
+    "200145": {
+      "program_id": 145,
+      "race_instance_id": 409701,
+      "turn": 44,
+      "name": "Muromachi Stakes"
+    },
+    "300145": {
+      "program_id": 145,
+      "race_instance_id": 409701,
+      "turn": 68,
+      "name": "Muromachi Stakes"
+    },
+    "200146": {
+      "program_id": 146,
+      "race_instance_id": 409801,
+      "turn": 44,
+      "name": "Brazil Cup"
+    },
+    "300146": {
+      "program_id": 146,
+      "race_instance_id": 409801,
+      "turn": 68,
+      "name": "Brazil Cup"
+    },
+    "200147": {
+      "program_id": 147,
+      "race_instance_id": 410001,
+      "turn": 44,
+      "name": "Cassiopeia Stakes"
+    },
+    "300147": {
+      "program_id": 147,
+      "race_instance_id": 410001,
+      "turn": 68,
+      "name": "Cassiopeia Stakes"
+    },
+    "200148": {
+      "program_id": 148,
+      "race_instance_id": 410101,
+      "turn": 44,
+      "name": "Lumiere Autumn Dash"
+    },
+    "300148": {
+      "program_id": 148,
+      "race_instance_id": 410101,
+      "turn": 68,
+      "name": "Lumiere Autumn Dash"
+    },
+    "200149": {
+      "program_id": 149,
+      "race_instance_id": 410201,
+      "turn": 45,
+      "name": "Oro Cup"
+    },
+    "300149": {
+      "program_id": 149,
+      "race_instance_id": 410201,
+      "turn": 69,
+      "name": "Oro Cup"
+    },
+    "200150": {
+      "program_id": 150,
+      "race_instance_id": 410401,
+      "turn": 46,
+      "name": "Andromeda Stakes"
+    },
+    "300150": {
+      "program_id": 150,
+      "race_instance_id": 410401,
+      "turn": 70,
+      "name": "Andromeda Stakes"
+    },
+    "200151": {
+      "program_id": 151,
+      "race_instance_id": 410501,
+      "turn": 46,
+      "name": "Shimotsuki Stakes"
+    },
+    "300151": {
+      "program_id": 151,
+      "race_instance_id": 410501,
+      "turn": 70,
+      "name": "Shimotsuki Stakes"
+    },
+    "200152": {
+      "program_id": 152,
+      "race_instance_id": 410601,
+      "turn": 46,
+      "name": "Fukushima Minyu Cup"
+    },
+    "300152": {
+      "program_id": 152,
+      "race_instance_id": 410601,
+      "turn": 70,
+      "name": "Fukushima Minyu Cup"
+    },
+    "200153": {
+      "program_id": 153,
+      "race_instance_id": 410701,
+      "turn": 46,
+      "name": "Capital Stakes"
+    },
+    "300153": {
+      "program_id": 153,
+      "race_instance_id": 410701,
+      "turn": 70,
+      "name": "Capital Stakes"
+    },
+    "200154": {
+      "program_id": 154,
+      "race_instance_id": 410801,
+      "turn": 46,
+      "name": "Autumn Leaf Stakes"
+    },
+    "300154": {
+      "program_id": 154,
+      "race_instance_id": 410801,
+      "turn": 70,
+      "name": "Autumn Leaf Stakes"
+    },
+    "200155": {
+      "program_id": 155,
+      "race_instance_id": 410901,
+      "turn": 47,
+      "name": "Lapis Lazuli Stakes"
+    },
+    "300155": {
+      "program_id": 155,
+      "race_instance_id": 410901,
+      "turn": 71,
+      "name": "Lapis Lazuli Stakes"
+    },
+    "200156": {
+      "program_id": 156,
+      "race_instance_id": 411001,
+      "turn": 47,
+      "name": "Shiwasu Stakes"
+    },
+    "300156": {
+      "program_id": 156,
+      "race_instance_id": 411001,
+      "turn": 71,
+      "name": "Shiwasu Stakes"
+    },
+    "200157": {
+      "program_id": 157,
+      "race_instance_id": 411101,
+      "turn": 47,
+      "name": "Rigel Stakes"
+    },
+    "300157": {
+      "program_id": 157,
+      "race_instance_id": 411101,
+      "turn": 71,
+      "name": "Rigel Stakes"
+    },
+    "200158": {
+      "program_id": 158,
+      "race_instance_id": 411201,
+      "turn": 47,
+      "name": "Tanzanite Stakes"
+    },
+    "300158": {
+      "program_id": 158,
+      "race_instance_id": 411201,
+      "turn": 71,
+      "name": "Tanzanite Stakes"
+    },
+    "200159": {
+      "program_id": 159,
+      "race_instance_id": 411301,
+      "turn": 47,
+      "name": "December Stakes"
+    },
+    "300159": {
+      "program_id": 159,
+      "race_instance_id": 411301,
+      "turn": 71,
+      "name": "December Stakes"
+    },
+    "200160": {
+      "program_id": 160,
+      "race_instance_id": 411501,
+      "turn": 48,
+      "name": "Galaxy Stakes"
+    },
+    "300160": {
+      "program_id": 160,
+      "race_instance_id": 411501,
+      "turn": 72,
+      "name": "Galaxy Stakes"
+    },
+    "200161": {
+      "program_id": 161,
+      "race_instance_id": 411601,
+      "turn": 48,
+      "name": "Betelgeuse Stakes"
+    },
+    "300161": {
+      "program_id": 161,
+      "race_instance_id": 411601,
+      "turn": 72,
+      "name": "Betelgeuse Stakes"
+    },
+    "200162": {
+      "program_id": 162,
+      "race_instance_id": 100401,
+      "turn": 31,
+      "name": "Oka Sho"
+    },
+    "200163": {
+      "program_id": 163,
+      "race_instance_id": 100501,
+      "turn": 31,
+      "name": "Satsuki Sho"
+    },
+    "200164": {
+      "program_id": 164,
+      "race_instance_id": 100701,
+      "turn": 33,
+      "name": "NHK Mile Cup"
+    },
+    "200165": {
+      "program_id": 165,
+      "race_instance_id": 100901,
+      "turn": 34,
+      "name": "Japanese Oaks"
+    },
+    "200166": {
+      "program_id": 166,
+      "race_instance_id": 101001,
+      "turn": 34,
+      "name": "Tokyo Yushun (Japanese Derby)"
+    },
+    "200167": {
+      "program_id": 167,
+      "race_instance_id": 101401,
+      "turn": 44,
+      "name": "Shuka Sho"
+    },
+    "200168": {
+      "program_id": 168,
+      "race_instance_id": 101501,
+      "turn": 44,
+      "name": "Kikuka Sho"
+    },
+    "200169": {
+      "program_id": 169,
+      "race_instance_id": 200601,
+      "turn": 29,
+      "name": "Yayoi Sho"
+    },
+    "200170": {
+      "program_id": 170,
+      "race_instance_id": 200801,
+      "turn": 29,
+      "name": "Fillies' Revue"
+    },
+    "200171": {
+      "program_id": 171,
+      "race_instance_id": 201001,
+      "turn": 30,
+      "name": "Spring Stakes"
+    },
+    "200172": {
+      "program_id": 172,
+      "race_instance_id": 201301,
+      "turn": 31,
+      "name": "New Zealand Trophy"
+    },
+    "200173": {
+      "program_id": 173,
+      "race_instance_id": 201501,
+      "turn": 32,
+      "name": "Flora Stakes"
+    },
+    "200174": {
+      "program_id": 174,
+      "race_instance_id": 201601,
+      "turn": 32,
+      "name": "Aoba Sho"
+    },
+    "200175": {
+      "program_id": 175,
+      "race_instance_id": 201701,
+      "turn": 33,
+      "name": "Kyoto Shimbun Hai"
+    },
+    "200176": {
+      "program_id": 176,
+      "race_instance_id": 202201,
+      "turn": 41,
+      "name": "Rose Stakes"
+    },
+    "200177": {
+      "program_id": 177,
+      "race_instance_id": 202301,
+      "turn": 42,
+      "name": "St. Lite Kinen"
+    },
+    "200178": {
+      "program_id": 178,
+      "race_instance_id": 300301,
+      "turn": 25,
+      "name": "Shinzan Kinen"
+    },
+    "200179": {
+      "program_id": 179,
+      "race_instance_id": 300401,
+      "turn": 25,
+      "name": "Fairy Stakes"
+    },
+    "200180": {
+      "program_id": 180,
+      "race_instance_id": 300601,
+      "turn": 25,
+      "name": "Keisei Hai"
+    },
+    "200181": {
+      "program_id": 181,
+      "race_instance_id": 300901,
+      "turn": 27,
+      "name": "Kisaragi Sho"
+    },
+    "200182": {
+      "program_id": 182,
+      "race_instance_id": 301101,
+      "turn": 27,
+      "name": "Queen Cup"
+    },
+    "200183": {
+      "program_id": 183,
+      "race_instance_id": 301201,
+      "turn": 27,
+      "name": "Kyodo News Hai"
+    },
+    "200184": {
+      "program_id": 184,
+      "race_instance_id": 301601,
+      "turn": 31,
+      "name": "Arlington Cup"
+    },
+    "200185": {
+      "program_id": 185,
+      "race_instance_id": 301801,
+      "turn": 29,
+      "name": "Tulip Sho"
+    },
+    "200186": {
+      "program_id": 186,
+      "race_instance_id": 302101,
+      "turn": 30,
+      "name": "Falcon Stakes"
+    },
+    "200187": {
+      "program_id": 187,
+      "race_instance_id": 302201,
+      "turn": 30,
+      "name": "Flower Cup"
+    },
+    "200188": {
+      "program_id": 188,
+      "race_instance_id": 302301,
+      "turn": 30,
+      "name": "Mainichi Hai"
+    },
+    "200189": {
+      "program_id": 189,
+      "race_instance_id": 303301,
+      "turn": 36,
+      "name": "Unicorn Stakes"
+    },
+    "200190": {
+      "program_id": 190,
+      "race_instance_id": 303601,
+      "turn": 37,
+      "name": "Radio Nikkei Sho"
+    },
+    "200191": {
+      "program_id": 191,
+      "race_instance_id": 304501,
+      "turn": 39,
+      "name": "Leopard Stakes"
+    },
+    "200192": {
+      "program_id": 192,
+      "race_instance_id": 305401,
+      "turn": 41,
+      "name": "Shion Stakes"
+    },
+    "200193": {
+      "program_id": 193,
+      "race_instance_id": 400201,
+      "turn": 25,
+      "name": "Junior Cup"
+    },
+    "200194": {
+      "program_id": 194,
+      "race_instance_id": 400701,
+      "turn": 25,
+      "name": "Kobai Stakes"
+    },
+    "200195": {
+      "program_id": 195,
+      "race_instance_id": 400901,
+      "turn": 26,
+      "name": "Wakagoma Stakes"
+    },
+    "200196": {
+      "program_id": 196,
+      "race_instance_id": 401201,
+      "turn": 26,
+      "name": "Crocus Stakes"
+    },
+    "200197": {
+      "program_id": 197,
+      "race_instance_id": 401401,
+      "turn": 27,
+      "name": "Elfin Stakes"
+    },
+    "200198": {
+      "program_id": 198,
+      "race_instance_id": 401801,
+      "turn": 28,
+      "name": "Hyacinth Stakes"
+    },
+    "200199": {
+      "program_id": 199,
+      "race_instance_id": 402001,
+      "turn": 28,
+      "name": "Sumire Stakes"
+    },
+    "200200": {
+      "program_id": 200,
+      "race_instance_id": 402401,
+      "turn": 29,
+      "name": "Anemone Stakes"
+    },
+    "200201": {
+      "program_id": 201,
+      "race_instance_id": 402501,
+      "turn": 29,
+      "name": "Shoryu Stakes"
+    },
+    "200202": {
+      "program_id": 202,
+      "race_instance_id": 402701,
+      "turn": 30,
+      "name": "Wakaba Stakes"
+    },
+    "200203": {
+      "program_id": 203,
+      "race_instance_id": 403201,
+      "turn": 28,
+      "name": "Marguerite Stakes"
+    },
+    "200204": {
+      "program_id": 204,
+      "race_instance_id": 403301,
+      "turn": 31,
+      "name": "Fukuryu Stakes"
+    },
+    "200205": {
+      "program_id": 205,
+      "race_instance_id": 403501,
+      "turn": 31,
+      "name": "Wasurenagusa Sho"
+    },
+    "200206": {
+      "program_id": 206,
+      "race_instance_id": 403901,
+      "turn": 32,
+      "name": "Tachibana Stakes"
+    },
+    "200207": {
+      "program_id": 207,
+      "race_instance_id": 404201,
+      "turn": 32,
+      "name": "Tango Stakes"
+    },
+    "200208": {
+      "program_id": 208,
+      "race_instance_id": 404301,
+      "turn": 32,
+      "name": "Sweetpea Stakes"
+    },
+    "200209": {
+      "program_id": 209,
+      "race_instance_id": 404501,
+      "turn": 33,
+      "name": "Principal Stakes"
+    },
+    "200210": {
+      "program_id": 210,
+      "race_instance_id": 405001,
+      "turn": 34,
+      "name": "Aoi Stakes"
+    },
+    "200211": {
+      "program_id": 211,
+      "race_instance_id": 405201,
+      "turn": 33,
+      "name": "Seiryu Stakes"
+    },
+    "200212": {
+      "program_id": 212,
+      "race_instance_id": 405401,
+      "turn": 34,
+      "name": "Hosu Stakes"
+    },
+    "200213": {
+      "program_id": 213,
+      "race_instance_id": 405601,
+      "turn": 34,
+      "name": "Shirayuri Stakes"
+    },
+    "200215": {
+      "program_id": 215,
+      "race_instance_id": 900880,
+      "turn": 25,
+      "name": "Classic Maiden Race"
+    },
+    "200216": {
+      "program_id": 216,
+      "race_instance_id": 900882,
+      "turn": 29,
+      "name": "Classic Maiden Race"
+    },
+    "200217": {
+      "program_id": 217,
+      "race_instance_id": 900884,
+      "turn": 31,
+      "name": "Classic Maiden Race"
+    },
+    "200220": {
+      "program_id": 220,
+      "race_instance_id": 900881,
+      "turn": 26,
+      "name": "Classic Maiden Race"
+    },
+    "200223": {
+      "program_id": 223,
+      "race_instance_id": 900940,
+      "turn": 25,
+      "name": "Classic Maiden Race"
+    },
+    "200224": {
+      "program_id": 224,
+      "race_instance_id": 900943,
+      "turn": 30,
+      "name": "Classic Maiden Race"
+    },
+    "200225": {
+      "program_id": 225,
+      "race_instance_id": 900944,
+      "turn": 31,
+      "name": "Classic Maiden Race"
+    },
+    "200227": {
+      "program_id": 227,
+      "race_instance_id": 900970,
+      "turn": 25,
+      "name": "Classic Maiden Race"
+    },
+    "200228": {
+      "program_id": 228,
+      "race_instance_id": 900971,
+      "turn": 29,
+      "name": "Classic Maiden Race"
+    },
+    "200229": {
+      "program_id": 229,
+      "race_instance_id": 900973,
+      "turn": 31,
+      "name": "Classic Maiden Race"
+    },
+    "200236": {
+      "program_id": 236,
+      "race_instance_id": 900991,
+      "turn": 29,
+      "name": "Classic Maiden Race"
+    },
+    "200239": {
+      "program_id": 239,
+      "race_instance_id": 901050,
+      "turn": 25,
+      "name": "Classic Maiden Race"
+    },
+    "200240": {
+      "program_id": 240,
+      "race_instance_id": 901052,
+      "turn": 29,
+      "name": "Classic Maiden Race"
+    },
+    "200241": {
+      "program_id": 241,
+      "race_instance_id": 901054,
+      "turn": 31,
+      "name": "Classic Maiden Race"
+    },
+    "200244": {
+      "program_id": 244,
+      "race_instance_id": 901080,
+      "turn": 25,
+      "name": "Classic Maiden Race"
+    },
+    "200246": {
+      "program_id": 246,
+      "race_instance_id": 901081,
+      "turn": 29,
+      "name": "Classic Maiden Race"
+    },
+    "200247": {
+      "program_id": 247,
+      "race_instance_id": 901083,
+      "turn": 31,
+      "name": "Classic Maiden Race"
+    },
+    "200260": {
+      "program_id": 260,
+      "race_instance_id": 900990,
+      "turn": 26,
+      "name": "Classic Maiden Race"
+    },
+    "200261": {
+      "program_id": 261,
+      "race_instance_id": 900941,
+      "turn": 26,
+      "name": "Classic Maiden Race"
+    },
+    "200266": {
+      "program_id": 266,
+      "race_instance_id": 902431,
+      "turn": 28,
+      "name": "Classic Maiden Race"
+    },
+    "200267": {
+      "program_id": 267,
+      "race_instance_id": 902461,
+      "turn": 28,
+      "name": "Classic Maiden Race"
+    },
+    "200268": {
+      "program_id": 268,
+      "race_instance_id": 902491,
+      "turn": 28,
+      "name": "Classic Maiden Race"
+    },
+    "200270": {
+      "program_id": 270,
+      "race_instance_id": 902511,
+      "turn": 28,
+      "name": "Classic Maiden Race"
+    },
+    "200271": {
+      "program_id": 271,
+      "race_instance_id": 902551,
+      "turn": 28,
+      "name": "Classic Maiden Race"
+    },
+    "200272": {
+      "program_id": 272,
+      "race_instance_id": 902481,
+      "turn": 28,
+      "name": "Classic Maiden Race"
+    },
+    "200274": {
+      "program_id": 274,
+      "race_instance_id": 900942,
+      "turn": 29,
+      "name": "Classic Maiden Race"
+    },
+    "200275": {
+      "program_id": 275,
+      "race_instance_id": 900972,
+      "turn": 30,
+      "name": "Classic Maiden Race"
+    },
+    "200276": {
+      "program_id": 276,
+      "race_instance_id": 900883,
+      "turn": 30,
+      "name": "Classic Maiden Race"
+    },
+    "200278": {
+      "program_id": 278,
+      "race_instance_id": 901053,
+      "turn": 30,
+      "name": "Classic Maiden Race"
+    },
+    "200279": {
+      "program_id": 279,
+      "race_instance_id": 900992,
+      "turn": 30,
+      "name": "Classic Maiden Race"
+    },
+    "200280": {
+      "program_id": 280,
+      "race_instance_id": 901082,
+      "turn": 30,
+      "name": "Classic Maiden Race"
+    },
+    "200281": {
+      "program_id": 281,
+      "race_instance_id": 902571,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200282": {
+      "program_id": 282,
+      "race_instance_id": 902494,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200283": {
+      "program_id": 283,
+      "race_instance_id": 902434,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200284": {
+      "program_id": 284,
+      "race_instance_id": 902464,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200285": {
+      "program_id": 285,
+      "race_instance_id": 902484,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200286": {
+      "program_id": 286,
+      "race_instance_id": 902514,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200287": {
+      "program_id": 287,
+      "race_instance_id": 902532,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200291": {
+      "program_id": 291,
+      "race_instance_id": 902466,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200292": {
+      "program_id": 292,
+      "race_instance_id": 902556,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200293": {
+      "program_id": 293,
+      "race_instance_id": 902486,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200294": {
+      "program_id": 294,
+      "race_instance_id": 902496,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200295": {
+      "program_id": 295,
+      "race_instance_id": 902436,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200296": {
+      "program_id": 296,
+      "race_instance_id": 902454,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200297": {
+      "program_id": 297,
+      "race_instance_id": 902574,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "100298": {
+      "program_id": 298,
+      "race_instance_id": 904050,
+      "turn": 13,
+      "name": "Junior Maiden Race"
+    },
+    "200299": {
+      "program_id": 299,
+      "race_instance_id": 904000,
+      "turn": 37,
+      "name": "Classic Maiden Race"
+    },
+    "200300": {
+      "program_id": 300,
+      "race_instance_id": 903981,
+      "turn": 38,
+      "name": "Classic Maiden Race"
+    },
+    "200303": {
+      "program_id": 303,
+      "race_instance_id": 903941,
+      "turn": 38,
+      "name": "Classic Maiden Race"
+    },
+    "100304": {
+      "program_id": 304,
+      "race_instance_id": 904101,
+      "turn": 14,
+      "name": "Junior Maiden Race"
+    },
+    "100305": {
+      "program_id": 305,
+      "race_instance_id": 904061,
+      "turn": 14,
+      "name": "Junior Maiden Race"
+    },
+    "200306": {
+      "program_id": 306,
+      "race_instance_id": 904001,
+      "turn": 38,
+      "name": "Classic Maiden Race"
+    },
+    "200308": {
+      "program_id": 308,
+      "race_instance_id": 903961,
+      "turn": 38,
+      "name": "Classic Maiden Race"
+    },
+    "200309": {
+      "program_id": 309,
+      "race_instance_id": 904021,
+      "turn": 38,
+      "name": "Classic Maiden Race"
+    },
+    "200310": {
+      "program_id": 310,
+      "race_instance_id": 903471,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "200311": {
+      "program_id": 311,
+      "race_instance_id": 903411,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "200314": {
+      "program_id": 314,
+      "race_instance_id": 903451,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "100315": {
+      "program_id": 315,
+      "race_instance_id": 903611,
+      "turn": 16,
+      "name": "Junior Maiden Race"
+    },
+    "100316": {
+      "program_id": 316,
+      "race_instance_id": 903531,
+      "turn": 16,
+      "name": "Junior Maiden Race"
+    },
+    "200317": {
+      "program_id": 317,
+      "race_instance_id": 903491,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "200319": {
+      "program_id": 319,
+      "race_instance_id": 903430,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "100320": {
+      "program_id": 320,
+      "race_instance_id": 903591,
+      "turn": 16,
+      "name": "Junior Maiden Race"
+    },
+    "200321": {
+      "program_id": 321,
+      "race_instance_id": 903381,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "100322": {
+      "program_id": 322,
+      "race_instance_id": 901021,
+      "turn": 18,
+      "name": "Junior Maiden Race"
+    },
+    "100323": {
+      "program_id": 323,
+      "race_instance_id": 900891,
+      "turn": 18,
+      "name": "Junior Maiden Race"
+    },
+    "100324": {
+      "program_id": 324,
+      "race_instance_id": 901071,
+      "turn": 18,
+      "name": "Junior Maiden Race"
+    },
+    "100326": {
+      "program_id": 326,
+      "race_instance_id": 900951,
+      "turn": 18,
+      "name": "Junior Maiden Race"
+    },
+    "100328": {
+      "program_id": 328,
+      "race_instance_id": 900931,
+      "turn": 18,
+      "name": "Junior Maiden Race"
+    },
+    "100330": {
+      "program_id": 330,
+      "race_instance_id": 902611,
+      "turn": 20,
+      "name": "Junior Maiden Race"
+    },
+    "100331": {
+      "program_id": 331,
+      "race_instance_id": 902592,
+      "turn": 20,
+      "name": "Junior Maiden Race"
+    },
+    "100334": {
+      "program_id": 334,
+      "race_instance_id": 902641,
+      "turn": 20,
+      "name": "Junior Maiden Race"
+    },
+    "100335": {
+      "program_id": 335,
+      "race_instance_id": 902681,
+      "turn": 20,
+      "name": "Junior Maiden Race"
+    },
+    "100337": {
+      "program_id": 337,
+      "race_instance_id": 902661,
+      "turn": 20,
+      "name": "Junior Maiden Race"
+    },
+    "100339": {
+      "program_id": 339,
+      "race_instance_id": 902622,
+      "turn": 20,
+      "name": "Junior Maiden Race"
+    },
+    "100341": {
+      "program_id": 341,
+      "race_instance_id": 902613,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100342": {
+      "program_id": 342,
+      "race_instance_id": 902582,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100344": {
+      "program_id": 344,
+      "race_instance_id": 902594,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100345": {
+      "program_id": 345,
+      "race_instance_id": 902624,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100347": {
+      "program_id": 347,
+      "race_instance_id": 902663,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100351": {
+      "program_id": 351,
+      "race_instance_id": 901023,
+      "turn": 24,
+      "name": "Junior Maiden Race"
+    },
+    "100352": {
+      "program_id": 352,
+      "race_instance_id": 900933,
+      "turn": 24,
+      "name": "Junior Maiden Race"
+    },
+    "100353": {
+      "program_id": 353,
+      "race_instance_id": 900953,
+      "turn": 24,
+      "name": "Junior Maiden Race"
+    },
+    "100356": {
+      "program_id": 356,
+      "race_instance_id": 900893,
+      "turn": 24,
+      "name": "Junior Maiden Race"
+    },
+    "100357": {
+      "program_id": 357,
+      "race_instance_id": 901073,
+      "turn": 24,
+      "name": "Junior Maiden Race"
+    },
+    "100361": {
+      "program_id": 361,
+      "race_instance_id": 901042,
+      "turn": 24,
+      "name": "Junior Maiden Race"
+    },
+    "200362": {
+      "program_id": 362,
+      "race_instance_id": 901051,
+      "turn": 26,
+      "name": "Classic Maiden Race"
+    },
+    "200363": {
+      "program_id": 363,
+      "race_instance_id": 902554,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200398": {
+      "program_id": 398,
+      "race_instance_id": 902430,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200399": {
+      "program_id": 399,
+      "race_instance_id": 902432,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200400": {
+      "program_id": 400,
+      "race_instance_id": 902433,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200401": {
+      "program_id": 401,
+      "race_instance_id": 902435,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200404": {
+      "program_id": 404,
+      "race_instance_id": 902450,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200405": {
+      "program_id": 405,
+      "race_instance_id": 902451,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200406": {
+      "program_id": 406,
+      "race_instance_id": 902452,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200407": {
+      "program_id": 407,
+      "race_instance_id": 902453,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200408": {
+      "program_id": 408,
+      "race_instance_id": 902460,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200409": {
+      "program_id": 409,
+      "race_instance_id": 902462,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200410": {
+      "program_id": 410,
+      "race_instance_id": 902463,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200411": {
+      "program_id": 411,
+      "race_instance_id": 902465,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200417": {
+      "program_id": 417,
+      "race_instance_id": 902480,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200418": {
+      "program_id": 418,
+      "race_instance_id": 902482,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200419": {
+      "program_id": 419,
+      "race_instance_id": 902483,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200420": {
+      "program_id": 420,
+      "race_instance_id": 902485,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200422": {
+      "program_id": 422,
+      "race_instance_id": 902490,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200423": {
+      "program_id": 423,
+      "race_instance_id": 902492,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200424": {
+      "program_id": 424,
+      "race_instance_id": 902493,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200425": {
+      "program_id": 425,
+      "race_instance_id": 902495,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200430": {
+      "program_id": 430,
+      "race_instance_id": 902510,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200431": {
+      "program_id": 431,
+      "race_instance_id": 902512,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200432": {
+      "program_id": 432,
+      "race_instance_id": 902513,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200433": {
+      "program_id": 433,
+      "race_instance_id": 902515,
+      "turn": 36,
+      "name": "Classic Maiden Race"
+    },
+    "200437": {
+      "program_id": 437,
+      "race_instance_id": 902530,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200438": {
+      "program_id": 438,
+      "race_instance_id": 902531,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200439": {
+      "program_id": 439,
+      "race_instance_id": 902533,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200442": {
+      "program_id": 442,
+      "race_instance_id": 902550,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200443": {
+      "program_id": 443,
+      "race_instance_id": 902552,
+      "turn": 32,
+      "name": "Classic Maiden Race"
+    },
+    "200444": {
+      "program_id": 444,
+      "race_instance_id": 902553,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200445": {
+      "program_id": 445,
+      "race_instance_id": 902555,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200446": {
+      "program_id": 446,
+      "race_instance_id": 902560,
+      "turn": 33,
+      "name": "Classic Maiden Race"
+    },
+    "200448": {
+      "program_id": 448,
+      "race_instance_id": 902570,
+      "turn": 27,
+      "name": "Classic Maiden Race"
+    },
+    "200449": {
+      "program_id": 449,
+      "race_instance_id": 902572,
+      "turn": 34,
+      "name": "Classic Maiden Race"
+    },
+    "200450": {
+      "program_id": 450,
+      "race_instance_id": 902573,
+      "turn": 35,
+      "name": "Classic Maiden Race"
+    },
+    "200538": {
+      "program_id": 538,
+      "race_instance_id": 903380,
+      "turn": 39,
+      "name": "Classic Maiden Race"
+    },
+    "200548": {
+      "program_id": 548,
+      "race_instance_id": 903410,
+      "turn": 39,
+      "name": "Classic Maiden Race"
+    },
+    "200556": {
+      "program_id": 556,
+      "race_instance_id": 903440,
+      "turn": 39,
+      "name": "Classic Maiden Race"
+    },
+    "200560": {
+      "program_id": 560,
+      "race_instance_id": 903450,
+      "turn": 39,
+      "name": "Classic Maiden Race"
+    },
+    "100561": {
+      "program_id": 561,
+      "race_instance_id": 901022,
+      "turn": 23,
+      "name": "Junior Maiden Race"
+    },
+    "200565": {
+      "program_id": 565,
+      "race_instance_id": 903470,
+      "turn": 39,
+      "name": "Classic Maiden Race"
+    },
+    "200574": {
+      "program_id": 574,
+      "race_instance_id": 903490,
+      "turn": 39,
+      "name": "Classic Maiden Race"
+    },
+    "200581": {
+      "program_id": 581,
+      "race_instance_id": 903520,
+      "turn": 40,
+      "name": "Classic Maiden Race"
+    },
+    "200603": {
+      "program_id": 603,
+      "race_instance_id": 903940,
+      "turn": 37,
+      "name": "Classic Maiden Race"
+    },
+    "200606": {
+      "program_id": 606,
+      "race_instance_id": 903960,
+      "turn": 37,
+      "name": "Classic Maiden Race"
+    },
+    "200610": {
+      "program_id": 610,
+      "race_instance_id": 903980,
+      "turn": 37,
+      "name": "Classic Maiden Race"
+    },
+    "200618": {
+      "program_id": 618,
+      "race_instance_id": 904020,
+      "turn": 37,
+      "name": "Classic Maiden Race"
+    },
+    "200622": {
+      "program_id": 622,
+      "race_instance_id": 904040,
+      "turn": 37,
+      "name": "Classic Maiden Race"
+    },
+    "100623": {
+      "program_id": 623,
+      "race_instance_id": 102101,
+      "turn": 23,
+      "name": "Hanshin Juvenile Fillies"
+    },
+    "100624": {
+      "program_id": 624,
+      "race_instance_id": 102201,
+      "turn": 23,
+      "name": "Asahi Hai Futurity Stakes"
+    },
+    "100625": {
+      "program_id": 625,
+      "race_instance_id": 102401,
+      "turn": 24,
+      "name": "Hopeful Stakes"
+    },
+    "100626": {
+      "program_id": 626,
+      "race_instance_id": 203001,
+      "turn": 21,
+      "name": "Keio Hai Junior Stakes"
+    },
+    "100627": {
+      "program_id": 627,
+      "race_instance_id": 203201,
+      "turn": 21,
+      "name": "Daily Hai Junior Stakes"
+    },
+    "100628": {
+      "program_id": 628,
+      "race_instance_id": 304101,
+      "turn": 14,
+      "name": "Hakodate Junior Stakes"
+    },
+    "100629": {
+      "program_id": 629,
+      "race_instance_id": 304901,
+      "turn": 16,
+      "name": "Niigata Junior Stakes"
+    },
+    "100630": {
+      "program_id": 630,
+      "race_instance_id": 305101,
+      "turn": 17,
+      "name": "Sapporo Junior Stakes"
+    },
+    "100631": {
+      "program_id": 631,
+      "race_instance_id": 305201,
+      "turn": 17,
+      "name": "Kokura Junior Stakes"
+    },
+    "100632": {
+      "program_id": 632,
+      "race_instance_id": 305701,
+      "turn": 19,
+      "name": "Saudi Arabia Royal Cup"
+    },
+    "100633": {
+      "program_id": 633,
+      "race_instance_id": 305901,
+      "turn": 20,
+      "name": "Artemis Stakes"
+    },
+    "100634": {
+      "program_id": 634,
+      "race_instance_id": 306001,
+      "turn": 21,
+      "name": "Fantasy Stakes"
+    },
+    "100635": {
+      "program_id": 635,
+      "race_instance_id": 306401,
+      "turn": 22,
+      "name": "Tokyo Sports Hai Junior Stakes"
+    },
+    "100636": {
+      "program_id": 636,
+      "race_instance_id": 306501,
+      "turn": 22,
+      "name": "Kyoto Junior Stakes"
+    },
+    "100637": {
+      "program_id": 637,
+      "race_instance_id": 406801,
+      "turn": 14,
+      "name": "Chukyo Junior Stakes"
+    },
+    "100638": {
+      "program_id": 638,
+      "race_instance_id": 407001,
+      "turn": 15,
+      "name": "Dahlia Sho"
+    },
+    "100639": {
+      "program_id": 639,
+      "race_instance_id": 407401,
+      "turn": 15,
+      "name": "Phoenix Sho"
+    },
+    "100640": {
+      "program_id": 640,
+      "race_instance_id": 407501,
+      "turn": 15,
+      "name": "Cosmos Sho"
+    },
+    "100641": {
+      "program_id": 641,
+      "race_instance_id": 407701,
+      "turn": 16,
+      "name": "Clover Sho"
+    },
+    "100643": {
+      "program_id": 643,
+      "race_instance_id": 408301,
+      "turn": 17,
+      "name": "Suzuran Sho"
+    },
+    "100644": {
+      "program_id": 644,
+      "race_instance_id": 408501,
+      "turn": 17,
+      "name": "Nojigiku Stakes"
+    },
+    "100645": {
+      "program_id": 645,
+      "race_instance_id": 408701,
+      "turn": 18,
+      "name": "Kikyo Stakes"
+    },
+    "100646": {
+      "program_id": 646,
+      "race_instance_id": 408801,
+      "turn": 18,
+      "name": "Fuyo Stakes"
+    },
+    "100647": {
+      "program_id": 647,
+      "race_instance_id": 408901,
+      "turn": 18,
+      "name": "Canna Stakes"
+    },
+    "100648": {
+      "program_id": 648,
+      "race_instance_id": 409301,
+      "turn": 19,
+      "name": "Momiji Stakes"
+    },
+    "100649": {
+      "program_id": 649,
+      "race_instance_id": 409601,
+      "turn": 20,
+      "name": "Ivy Stakes"
+    },
+    "100650": {
+      "program_id": 650,
+      "race_instance_id": 409901,
+      "turn": 20,
+      "name": "Hagi Stakes"
+    },
+    "100651": {
+      "program_id": 651,
+      "race_instance_id": 410301,
+      "turn": 21,
+      "name": "Fukushima Junior Stakes"
+    },
+    "100652": {
+      "program_id": 652,
+      "race_instance_id": 411401,
+      "turn": 24,
+      "name": "Christmas Rose Stakes"
+    },
+    "100653": {
+      "program_id": 653,
+      "race_instance_id": 900890,
+      "turn": 17,
+      "name": "Junior Maiden Race"
+    },
+    "100656": {
+      "program_id": 656,
+      "race_instance_id": 900892,
+      "turn": 23,
+      "name": "Junior Maiden Race"
+    },
+    "100660": {
+      "program_id": 660,
+      "race_instance_id": 900930,
+      "turn": 17,
+      "name": "Junior Maiden Race"
+    },
+    "100661": {
+      "program_id": 661,
+      "race_instance_id": 900932,
+      "turn": 23,
+      "name": "Junior Maiden Race"
+    },
+    "100662": {
+      "program_id": 662,
+      "race_instance_id": 900950,
+      "turn": 17,
+      "name": "Junior Maiden Race"
+    },
+    "100663": {
+      "program_id": 663,
+      "race_instance_id": 900952,
+      "turn": 23,
+      "name": "Junior Maiden Race"
+    },
+    "100666": {
+      "program_id": 666,
+      "race_instance_id": 901020,
+      "turn": 17,
+      "name": "Junior Maiden Race"
+    },
+    "100669": {
+      "program_id": 669,
+      "race_instance_id": 901040,
+      "turn": 18,
+      "name": "Junior Maiden Race"
+    },
+    "100670": {
+      "program_id": 670,
+      "race_instance_id": 901041,
+      "turn": 23,
+      "name": "Junior Maiden Race"
+    },
+    "100671": {
+      "program_id": 671,
+      "race_instance_id": 901070,
+      "turn": 17,
+      "name": "Junior Maiden Race"
+    },
+    "100673": {
+      "program_id": 673,
+      "race_instance_id": 901072,
+      "turn": 23,
+      "name": "Junior Maiden Race"
+    },
+    "100676": {
+      "program_id": 676,
+      "race_instance_id": 901110,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100685": {
+      "program_id": 685,
+      "race_instance_id": 901210,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100689": {
+      "program_id": 689,
+      "race_instance_id": 901240,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100806": {
+      "program_id": 806,
+      "race_instance_id": 902580,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100807": {
+      "program_id": 807,
+      "race_instance_id": 902581,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100808": {
+      "program_id": 808,
+      "race_instance_id": 902590,
+      "turn": 11,
+      "name": "Junior Maiden Race"
+    },
+    "100809": {
+      "program_id": 809,
+      "race_instance_id": 902591,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100810": {
+      "program_id": 810,
+      "race_instance_id": 902593,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100812": {
+      "program_id": 812,
+      "race_instance_id": 902610,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100813": {
+      "program_id": 813,
+      "race_instance_id": 902612,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100816": {
+      "program_id": 816,
+      "race_instance_id": 902621,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100817": {
+      "program_id": 817,
+      "race_instance_id": 902623,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100820": {
+      "program_id": 820,
+      "race_instance_id": 902640,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100821": {
+      "program_id": 821,
+      "race_instance_id": 902642,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100822": {
+      "program_id": 822,
+      "race_instance_id": 902643,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100825": {
+      "program_id": 825,
+      "race_instance_id": 902660,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100826": {
+      "program_id": 826,
+      "race_instance_id": 902662,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100828": {
+      "program_id": 828,
+      "race_instance_id": 902680,
+      "turn": 19,
+      "name": "Junior Maiden Race"
+    },
+    "100829": {
+      "program_id": 829,
+      "race_instance_id": 902682,
+      "turn": 21,
+      "name": "Junior Maiden Race"
+    },
+    "100830": {
+      "program_id": 830,
+      "race_instance_id": 902683,
+      "turn": 22,
+      "name": "Junior Maiden Race"
+    },
+    "100831": {
+      "program_id": 831,
+      "race_instance_id": 902730,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100846": {
+      "program_id": 846,
+      "race_instance_id": 902790,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100851": {
+      "program_id": 851,
+      "race_instance_id": 902810,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100892": {
+      "program_id": 892,
+      "race_instance_id": 903530,
+      "turn": 15,
+      "name": "Junior Maiden Race"
+    },
+    "100894": {
+      "program_id": 894,
+      "race_instance_id": 903540,
+      "turn": 15,
+      "name": "Junior Maiden Race"
+    },
+    "100897": {
+      "program_id": 897,
+      "race_instance_id": 903550,
+      "turn": 16,
+      "name": "Junior Maiden Race"
+    },
+    "100900": {
+      "program_id": 900,
+      "race_instance_id": 903570,
+      "turn": 16,
+      "name": "Junior Maiden Race"
+    },
+    "100905": {
+      "program_id": 905,
+      "race_instance_id": 903590,
+      "turn": 15,
+      "name": "Junior Maiden Race"
+    },
+    "100909": {
+      "program_id": 909,
+      "race_instance_id": 903610,
+      "turn": 15,
+      "name": "Junior Maiden Race"
+    },
+    "100911": {
+      "program_id": 911,
+      "race_instance_id": 903620,
+      "turn": 16,
+      "name": "Junior Maiden Race"
+    },
+    "100931": {
+      "program_id": 931,
+      "race_instance_id": 903720,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "100946": {
+      "program_id": 946,
+      "race_instance_id": 904060,
+      "turn": 13,
+      "name": "Junior Maiden Race"
+    },
+    "100951": {
+      "program_id": 951,
+      "race_instance_id": 904100,
+      "turn": 13,
+      "name": "Junior Maiden Race"
+    },
+    "301022": {
+      "program_id": 1022,
+      "race_instance_id": 110101,
+      "turn": 60,
+      "name": "Teio Sho"
+    },
+    "201023": {
+      "program_id": 1023,
+      "race_instance_id": 110201,
+      "turn": 37,
+      "name": "Japan Dirt Derby"
+    },
+    "201024": {
+      "program_id": 1024,
+      "race_instance_id": 110301,
+      "turn": 45,
+      "name": "JBC Ladies’ Classic"
+    },
+    "301024": {
+      "program_id": 1024,
+      "race_instance_id": 110301,
+      "turn": 69,
+      "name": "JBC Ladies’ Classic"
+    },
+    "201025": {
+      "program_id": 1025,
+      "race_instance_id": 110401,
+      "turn": 45,
+      "name": "JBC Sprint"
+    },
+    "301025": {
+      "program_id": 1025,
+      "race_instance_id": 110401,
+      "turn": 69,
+      "name": "JBC Sprint"
+    },
+    "201026": {
+      "program_id": 1026,
+      "race_instance_id": 110501,
+      "turn": 45,
+      "name": "JBC Classic"
+    },
+    "301026": {
+      "program_id": 1026,
+      "race_instance_id": 110501,
+      "turn": 69,
+      "name": "JBC Classic"
+    },
+    "201027": {
+      "program_id": 1027,
+      "race_instance_id": 110601,
+      "turn": 48,
+      "name": "Tokyo Daishoten"
+    },
+    "301027": {
+      "program_id": 1027,
+      "race_instance_id": 110601,
+      "turn": 72,
+      "name": "Tokyo Daishoten"
+    },
+    "101031": {
+      "program_id": 1031,
+      "race_instance_id": 450101,
+      "turn": 17,
+      "name": "Aster Sho"
+    },
+    "101032": {
+      "program_id": 1032,
+      "race_instance_id": 450201,
+      "turn": 18,
+      "name": "Saffron Sho"
+    },
+    "101033": {
+      "program_id": 1033,
+      "race_instance_id": 450301,
+      "turn": 19,
+      "name": "Rindo Sho"
+    },
+    "101034": {
+      "program_id": 1034,
+      "race_instance_id": 450401,
+      "turn": 19,
+      "name": "Shigiku Sho"
+    },
+    "101035": {
+      "program_id": 1035,
+      "race_instance_id": 450501,
+      "turn": 19,
+      "name": "Platanus Sho"
+    },
+    "101036": {
+      "program_id": 1036,
+      "race_instance_id": 450601,
+      "turn": 20,
+      "name": "Nadeshiko Sho"
+    },
+    "101037": {
+      "program_id": 1037,
+      "race_instance_id": 450701,
+      "turn": 21,
+      "name": "Hyakunichiso Tokubetsu"
+    },
+    "101038": {
+      "program_id": 1038,
+      "race_instance_id": 450801,
+      "turn": 21,
+      "name": "Kimmokusei Tokubetsu"
+    },
+    "101039": {
+      "program_id": 1039,
+      "race_instance_id": 450901,
+      "turn": 21,
+      "name": "Oxalis Sho"
+    },
+    "101040": {
+      "program_id": 1040,
+      "race_instance_id": 451001,
+      "turn": 21,
+      "name": "Kigiku Sho"
+    },
+    "101041": {
+      "program_id": 1041,
+      "race_instance_id": 451101,
+      "turn": 22,
+      "name": "Mochinoki Sho"
+    },
+    "101042": {
+      "program_id": 1042,
+      "race_instance_id": 451201,
+      "turn": 22,
+      "name": "Akamatsu Sho"
+    },
+    "101043": {
+      "program_id": 1043,
+      "race_instance_id": 451301,
+      "turn": 22,
+      "name": "Shumeigiku Sho"
+    },
+    "101044": {
+      "program_id": 1044,
+      "race_instance_id": 451401,
+      "turn": 22,
+      "name": "Cattleya Sho"
+    },
+    "101045": {
+      "program_id": 1045,
+      "race_instance_id": 451501,
+      "turn": 22,
+      "name": "Begonia Sho"
+    },
+    "101046": {
+      "program_id": 1046,
+      "race_instance_id": 451601,
+      "turn": 22,
+      "name": "Shiragiku Sho"
+    },
+    "101047": {
+      "program_id": 1047,
+      "race_instance_id": 451701,
+      "turn": 22,
+      "name": "Habotan Sho"
+    },
+    "101048": {
+      "program_id": 1048,
+      "race_instance_id": 451801,
+      "turn": 22,
+      "name": "Koyamaki Sho"
+    },
+    "101049": {
+      "program_id": 1049,
+      "race_instance_id": 451901,
+      "turn": 23,
+      "name": "Manryo Sho"
+    },
+    "101050": {
+      "program_id": 1050,
+      "race_instance_id": 452001,
+      "turn": 23,
+      "name": "Kuromatsu Sho"
+    },
+    "101051": {
+      "program_id": 1051,
+      "race_instance_id": 452101,
+      "turn": 23,
+      "name": "Erica Sho"
+    },
+    "101052": {
+      "program_id": 1052,
+      "race_instance_id": 452201,
+      "turn": 23,
+      "name": "Tsuwabuki Sho"
+    },
+    "101053": {
+      "program_id": 1053,
+      "race_instance_id": 452301,
+      "turn": 23,
+      "name": "Hiiragi Sho"
+    },
+    "101054": {
+      "program_id": 1054,
+      "race_instance_id": 452401,
+      "turn": 23,
+      "name": "Sazanka Sho"
+    },
+    "101055": {
+      "program_id": 1055,
+      "race_instance_id": 452501,
+      "turn": 23,
+      "name": "Kantsubaki Sho"
+    },
+    "101056": {
+      "program_id": 1056,
+      "race_instance_id": 452601,
+      "turn": 24,
+      "name": "Senryo Sho"
+    },
+    "301057": {
+      "program_id": 1057,
+      "race_instance_id": 411801,
+      "turn": 52,
+      "name": "Kitakyushu Tankyori Stakes"
+    },
+    "301058": {
+      "program_id": 1058,
+      "race_instance_id": 411901,
+      "turn": 55,
+      "name": "Azumakofuji Stakes"
+    },
+    "201059": {
+      "program_id": 1059,
+      "race_instance_id": 412001,
+      "turn": 35,
+      "name": "Sleipnir Stakes"
+    },
+    "301059": {
+      "program_id": 1059,
+      "race_instance_id": 412001,
+      "turn": 59,
+      "name": "Sleipnir Stakes"
+    },
+    "201060": {
+      "program_id": 1060,
+      "race_instance_id": 412101,
+      "turn": 36,
+      "name": "Sannomiya Stakes"
+    },
+    "301060": {
+      "program_id": 1060,
+      "race_instance_id": 412101,
+      "turn": 60,
+      "name": "Sannomiya Stakes"
+    },
+    "201061": {
+      "program_id": 1061,
+      "race_instance_id": 412201,
+      "turn": 39,
+      "name": "Kanetsu Stakes"
+    },
+    "301061": {
+      "program_id": 1061,
+      "race_instance_id": 412201,
+      "turn": 63,
+      "name": "Kanetsu Stakes"
+    },
+    "201062": {
+      "program_id": 1062,
+      "race_instance_id": 412301,
+      "turn": 42,
+      "name": "Nagatsuki Stakes"
+    },
+    "301062": {
+      "program_id": 1062,
+      "race_instance_id": 412301,
+      "turn": 66,
+      "name": "Nagatsuki Stakes"
+    },
+    "201063": {
+      "program_id": 1063,
+      "race_instance_id": 412401,
+      "turn": 43,
+      "name": "Uzumasa Stakes"
+    },
+    "301063": {
+      "program_id": 1063,
+      "race_instance_id": 412401,
+      "turn": 67,
+      "name": "Uzumasa Stakes"
+    },
+    "201064": {
+      "program_id": 1064,
+      "race_instance_id": 406601,
+      "turn": 37,
+      "name": "Meitetsu Hai"
+    },
+    "301064": {
+      "program_id": 1064,
+      "race_instance_id": 406601,
+      "turn": 61,
+      "name": "Meitetsu Hai"
+    },
+    "101065": {
+      "program_id": 1065,
+      "race_instance_id": 904181,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101066": {
+      "program_id": 1066,
+      "race_instance_id": 904182,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101067": {
+      "program_id": 1067,
+      "race_instance_id": 904183,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101068": {
+      "program_id": 1068,
+      "race_instance_id": 904184,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101069": {
+      "program_id": 1069,
+      "race_instance_id": 904185,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101070": {
+      "program_id": 1070,
+      "race_instance_id": 904186,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "301071": {
+      "program_id": 1071,
+      "race_instance_id": 102501,
+      "turn": 60,
+      "name": "Takarazuka Kinen"
+    },
+    "201072": {
+      "program_id": 1072,
+      "race_instance_id": 101201,
+      "turn": 36,
+      "name": "Takarazuka Kinen"
+    },
+    "201073": {
+      "program_id": 1073,
+      "race_instance_id": 101501,
+      "turn": 44,
+      "name": "Kikuka Sho"
+    },
+    "201074": {
+      "program_id": 1074,
+      "race_instance_id": 201001,
+      "turn": 30,
+      "name": "Spring Stakes"
+    },
+    "101075": {
+      "program_id": 1075,
+      "race_instance_id": 904187,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "301076": {
+      "program_id": 1076,
+      "race_instance_id": 102701,
+      "turn": 56,
+      "name": "Tenno Sho (Spring)"
+    },
+    "101077": {
+      "program_id": 1077,
+      "race_instance_id": 904188,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101078": {
+      "program_id": 1078,
+      "race_instance_id": 904189,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "301079": {
+      "program_id": 1079,
+      "race_instance_id": 100601,
+      "turn": 56,
+      "name": "Tenno Sho (Spring)"
+    },
+    "301080": {
+      "program_id": 1080,
+      "race_instance_id": 101601,
+      "turn": 68,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "301081": {
+      "program_id": 1081,
+      "race_instance_id": 101901,
+      "turn": 70,
+      "name": "Japan Cup"
+    },
+    "301082": {
+      "program_id": 1082,
+      "race_instance_id": 102301,
+      "turn": 72,
+      "name": "Arima Kinen"
+    },
+    "301083": {
+      "program_id": 1083,
+      "race_instance_id": 100601,
+      "turn": 56,
+      "name": "Tenno Sho (Spring)"
+    },
+    "301084": {
+      "program_id": 1084,
+      "race_instance_id": 101601,
+      "turn": 68,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "301085": {
+      "program_id": 1085,
+      "race_instance_id": 101901,
+      "turn": 70,
+      "name": "Japan Cup"
+    },
+    "301086": {
+      "program_id": 1086,
+      "race_instance_id": 102301,
+      "turn": 72,
+      "name": "Arima Kinen"
+    },
+    "201087": {
+      "program_id": 1087,
+      "race_instance_id": 101601,
+      "turn": 44,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "201088": {
+      "program_id": 1088,
+      "race_instance_id": 101901,
+      "turn": 46,
+      "name": "Japan Cup"
+    },
+    "201089": {
+      "program_id": 1089,
+      "race_instance_id": 102301,
+      "turn": 48,
+      "name": "Arima Kinen"
+    },
+    "101090": {
+      "program_id": 1090,
+      "race_instance_id": 904190,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101091": {
+      "program_id": 1091,
+      "race_instance_id": 904191,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "101092": {
+      "program_id": 1092,
+      "race_instance_id": 904192,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "201093": {
+      "program_id": 1093,
+      "race_instance_id": 300601,
+      "turn": 25,
+      "name": "Keisei Hai"
+    },
+    "101094": {
+      "program_id": 1094,
+      "race_instance_id": 904193,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "201095": {
+      "program_id": 1095,
+      "race_instance_id": 102801,
+      "turn": 31,
+      "name": "Satsuki Sho"
+    },
+    "101096": {
+      "program_id": 1096,
+      "race_instance_id": 904194,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
+    "201097": {
+      "program_id": 1097,
+      "race_instance_id": 101601,
+      "turn": 44,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "301098": {
+      "program_id": 1098,
+      "race_instance_id": 101601,
+      "turn": 68,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "301099": {
+      "program_id": 1099,
+      "race_instance_id": 101601,
+      "turn": 68,
+      "name": "Tenno Sho (Autumn)"
+    },
+    "201100": {
+      "program_id": 1100,
+      "race_instance_id": 102301,
+      "turn": 48,
+      "name": "Arima Kinen"
+    },
+    "301101": {
+      "program_id": 1101,
+      "race_instance_id": 102301,
+      "turn": 72,
+      "name": "Arima Kinen"
+    },
+    "101102": {
+      "program_id": 1102,
+      "race_instance_id": 904195,
+      "turn": 12,
+      "name": "Junior Make Debut"
+    },
     "2001": {
       "program_id": 676,
       "race_instance_id": 901110,

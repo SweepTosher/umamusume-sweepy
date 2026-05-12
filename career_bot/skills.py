@@ -55,6 +55,9 @@ class SkillBuyer:
     def __init__(self, base_dir):
         self.base_dir = Path(base_dir)
         self.skill_names = {}
+        self.skill_rarities = {}
+        self.skill_costs = {}
+        self.skill_grade_values = {}
         self.skill_id_exists = set()
         self.group_to_skill_ids = {}
         self.skill_to_group_id = {}
@@ -69,19 +72,34 @@ class SkillBuyer:
         self._load()
 
     def _load(self):
-        path = self.base_dir / "data" / "master_map.json"
+        path = self.base_dir / "data" / "skill_data.json"
         if not path.exists():
             return
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
-            self.skill_names = {int(k): v for k, v in data.get("skill", {}).items()}
+            self.skill_names = {}
+            self.skill_rarities = {}
+            self.skill_costs = {}
+            self.skill_grade_values = {}
+            self.skill_to_group_id = {}
+            for raw_id, raw_info in data.items():
+                skill_id = int(raw_id)
+                if isinstance(raw_info, dict):
+                    self.skill_names[skill_id] = raw_info.get("name") or str(skill_id)
+                    self.skill_rarities[skill_id] = int(raw_info.get("rarity") or 0)
+                    self.skill_costs[skill_id] = int(raw_info.get("need_skill_point") or 0)
+                    self.skill_grade_values[skill_id] = int(raw_info.get("grade_value") or 0)
+                    group_id = int(raw_info.get("group_id") or 0)
+                    if group_id:
+                        self.skill_to_group_id[skill_id] = group_id
+                else:
+                    self.skill_names[skill_id] = raw_info
         except Exception:
             return
         self.skill_id_exists = set(self.skill_names)
         self.group_to_skill_ids = {}
-        self.skill_to_group_id = {}
         for skill_id in self.skill_names:
-            group_id = skill_id if skill_id < 100000 else skill_id // 10
+            group_id = self.skill_to_group_id.get(skill_id) or (skill_id if skill_id < 100000 else skill_id // 10)
             self.skill_to_group_id[skill_id] = group_id
             self.group_to_skill_ids.setdefault(group_id, []).append(skill_id)
         
@@ -89,9 +107,44 @@ class SkillBuyer:
             children = [sid for sid in ids if sid >= 100000]
             if children:
                 # Exclude the 5-digit parent group ID if 6-digit children exist
-                self.group_to_skill_ids[group_id] = sorted(children)
+                self.group_to_skill_ids[group_id] = sorted(children, key=self._tier_sort_key)
             else:
-                self.group_to_skill_ids[group_id] = sorted(ids)
+                self.group_to_skill_ids[group_id] = sorted(ids, key=self._tier_sort_key)
+
+    def _tier_sort_key(self, skill_id):
+        grade_value = int(self.skill_grade_values.get(skill_id) or 0)
+        return (
+            int(self.skill_rarities.get(skill_id) or 99),
+            1 if grade_value <= 0 else 0,
+            grade_value if grade_value > 0 else 999999,
+            int(skill_id),
+        )
+
+    def _tier_ids(self, group_id, rarity):
+        ids = [
+            sid for sid in self.group_to_skill_ids.get(group_id, [])
+            if self.skill_rarities.get(sid, 0) == rarity and self.skill_grade_values.get(sid, 0) > 0
+        ]
+        return sorted(ids, key=self._tier_sort_key)
+
+    def _resolve_buyable_tier(self, group_id, rarity, owned_skill_ids):
+        tiers = self._tier_ids(group_id, rarity)
+        if not tiers:
+            candidates = [
+                sid for sid in self.group_to_skill_ids.get(group_id, [])
+                if self.skill_rarities.get(sid, 0) == rarity and sid not in owned_skill_ids
+            ]
+            return sorted(candidates, key=self._tier_sort_key)[0] if candidates else 0
+        for index, sid in enumerate(tiers):
+            if sid in owned_skill_ids:
+                continue
+            if index == 0 or tiers[index - 1] in owned_skill_ids:
+                return sid
+            return 0
+        return 0
+
+    def _unowned_white_tiers(self, group_id, owned_skill_ids):
+        return [sid for sid in self._tier_ids(group_id, 1) if sid not in owned_skill_ids]
 
     def reset_scoped_failures(self):
         self.failed_this_turn = {}
@@ -245,6 +298,7 @@ class SkillBuyer:
                 "name": resolved["resolved_name"],
                 "priority": resolved["priority"],
                 "cost": resolved["cost"],
+                "bundled_skill_ids": resolved.get("bundled_skill_ids") or [],
                 "resolution_reason": resolved["resolution_reason"],
                 "failed_scope": resolved["failed_scope"],
                 "candidate_skill_ids": resolved["candidate_skill_ids"],
@@ -270,7 +324,14 @@ class SkillBuyer:
         tip_rarity = int(tip.get("rarity") or 0)
         hint_level = int(tip.get("level") or 0)
         failed = self._failed_for_turn()
-        candidate_skill_ids = [sid for sid in self.group_to_skill_ids.get(group_id, []) if sid not in owned_skill_ids]
+        if tip_rarity:
+            buyable_tier = self._resolve_buyable_tier(group_id, tip_rarity, owned_skill_ids)
+            candidate_skill_ids = [buyable_tier] if buyable_tier else []
+        else:
+            candidate_skill_ids = [
+                sid for sid in self.group_to_skill_ids.get(group_id, [])
+                if sid not in owned_skill_ids
+            ]
         
         row = {
             "group_id": group_id,
@@ -286,9 +347,6 @@ class SkillBuyer:
             "skip_reason": None,
             "failed_scope": None,
         }
-        if group_id in owned_groups:
-            row["skip_reason"] = "owned_group"
-            return row
         if not candidate_skill_ids:
             row["skip_reason"] = "unknown_master"
             return row
@@ -304,15 +362,7 @@ class SkillBuyer:
             row["skip_reason"] = "no_normal_skills"
             return row
 
-        def tier_order(sid):
-            last_digit = sid % 10
-            if last_digit == 2: return 0
-            if last_digit == 1: return 1
-            if last_digit == 4: return 2
-            if last_digit == 5: return 3
-            return 99
-
-        normal.sort(key=tier_order)
+        normal.sort(key=self._tier_sort_key)
         resolved = normal[0]
         name = self.skill_names.get(resolved, "")
         
@@ -350,8 +400,20 @@ class SkillBuyer:
 
         row["resolved_skill_id"] = resolved
         row["resolved_name"] = name
-        row["cost"] = self._estimate_cost({"skill_id": resolved, "hint_level": hint_level, "name": name})
+        bundled_skill_ids = []
+        cost = self._estimate_cost({"skill_id": resolved, "hint_level": hint_level, "name": name})
+        if self.skill_rarities.get(resolved, 0) == 2:
+            bundled_skill_ids = self._unowned_white_tiers(group_id, owned_skill_ids)
+            for bundled_id in bundled_skill_ids:
+                cost += self._estimate_cost({
+                    "skill_id": bundled_id,
+                    "hint_level": 0,
+                    "name": self.skill_names.get(bundled_id, ""),
+                })
+
         row["priority"] = best_priority
+        row["cost"] = cost
+        row["bundled_skill_ids"] = bundled_skill_ids
         row["resolution_reason"] = reason
         row["master_exists"] = resolved in self.skill_id_exists
         if resolved in failed:
@@ -400,7 +462,14 @@ class SkillBuyer:
             self.last_result = {"skip": "preflight_failed", "turn": turn, "points": points}
             return state, 0
 
-        payload = [{"skill_id": item["skill_id"], "level": 1} for item in valid_candidates]
+        payload = []
+        payload_ids = set()
+        for item in valid_candidates:
+            for skill_id in [item["skill_id"], *(item.get("bundled_skill_ids") or [])]:
+                skill_id = int(skill_id or 0)
+                if skill_id > 0 and skill_id not in payload_ids:
+                    payload.append({"skill_id": skill_id, "level": 1})
+                    payload_ids.add(skill_id)
         self.last_attempt = [dict(item) for item in valid_candidates]
         event = {
             "turn": turn,
@@ -453,8 +522,8 @@ class SkillBuyer:
             base = 130
         elif skill_id >= 900000:
             base = 200
-        elif skill_id % 10 >= 2:
-            base = 200
         else:
-            base = 160
+            base = self.skill_costs.get(skill_id)
+            if not base:
+                base = 200 if self.skill_rarities.get(skill_id, 0) >= 2 else 160
         return max(1, int(base * (100 - min(level, 5) * 10) / 100))

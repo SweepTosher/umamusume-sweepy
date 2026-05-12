@@ -824,43 +824,6 @@ body.dashboard-mode .turn-delay-control {
   color: var(--text-main);
   text-shadow: none;
 }
-.master-data-panel {
-  display: grid;
-  gap: 0.55rem;
-}
-.master-data-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 0.5rem;
-  align-items: center;
-}
-.master-data-input {
-  min-width: 0;
-  height: 2.5rem;
-  font-size: 0.78rem;
-}
-.master-data-input.needs-action {
-  border-color: #ff4d4d;
-  box-shadow: 0 0 0.8rem rgba(255, 77, 77, 0.25);
-}
-.master-data-row .btn {
-  height: 2.5rem;
-}
-.master-data-status {
-  min-height: 1.1rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  color: var(--text-muted);
-}
-.master-data-status.ok {
-  color: #00ff7f;
-}
-.master-data-status.needs-action {
-  color: #ffca58;
-}
-.master-data-status.working {
-  color: var(--accent-primary);
-}
 .action-history-wrap {
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-sm);

@@ -61,10 +61,7 @@ const els = {
     racePopupOverlay: document.getElementById('race-slot-popup-overlay'),
     racePopupTitle: document.getElementById('race-slot-popup-title'),
     racePopupBody: document.getElementById('race-slot-popup-body'),
-    racePopupClose: document.getElementById('race-slot-popup-close'),
-    masterDataPath: document.getElementById('master-data-path'),
-    masterDataSaveBtn: document.getElementById('master-data-save-btn'),
-    masterDataStatus: document.getElementById('master-data-status')
+    racePopupClose: document.getElementById('race-slot-popup-close')
 };
         const delaySettingsStorageKey = 'uma_turn_delay_settings';
         const burnClocksStorageKey = 'uma_burn_clocks';
@@ -283,80 +280,6 @@ const els = {
         async function apiJson(url, options = {}) {
             const res = await fetch(url, options);
             return res.json();
-        }
-        function setMasterDataStatus(message, stateName = '') {
-            if (!els.masterDataStatus) return;
-            els.masterDataStatus.textContent = message || '';
-            els.masterDataStatus.className = `master-data-status ${stateName}`.trim();
-        }
-        function applyMasterDataStatus(data) {
-            if (!data) return;
-            if (els.masterDataPath && data.master_mdb_path) {
-                els.masterDataPath.value = data.master_mdb_path;
-            }
-            if (els.masterDataPath) {
-                els.masterDataPath.classList.toggle('needs-action', !data.exists);
-            }
-            if (data.exists) {
-                if (data.generation_error) {
-                    setMasterDataStatus(data.generation_error, 'needs-action');
-                } else if (data.generated) {
-                    setMasterDataStatus('master.mdb found; data generated', 'ok');
-                } else {
-                    setMasterDataStatus('master.mdb found', 'ok');
-                }
-            } else {
-                setMasterDataStatus(data.access_error || 'master.mdb not found; update the path', 'needs-action');
-            }
-        }
-        async function loadMasterDataStatus() {
-            if (!els.masterDataPath) return;
-            try {
-                applyMasterDataStatus(await apiJson('/api/master-data/status'));
-            } catch (e) {
-                setMasterDataStatus('Unable to read master data status', 'needs-action');
-            }
-        }
-        async function saveMasterDataPath() {
-            if (!els.masterDataPath) return null;
-            const master_mdb_path = els.masterDataPath.value.trim();
-            if (!master_mdb_path) {
-                setMasterDataStatus('Enter the full path to master.mdb', 'needs-action');
-                els.masterDataPath.classList.add('needs-action');
-                return null;
-            }
-            if (els.masterDataSaveBtn) els.masterDataSaveBtn.disabled = true;
-            setMasterDataStatus('Saving path and generating data...', 'working');
-            const data = await apiJson('/api/master-data/path', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ master_mdb_path })
-            });
-            applyMasterDataStatus(data);
-            if (data.exists && !data.generation_error) {
-                await loadRaceData();
-            }
-            if (els.masterDataSaveBtn) els.masterDataSaveBtn.disabled = false;
-            return data;
-        }
-        function bindMasterDataControls() {
-            if (!els.masterDataPath) return;
-            if (els.masterDataSaveBtn) {
-                els.masterDataSaveBtn.addEventListener('click', async () => {
-                    try {
-                        await saveMasterDataPath();
-                    } catch (e) {
-                        setMasterDataStatus(e.message || 'Unable to save master.mdb path', 'needs-action');
-                        if (els.masterDataPath) els.masterDataPath.classList.add('needs-action');
-                    } finally {
-                        if (els.masterDataSaveBtn) els.masterDataSaveBtn.disabled = false;
-                    }
-                });
-            }
-            els.masterDataPath.addEventListener('input', () => {
-                els.masterDataPath.classList.remove('needs-action');
-            });
-            loadMasterDataStatus();
         }
         function writeLocalSetting(key, value) {
             try {
@@ -1016,15 +939,6 @@ const els = {
             return slots;
         }
 
-        function raceKeys(race) {
-            const keys = [race.id, ...(race.legacy_ids || [])];
-            return keys.map(id => parseInt(id)).filter(id => Number.isFinite(id));
-        }
-
-        function raceSelected(race) {
-            return raceKeys(race).some(id => state.selectedRaces.has(id));
-        }
-
         function renderRaces() {
             if (!els.raceOptionsContent) return;
             els.raceOptionsContent.innerHTML = '';
@@ -1042,7 +956,7 @@ const els = {
                 slots.forEach((slot, si) => {
                     const cell = document.createElement('div');
                     cell.className = 'race-time-cell';
-                    const selected = slot.races.find(r => raceSelected(r));
+                    const selected = slot.races.find(r => state.selectedRaces.has(r.id));
                     
                     let html = `<div class="race-time-label">${slot.period}</div>`;
                     if (selected) {
@@ -1080,7 +994,7 @@ const els = {
                 list.className = 'race-slot-popup-list';
                 slot.races.forEach(race => {
                     const item = document.createElement('div');
-                    item.className = `race-slot-popup-item ${raceSelected(race) ? 'on' : ''}`;
+                    item.className = `race-slot-popup-item ${state.selectedRaces.has(race.id) ? 'on' : ''}`;
                     item.innerHTML = `
                         <div class="race-slot-popup-img">
                             <img src="/races/${encodeURIComponent(race.name)}.png" onerror="this.src='/broom.png'">
@@ -1098,9 +1012,9 @@ const els = {
                         <div class="race-slot-popup-check">✓</div>
                     `;
                     item.onclick = async () => {
-                        const slotIds = slot.races.flatMap(r => raceKeys(r));
-                        if (raceSelected(race)) {
-                            raceKeys(race).forEach(id => state.selectedRaces.delete(id));
+                        const slotIds = slot.races.map(r => r.id);
+                        if (state.selectedRaces.has(race.id)) {
+                            state.selectedRaces.delete(race.id);
                         } else {
                             slotIds.forEach(id => state.selectedRaces.delete(id));
                             state.selectedRaces.add(race.id);
@@ -1743,7 +1657,6 @@ const els = {
             }
         }
         bindDelayControls();
-        bindMasterDataControls();
         setLoadingScreen(true);
         restoreSession();
 })();

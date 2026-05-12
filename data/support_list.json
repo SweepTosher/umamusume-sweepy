@@ -55,7 +55,7 @@
     "type": "Power"
   },
   "10012": {
-    "name": "T.M. Opera O",
+    "name": "TM Opera O",
     "rarity": "R",
     "type": "Stamina"
   },
@@ -389,6 +389,326 @@
     "rarity": "R",
     "type": "Wisdom"
   },
+  "10079": {
+    "name": "Daiichi Ruby",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10080": {
+    "name": "K.S.Miracle",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10081": {
+    "name": "Tsurumaru Tsuyoshi",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10082": {
+    "name": "Symboli Kris S",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10083": {
+    "name": "Light Hello",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10084": {
+    "name": "Tanino Gimlet",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10085": {
+    "name": "Sakura Laurel",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10086": {
+    "name": "Yamanin Zephyr",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10087": {
+    "name": "Aston Machan",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10088": {
+    "name": "Mejiro Ramonu",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10089": {
+    "name": "Jungle Pocket",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10090": {
+    "name": "Hokko Tarumae",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10091": {
+    "name": "Katsuragi Ace",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10092": {
+    "name": "Copano Rickey",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10093": {
+    "name": "Wonder Acute",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10094": {
+    "name": "Mei Satake",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10095": {
+    "name": "Tap Dance City",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10096": {
+    "name": "Still in Love",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10097": {
+    "name": "Verxina",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10098": {
+    "name": "Sounds of Earth",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10099": {
+    "name": "Vivlos",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10100": {
+    "name": "Royce and Royce",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10101": {
+    "name": "Duramente",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10102": {
+    "name": "North Flight",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10103": {
+    "name": "Orfevre",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10104": {
+    "name": "Ryoka Tsurugi",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10105": {
+    "name": "Cheval Grand",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10106": {
+    "name": "Neo Universe",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10107": {
+    "name": "Hishi Miracle",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10108": {
+    "name": "Dantsu Flame",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10109": {
+    "name": "Yayoi Akikawa",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10110": {
+    "name": "Espoir City",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10111": {
+    "name": "Bubble Gum Fellow",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10113": {
+    "name": "Gentildonna",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10114": {
+    "name": "Rhein Kraft",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10115": {
+    "name": "Cesario",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10116": {
+    "name": "Blast Onepiece",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10117": {
+    "name": "No Reason",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10118": {
+    "name": "Buena Vista",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10119": {
+    "name": "Dream Journey",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10120": {
+    "name": "Daring Tact",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10121": {
+    "name": "Daring Heart",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10122": {
+    "name": "Almond Eye",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10123": {
+    "name": "Lucky Lilac",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10124": {
+    "name": "Gran Alegria",
+    "rarity": "R",
+    "type": "Power"
+  },
+  "10125": {
+    "name": "Transcend",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10126": {
+    "name": "Curren Bouquetd'or",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10127": {
+    "name": "Air Messiah",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10128": {
+    "name": "Tucker Bryne",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10129": {
+    "name": "Fusaichi Pandora",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10131": {
+    "name": "Win Variation",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10132": {
+    "name": "Stay Gold",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10133": {
+    "name": "Admire Groove",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10134": {
+    "name": "Chrono Genesis",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10135": {
+    "name": "Calstone Light O",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10136": {
+    "name": "Durandal",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10137": {
+    "name": "Sakura Chitose O",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10138": {
+    "name": "Kiyoko Hoshina",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10139": {
+    "name": "Fenomeno",
+    "rarity": "R",
+    "type": "Stamina"
+  },
+  "10140": {
+    "name": "Forever Young",
+    "rarity": "R",
+    "type": "Wisdom"
+  },
+  "10141": {
+    "name": "Casino Drive",
+    "rarity": "R",
+    "type": "Friends"
+  },
+  "10142": {
+    "name": "Red Desire",
+    "rarity": "R",
+    "type": "Guts"
+  },
+  "10143": {
+    "name": "Victoire Pisa",
+    "rarity": "R",
+    "type": "Speed"
+  },
+  "10144": {
+    "name": "Marche Lorraine",
+    "rarity": "R",
+    "type": "Speed"
+  },
   "20001": {
     "name": "Fuji Kiseki",
     "rarity": "SR",
@@ -549,6 +869,11 @@
     "rarity": "SR",
     "type": "Power"
   },
+  "20033": {
+    "name": "El Condor Pasa",
+    "rarity": "SR",
+    "type": "Speed"
+  },
   "20034": {
     "name": "Mejiro Ardan",
     "rarity": "SR",
@@ -556,6 +881,11 @@
   },
   "20035": {
     "name": "Tosen Jordan",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20036": {
+    "name": "Mejiro Palmer",
     "rarity": "SR",
     "type": "Stamina"
   },
@@ -613,6 +943,261 @@
     "name": "Tokai Teio",
     "rarity": "SR",
     "type": "Stamina"
+  },
+  "20048": {
+    "name": "Oguri Cap",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20049": {
+    "name": "Gold City",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20050": {
+    "name": "Seiun Sky",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20051": {
+    "name": "K.S.Miracle",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20052": {
+    "name": "Tsurumaru Tsuyoshi",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20053": {
+    "name": "Narita Top Road",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20054": {
+    "name": "TM Opera O",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20055": {
+    "name": "Aston Machan",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20056": {
+    "name": "Jungle Pocket",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20057": {
+    "name": "Mejiro Dober",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20058": {
+    "name": "Symboli Rudolf",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20059": {
+    "name": "Agnes Tachyon",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20060": {
+    "name": "Hishi Akebono",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20061": {
+    "name": "Gold Ship",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20062": {
+    "name": "Maruzensky",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20063": {
+    "name": "Silence Suzuka",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20064": {
+    "name": "Copano Rickey",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20065": {
+    "name": "Grass Wonder",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20066": {
+    "name": "Kitasan Black",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20067": {
+    "name": "Taiki Shuttle",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20068": {
+    "name": "Nice Nature",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20069": {
+    "name": "Matikanetannhauser",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20070": {
+    "name": "Verxina",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20071": {
+    "name": "Royce and Royce",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20072": {
+    "name": "Tanino Gimlet",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20073": {
+    "name": "Tosen Jordan",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20074": {
+    "name": "Yaeno Muteki",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20075": {
+    "name": "Tap Dance City",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20076": {
+    "name": "Air Shakur",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20077": {
+    "name": "Dantsu Flame",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20078": {
+    "name": "Matikanefukukitaru",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20079": {
+    "name": "Marvelous Sunday",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20080": {
+    "name": "Sakura Laurel",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20081": {
+    "name": "North Flight",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20082": {
+    "name": "Bubble Gum Fellow",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20083": {
+    "name": "Mejiro Ramonu",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20084": {
+    "name": "Lucky Lilac",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20085": {
+    "name": "Mejiro McQueen",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20086": {
+    "name": "Rice Shower",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20087": {
+    "name": "Daring Heart",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20088": {
+    "name": "Curren Bouquetd'or",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20089": {
+    "name": "Kawakami Princess",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20090": {
+    "name": "Biko Pegasus",
+    "rarity": "SR",
+    "type": "Wisdom"
+  },
+  "20091": {
+    "name": "Sakura Chitose O",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20092": {
+    "name": "Hokko Tarumae",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20093": {
+    "name": "Mejiro Dober",
+    "rarity": "SR",
+    "type": "Speed"
+  },
+  "20094": {
+    "name": "Satono Diamond",
+    "rarity": "SR",
+    "type": "Stamina"
+  },
+  "20095": {
+    "name": "Red Desire",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20096": {
+    "name": "Taiki Shuttle",
+    "rarity": "SR",
+    "type": "Guts"
+  },
+  "20097": {
+    "name": "Super Creek",
+    "rarity": "SR",
+    "type": "Power"
+  },
+  "20098": {
+    "name": "Hishi Amazon",
+    "rarity": "SR",
+    "type": "Wisdom"
   },
   "30001": {
     "name": "Special Week",
@@ -789,6 +1374,11 @@
     "rarity": "SSR",
     "type": "Friends"
   },
+  "30037": {
+    "name": "Symboli Rudolf",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
   "30038": {
     "name": "Sakura Chiyono O",
     "rarity": "SSR",
@@ -843,6 +1433,16 @@
     "name": "Mejiro Ryan",
     "rarity": "SSR",
     "type": "Guts"
+  },
+  "30052": {
+    "name": "Light Hello",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30053": {
+    "name": "Taiki Shuttle",
+    "rarity": "SSR",
+    "type": "Speed"
   },
   "30054": {
     "name": "Nice Nature",
@@ -908,6 +1508,11 @@
     "name": "Mihono Bourbon",
     "rarity": "SSR",
     "type": "Wisdom"
+  },
+  "30067": {
+    "name": "The Throne's Assemblage",
+    "rarity": "SSR",
+    "type": "Group"
   },
   "30068": {
     "name": "Curren Chan",
@@ -1058,5 +1663,1010 @@
     "name": "Mr. C.B.",
     "rarity": "SSR",
     "type": "Wisdom"
+  },
+  "30098": {
+    "name": "Haru Urara",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30099": {
+    "name": "Ikuno Dictus",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30100": {
+    "name": "Rice Shower",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30101": {
+    "name": "Agnes Tachyon",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30102": {
+    "name": "El Condor Pasa",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30103": {
+    "name": "Matikanetannhauser",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30104": {
+    "name": "Zenno Rob Roy",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30105": {
+    "name": "Special Week",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30106": {
+    "name": "Air Groove",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30107": {
+    "name": "Maruzensky",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30108": {
+    "name": "Nakayama Festa",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30109": {
+    "name": "Sakura Chiyono O",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30110": {
+    "name": "Manhattan Cafe",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30111": {
+    "name": "Tokai Teio",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30112": {
+    "name": "Twin Turbo",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30113": {
+    "name": "Biwa Hayahide",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30114": {
+    "name": "Daiichi Ruby",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30115": {
+    "name": "Mejiro Palmer",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30116": {
+    "name": "Daitaku Helios",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30117": {
+    "name": "Shinko Windy",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30118": {
+    "name": "Symboli Kris S",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30119": {
+    "name": "Mejiro Ardan",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30120": {
+    "name": "Yaeno Muteki",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30121": {
+    "name": "Mihono Bourbon",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30122": {
+    "name": "Eishin Flash",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30123": {
+    "name": "Narita Brian",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30124": {
+    "name": "Air Groove",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30125": {
+    "name": "Sakura Laurel",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30126": {
+    "name": "Yamanin Zephyr",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30127": {
+    "name": "Special Week",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30128": {
+    "name": "Sweep Tosho",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30129": {
+    "name": "Grass Wonder",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30130": {
+    "name": "K.S.Miracle",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30131": {
+    "name": "Marvelous Sunday",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30132": {
+    "name": "Biko Pegasus",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30133": {
+    "name": "Hishi Akebono",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30134": {
+    "name": "Mejiro Ramonu",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30135": {
+    "name": "Katsuragi Ace",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30136": {
+    "name": "Symboli Kris S",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30137": {
+    "name": "Ancestors & Guides",
+    "rarity": "SSR",
+    "type": "Group"
+  },
+  "30138": {
+    "name": "Nice Nature",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30139": {
+    "name": "Mejiro McQueen",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30140": {
+    "name": "Tokai Teio",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30141": {
+    "name": "Mihono Bourbon",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30142": {
+    "name": "Sakura Laurel",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30143": {
+    "name": "Ikuno Dictus",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30145": {
+    "name": "Tanino Gimlet",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30146": {
+    "name": "Oguri Cap",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30147": {
+    "name": "Jungle Pocket",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30148": {
+    "name": "Daiwa Scarlet",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30149": {
+    "name": "Aston Machan",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30150": {
+    "name": "Vodka",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30151": {
+    "name": "Mayano Top Gun",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30152": {
+    "name": "TM Opera O",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30153": {
+    "name": "Gold City",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30154": {
+    "name": "Mejiro Palmer",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30155": {
+    "name": "Daitaku Helios",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30156": {
+    "name": "Wonder Acute",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30157": {
+    "name": "Manhattan Cafe",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30158": {
+    "name": "Jungle Pocket",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30159": {
+    "name": "Air Groove",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30160": {
+    "name": "Mei Satake",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30161": {
+    "name": "El Condor Pasa",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30162": {
+    "name": "Admire Vega",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30163": {
+    "name": "Nakayama Festa",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30164": {
+    "name": "Hishi Amazon",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30165": {
+    "name": "Tanino Gimlet",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30166": {
+    "name": "Tap Dance City",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30167": {
+    "name": "Fine Motion",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30168": {
+    "name": "Gold Ship",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30169": {
+    "name": "Tsurumaru Tsuyoshi",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30170": {
+    "name": "King Halo",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30171": {
+    "name": "Haru Urara",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30172": {
+    "name": "Mejiro McQueen",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30173": {
+    "name": "Sounds of Earth",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30174": {
+    "name": "Mejiro Dober",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30175": {
+    "name": "Mejiro Ramonu",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30176": {
+    "name": "Mejiro Ryan",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30177": {
+    "name": "Vivlos",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30178": {
+    "name": "Duramente",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30179": {
+    "name": "Satono Diamond",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30180": {
+    "name": "Carvers of History",
+    "rarity": "SSR",
+    "type": "Group"
+  },
+  "30181": {
+    "name": "Twin Turbo",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30182": {
+    "name": "Hokko Tarumae",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30183": {
+    "name": "Winning Ticket",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30184": {
+    "name": "Sakura Bakushin O",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30185": {
+    "name": "North Flight",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30186": {
+    "name": "Gentildonna",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30187": {
+    "name": "Orfevre",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30188": {
+    "name": "Ryoka Tsurugi",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30189": {
+    "name": "Kitasan Black",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30190": {
+    "name": "Duramente",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30191": {
+    "name": "Sounds of Earth",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30192": {
+    "name": "Vivlos",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30193": {
+    "name": "Cheval Grand",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30194": {
+    "name": "Rhein Kraft",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30195": {
+    "name": "K.S.Miracle",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30196": {
+    "name": "Yamanin Zephyr",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30197": {
+    "name": "Bamboo Memory",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30198": {
+    "name": "Neo Universe",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30199": {
+    "name": "Hishi Miracle",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30200": {
+    "name": "No Reason",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30201": {
+    "name": "Narita Taishin",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30202": {
+    "name": "Vodka",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30203": {
+    "name": "Jungle Pocket",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30204": {
+    "name": "Seiun Sky",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30205": {
+    "name": "Verxina",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30206": {
+    "name": "Vivlos",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30207": {
+    "name": "Yayoi Akikawa",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30208": {
+    "name": "Nishino Flower",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30209": {
+    "name": "Dantsu Flame",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30210": {
+    "name": "Smart Falcon",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30211": {
+    "name": "Copano Rickey",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30212": {
+    "name": "Wonder Acute",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30213": {
+    "name": "Tokai Teio",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30214": {
+    "name": "Fine Motion",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30215": {
+    "name": "Still in Love",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30216": {
+    "name": "Buena Vista",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30217": {
+    "name": "Cesario",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30218": {
+    "name": "Taiki Shuttle",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30219": {
+    "name": "Fuji Kiseki",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30220": {
+    "name": "Symboli Kris S",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30221": {
+    "name": "Satono Diamond",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30222": {
+    "name": "Espoir City",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30223": {
+    "name": "Hishi Amazon",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30224": {
+    "name": "Narita Brian",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30225": {
+    "name": "Matikanefukukitaru",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30226": {
+    "name": "Air Shakur",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30227": {
+    "name": "Daiwa Scarlet",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30228": {
+    "name": "Symboli Kris S",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30229": {
+    "name": "Agnes Digital",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30230": {
+    "name": "Meisho Doto",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30231": {
+    "name": "TM Opera O",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30232": {
+    "name": "Blast Onepiece",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30233": {
+    "name": "Symboli Rudolf",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30234": {
+    "name": "Mejiro Ardan",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30235": {
+    "name": "Maruzensky",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30236": {
+    "name": "Seeking the Pearl",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30237": {
+    "name": "Curren Chan",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30238": {
+    "name": "Ikuno Dictus",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30239": {
+    "name": "Nice Nature",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30240": {
+    "name": "Jungle Pocket",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30241": {
+    "name": "Embodiment of Legends",
+    "rarity": "SSR",
+    "type": "Group"
+  },
+  "30242": {
+    "name": "Almond Eye",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30243": {
+    "name": "Gran Alegria",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30244": {
+    "name": "Mejiro Bright",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30245": {
+    "name": "Vodka",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30246": {
+    "name": "Dream Journey",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30247": {
+    "name": "Symboli Kris S",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30248": {
+    "name": "Daring Tact",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30249": {
+    "name": "Transcend",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30250": {
+    "name": "Buena Vista",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30251": {
+    "name": "Espoir City",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30252": {
+    "name": "Silence Suzuka",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30253": {
+    "name": "Rhein Kraft",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30254": {
+    "name": "Daring Heart",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30255": {
+    "name": "Air Messiah",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30256": {
+    "name": "Tamamo Cross",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30257": {
+    "name": "Tucker Bryne",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30258": {
+    "name": "Mejiro Ryan",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30259": {
+    "name": "Fusaichi Pandora",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30260": {
+    "name": "Mejiro McQueen",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30261": {
+    "name": "Win Variation",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30262": {
+    "name": "Duramente",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30263": {
+    "name": "Vivlos",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30264": {
+    "name": "Stay Gold",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30265": {
+    "name": "Admire Groove",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30266": {
+    "name": "Chrono Genesis",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30267": {
+    "name": "Calstone Light O",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30268": {
+    "name": "Durandal",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30269": {
+    "name": "Dantsu Flame",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30270": {
+    "name": "Daiichi Ruby",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30271": {
+    "name": "Fuji Kiseki",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30272": {
+    "name": "Eishin Flash",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30273": {
+    "name": "Tosen Jordan",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30274": {
+    "name": "Curren Bouquetd'or",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30275": {
+    "name": "Tokai Teio",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30276": {
+    "name": "Kiyoko Hoshina",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30277": {
+    "name": "Mihono Bourbon",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30278": {
+    "name": "Gold Ship",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30279": {
+    "name": "Fenomeno",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30280": {
+    "name": "Orfevre",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30281": {
+    "name": "Inari One",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30282": {
+    "name": "Air Groove",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30283": {
+    "name": "Fine Motion",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30284": {
+    "name": "Bubble Gum Fellow",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30285": {
+    "name": "King Halo",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30286": {
+    "name": "Matikanefukukitaru",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30287": {
+    "name": "Neo Universe",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30288": {
+    "name": "Silence Suzuka",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30289": {
+    "name": "Forever Young",
+    "rarity": "SSR",
+    "type": "Wisdom"
+  },
+  "30290": {
+    "name": "Casino Drive",
+    "rarity": "SSR",
+    "type": "Friends"
+  },
+  "30291": {
+    "name": "Victoire Pisa",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30292": {
+    "name": "Marche Lorraine",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30293": {
+    "name": "Daring Tact",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30294": {
+    "name": "Daring Heart",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30295": {
+    "name": "Curren Bouquetd'or",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30296": {
+    "name": "Aston Machan",
+    "rarity": "SSR",
+    "type": "Guts"
+  },
+  "30297": {
+    "name": "Agnes Digital",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30298": {
+    "name": "Tap Dance City",
+    "rarity": "SSR",
+    "type": "Speed"
+  },
+  "30299": {
+    "name": "Agnes Tachyon",
+    "rarity": "SSR",
+    "type": "Guts"
   }
 }

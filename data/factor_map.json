@@ -675,497 +675,497 @@
     "category": "race"
   },
   "2000101": {
-    "name": "Right-Handed ○",
+    "name": "Right-Handed ?",
     "stars": 1,
     "category": "skill"
   },
   "2000102": {
-    "name": "Right-Handed ○",
+    "name": "Right-Handed ?",
     "stars": 2,
     "category": "skill"
   },
   "2000103": {
-    "name": "Right-Handed ○",
+    "name": "Right-Handed ?",
     "stars": 3,
     "category": "skill"
   },
   "2000201": {
-    "name": "Left-Handed ○",
+    "name": "Left-Handed ?",
     "stars": 1,
     "category": "skill"
   },
   "2000202": {
-    "name": "Left-Handed ○",
+    "name": "Left-Handed ?",
     "stars": 2,
     "category": "skill"
   },
   "2000203": {
-    "name": "Left-Handed ○",
+    "name": "Left-Handed ?",
     "stars": 3,
     "category": "skill"
   },
   "2000301": {
-    "name": "Tokyo Racecourse ○",
+    "name": "Tokyo Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000302": {
-    "name": "Tokyo Racecourse ○",
+    "name": "Tokyo Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000303": {
-    "name": "Tokyo Racecourse ○",
+    "name": "Tokyo Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2000401": {
-    "name": "Nakayama Racecourse ○",
+    "name": "Nakayama Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000402": {
-    "name": "Nakayama Racecourse ○",
+    "name": "Nakayama Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000403": {
-    "name": "Nakayama Racecourse ○",
+    "name": "Nakayama Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2000501": {
-    "name": "Hanshin Racecourse ○",
+    "name": "Hanshin Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000502": {
-    "name": "Hanshin Racecourse ○",
+    "name": "Hanshin Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000503": {
-    "name": "Hanshin Racecourse ○",
+    "name": "Hanshin Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2000601": {
-    "name": "Kyoto Racecourse ○",
+    "name": "Kyoto Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000602": {
-    "name": "Kyoto Racecourse ○",
+    "name": "Kyoto Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000603": {
-    "name": "Kyoto Racecourse ○",
+    "name": "Kyoto Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2000701": {
-    "name": "Chukyo Racecourse ○",
+    "name": "Chukyo Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000702": {
-    "name": "Chukyo Racecourse ○",
+    "name": "Chukyo Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000703": {
-    "name": "Chukyo Racecourse ○",
+    "name": "Chukyo Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2000801": {
-    "name": "Sapporo Racecourse ○",
+    "name": "Sapporo Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000802": {
-    "name": "Sapporo Racecourse ○",
+    "name": "Sapporo Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000803": {
-    "name": "Sapporo Racecourse ○",
+    "name": "Sapporo Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2000901": {
-    "name": "Hakodate Racecourse ○",
+    "name": "Hakodate Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2000902": {
-    "name": "Hakodate Racecourse ○",
+    "name": "Hakodate Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2000903": {
-    "name": "Hakodate Racecourse ○",
+    "name": "Hakodate Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2001001": {
-    "name": "Fukushima Racecourse ○",
+    "name": "Fukushima Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2001002": {
-    "name": "Fukushima Racecourse ○",
+    "name": "Fukushima Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2001003": {
-    "name": "Fukushima Racecourse ○",
+    "name": "Fukushima Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2001101": {
-    "name": "Niigata Racecourse ○",
+    "name": "Niigata Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2001102": {
-    "name": "Niigata Racecourse ○",
+    "name": "Niigata Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2001103": {
-    "name": "Niigata Racecourse ○",
+    "name": "Niigata Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2001201": {
-    "name": "Kokura Racecourse ○",
+    "name": "Kokura Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2001202": {
-    "name": "Kokura Racecourse ○",
+    "name": "Kokura Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2001203": {
-    "name": "Kokura Racecourse ○",
+    "name": "Kokura Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2001301": {
-    "name": "Standard Distance ○",
+    "name": "Standard Distance ?",
     "stars": 1,
     "category": "skill"
   },
   "2001302": {
-    "name": "Standard Distance ○",
+    "name": "Standard Distance ?",
     "stars": 2,
     "category": "skill"
   },
   "2001303": {
-    "name": "Standard Distance ○",
+    "name": "Standard Distance ?",
     "stars": 3,
     "category": "skill"
   },
   "2001401": {
-    "name": "Non-Standard Distance ○",
+    "name": "Non-Standard Distance ?",
     "stars": 1,
     "category": "skill"
   },
   "2001402": {
-    "name": "Non-Standard Distance ○",
+    "name": "Non-Standard Distance ?",
     "stars": 2,
     "category": "skill"
   },
   "2001403": {
-    "name": "Non-Standard Distance ○",
+    "name": "Non-Standard Distance ?",
     "stars": 3,
     "category": "skill"
   },
   "2001501": {
-    "name": "Firm Conditions ○",
+    "name": "Firm Conditions ?",
     "stars": 1,
     "category": "skill"
   },
   "2001502": {
-    "name": "Firm Conditions ○",
+    "name": "Firm Conditions ?",
     "stars": 2,
     "category": "skill"
   },
   "2001503": {
-    "name": "Firm Conditions ○",
+    "name": "Firm Conditions ?",
     "stars": 3,
     "category": "skill"
   },
   "2001601": {
-    "name": "Wet Conditions ○",
+    "name": "Wet Conditions ?",
     "stars": 1,
     "category": "skill"
   },
   "2001602": {
-    "name": "Wet Conditions ○",
+    "name": "Wet Conditions ?",
     "stars": 2,
     "category": "skill"
   },
   "2001603": {
-    "name": "Wet Conditions ○",
+    "name": "Wet Conditions ?",
     "stars": 3,
     "category": "skill"
   },
   "2001701": {
-    "name": "Spring Runner ○",
+    "name": "Spring Runner ?",
     "stars": 1,
     "category": "skill"
   },
   "2001702": {
-    "name": "Spring Runner ○",
+    "name": "Spring Runner ?",
     "stars": 2,
     "category": "skill"
   },
   "2001703": {
-    "name": "Spring Runner ○",
+    "name": "Spring Runner ?",
     "stars": 3,
     "category": "skill"
   },
   "2001801": {
-    "name": "Summer Runner ○",
+    "name": "Summer Runner ?",
     "stars": 1,
     "category": "skill"
   },
   "2001802": {
-    "name": "Summer Runner ○",
+    "name": "Summer Runner ?",
     "stars": 2,
     "category": "skill"
   },
   "2001803": {
-    "name": "Summer Runner ○",
+    "name": "Summer Runner ?",
     "stars": 3,
     "category": "skill"
   },
   "2001901": {
-    "name": "Fall Runner ○",
+    "name": "Fall Runner ?",
     "stars": 1,
     "category": "skill"
   },
   "2001902": {
-    "name": "Fall Runner ○",
+    "name": "Fall Runner ?",
     "stars": 2,
     "category": "skill"
   },
   "2001903": {
-    "name": "Fall Runner ○",
+    "name": "Fall Runner ?",
     "stars": 3,
     "category": "skill"
   },
   "2002001": {
-    "name": "Winter Runner ○",
+    "name": "Winter Runner ?",
     "stars": 1,
     "category": "skill"
   },
   "2002002": {
-    "name": "Winter Runner ○",
+    "name": "Winter Runner ?",
     "stars": 2,
     "category": "skill"
   },
   "2002003": {
-    "name": "Winter Runner ○",
+    "name": "Winter Runner ?",
     "stars": 3,
     "category": "skill"
   },
   "2002101": {
-    "name": "Sunny Days ○",
+    "name": "Sunny Days ?",
     "stars": 1,
     "category": "skill"
   },
   "2002102": {
-    "name": "Sunny Days ○",
+    "name": "Sunny Days ?",
     "stars": 2,
     "category": "skill"
   },
   "2002103": {
-    "name": "Sunny Days ○",
+    "name": "Sunny Days ?",
     "stars": 3,
     "category": "skill"
   },
   "2002201": {
-    "name": "Cloudy Days ○",
+    "name": "Cloudy Days ?",
     "stars": 1,
     "category": "skill"
   },
   "2002202": {
-    "name": "Cloudy Days ○",
+    "name": "Cloudy Days ?",
     "stars": 2,
     "category": "skill"
   },
   "2002203": {
-    "name": "Cloudy Days ○",
+    "name": "Cloudy Days ?",
     "stars": 3,
     "category": "skill"
   },
   "2002301": {
-    "name": "Rainy Days ○",
+    "name": "Rainy Days ?",
     "stars": 1,
     "category": "skill"
   },
   "2002302": {
-    "name": "Rainy Days ○",
+    "name": "Rainy Days ?",
     "stars": 2,
     "category": "skill"
   },
   "2002303": {
-    "name": "Rainy Days ○",
+    "name": "Rainy Days ?",
     "stars": 3,
     "category": "skill"
   },
   "2002401": {
-    "name": "Snowy Days ○",
+    "name": "Snowy Days ?",
     "stars": 1,
     "category": "skill"
   },
   "2002402": {
-    "name": "Snowy Days ○",
+    "name": "Snowy Days ?",
     "stars": 2,
     "category": "skill"
   },
   "2002403": {
-    "name": "Snowy Days ○",
+    "name": "Snowy Days ?",
     "stars": 3,
     "category": "skill"
   },
   "2002501": {
-    "name": "Inner Post Proficiency ○",
+    "name": "Inner Post Proficiency ?",
     "stars": 1,
     "category": "skill"
   },
   "2002502": {
-    "name": "Inner Post Proficiency ○",
+    "name": "Inner Post Proficiency ?",
     "stars": 2,
     "category": "skill"
   },
   "2002503": {
-    "name": "Inner Post Proficiency ○",
+    "name": "Inner Post Proficiency ?",
     "stars": 3,
     "category": "skill"
   },
   "2002601": {
-    "name": "Outer Post Proficiency ○",
+    "name": "Outer Post Proficiency ?",
     "stars": 1,
     "category": "skill"
   },
   "2002602": {
-    "name": "Outer Post Proficiency ○",
+    "name": "Outer Post Proficiency ?",
     "stars": 2,
     "category": "skill"
   },
   "2002603": {
-    "name": "Outer Post Proficiency ○",
+    "name": "Outer Post Proficiency ?",
     "stars": 3,
     "category": "skill"
   },
   "2002701": {
-    "name": "Maverick ○",
+    "name": "Maverick ?",
     "stars": 1,
     "category": "skill"
   },
   "2002702": {
-    "name": "Maverick ○",
+    "name": "Maverick ?",
     "stars": 2,
     "category": "skill"
   },
   "2002703": {
-    "name": "Maverick ○",
+    "name": "Maverick ?",
     "stars": 3,
     "category": "skill"
   },
   "2002801": {
-    "name": "Competitive Spirit ○",
+    "name": "Competitive Spirit ?",
     "stars": 1,
     "category": "skill"
   },
   "2002802": {
-    "name": "Competitive Spirit ○",
+    "name": "Competitive Spirit ?",
     "stars": 2,
     "category": "skill"
   },
   "2002803": {
-    "name": "Competitive Spirit ○",
+    "name": "Competitive Spirit ?",
     "stars": 3,
     "category": "skill"
   },
   "2002901": {
-    "name": "Target in Sight ○",
+    "name": "Target in Sight ?",
     "stars": 1,
     "category": "skill"
   },
   "2002902": {
-    "name": "Target in Sight ○",
+    "name": "Target in Sight ?",
     "stars": 2,
     "category": "skill"
   },
   "2002903": {
-    "name": "Target in Sight ○",
+    "name": "Target in Sight ?",
     "stars": 3,
     "category": "skill"
   },
   "2003001": {
-    "name": "Long Shot ○",
+    "name": "Long Shot ?",
     "stars": 1,
     "category": "skill"
   },
   "2003002": {
-    "name": "Long Shot ○",
+    "name": "Long Shot ?",
     "stars": 2,
     "category": "skill"
   },
   "2003003": {
-    "name": "Long Shot ○",
+    "name": "Long Shot ?",
     "stars": 3,
     "category": "skill"
   },
   "2003301": {
-    "name": "Corner Adept ○",
+    "name": "Corner Adept ?",
     "stars": 1,
     "category": "skill"
   },
   "2003302": {
-    "name": "Corner Adept ○",
+    "name": "Corner Adept ?",
     "stars": 2,
     "category": "skill"
   },
   "2003303": {
-    "name": "Corner Adept ○",
+    "name": "Corner Adept ?",
     "stars": 3,
     "category": "skill"
   },
   "2003401": {
-    "name": "Corner Acceleration ○",
+    "name": "Corner Acceleration ?",
     "stars": 1,
     "category": "skill"
   },
   "2003402": {
-    "name": "Corner Acceleration ○",
+    "name": "Corner Acceleration ?",
     "stars": 2,
     "category": "skill"
   },
   "2003403": {
-    "name": "Corner Acceleration ○",
+    "name": "Corner Acceleration ?",
     "stars": 3,
     "category": "skill"
   },
   "2003501": {
-    "name": "Corner Recovery ○",
+    "name": "Corner Recovery ?",
     "stars": 1,
     "category": "skill"
   },
   "2003502": {
-    "name": "Corner Recovery ○",
+    "name": "Corner Recovery ?",
     "stars": 2,
     "category": "skill"
   },
   "2003503": {
-    "name": "Corner Recovery ○",
+    "name": "Corner Recovery ?",
     "stars": 3,
     "category": "skill"
   },
@@ -1980,47 +1980,47 @@
     "category": "skill"
   },
   "2009501": {
-    "name": "Oi Racecourse ○",
+    "name": "Oi Racecourse ?",
     "stars": 1,
     "category": "skill"
   },
   "2009502": {
-    "name": "Oi Racecourse ○",
+    "name": "Oi Racecourse ?",
     "stars": 2,
     "category": "skill"
   },
   "2009503": {
-    "name": "Oi Racecourse ○",
+    "name": "Oi Racecourse ?",
     "stars": 3,
     "category": "skill"
   },
   "2009601": {
-    "name": "Sprint Straightaways ○",
+    "name": "Sprint Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2009602": {
-    "name": "Sprint Straightaways ○",
+    "name": "Sprint Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2009603": {
-    "name": "Sprint Straightaways ○",
+    "name": "Sprint Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2009701": {
-    "name": "Sprint Corners ○",
+    "name": "Sprint Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2009702": {
-    "name": "Sprint Corners ○",
+    "name": "Sprint Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2009703": {
-    "name": "Sprint Corners ○",
+    "name": "Sprint Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2100,32 +2100,32 @@
     "category": "skill"
   },
   "2010301": {
-    "name": "Mile Straightaways ○",
+    "name": "Mile Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2010302": {
-    "name": "Mile Straightaways ○",
+    "name": "Mile Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2010303": {
-    "name": "Mile Straightaways ○",
+    "name": "Mile Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2010401": {
-    "name": "Mile Corners ○",
+    "name": "Mile Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2010402": {
-    "name": "Mile Corners ○",
+    "name": "Mile Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2010403": {
-    "name": "Mile Corners ○",
+    "name": "Mile Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2205,32 +2205,32 @@
     "category": "skill"
   },
   "2011001": {
-    "name": "Medium Straightaways ○",
+    "name": "Medium Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2011002": {
-    "name": "Medium Straightaways ○",
+    "name": "Medium Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2011003": {
-    "name": "Medium Straightaways ○",
+    "name": "Medium Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2011101": {
-    "name": "Medium Corners ○",
+    "name": "Medium Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2011102": {
-    "name": "Medium Corners ○",
+    "name": "Medium Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2011103": {
-    "name": "Medium Corners ○",
+    "name": "Medium Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2310,32 +2310,32 @@
     "category": "skill"
   },
   "2011701": {
-    "name": "Long Straightaways ○",
+    "name": "Long Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2011702": {
-    "name": "Long Straightaways ○",
+    "name": "Long Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2011703": {
-    "name": "Long Straightaways ○",
+    "name": "Long Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2011801": {
-    "name": "Long Corners ○",
+    "name": "Long Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2011802": {
-    "name": "Long Corners ○",
+    "name": "Long Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2011803": {
-    "name": "Long Corners ○",
+    "name": "Long Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2415,32 +2415,32 @@
     "category": "skill"
   },
   "2012401": {
-    "name": "Front Runner Straightaways ○",
+    "name": "Front Runner Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2012402": {
-    "name": "Front Runner Straightaways ○",
+    "name": "Front Runner Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2012403": {
-    "name": "Front Runner Straightaways ○",
+    "name": "Front Runner Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2012501": {
-    "name": "Front Runner Corners ○",
+    "name": "Front Runner Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2012502": {
-    "name": "Front Runner Corners ○",
+    "name": "Front Runner Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2012503": {
-    "name": "Front Runner Corners ○",
+    "name": "Front Runner Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2520,32 +2520,32 @@
     "category": "skill"
   },
   "2013101": {
-    "name": "Pace Chaser Straightaways ○",
+    "name": "Pace Chaser Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2013102": {
-    "name": "Pace Chaser Straightaways ○",
+    "name": "Pace Chaser Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2013103": {
-    "name": "Pace Chaser Straightaways ○",
+    "name": "Pace Chaser Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2013201": {
-    "name": "Pace Chaser Corners ○",
+    "name": "Pace Chaser Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2013202": {
-    "name": "Pace Chaser Corners ○",
+    "name": "Pace Chaser Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2013203": {
-    "name": "Pace Chaser Corners ○",
+    "name": "Pace Chaser Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2625,32 +2625,32 @@
     "category": "skill"
   },
   "2013801": {
-    "name": "Late Surger Straightaways ○",
+    "name": "Late Surger Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2013802": {
-    "name": "Late Surger Straightaways ○",
+    "name": "Late Surger Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2013803": {
-    "name": "Late Surger Straightaways ○",
+    "name": "Late Surger Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2013901": {
-    "name": "Late Surger Corners ○",
+    "name": "Late Surger Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2013902": {
-    "name": "Late Surger Corners ○",
+    "name": "Late Surger Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2013903": {
-    "name": "Late Surger Corners ○",
+    "name": "Late Surger Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2730,32 +2730,32 @@
     "category": "skill"
   },
   "2014501": {
-    "name": "End Closer Straightaways ○",
+    "name": "End Closer Straightaways ?",
     "stars": 1,
     "category": "skill"
   },
   "2014502": {
-    "name": "End Closer Straightaways ○",
+    "name": "End Closer Straightaways ?",
     "stars": 2,
     "category": "skill"
   },
   "2014503": {
-    "name": "End Closer Straightaways ○",
+    "name": "End Closer Straightaways ?",
     "stars": 3,
     "category": "skill"
   },
   "2014601": {
-    "name": "End Closer Corners ○",
+    "name": "End Closer Corners ?",
     "stars": 1,
     "category": "skill"
   },
   "2014602": {
-    "name": "End Closer Corners ○",
+    "name": "End Closer Corners ?",
     "stars": 2,
     "category": "skill"
   },
   "2014603": {
-    "name": "End Closer Corners ○",
+    "name": "End Closer Corners ?",
     "stars": 3,
     "category": "skill"
   },
@@ -2835,62 +2835,62 @@
     "category": "skill"
   },
   "2015201": {
-    "name": "Front Runner Savvy ○",
+    "name": "Front Runner Savvy ?",
     "stars": 1,
     "category": "skill"
   },
   "2015202": {
-    "name": "Front Runner Savvy ○",
+    "name": "Front Runner Savvy ?",
     "stars": 2,
     "category": "skill"
   },
   "2015203": {
-    "name": "Front Runner Savvy ○",
+    "name": "Front Runner Savvy ?",
     "stars": 3,
     "category": "skill"
   },
   "2015301": {
-    "name": "Pace Chaser Savvy ○",
+    "name": "Pace Chaser Savvy ?",
     "stars": 1,
     "category": "skill"
   },
   "2015302": {
-    "name": "Pace Chaser Savvy ○",
+    "name": "Pace Chaser Savvy ?",
     "stars": 2,
     "category": "skill"
   },
   "2015303": {
-    "name": "Pace Chaser Savvy ○",
+    "name": "Pace Chaser Savvy ?",
     "stars": 3,
     "category": "skill"
   },
   "2015401": {
-    "name": "Late Surger Savvy ○",
+    "name": "Late Surger Savvy ?",
     "stars": 1,
     "category": "skill"
   },
   "2015402": {
-    "name": "Late Surger Savvy ○",
+    "name": "Late Surger Savvy ?",
     "stars": 2,
     "category": "skill"
   },
   "2015403": {
-    "name": "Late Surger Savvy ○",
+    "name": "Late Surger Savvy ?",
     "stars": 3,
     "category": "skill"
   },
   "2015501": {
-    "name": "End Closer Savvy ○",
+    "name": "End Closer Savvy ?",
     "stars": 1,
     "category": "skill"
   },
   "2015502": {
-    "name": "End Closer Savvy ○",
+    "name": "End Closer Savvy ?",
     "stars": 2,
     "category": "skill"
   },
   "2015503": {
-    "name": "End Closer Savvy ○",
+    "name": "End Closer Savvy ?",
     "stars": 3,
     "category": "skill"
   },
@@ -3314,51 +3314,6 @@
     "stars": 3,
     "category": "skill"
   },
-  "2021501": {
-    "name": "Full Throttle",
-    "stars": 1,
-    "category": "skill"
-  },
-  "2021502": {
-    "name": "Full Throttle",
-    "stars": 2,
-    "category": "skill"
-  },
-  "2021503": {
-    "name": "Full Throttle",
-    "stars": 3,
-    "category": "skill"
-  },
-  "2021601": {
-    "name": "Restraint",
-    "stars": 1,
-    "category": "skill"
-  },
-  "2021602": {
-    "name": "Restraint",
-    "stars": 2,
-    "category": "skill"
-  },
-  "2021603": {
-    "name": "Restraint",
-    "stars": 3,
-    "category": "skill"
-  },
-  "2021701": {
-    "name": "Downhill Speedster",
-    "stars": 1,
-    "category": "skill"
-  },
-  "2021702": {
-    "name": "Downhill Speedster",
-    "stars": 2,
-    "category": "skill"
-  },
-  "2021703": {
-    "name": "Downhill Speedster",
-    "stars": 3,
-    "category": "skill"
-  },
   "2100101": {
     "name": "Ignited Spirit SPD",
     "stars": 1,
@@ -3501,7 +3456,7 @@
   },
   "4000102": {
     "name": "Carnival Bonus",
-    "stars": 2,
+    "stars": 1,
     "category": "other"
   },
   "10010101": {
@@ -3520,32 +3475,17 @@
     "category": "unique"
   },
   "10010201": {
-    "name": "Dazzl'n ♪ Diver",
+    "name": "Dazzl'n ? Diver",
     "stars": 1,
     "category": "unique"
   },
   "10010202": {
-    "name": "Dazzl'n ♪ Diver",
+    "name": "Dazzl'n ? Diver",
     "stars": 2,
     "category": "unique"
   },
   "10010203": {
-    "name": "Dazzl'n ♪ Diver",
-    "stars": 3,
-    "category": "unique"
-  },
-  "10010301": {
-    "name": "Dreams Donned with Pride!",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10010302": {
-    "name": "Dreams Donned with Pride!",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10010303": {
-    "name": "Dreams Donned with Pride!",
+    "name": "Dazzl'n ? Diver",
     "stars": 3,
     "category": "unique"
   },
@@ -3744,21 +3684,6 @@
     "stars": 3,
     "category": "unique"
   },
-  "10100201": {
-    "name": "Joyful Voyage!",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10100202": {
-    "name": "Joyful Voyage!",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10100203": {
-    "name": "Joyful Voyage!",
-    "stars": 3,
-    "category": "unique"
-  },
   "10110101": {
     "name": "Where There's a Will, There's a Way",
     "stars": 1,
@@ -3835,17 +3760,17 @@
     "category": "unique"
   },
   "10140101": {
-    "name": "Victoria por plancha ☆",
+    "name": "Victoria por plancha ?",
     "stars": 1,
     "category": "unique"
   },
   "10140102": {
-    "name": "Victoria por plancha ☆",
+    "name": "Victoria por plancha ?",
     "stars": 2,
     "category": "unique"
   },
   "10140103": {
-    "name": "Victoria por plancha ☆",
+    "name": "Victoria por plancha ?",
     "stars": 3,
     "category": "unique"
   },
@@ -3970,17 +3895,17 @@
     "category": "unique"
   },
   "10190101": {
-    "name": "OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆",
+    "name": "OMG! (???)  The Final Sprint! ?",
     "stars": 1,
     "category": "unique"
   },
   "10190102": {
-    "name": "OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆",
+    "name": "OMG! (???)  The Final Sprint! ?",
     "stars": 2,
     "category": "unique"
   },
   "10190103": {
-    "name": "OMG! (ﾟ∀ﾟ)  The Final Sprint! ☆",
+    "name": "OMG! (???)  The Final Sprint! ?",
     "stars": 3,
     "category": "unique"
   },
@@ -4044,33 +3969,18 @@
     "stars": 3,
     "category": "unique"
   },
-  "10220201": {
-    "name": "Best day ever",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10220202": {
-    "name": "Best day ever",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10220203": {
-    "name": "Best day ever",
-    "stars": 3,
-    "category": "unique"
-  },
   "10230101": {
-    "name": "∴win Q.E.D.",
+    "name": "?win Q.E.D.",
     "stars": 1,
     "category": "unique"
   },
   "10230102": {
-    "name": "∴win Q.E.D.",
+    "name": "?win Q.E.D.",
     "stars": 2,
     "category": "unique"
   },
   "10230103": {
-    "name": "∴win Q.E.D.",
+    "name": "?win Q.E.D.",
     "stars": 3,
     "category": "unique"
   },
@@ -4090,32 +4000,32 @@
     "category": "unique"
   },
   "10240101": {
-    "name": "Flashy☆Landing",
+    "name": "Flashy?Landing",
     "stars": 1,
     "category": "unique"
   },
   "10240102": {
-    "name": "Flashy☆Landing",
+    "name": "Flashy?Landing",
     "stars": 2,
     "category": "unique"
   },
   "10240103": {
-    "name": "Flashy☆Landing",
+    "name": "Flashy?Landing",
     "stars": 3,
     "category": "unique"
   },
   "10240201": {
-    "name": "Flowery☆Maneuver",
+    "name": "Flowery?Maneuver",
     "stars": 1,
     "category": "unique"
   },
   "10240202": {
-    "name": "Flowery☆Maneuver",
+    "name": "Flowery?Maneuver",
     "stars": 2,
     "category": "unique"
   },
   "10240203": {
-    "name": "Flowery☆Maneuver",
+    "name": "Flowery?Maneuver",
     "stars": 3,
     "category": "unique"
   },
@@ -4135,17 +4045,17 @@
     "category": "unique"
   },
   "10260101": {
-    "name": "G00 1st. F∞;",
+    "name": "G00 1st. F\u221e;",
     "stars": 1,
     "category": "unique"
   },
   "10260102": {
-    "name": "G00 1st. F∞;",
+    "name": "G00 1st. F\u221e;",
     "stars": 2,
     "category": "unique"
   },
   "10260103": {
-    "name": "G00 1st. F∞;",
+    "name": "G00 1st. F\u221e;",
     "stars": 3,
     "category": "unique"
   },
@@ -4180,17 +4090,17 @@
     "category": "unique"
   },
   "10280101": {
-    "name": "YUMMY☆SPEED!",
+    "name": "YUMMY?SPEED!",
     "stars": 1,
     "category": "unique"
   },
   "10280102": {
-    "name": "YUMMY☆SPEED!",
+    "name": "YUMMY?SPEED!",
     "stars": 2,
     "category": "unique"
   },
   "10280103": {
-    "name": "YUMMY☆SPEED!",
+    "name": "YUMMY?SPEED!",
     "stars": 3,
     "category": "unique"
   },
@@ -4269,21 +4179,6 @@
     "stars": 3,
     "category": "unique"
   },
-  "10340101": {
-    "name": "Now We're Cruisin'!",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10340102": {
-    "name": "Now We're Cruisin'!",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10340103": {
-    "name": "Now We're Cruisin'!",
-    "stars": 3,
-    "category": "unique"
-  },
   "10350101": {
     "name": "Our Ticket to Win!",
     "stars": 1,
@@ -4296,21 +4191,6 @@
   },
   "10350103": {
     "name": "Our Ticket to Win!",
-    "stars": 3,
-    "category": "unique"
-  },
-  "10360101": {
-    "name": "trigger:BEAT",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10360102": {
-    "name": "trigger:BEAT",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10360103": {
-    "name": "trigger:BEAT",
     "stars": 3,
     "category": "unique"
   },
@@ -4330,17 +4210,17 @@
     "category": "unique"
   },
   "10370201": {
-    "name": "Guten Appetit ♪",
+    "name": "Guten Appetit ?",
     "stars": 1,
     "category": "unique"
   },
   "10370202": {
-    "name": "Guten Appetit ♪",
+    "name": "Guten Appetit ?",
     "stars": 2,
     "category": "unique"
   },
   "10370203": {
-    "name": "Guten Appetit ♪",
+    "name": "Guten Appetit ?",
     "stars": 3,
     "category": "unique"
   },
@@ -4356,21 +4236,6 @@
   },
   "10380103": {
     "name": "#LookatCurren",
-    "stars": 3,
-    "category": "unique"
-  },
-  "10380201": {
-    "name": "One True Color",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10380202": {
-    "name": "One True Color",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10380203": {
-    "name": "One True Color",
     "stars": 3,
     "category": "unique"
   },
@@ -4434,21 +4299,6 @@
     "stars": 3,
     "category": "unique"
   },
-  "10440101": {
-    "name": "Victory belongs to me—Strelitzia! ☆",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10440102": {
-    "name": "Victory belongs to me—Strelitzia! ☆",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10440103": {
-    "name": "Victory belongs to me—Strelitzia! ☆",
-    "stars": 3,
-    "category": "unique"
-  },
   "10450101": {
     "name": "Pure Heart",
     "stars": 1,
@@ -4465,32 +4315,32 @@
     "category": "unique"
   },
   "10450201": {
-    "name": "Give Mummy a Hug ♡",
+    "name": "Give Mummy a Hug ?",
     "stars": 1,
     "category": "unique"
   },
   "10450202": {
-    "name": "Give Mummy a Hug ♡",
+    "name": "Give Mummy a Hug ?",
     "stars": 2,
     "category": "unique"
   },
   "10450203": {
-    "name": "Give Mummy a Hug ♡",
+    "name": "Give Mummy a Hug ?",
     "stars": 3,
     "category": "unique"
   },
   "10460101": {
-    "name": "SPARKLY☆STARDOM",
+    "name": "SPARKLY?STARDOM",
     "stars": 1,
     "category": "unique"
   },
   "10460102": {
-    "name": "SPARKLY☆STARDOM",
+    "name": "SPARKLY?STARDOM",
     "stars": 2,
     "category": "unique"
   },
   "10460103": {
-    "name": "SPARKLY☆STARDOM",
+    "name": "SPARKLY?STARDOM",
     "stars": 3,
     "category": "unique"
   },
@@ -4629,21 +4479,6 @@
     "stars": 3,
     "category": "unique"
   },
-  "10590201": {
-    "name": "Wherever This Wonder Leads",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10590202": {
-    "name": "Wherever This Wonder Leads",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10590203": {
-    "name": "Wherever This Wonder Leads",
-    "stars": 3,
-    "category": "unique"
-  },
   "10600101": {
     "name": "Just a Little Farther!",
     "stars": 1,
@@ -4660,17 +4495,17 @@
     "category": "unique"
   },
   "10600201": {
-    "name": "Go☆Go☆Goal!",
+    "name": "Go?Go?Goal!",
     "stars": 1,
     "category": "unique"
   },
   "10600202": {
-    "name": "Go☆Go☆Goal!",
+    "name": "Go?Go?Goal!",
     "stars": 2,
     "category": "unique"
   },
   "10600203": {
-    "name": "Go☆Go☆Goal!",
+    "name": "Go?Go?Goal!",
     "stars": 3,
     "category": "unique"
   },
@@ -4716,21 +4551,6 @@
   },
   "10620103": {
     "name": "Go, Go, Mun!",
-    "stars": 3,
-    "category": "unique"
-  },
-  "10640101": {
-    "name": "Keep Pushing Ahead",
-    "stars": 1,
-    "category": "unique"
-  },
-  "10640102": {
-    "name": "Keep Pushing Ahead",
-    "stars": 2,
-    "category": "unique"
-  },
-  "10640103": {
-    "name": "Keep Pushing Ahead",
     "stars": 3,
     "category": "unique"
   },

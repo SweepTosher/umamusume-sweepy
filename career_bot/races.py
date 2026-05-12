@@ -20,9 +20,8 @@ class RacePlanner:
         self.program = {int(k): v for k, v in (data.get("program") or {}).items()}
         self.instance = {int(k): [int(item) for item in v] for k, v in (data.get("instance") or {}).items()}
 
-    def wanted_programs(self, preset, turn=None):
+    def wanted_programs(self, preset):
         result = set()
-        current_turn = int(turn or 0)
         for value in preset.get("extra_race_list") or []:
             try:
                 race_id = int(value)
@@ -30,9 +29,6 @@ class RacePlanner:
                 continue
             if race_id in self.meta:
                 info = self.meta[race_id]
-                occurrence_turn = int(info.get("turn") or 0)
-                if current_turn and occurrence_turn and occurrence_turn != current_turn:
-                    continue
                 pid = info.get("program_id")
                 if pid:
                     result.add(pid)
@@ -83,7 +79,7 @@ class RacePlanner:
         if not available:
             return 0
     
-        wanted = self.wanted_programs(preset, turn)
+        wanted = self.wanted_programs(preset)
         for program_id in sorted(wanted):
             if program_id in available and (turn, program_id) not in self.rejected:
                 return program_id

@@ -12,7 +12,6 @@ import subprocess
 import time
 import sys
 import frida
-from career_bot import master_data
 from career_bot.presets import PresetStore
 from career_bot.runner import CareerRunner
 from uma_api.client import UmaClient
@@ -196,15 +195,6 @@ preset_store = PresetStore(DIR)
 career_runner = CareerRunner(DIR)
 
 base_dir = Path(__file__).parent.absolute()
-master_data_startup_status = master_data.status(base_dir)
-if master_data_startup_status.get("exists"):
-    master_data_startup_result = master_data.generate(base_dir)
-    if master_data_startup_result.get("success"):
-        print(f"master.mdb data generated: {master_data_startup_status.get('master_mdb_path')}")
-    else:
-        print(f"master.mdb data generation failed: {master_data_startup_result.get('detail')}")
-elif master_data_startup_status.get("requires_user_action"):
-    print(f"master.mdb requires user action: {master_data_startup_status.get('master_mdb_path')}")
 chara_path = base_dir / 'data' / 'chara_list.json'
 support_path = base_dir / 'data' / 'support_list.json'
 images_dir = base_dir / 'data' / 'images'
@@ -438,11 +428,17 @@ def selected_succession_rank_point(req):
         return selected_total
     return active_start_state.get('succession_rank_point', 0)
 
-skill_data = {}
-skill_data_path = base_dir / 'data' / 'skill_data.json'
-if skill_data_path.exists():
-    with open(skill_data_path, 'r', encoding='utf-8') as f:
-        skill_data = json.load(f)
+master_map = {}
+master_map_path = base_dir / 'data' / 'master_map.json'
+if master_map_path.exists():
+    with open(master_map_path, 'r', encoding='utf-8') as f:
+        master_map = json.load(f)
+
+unique_map = {}
+unique_map_path = base_dir / 'data' / 'unique_map.json'
+if unique_map_path.exists():
+    with open(unique_map_path, 'r', encoding='utf-8') as f:
+        unique_map = json.load(f)
 
 factor_map = {}
 factor_map_path = base_dir / 'data' / 'factor_map.json'
@@ -455,11 +451,6 @@ race_map_path = base_dir / 'data' / 'race_map.json'
 if race_map_path.exists():
     with open(race_map_path, 'r', encoding='utf-8') as f:
         race_map = json.load(f)
-
-def skill_entry_name(entry):
-    if isinstance(entry, dict):
-        return entry.get("name") or ""
-    return entry
 
 def get_win_summary(win_saddle_ids):
     summary = {
@@ -486,7 +477,7 @@ def clean_factor_name(name, base_id=None, category=None):
         return name
 
     if category == "skill" and "?" in name and base_id is not None:
-        skill_name = skill_entry_name(skill_data.get(f"{base_id}2"))
+        skill_name = master_map.get('skill', {}).get(f"{base_id}2")
         if skill_name:
             return skill_name
     return name.replace(" ?", " ○")
@@ -535,9 +526,25 @@ def get_factors(fid_array, owner_card_id=None):
             category = "stat" if base_id <= 5 else "aptitude"
             name = stat_map.get(base_id, name)
         
-        elif bid_str in skill_data:
+        elif 30000 <= base_id < 40000:
+            category = "scenario"
+            name = master_map.get('scenario', {}).get(bid_str, f"Scenario({base_id})")
+        
+        elif bid_str == owner_cid_str or (len(bid_str) >= 4 and bid_str[:4] == owner_cid_str):
+            category = "unique"
+            name = unique_map.get(bid_str[:4], f"Unique({bid_str})")
+
+        elif bid_str in master_map.get('race', {}):
+            category = "race"
+            name = master_map['race'][bid_str]
+    
+        elif bid_str in master_map.get('skill', {}):
             category = "skill"
-            name = skill_entry_name(skill_data[bid_str])
+            name = master_map['skill'][bid_str]
+
+        elif len(bid_str) >= 4 and bid_str[:4] in unique_map:
+            category = "skill"
+            name = unique_map[bid_str[:4]]
             
         results.append({"name": name, "stars": stars, "id": base_id, "category": category})
 
@@ -731,9 +738,6 @@ class ApiDelayRequest(BaseModel):
     max: float = 4.0
     disabled: bool = False
 
-class MasterDataPathRequest(BaseModel):
-    master_mdb_path: str
-
 @app.get("/api/settings/turn-delay")
 async def get_turn_delay_settings():
     return get_turn_delay()
@@ -741,28 +745,6 @@ async def get_turn_delay_settings():
 @app.post("/api/settings/turn-delay")
 async def set_turn_delay_settings(req: ApiDelayRequest):
     return set_turn_delay(req.min, req.max, req.disabled)
-
-@app.get("/api/master-data/status")
-async def master_data_status():
-    return master_data.status(base_dir)
-
-@app.post("/api/master-data/path")
-async def set_master_data_path(req: MasterDataPathRequest):
-    status = master_data.set_master_mdb_path(base_dir, req.master_mdb_path)
-    if status.get("exists"):
-        result = master_data.generate(base_dir)
-        if result.get("success"):
-            status["generated"] = result.get("generated", [])
-        else:
-            status["generation_error"] = result.get("detail") or "master_data generation failed"
-    return status
-
-@app.post("/api/master-data/generate")
-async def generate_master_data():
-    result = master_data.generate(base_dir)
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("detail") or "master_data generation failed")
-    return result
 
 @app.post("/api/presets/save_races")
 async def save_races(req: SaveRacesRequest):

@@ -5,5 +5,4 @@ pycryptodome==3.14.1
 pydantic==2.13.4
 Requests==2.33.1
 uvicorn==0.18.2
-
 curl_cffi==0.7.4

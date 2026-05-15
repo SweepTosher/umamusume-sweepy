@@ -2,15 +2,20 @@ import os
 import json
 import re
 import subprocess
+import sys
+
+try:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+except Exception:
+    pass
+
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from pathlib import Path
 import random
-import subprocess
 import time
-import sys
 import threading
 import frida
 from career_bot import master_data
@@ -1622,15 +1627,7 @@ def refresh_auth_before_serving(timeout_sec=None):
 
 
 if __name__ == "__main__":
-    import sys
     import uvicorn
-
-    requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
-    if os.path.exists(requirements_path):
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_path, "--quiet"])
-        except Exception:
-            pass
 
     try:
         subprocess.run(["git", "pull"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

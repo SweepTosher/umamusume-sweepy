@@ -14,7 +14,9 @@ const state = {
     selectedRaces: [],
     scenarioType: "Mant",
     burnClocks: false,
-    displayedClocksUsed: 0
+    displayedClocksUsed: 0,
+    devEnabled: false,
+    consecutiveRunnerFails: 0
 };
 const els = {
     loadingScreen: document.getElementById('loading-screen'),
@@ -27,6 +29,7 @@ const els = {
     turnDelayMax: document.getElementById('turn-delay-max'),
     temptFateBtn: document.getElementById('tempt-fate-btn'),
     burnClocksBtn: document.getElementById('burn-clocks-btn'),
+    devBtn: document.getElementById('dev-career-btn'),
     loginView: document.getElementById('login-view'),
     dashboardView: document.getElementById('dashboard-view'),
     errorMsg: document.getElementById('error-msg'),
@@ -69,6 +72,34 @@ const els = {
 };
         const delaySettingsStorageKey = 'uma_turn_delay_settings';
         const burnClocksStorageKey = 'uma_burn_clocks';
+        const devStorageKey = 'uma_dev_career';
+        function syncDevControls() {
+            if (!els.devBtn) return;
+            els.devBtn.classList.toggle('is-active', state.devEnabled);
+            els.devBtn.innerText = `DEV: ${state.devEnabled ? 'ON' : 'OFF'}`;
+        }
+        function setDevEnabled(value, options = {}) {
+            state.devEnabled = Boolean(value);
+            syncDevControls();
+            if (options.persist) {
+                localStorage.setItem(devStorageKey, String(state.devEnabled));
+            }
+        }
+
+        window.addEventListener('storage', event => {
+            if (event.key === devStorageKey && event.newValue !== null) {
+                setDevEnabled(event.newValue === 'true', { persist: false });
+            }
+        });
+        const storedDev = localStorage.getItem(devStorageKey);
+        if (storedDev !== null) setDevEnabled(storedDev === 'true', { persist: false });
+
+        if (els.devBtn) {
+            els.devBtn.addEventListener('click', () => {
+                setDevEnabled(!state.devEnabled, { persist: true });
+            });
+        }
+
         function setLoadingScreen(visible) {
             if (!els.loadingScreen) return;
             els.loadingScreen.classList.toggle('hidden', !visible);
@@ -271,11 +302,20 @@ const els = {
         const savedPassword = localStorage.getItem('saved_password');
         if (savedUsername) document.getElementById('username').value = savedUsername;
         if (savedPassword) document.getElementById('password').value = savedPassword;
+        let themeToggleClicks = 0;
         els.themeToggle.addEventListener('click', () => {
             const nextTheme = document.body.classList.contains('theme-blue') ? 'pink' : 'blue';
             applyTheme(nextTheme);
             localStorage.setItem('theme', nextTheme);
+            themeToggleClicks++;
+            if (themeToggleClicks >= 11 && els.devBtn) {
+                els.devBtn.style.display = 'inline-block';
+            }
         });
+        window.iwillnotabusethis = function() {
+            if (els.devBtn) els.devBtn.style.display = 'inline-block';
+            setDevEnabled(true, { persist: true });
+        };
         const sleep = ms => new Promise(resolve => window.setTimeout(resolve, ms));
         const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
         async function waitForDomPaint(frames = 2) {
@@ -734,7 +774,7 @@ const els = {
             const parentError = getParentSelectionError();
             if (parentError) return parentError;
             const tp = state.account && state.account.tp ? Number(state.account.tp.current || 0) : 0;
-            if (state.account && tp < 30) return `Not enough TP: ${tp}/30`;
+            if (state.account && tp < 30 && !state.devEnabled) return `Not enough TP: ${tp}/30`;
             return '';
         }
         function getParentLineageCards(parent) {
@@ -1279,7 +1319,8 @@ const els = {
             const body = activeCareer ? {
                 preset_name: state.selectedPreset,
                 max_steps: 2500,
-                burn_clocks: state.burnClocks
+                burn_clocks: state.burnClocks,
+                dev_mode: state.devEnabled
             } : {
                 card_id: Number(selection.trainee.id),
                 support_card_ids: selection.deck.cards.map(card => Number(card.id)),
@@ -1296,7 +1337,8 @@ const els = {
                 boost_story_event_id: 0,
                 preset_name: state.selectedPreset,
                 max_steps: 2500,
-                burn_clocks: state.burnClocks
+                burn_clocks: state.burnClocks,
+                dev_mode: state.devEnabled
             };
             try {
                 const data = await apiJson('/api/career/run', {
@@ -1316,6 +1358,9 @@ const els = {
             } catch (e) {
                 finalMessage = e.message || 'Start failed';
                 finalIsError = true;
+                if (state.devEnabled) {
+                    setDevEnabled(false, { persist: true });
+                }
             } finally {
                 state.isStartingCareer = false;
                 syncStartButton();
@@ -1363,16 +1408,36 @@ const els = {
                     if (!rows.length) els.startStatus.innerText = `Turn ${runner.turn || '?'} / ${runner.last_action || 'running'} / ${runner.steps || 0}`;
                     return;
                 }
-                if (state.runnerTimer) {
-                    window.clearInterval(state.runnerTimer);
+                if (state.runnerTimer && !state.devEnabled) {
+                    bgClearTimer(state.runnerTimer);
                     state.runnerTimer = 0;
                 }
                 if (runner.last_error) {
                     els.startStatus.classList.toggle('error', true);
                     if (!rows.length) els.startStatus.innerText = runner.last_error;
+                    if (state.devEnabled) {
+                        state.consecutiveRunnerFails++;
+                        if (state.consecutiveRunnerFails >= 3) {
+                            if (!rows.length) els.startStatus.innerText = runner.last_error + " (Auto-retry disabled due to loop)";
+                            setDevEnabled(false, { persist: true });
+                        }
+                    }
+                } else if (state.devEnabled && runner.finished && !runner.last_error) {
+                    state.consecutiveRunnerFails = 0;
+                    els.startStatus.classList.toggle('error', false);
+                    if (!rows.length) els.startStatus.innerText = `Career finished! Restarting...`;
+                    if (state.account && state.account.career) state.account.career.active = false;
+                    renderAccountStrip(state.account);
                 } else if (runner.steps) {
                     els.startStatus.classList.toggle('error', false);
                     if (!rows.length) els.startStatus.innerText = `Runner stopped after ${runner.steps} steps`;
+                    if (state.devEnabled) {
+                        state.consecutiveRunnerFails++;
+                        if (state.consecutiveRunnerFails >= 3) {
+                            if (!rows.length) els.startStatus.innerText = `Runner stopped after ${runner.steps} steps (Auto-retry disabled due to loop)`;
+                            setDevEnabled(false, { persist: true });
+                        }
+                    }
                 }
             } catch (e) {}
         }
@@ -1452,10 +1517,50 @@ const els = {
             }
             return row;
         }
+        const timerWorkerBlob = new Blob([`
+            let activeTimers = {};
+            self.onmessage = function(e) {
+                const { action, id, ms } = e.data;
+                if (action === 'setInterval') {
+                    activeTimers[id] = setInterval(() => postMessage({ id }), ms);
+                } else if (action === 'setTimeout') {
+                    activeTimers[id] = setTimeout(() => {
+                        postMessage({ id });
+                        delete activeTimers[id];
+                    }, ms);
+                } else if (action === 'clear') {
+                    clearInterval(activeTimers[id]);
+                    clearTimeout(activeTimers[id]);
+                    delete activeTimers[id];
+                }
+            };
+        `], {type: 'application/javascript'});
+        const timerWorker = new Worker(URL.createObjectURL(timerWorkerBlob));
+        let nextTimerId = 1;
+        const timerCallbacks = {};
+        timerWorker.onmessage = function(e) {
+            if (timerCallbacks[e.data.id]) timerCallbacks[e.data.id]();
+        };
+        function bgSetInterval(cb, ms) {
+            const id = nextTimerId++;
+            timerCallbacks[id] = cb;
+            timerWorker.postMessage({ action: 'setInterval', id, ms });
+            return id;
+        }
+        function bgSetTimeout(cb, ms) {
+            const id = nextTimerId++;
+            timerCallbacks[id] = () => { delete timerCallbacks[id]; cb(); };
+            timerWorker.postMessage({ action: 'setTimeout', id, ms });
+            return id;
+        }
+        function bgClearTimer(id) {
+            delete timerCallbacks[id];
+            timerWorker.postMessage({ action: 'clear', id });
+        }
         function startRunnerPolling() {
-            if (state.runnerTimer) window.clearInterval(state.runnerTimer);
+            if (state.runnerTimer) bgClearTimer(state.runnerTimer);
             refreshRunnerStatus();
-            state.runnerTimer = window.setInterval(refreshRunnerStatus, 1500);
+            state.runnerTimer = bgSetInterval(refreshRunnerStatus, 1500);
         }
         els.friendRefreshBtn.addEventListener('click', event => {
             event.stopPropagation();

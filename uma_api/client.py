@@ -3,7 +3,7 @@ import json
 import os
 import time
 import uuid
-import requests
+from curl_cffi import requests
 import hashlib
 import random
 import struct
@@ -232,11 +232,6 @@ def get_ip():
 def get_hwid(seed_string="default"):
     guid = str(uuid.uuid4()).lower()
     
-    node = uuid.getnode()
-    if not node:
-        raise RuntimeError("Failed to retrieve stable hardware identity (MAC). Refusing to start.")
-    device_id = hashlib.sha1(f"uma_{node}".encode()).hexdigest()
-
     if platform.system() != "Windows":
         raise RuntimeError(f"Unsupported OS: {platform.system()}. Only Windows is supported for HWID consistency.")
     
@@ -246,10 +241,27 @@ def get_hwid(seed_string="default"):
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"HARDWARE\DESCRIPTION\System\BIOS") as bios_key:
             device_name, _ = winreg.QueryValueEx(bios_key, "SystemProductName")
             device_name = str(device_name).strip()
+            try:
+                board_mfg, _ = winreg.QueryValueEx(bios_key, "BaseBoardManufacturer")
+                if board_mfg:
+                    device_name = f"{device_name} ({str(board_mfg).strip()})"
+            except OSError:
+                pass
         if not device_name:
             raise RuntimeError("System product name returned empty. Refusing to start.")
+            
+        machine_guid = ""
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography") as crypto_key:
+                machine_guid, _ = winreg.QueryValueEx(crypto_key, "MachineGuid")
+        except OSError:
+            pass
+            
     except Exception as e:
         raise RuntimeError(f"Failed to fetch system product name: {e}. Refusing to start.")
+
+    hardware_string = f"{device_name}_{machine_guid}_{seed_string}"
+    device_id = hashlib.sha1(hardware_string.encode()).hexdigest()
 
     return {
         'device_name': device_name,
@@ -453,12 +465,21 @@ class UmaClient:
         )
 
     def refresh_cached_account_state(self, data):
-        self.cached_load_data = data or {}
-        self.tp_info = self.cached_load_data.get('tp_info') or {}
-        self.coin_info = self.cached_load_data.get('coin_info') or {}
-        self.item_map = {}
-        for item in self.cached_load_data.get('item_list', []) or []:
-            self.item_map[item.get('item_id', 0)] = item.get('number', 0)
+        if not data:
+            return
+        self.cached_load_data.update(data)
+        if data.get('tp_info'):
+            self.tp_info = data['tp_info']
+        if data.get('coin_info'):
+            self.coin_info = data['coin_info']
+
+        item_list = data.get('user_item') or data.get('user_item_array') or data.get('item_list')
+        if isinstance(item_list, list):
+            for item in item_list:
+                iid = item.get('item_id')
+                num = item.get('number')
+                if iid is not None and num is not None:
+                    self.item_map[int(iid)] = int(num)
 
     def regen_sid(self):
         self.sid = make_sid(self.viewer_id, self.udid_str)
@@ -504,6 +525,21 @@ class UmaClient:
         req_id = str(uuid.uuid4())[:8]
         payload = args or {}
         payload.update(self.common())
+        
+        if ep == 'single_mode_free/race_out':
+            click_x = int(random.gauss(9913872, 638182))
+            click_y = int(random.gauss(1462394, 341199))
+            click_ts = int(time.time())
+            btn = {
+                "ViewerId": self.viewer_id,
+                "DeviceId": 4,
+                "ScenarioId": 4,
+                "ClickPosX": click_x,
+                "ClickPosY": click_y,
+                "ClickServerTime": click_ts
+            }
+            payload['button_info'] = json.dumps(btn, separators=(',', ':'))
+
         body = pack(self.sid, get_raw_udid(self.udid_str), self.auth_bytes(), payload, self.udid_str)
         headers = {
             'SID': self.sid.hex(), 'Device': '4', 'ViewerID': str(self.viewer_id),
@@ -542,6 +578,10 @@ class UmaClient:
         
         data = res.get('data', {})
         if isinstance(data, dict):
+            if data.get('tp_info'):
+                self.tp_info = data['tp_info']
+            if data.get('coin_info'):
+                self.coin_info = data['coin_info']
             item_list = data.get('user_item') or data.get('user_item_array')
             if isinstance(item_list, list):
                 for item in item_list:
@@ -564,11 +604,13 @@ class UmaClient:
                 return self.call(ep, args, retry_208=retry_208, retry_205=retry_205 - 1)
 
             if rc == 208 and retry_208 > 0:
-                if retry_208 < 6:
-                    print(f"API error 208 (DOUBLE_CLICK_ERROR) on {ep}, sleeping and retrying... (attempts left: {retry_208-1})")
-                time.sleep(max(0.17, min(0.36, random.gauss(0.265, 0.031))))
-                return self.call(ep, args, retry_208=retry_208 - 1)
+                if ep in {"single_mode_free/gain_skills", "single_mode_free/multi_item_exchange", "single_mode_free/multi_item_use"}:
+                    return res
 
+                if retry_208 < 6:
+                    print(f"API error 208 (SERVER BUSY) on {ep}, sleeping and retrying... (attempts left: {retry_208-1})")
+                    time.sleep(max(0.17, min(0.36, random.gauss(0.265, 0.031))))
+                return self.call(ep, args, retry_208=retry_208 - 1)
             err_detail = format_api_error(ep, rc, res)
             err_msg = f'API error {rc} on {ep}: {err_detail}'
             if not (rc == 102 and ep in {"single_mode_free/race_end", "single_mode_free/race_out"}):
@@ -661,6 +703,21 @@ class UmaClient:
                     time.sleep(5)
                     continue
                 raise
+
+    def recovery_tp(self, count=1):
+        total_jewels = self.coin_info.get("fcoin", 0) + self.coin_info.get("coin", 0)
+        result = self.call("user/recovery_trainer_point", {
+            "count": count,
+            "client_own_num": total_jewels,
+        })
+        data = result.get("data", {})
+        tp = data.get("tp_info", {})
+        if tp:
+            self.tp_info = tp
+        coin = data.get("coin_info", {})
+        if coin:
+            self.coin_info = coin
+        return tp
 
     def read_info(self):
         return self.call('read_info/index', {

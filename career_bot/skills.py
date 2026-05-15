@@ -1,14 +1,10 @@
 import json
 import re
 from pathlib import Path
-
-# Skill Markers
-MARK_WHITE_CIRCLE = "○"  # U+25CB
-MARK_DOUBLE_CIRCLE = "◎" # U+25CE
-MARK_X = "×"             # U+00D7
-MARK_LARGE_CIRCLE = "◯"  # U+25EF
-
-# Mojibake variants found in logs/source
+MARK_WHITE_CIRCLE = "○"
+MARK_DOUBLE_CIRCLE = "◎"
+MARK_X = "×"
+MARK_LARGE_CIRCLE = "◯"
 MOJI_WHITE_CIRCLE = "â—‹"
 MOJI_LARGE_CIRCLE = "â—¯"
 MOJI_DOUBLE_CIRCLE = "â—Ž"
@@ -106,7 +102,6 @@ class SkillBuyer:
         for group_id, ids in self.group_to_skill_ids.items():
             children = [sid for sid in ids if sid >= 100000]
             if children:
-                # Exclude the 5-digit parent group ID if 6-digit children exist
                 self.group_to_skill_ids[group_id] = sorted(children, key=self._tier_sort_key)
             else:
                 self.group_to_skill_ids[group_id] = sorted(ids, key=self._tier_sort_key)
@@ -176,8 +171,6 @@ class SkillBuyer:
         points = int(chara.get("skill_point") or 0)
         turn = int(chara.get("turn") or 0)
         self._set_turn(turn)
-        
-        # Increase aggression if SP is very high
         is_hoarding = points > 1500
         threshold = int(preset.get("learn_skill_threshold") or 444)
         if not force and not is_hoarding and points <= threshold:
@@ -196,7 +189,6 @@ class SkillBuyer:
 
         candidates = self._candidates(chara, preset)
         if force and not candidates:
-            # At the end, try to buy ANY unknown skill if we have points
             candidates = self._candidates(chara, {**preset, "learn_skill_only_user_provided": False})
 
         self.last_candidates = [dict(item) for item in candidates]
@@ -392,7 +384,6 @@ class SkillBuyer:
             row["skip_reason"] = "unknown_master"
             return row
             
-        # Double circle rule
         is_double = name.endswith(MARK_DOUBLE_CIRCLE) or name.endswith(MOJI_DOUBLE_CIRCLE)
         if preset.get("skip_double_circle_unless_high_hint", False) and is_double and hint_level < 4:
             row["skip_reason"] = "rule_rejected"
@@ -493,7 +484,6 @@ class SkillBuyer:
             print(f"Skill Purchase Error at turn {turn}: {exc}")
             if any(code in str(exc) for code in ("201", "205", "208")):
                 self.recover_after_error = True
-                # Refresh state immediately to get true SP count
                 try:
                     fresh_state = client.load_career()
                     if fresh_state:
@@ -527,3 +517,4 @@ class SkillBuyer:
             if not base:
                 base = 200 if self.skill_rarities.get(skill_id, 0) >= 2 else 160
         return max(1, int(base * (100 - min(level, 5) * 10) / 100))
+

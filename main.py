@@ -11,6 +11,7 @@ import random
 import subprocess
 import time
 import sys
+import threading
 import frida
 from career_bot import master_data
 from career_bot.presets import PresetStore
@@ -70,7 +71,8 @@ JS_CODE = r'''
             auth_key: authHex,
             auth_key_len: authHex.length / 2,
             app_ver: appVer,
-            res_ver: resVer
+            res_ver: resVer,
+            body: body
         });
     }
     function parseHttp(text) {
@@ -256,27 +258,50 @@ def get_turn_delay():
 
 GLOBAL_SESSION_JITTER = random.uniform(-0.08, 0.08)
 
-def wait_for_game_turn_delay(delay_type="turn"):
-    range_span = turn_delay_max_sec - turn_delay_min_sec
-    mu = ((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)
-    sigma = range_span / 6.0
-    roll = random.gauss(mu, sigma)
-    roll = max(turn_delay_min_sec, min(turn_delay_max_sec, roll))
+def wait_for_game_turn_delay(delay_type="turn", endpoint=None):
+    if turn_delay_disabled:
+        return
+
+    import math
+    import random
 
     if delay_type == "api":
-        multiplier = 0.2
-        label = "API"
+        target_mean = 0.75
+        
+        if endpoint:
+            anim_endpoints = ["check_event", "exec_event", "race_end", "exec_command", "race_out", "race_start", "multi_item_use"]
+            if any(endpoint.endswith(ep) for ep in anim_endpoints):
+                target_mean = 2.5
+                
+        target_mean += (GLOBAL_SESSION_JITTER * 0.2)
+        target_mean = max(0.1, target_mean)
+        sigma = 0.4
+        mu = math.log(target_mean) - (sigma**2) / 2.0
+        roll = random.lognormvariate(mu, sigma)
+        seconds = min(target_mean * 3.0, max(0.1, roll))
+        label = f"API({target_mean:.1f}s)"
     elif delay_type == "complex":
-        multiplier = 2.0
+        range_span = turn_delay_max_sec - turn_delay_min_sec
+        target_mean = ((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)
+        target_mean = max(0.1, target_mean) * 2.0
+        sigma = 0.6
+        mu = math.log(target_mean) - (sigma**2) / 2.0
+        roll = random.lognormvariate(mu, sigma)
+        seconds = min(turn_delay_max_sec * 8.0, max(turn_delay_min_sec * 0.4, roll))
         label = "COMPLEX"
     else:
-        multiplier = 1.0
+        range_span = turn_delay_max_sec - turn_delay_min_sec
+        target_mean = ((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)
+        target_mean = max(0.1, target_mean)
+        sigma = 0.6
+        mu = math.log(target_mean) - (sigma**2) / 2.0
+        roll = random.lognormvariate(mu, sigma)
+        seconds = min(turn_delay_max_sec * 4.0, max(turn_delay_min_sec * 0.2, roll))
         label = "TURN"
-        
-    seconds = roll * multiplier
+
     if seconds <= 0:
         return
-        
+
     print(f"{label}: {seconds:.3f}s", flush=True)
     time.sleep(seconds)
 
@@ -285,7 +310,7 @@ def attach_turn_delay(client):
         return client
     original_call = client.call
     def delayed_call(ep, args=None, **kwargs):
-        wait_for_game_turn_delay(delay_type="api")
+        wait_for_game_turn_delay(delay_type="api", endpoint=ep)
         return original_call(ep, args, **kwargs)
     client.call = delayed_call
     client.wait_turn_delay = lambda: wait_for_game_turn_delay(delay_type="turn")
@@ -550,7 +575,6 @@ def get_factors(fid_array, owner_card_id=None):
 
 
 def get_chara_factor_ids(chara):
-    """Prefer the trained character spark array; factor_info_array can describe other factor metadata."""
     factor_ids = chara.get('factor_id_array')
     if isinstance(factor_ids, list) and factor_ids:
         return factor_ids
@@ -565,11 +589,15 @@ def get_item_count(item_list, item_id):
 
 
 def get_account_status(data, career_data=None):
-    tp_info = data.get('tp_info') or {}
-    coin_info = data.get('coin_info') or {}
-    item_list = data.get('item_list') or data.get('user_item_array') or []
+    tp_info = data.get('tp_info') or (active_client.tp_info if active_client else {})
+    coin_info = data.get('coin_info') or (active_client.coin_info if active_client else {})
+    item_list = data.get('item_list') or data.get('user_item_array')
+    if item_list is None:
+        gold = active_client.item_map.get(59, 0) if active_client else 0
+    else:
+        gold = get_item_count(item_list, 59)
     career = data.get('single_mode_chara_light') or None
-    
+
     if career_data:
         career_payload = career_data.get('data') if career_data.get('data') else career_data
         if career_payload.get('chara_info'):
@@ -585,11 +613,10 @@ def get_account_status(data, career_data=None):
             "paid": coin_info.get('coin', 0) or 0,
             "total": (coin_info.get('fcoin', 0) or 0) + (coin_info.get('coin', 0) or 0)
         },
-        "gold": get_item_count(item_list, 59),
+        "gold": gold,
         "clocks": active_client.item_map.get(95, 0) if active_client else 0,
         "career": None
     }
-
     if career:
         card_id = str(career.get('card_id', ''))
         
@@ -705,6 +732,7 @@ class RunCareerRequest(BaseModel):
     preset_name: str = ""
     max_steps: int = 2500
     burn_clocks: bool = False
+    dev_mode: bool = False
 
 class SaveRacesRequest(BaseModel):
     races: list[int]
@@ -786,6 +814,7 @@ async def delete_preset(req: DeletePresetByNameRequest):
     return {"success": preset_store.delete(req.name)}
 
 def start_career_from_request(req):
+    global active_account, active_dashboard_data
     if not active_client:
         return {"success": False, "detail": "Not logged in"}
     if not req.friend_viewer_id or not req.friend_card_id:
@@ -793,6 +822,19 @@ def start_career_from_request(req):
     selection_error = validate_start_selection(req)
     if selection_error:
         return {"success": False, "detail": selection_error}
+        
+    try:
+        res = active_client.read_info()
+        data = res.get('data', {})
+        active_client.refresh_cached_account_state(data)
+        update_start_state(data)
+        if active_account:
+            active_account = get_account_status(data)
+            if active_dashboard_data:
+                active_dashboard_data["account"] = active_account
+    except Exception:
+        pass
+        
     if not active_start_state.get('tp_info'):
         return {"success": False, "detail": "Missing live TP state; login again before starting career"}
     if 'current_money' not in active_start_state:
@@ -801,9 +843,35 @@ def start_career_from_request(req):
     tp_info = active_start_state['tp_info']
     current_tp = int(tp_info.get('current_tp') or 0)
     if req.use_tp and current_tp < req.use_tp:
+        for attempt in range(3):
+            try:
+                needed = ((req.use_tp - current_tp) + 29) // 30
+                active_client.recovery_tp(needed)
+                tp_info = active_client.tp_info
+                active_start_state['tp_info'] = tp_info
+                current_tp = int(tp_info.get('current_tp') or 0)
+                if current_tp >= req.use_tp:
+                    break
+            except Exception as e:
+                if "213" in str(e):
+                    try:
+                        res = active_client.call("load/index", {"adid": ""})
+                        active_client.refresh_cached_account_state(res.get("data", {}))
+                    except Exception:
+                        pass
+                time.sleep(1)
+
+    if req.use_tp and current_tp < req.use_tp:
         return {"success": False, "detail": f"Not enough TP: {current_tp}/{req.use_tp}"}
     current_money = active_start_state['current_money']
     succession_rank_point = selected_succession_rank_point(req)
+
+    try:
+        active_client.pre_single_mode([req.friend_viewer_id] if req.friend_viewer_id else [])
+        time.sleep(random.uniform(0.5, 1.5))
+    except Exception:
+        pass
+
     result = active_client.start_career(
         card_id=req.card_id,
         support_card_ids=req.support_card_ids,
@@ -853,8 +921,7 @@ async def login(req: LoginRequest):
     from uma_api.client import UmaClient, get_ticket
     global active_client, active_account, active_dashboard_data, active_start_state, active_parent_cards, active_parent_rank_points, pending_game_auth_config, raw_load_index_response, active_selection
     try:
-        # One-shot in-game account auth captured from the game process.
-        # Do not reuse it across login attempts or account switches.
+        chara = None
         cfg = dict(pending_game_auth_config)
         pending_game_auth_config = {}
 
@@ -1101,11 +1168,74 @@ async def start_career(req: StartCareerRequest):
     except Exception as e:
         return {"success": False, "detail": str(e)}
 
+backend_loop_thread = None
+backend_loop_stop = False
+
+def manage_career_loop(req, preset, initial_result):
+    global backend_loop_stop, active_account, active_client
+    max_steps = max(1, min(int(req.max_steps or 2500), 3000))
+    consecutive_fails = 0
+    current_result = initial_result
+    
+    while not backend_loop_stop:
+        career_runner.start(active_client, preset, current_result, max_steps, burn_clocks=req.burn_clocks, dev_mode=req.dev_mode)
+        
+        while career_runner.snapshot().get("running"):
+            if backend_loop_stop:
+                career_runner.stop()
+                return
+            time.sleep(1)
+            
+        status = career_runner.snapshot()
+        if status.get("last_error"):
+            consecutive_fails += 1
+            if consecutive_fails >= 3:
+                break
+        else:
+            consecutive_fails = 0
+            
+        if not req.dev_mode:
+            break
+            
+        for _ in range(5):
+            if backend_loop_stop:
+                return
+            time.sleep(1)
+        started_ok = False
+        while not started_ok and not backend_loop_stop:
+            try:
+                started = start_career_from_request(req)
+                if not started.get("success"):
+                    consecutive_fails += 1
+                    if consecutive_fails >= 3:
+                        break
+                    for _ in range(5):
+                        if backend_loop_stop:
+                            return
+                        time.sleep(1)
+                    continue
+                current_result = started["result"]
+                account, chara_info = apply_career_result(current_result)
+                active_account = account
+                started_ok = True
+                consecutive_fails = 0
+            except Exception as e:
+                consecutive_fails += 1
+                if consecutive_fails >= 3:
+                    break
+                for _ in range(5):
+                    if backend_loop_stop:
+                        return
+                    time.sleep(1)
+
+        if not started_ok:
+            break
+
 @app.post("/api/career/run")
 async def run_career(req: RunCareerRequest):
-    global active_account
-    if career_runner.snapshot().get("running"):
-        return {"success": False, "detail": "Career runner already active"}
+    global active_account, backend_loop_thread
+    if career_runner.snapshot().get("running") or (backend_loop_thread and backend_loop_thread.is_alive()):
+        return {"success": False, "detail": "Career runner loop already active"}
     preset = preset_store.read_one("xguri parent")
     if not preset:
         return {"success": False, "detail": "xguri parent preset missing"}
@@ -1117,7 +1247,12 @@ async def run_career(req: RunCareerRequest):
             index_result = active_client.call('load/index')
             load_data = index_result.get('data', {})
             update_start_state(load_data)
-            
+
+            account = get_account_status(load_data)
+            active_account = account
+            career = account.get("career") or {}
+
+        if career.get("active"):
             career_result = active_client.load_career()
             career_data = career_result.get('data', {})
             
@@ -1135,7 +1270,15 @@ async def run_career(req: RunCareerRequest):
             account, chara_info = apply_career_result(result)
 
         apply_deck_type_counts(preset, req=req, chara_info=chara_info)
-        career_runner.start(active_client, preset, result, max(1, min(int(req.max_steps or 2500), 3000)), burn_clocks=req.burn_clocks)
+        
+        if req.dev_mode:
+            backend_loop_stop = False
+            backend_loop_thread = threading.Thread(target=manage_career_loop, args=(req, preset, result), daemon=True)
+            backend_loop_thread.start()
+            time.sleep(0.5)
+        else:
+            career_runner.start(active_client, preset, result, max(1, min(int(req.max_steps or 2500), 3000)), burn_clocks=req.burn_clocks, dev_mode=req.dev_mode)
+            
         return {"success": True, "account": account, "chara_info": chara_info, "runner": career_runner.snapshot()}
     except Exception as e:
         return {"success": False, "detail": str(e)}
@@ -1146,6 +1289,8 @@ async def career_runner_status():
 
 @app.post("/api/career/runner/stop")
 async def stop_career_runner():
+    global backend_loop_stop
+    backend_loop_stop = True
     career_runner.stop()
     return {"success": True, "runner": career_runner.snapshot()}
 
@@ -1218,9 +1363,11 @@ async def career_action(req: CareerActionRequest):
 
 @app.post("/api/career/delete")
 async def delete_career(req: DeleteCareerRequest):
-    global active_client, active_account, active_dashboard_data
+    global active_client, active_account, active_dashboard_data, backend_loop_thread
     if not active_client:
         return {"success": False, "detail": "Not logged in"}
+    if career_runner.snapshot().get("running") or (backend_loop_thread and backend_loop_thread.is_alive()):
+        return {"success": False, "detail": "Cannot delete career while runner is active"}
 
     try:
         account = active_account or {}
@@ -1477,6 +1624,14 @@ def refresh_auth_before_serving(timeout_sec=None):
 if __name__ == "__main__":
     import sys
     import uvicorn
+
+    requirements_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
+    if os.path.exists(requirements_path):
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", requirements_path, "--quiet"])
+        except Exception:
+            pass
+
     try:
         subprocess.run(["git", "pull"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception:

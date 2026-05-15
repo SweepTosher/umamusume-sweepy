@@ -236,7 +236,6 @@ body.dashboard-mode {
   margin-left: 1.5rem;
 }
 
-/* --- Cyber Stat Blocks --- */
 .account-strip {
   display: none;
   align-items: center;
@@ -285,7 +284,6 @@ body.dashboard-mode .account-strip {
   line-height: 1;
 }
 
-/* --- Color Coding --- */
 .pill-tp {
   border-left-color: #00f2ff;
   text-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
@@ -332,7 +330,7 @@ body.dashboard-mode .account-strip {
   background: rgba(var(--accent-primary-rgb), 0.2);
 }
 
-/* --- Controls Area --- */
+
 .turn-delay-control {
   display: none;
   align-items: center;
@@ -389,25 +387,29 @@ body.dashboard-mode .turn-delay-control {
   transition: all 0.15s;
 }
 #tempt-fate-btn,
-#burn-clocks-btn {
+#burn-clocks-btn,
+#dev-career-btn {
   background: rgba(0, 255, 127, 0.05);
   border: 1px solid rgba(0, 255, 127, 0.4);
   color: #00ff7f;
 }
 #tempt-fate-btn:hover,
-#burn-clocks-btn:hover {
+#burn-clocks-btn:hover,
+#dev-career-btn:hover {
   background: rgba(0, 255, 127, 0.1);
   border-color: #00ff7f;
 }
 #tempt-fate-btn.is-active,
-#burn-clocks-btn.is-active {
+#burn-clocks-btn.is-active,
+#dev-career-btn.is-active {
   background: rgba(255, 0, 0, 0.2);
   border-color: #ff0000;
   color: #fff;
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }
 #tempt-fate-btn.is-active:hover,
-#burn-clocks-btn.is-active:hover {
+#burn-clocks-btn.is-active:hover,
+#dev-career-btn.is-active:hover {
   background: rgba(255, 0, 0, 0.3);
   box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
 }

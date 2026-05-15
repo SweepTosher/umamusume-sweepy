@@ -52,12 +52,14 @@ class MantStrategy(ScenarioStrategy):
             if choice is None:
                 payload = {"event_id": event.get("event_id"), "_event": event, "_current_turn": chara.get("turn", 1)}
             return Decision("event", payload, "event")
+        if chara.get("state") == 3:
+            return Decision("finish", {"current_turn": chara.get("turn", 78)}, "ready to finish")
         race = data.get("race_start_info")
         playing_state = (chara.get("playing_state") or 0)
         if playing_state == 3:
             return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "start", "race_start_info": race, "chara_info": chara}, "resume race start")
         if playing_state == 5:
-            return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "end", "chara_info": chara}, "resume race out")
+            return Decision("finish", {"current_turn": chara.get("turn", 78)}, "goal failed / career end")     
         if race and race.get("program_id") and playing_state in (2, 4):
             return Decision("race_progress", {"current_turn": chara.get("turn", 1), "phase": "start", "race_start_info": race, "chara_info": chara}, "race start")
         if self.race_planner:

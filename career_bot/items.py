@@ -285,10 +285,10 @@ class MantItemManager:
         current = state
         current, bought = self.buy_shop_items(client, current, preset, race_planner)
         if bought > 0 or self.recover_after_exchange_error:
-            current = self._reload_career(client, current, "buy")
+            current = self._reload_career(client, current, "buy", getattr(self, "last_buy_result", None))
         current, used = self.use_items(client, current, preset, best_command, status, race_planner)
         if used > 0 or self.recover_after_use_error:
-            current = self._reload_career(client, current, "use")
+            current = self._reload_career(client, current, "use", getattr(self, "last_use_result", None))
         return current, bought, used
 
     def handle_pre_race(self, client, state, preset, payload, status=None, race_planner=None):
@@ -363,7 +363,7 @@ class MantItemManager:
                 if hasattr(client, "wait_complex_delay"):
                     client.wait_complex_delay()
                 self.last_pre_race_use_result = client.use_items(use_payload, turn)
-                current = self._reload_career(client, current, "pre_race_gear")
+                current = self._reload_career(client, current, "pre_race_gear", getattr(self, "last_pre_race_use_result", None))
                 event["result"] = self.last_pre_race_use_result
                 return current, instant_used + len(use_payload)
             except Exception as exc:
@@ -858,13 +858,21 @@ class MantItemManager:
             event["result"] = self.last_use_result
             return state, 0
 
-    def _reload_career(self, client, state, reason):
+    def _reload_career(self, client, state, reason, res=None):
+        if res and isinstance(res, dict) and "data" in res:
+            if not state: state = {}
+            if "data" not in state: state["data"] = {}
+            for k, v in res["data"].items():
+                if isinstance(v, dict) and isinstance(state["data"].get(k), dict):
+                    state["data"][k].update(v)
+                else:
+                    state["data"][k] = v
+            return state
         try:
             if hasattr(client, "load_career"):
                 return client.load_career()
             return client.call("single_mode_free/load", {})
         except Exception as e:
-            print(f"Item Manager reload failure after {reason}: {e}")
             return state
 
     def _is_instant_stat_item(self, name):

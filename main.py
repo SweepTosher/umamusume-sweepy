@@ -307,7 +307,7 @@ def wait_for_game_turn_delay(delay_type="turn", endpoint=None):
     if seconds <= 0:
         return
 
-    print(label, flush=True)
+    print(f"{label}: {seconds:.3f}s", flush=True)
     time.sleep(seconds)
 
 def attach_turn_delay(client):

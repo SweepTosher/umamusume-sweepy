@@ -503,24 +503,12 @@ class UmaClient:
         })
 
     def call(self, ep, args=None, retry_208=6, retry_205=3):
-        sensitive_endpoints = {
-            'single_mode_free/exec_command',
-            'single_mode_free/gain_skills',
-            'single_mode_free/multi_item_use',
-            'single_mode_free/multi_item_exchange',
-            'single_mode_free/race_start',
-            'single_mode_free/race_end',
-            'single_mode_free/check_event',
-            'single_mode_free/load'
-        }
-
-        if ep in sensitive_endpoints:
-            if not hasattr(self, '_last_call_ts'):
-                self._last_call_ts = 0
-            elapsed = time.time() - self._last_call_ts
-            if elapsed < 0.17:
-                time.sleep(0.17 - elapsed)
-            self._last_call_ts = time.time()
+        if not hasattr(self, '_last_raw_call_ts'):
+            self._last_raw_call_ts = 0
+        elapsed = time.time() - self._last_raw_call_ts
+        if elapsed < 0.14:
+            time.sleep(0.14 - elapsed)
+        self._last_raw_call_ts = time.time()
 
         req_id = str(uuid.uuid4())[:8]
         payload = args or {}
@@ -559,7 +547,7 @@ class UmaClient:
             except Exception as e:
                 print(f"[API] Request failed (attempt {attempt+1}/{max_retries}): {e}")
                 if attempt < max_retries - 1:
-                    time.sleep(1.0)
+                    time.sleep(0.83)
                     continue
                 self.api_log("ERR", ep, {"error": str(e)}, req_id)
                 raise Exception(f'Network error on {ep}: {e}')
@@ -600,7 +588,7 @@ class UmaClient:
         if rc != 1:
             if rc == 205 and retry_205 > 0:
                 print(f"205 on {ep}, retrying... ({retry_205} left)")
-                time.sleep(max(0.17, min(0.23, random.gauss(0.20, 0.01))))
+                time.sleep(max(0.14, min(0.19, random.gauss(0.166, 0.0083))))
                 return self.call(ep, args, retry_208=retry_208, retry_205=retry_205 - 1)
 
             if rc == 208 and retry_208 > 0:
@@ -609,7 +597,7 @@ class UmaClient:
 
                 if retry_208 < 6:
                     print(f"API error 208 (SERVER BUSY) on {ep}, sleeping and retrying... (attempts left: {retry_208-1})")
-                    time.sleep(max(0.17, min(0.36, random.gauss(0.265, 0.031))))
+                    time.sleep(max(0.14, min(0.30, random.gauss(0.22, 0.026))))
                 return self.call(ep, args, retry_208=retry_208 - 1)
             err_detail = format_api_error(ep, rc, res)
             err_msg = f'API error {rc} on {ep}: {err_detail}'
@@ -658,7 +646,7 @@ class UmaClient:
     def signup(self):
         self.regen_sid()
         self.call('tool/pre_signup')
-        time.sleep(1)
+        time.sleep(0.83)
         self.regen_sid()
         res = self.call('tool/signup', {
             'error_code': 0, 'error_message': '', 'attestation_type': 0, 
@@ -694,13 +682,13 @@ class UmaClient:
             except Exception as e:
                 err = str(e)
                 if '709' in err and attempt < max_retries:
-                    time.sleep(1)
+                    time.sleep(0.83)
                     continue
                 if '394' in err and attempt < max_retries:
-                    time.sleep(3)
+                    time.sleep(2.5)
                     continue
                 if '202' in err and attempt < max_retries:
-                    time.sleep(5)
+                    time.sleep(4.15)
                     continue
                 raise
 

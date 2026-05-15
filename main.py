@@ -194,9 +194,9 @@ active_selection = {
     "trainee": None,
     "veterans": []
 }
-turn_delay_min_sec = 3.0
+turn_delay_min_sec = 2.5
 turn_delay_max_sec = 5.0
-turn_delay_restore_min_sec = 3.0
+turn_delay_restore_min_sec = 2.5
 turn_delay_restore_max_sec = 5.0
 turn_delay_disabled = False
 preset_store = PresetStore(DIR)
@@ -261,65 +261,120 @@ def get_turn_delay():
         "disabled": turn_delay_disabled
     }
 
+import hashlib
+import uuid
+
+_mac_seed = str(uuid.getnode()).encode('utf-8')
+_m_hash = int(hashlib.md5(_mac_seed).hexdigest()[:8], 16)
+_m_rng = random.Random(_m_hash)
+_T_M = [_m_rng.uniform(0.85, 1.15) for _ in range(7)]
+_S_M = [_m_rng.uniform(0.9, 1.1) for _ in range(7)]
+_C_P = random.uniform(2160, 2520)
+
 GLOBAL_SESSION_JITTER = random.uniform(-0.08, 0.08)
 
 def wait_for_game_turn_delay(delay_type="turn", endpoint=None):
     if turn_delay_disabled:
-        return
+        return 0.0
 
     import math
     import random
+    import time
+    
+    cycle_time = time.time() % _C_P
+    fatigue = 1.0 + (math.sin((cycle_time / _C_P) * math.pi * 2) * 0.15)
 
     if delay_type == "api":
-        target_mean = 0.75
-        
+        target_mean = 0.6
+        sigma = 0.5
+        max_cap = 8.0
+        min_cap = 0.1
+
         if endpoint:
-            anim_endpoints = ["check_event", "exec_event", "race_end", "exec_command", "race_out", "race_start", "multi_item_use"]
-            if any(endpoint.endswith(ep) for ep in anim_endpoints):
-                target_mean = 2.5
-                
-        target_mean += (GLOBAL_SESSION_JITTER * 0.2)
-        target_mean = max(0.1, target_mean)
-        sigma = 0.4
+            if any(endpoint.endswith(ep) for ep in ["tool/pre_signup", "tool/start_session"]):
+                seconds = random.uniform(0.011, 0.021)
+                return seconds
+            elif any(endpoint.endswith(ep) for ep in ["race_entry", "read_info/index"]):
+                target_mean = 0.05 * _T_M[1]
+                sigma = 0.3 * _S_M[1]
+                min_cap = 0.025
+                max_cap = 0.1
+            elif any(endpoint.endswith(ep) for ep in ["check_event", "continue", "race_end", "race_out", "minigame_end", "mission/receive", "start_career"]):
+                target_mean = 1.5 * _T_M[2]
+                sigma = 0.55 * _S_M[2]
+                min_cap = 0.2
+                max_cap = 4.6
+            elif any(endpoint.endswith(ep) for ep in ["load/index", "home/index", "single_mode_free/load", "single_mode_free/start", "tool/signup", "user/recovery_trainer_point"]):
+                target_mean = 3.6 * _T_M[3]
+                sigma = 0.6 * _S_M[3]
+                min_cap = 0.7
+                max_cap = 18.0
+            elif any(endpoint.endswith(ep) for ep in ["exec_command", "race_start", "reserve_race", "finish_career", "finish", "single_mode_free/pre", "pre_single_mode/index"]):
+                target_mean = 4.0 * _T_M[4]
+                sigma = 0.65 * _S_M[4]
+                min_cap = 1.0
+                max_cap = 19.3
+            elif any(endpoint.endswith(ep) for ep in ["multi_item_use", "multi_item_exchange", "exchange/item", "support_card/enhance", "friend/add"]):
+                target_mean = 7.0 * _T_M[5]
+                sigma = 0.7 * _S_M[5]
+                min_cap = 3.1
+                max_cap = 17.0
+            elif any(endpoint.endswith(ep) for ep in ["gain_skills", "chara/nickname", "chara/talent", "item/use", "team/evaluation"]):
+                target_mean = 30.0 * _T_M[6]
+                sigma = 0.8 * _S_M[6]
+                min_cap = 6.0
+                max_cap = 75.0
+
+        target_mean *= fatigue
+        target_mean += (GLOBAL_SESSION_JITTER * (target_mean * 0.5))
+        target_mean = max(0.01, target_mean)
+        
         mu = math.log(target_mean) - (sigma**2) / 2.0
         roll = random.lognormvariate(mu, sigma)
-        seconds = min(target_mean * 3.0, max(0.1, roll))
-        label = "API"
+        seconds = min(max_cap, max(min_cap, roll))
+        return seconds
+        
     elif delay_type == "complex":
         range_span = turn_delay_max_sec - turn_delay_min_sec
-        target_mean = ((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)
+        target_mean = (((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)) * _T_M[0]
         target_mean = max(0.1, target_mean) * 2.0
-        sigma = 0.6
+        sigma = 1.1 * _S_M[0]
         mu = math.log(target_mean) - (sigma**2) / 2.0
         roll = random.lognormvariate(mu, sigma)
-        seconds = min(turn_delay_max_sec * 8.0, max(turn_delay_min_sec * 0.4, roll))
-        label = "COMPLEX"
+        seconds = min(45.0, max(turn_delay_min_sec * 0.2, roll))
+        return seconds
     else:
         range_span = turn_delay_max_sec - turn_delay_min_sec
-        target_mean = ((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)
+        target_mean = (((turn_delay_min_sec + turn_delay_max_sec) / 2.0) + (GLOBAL_SESSION_JITTER * range_span)) * _T_M[0]
         target_mean = max(0.1, target_mean)
-        sigma = 0.6
+        sigma = 0.75 * _S_M[0]
         mu = math.log(target_mean) - (sigma**2) / 2.0
         roll = random.lognormvariate(mu, sigma)
-        seconds = min(turn_delay_max_sec * 4.0, max(turn_delay_min_sec * 0.2, roll))
-        label = "TURN"
-
-    if seconds <= 0:
-        return
-
-    print(f"{label}: {seconds:.3f}s", flush=True)
-    time.sleep(seconds)
+        seconds = min(turn_delay_max_sec * 5.0, max(turn_delay_min_sec * 0.5, roll))
+        return seconds
 
 def attach_turn_delay(client):
     if getattr(client, "_turn_delay_wrapped", False):
         return client
+    
+    client._last_api_call_ts = time.time()
+
     original_call = client.call
-    def delayed_call(ep, args=None, **kwargs):
-        wait_for_game_turn_delay(delay_type="api", endpoint=ep)
-        return original_call(ep, args, **kwargs)
-    client.call = delayed_call
-    client.wait_turn_delay = lambda: wait_for_game_turn_delay(delay_type="turn")
-    client.wait_complex_delay = lambda: wait_for_game_turn_delay(delay_type="complex")
+    def wrapped_call(ep, args=None, **kwargs):
+        target_delay = wait_for_game_turn_delay(delay_type="api", endpoint=ep)
+        elapsed = time.time() - client._last_api_call_ts
+        if elapsed < target_delay:
+            time.sleep(target_delay - elapsed)
+        
+        print(f"Last Endpoint: {ep.split('/')[-1]} | Delay: {target_delay:.3f}s", flush=True)
+        
+        res = original_call(ep, args, **kwargs)
+        client._last_api_call_ts = time.time()
+        return res
+
+    client.call = wrapped_call
+    client.wait_turn_delay = lambda: time.sleep(wait_for_game_turn_delay(delay_type="turn"))
+    client.wait_complex_delay = lambda: time.sleep(wait_for_game_turn_delay(delay_type="complex"))
     client._turn_delay_wrapped = True
     return client
 

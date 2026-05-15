@@ -6,6 +6,7 @@ import time
 import json
 import os
 import random
+import math
 from datetime import datetime
 from pathlib import Path
 
@@ -323,7 +324,11 @@ class CareerRunner:
                     state = self._buy_skills(client, state, preset, False)
                 
                 self._advance(decision.action)
-                time.sleep(0.6)
+                target_mean = 0.5
+                sigma = 0.25
+                mu = math.log(target_mean) - (sigma**2) / 2.0
+                roll = random.lognormvariate(mu, sigma)
+                time.sleep(max(0.1, min(1.5, roll)))
         except Exception as exc:
             import traceback
             trace_str = traceback.format_exc()
@@ -919,8 +924,8 @@ class CareerRunner:
                     if cont_data.get("unchecked_event_array"):
                         self._drain_events(client, strategy, cont_res)
                 
-                roll = random.gauss(0.2 + client.api_jitter, 0.01)
-                time.sleep(max(0.17, min(0.23, roll)))
+                roll = random.gauss(0.166 + client.api_jitter, 0.05)
+                time.sleep(max(0.1, min(0.45, roll)))
                 res = client.race_start(is_short=is_short, current_turn=current_turn)
                 rank = self._parse_race_rank(res)
                 self._log("race_rank_retry", current_turn, f"rank {rank} after clock")

@@ -112,6 +112,12 @@ class GateKeeper:
     def wait_complex_delay(self):
         pass
 
+    def __setattr__(self, name, value):
+        if name in ('_client', '_active'):
+            super().__setattr__(name, value)
+        else:
+            setattr(self._client, name, value)
+
     def __getattr__(self, name):
         attr = getattr(self._client, name)
         if callable(attr):

@@ -908,11 +908,12 @@ async def login(req: LoginRequest):
         else:
             raise Exception('Steam credentials required')
 
-        cfg.update({
-            'steam_id': sid,
-            'steam_session_ticket': tkt,
-            'steam_password_seed': req.password
-        })
+        if not cfg.get('steam_id') or not cfg.get('steam_session_ticket'):
+            cfg.update({
+                'steam_id': sid,
+                'steam_session_ticket': tkt,
+            })
+        cfg['steam_password_seed'] = req.password
         if not has_fresh_auth_config(cfg):
             raise Exception('Fresh in-game auth capture required; switch to the target in-game account, restart capture, then login again')
 
@@ -1565,6 +1566,24 @@ def refresh_auth_before_serving(timeout_sec=None):
         payload = message.get('payload') or {}
         if payload.get('type') == 'creds':
             if payload.get('app_ver') and payload.get('res_ver'):
+                try:
+                    from uma_api.client import unpack
+                    wire = unpack(payload.get('body') or '', payload.get('udid') or '')
+                    for key in (
+                        'viewer_id',
+                        'device_id',
+                        'device_name',
+                        'graphics_device_name',
+                        'ip_address',
+                        'platform_os_version',
+                        'locale',
+                        'steam_id',
+                        'steam_session_ticket',
+                    ):
+                        if wire.get(key) is not None:
+                            payload[key] = wire.get(key)
+                except Exception:
+                    pass
                 captured_data.update(payload)
                 done['ok'] = True
 

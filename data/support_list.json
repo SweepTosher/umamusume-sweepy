@@ -1058,5 +1058,20 @@
     "name": "Mr. C.B.",
     "rarity": "SSR",
     "type": "Wisdom"
+  },
+  "30098": {
+    "name": "Haru Urara",
+    "rarity": "SSR",
+    "type": "Power"
+  },
+  "30099": {
+    "name": "Ikuno Dictus",
+    "rarity": "SSR",
+    "type": "Stamina"
+  },
+  "30100": {
+    "name": "Rice Shower",
+    "rarity": "SSR",
+    "type": "Wisdom"
   }
 }

@@ -281,7 +281,7 @@ class CareerRunner:
                 elif decision.action == "race_progress":
 
                     self._record_action(decision, chara)
-                    state = self._race_progress(client, decision.payload)
+                    state = self._race_progress(client, decision.payload, preset)
                 elif decision.action == "finish":
 
                     self._record_action(decision, chara)
@@ -888,10 +888,7 @@ class CareerRunner:
             running_style = 0
 
         try:
-            if running_style in (1, 2, 3, 4):
-                entry = client.race_entry(program_id=program_id, current_turn=current_turn, running_style=running_style)
-            else:
-                entry = client.race_entry(program_id=program_id, current_turn=current_turn)
+            entry = client.race_entry(program_id=program_id, current_turn=current_turn)
         except Exception as exc:
             print(f"Race Entry Error at turn {current_turn}: {exc}")
             if not any(err in str(exc) for err in ("205", "208")):
@@ -900,11 +897,26 @@ class CareerRunner:
             self._log("race_reject", current_turn, program_id)
             return self._fresh_career_state(client, strategy)
         self._log("race_entry", current_turn, program_id)
+        entry_data = entry.get("data") or {}
+        chara_info = entry_data.get("chara_info") or {}
         if strategy:
-            entry_data = entry.get("data") or {}
             if entry_data.get("unchecked_event_array"):
                 entry = self._drain_events(client, strategy, entry)
-        
+                entry_data = entry.get("data") or {}
+                chara_info = entry_data.get("chara_info") or {}
+
+        try:
+            current_running_style = int(chara_info.get("race_running_style") or 0)
+        except (TypeError, ValueError):
+            current_running_style = 0
+        if running_style in (1, 2, 3, 4) and current_running_style != running_style:
+            entry = client.race_entry(
+                program_id=program_id,
+                current_turn=current_turn,
+                running_style=running_style,
+                retry_208=0,
+                retry_205=0,
+            )
         race_start_info = (entry.get("data") or {}).get("race_start_info") or {}
         is_short = 1
         res = client.race_start(is_short=is_short, current_turn=current_turn)
@@ -981,7 +993,7 @@ class CareerRunner:
 
         return out
 
-    def _race_progress(self, client, payload):
+    def _race_progress(self, client, payload, preset=None):
         current_turn = payload["current_turn"]
         phase = payload.get("phase")
         chara = (payload.get("chara_info") or {})
@@ -1018,6 +1030,26 @@ class CareerRunner:
                     self._log("race_out_reconciled", current_turn, f"graceful exit: {e}")
                     return payload
                 raise
+        race_start_info = payload.get("race_start_info") or {}
+        program_id = race_start_info.get("program_id")
+        running_style = preset.get("running_style") if isinstance(preset, dict) else None
+        try:
+            running_style = int(running_style)
+        except (TypeError, ValueError):
+            running_style = 0
+        horse = ((race_start_info.get("race_horse_data") or []) + [{}])[0]
+        try:
+            current_running_style = int(chara.get("race_running_style") or horse.get("running_style") or 0)
+        except (TypeError, ValueError):
+            current_running_style = 0
+        if playing_state in {2, 4} and program_id and running_style in (1, 2, 3, 4) and current_running_style != running_style:
+            client.race_entry(
+                program_id=program_id,
+                current_turn=current_turn,
+                running_style=running_style,
+                retry_208=0,
+                retry_205=0,
+            )
         client.race_start(is_short=1, current_turn=current_turn)
         self._log("race_start", current_turn, "resume")
         if playing_state in {1}:

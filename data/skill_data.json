@@ -1141,6 +1141,20 @@
     "icon_id": 20013,
     "skill_category": 5
   },
+  "110221": {
+    "name": "Best Day Ever",
+    "rarity": 5,
+    "group_id": 11022,
+    "grade_value": 340,
+    "need_skill_point": 0,
+    "disable_singlemode": 1,
+    "tags": [
+      401,
+      403
+    ],
+    "icon_id": 20013,
+    "skill_category": 5
+  },
   "110231": {
     "name": "Presents from X",
     "rarity": 5,
@@ -1204,6 +1218,20 @@
     "disable_singlemode": 1,
     "tags": [
       401
+    ],
+    "icon_id": 20013,
+    "skill_category": 5
+  },
+  "110381": {
+    "name": "One True Color",
+    "rarity": 5,
+    "group_id": 11038,
+    "grade_value": 340,
+    "need_skill_point": 0,
+    "disable_singlemode": 1,
+    "tags": [
+      401,
+      403
     ],
     "icon_id": 20013,
     "skill_category": 5
@@ -6499,6 +6527,36 @@
     "icon_id": 20011,
     "skill_category": 2
   },
+  "202151": {
+    "name": "Keep Going!",
+    "rarity": 2,
+    "group_id": 20215,
+    "grade_value": 508,
+    "need_skill_point": 160,
+    "disable_singlemode": 1,
+    "tags": [
+      103,
+      302,
+      401
+    ],
+    "icon_id": 20012,
+    "skill_category": 2
+  },
+  "202152": {
+    "name": "Full Throttle",
+    "rarity": 1,
+    "group_id": 20215,
+    "grade_value": 217,
+    "need_skill_point": 160,
+    "disable_singlemode": 0,
+    "tags": [
+      103,
+      302,
+      401
+    ],
+    "icon_id": 20011,
+    "skill_category": 2
+  },
   "210011": {
     "name": "Burning Spirit SPD",
     "rarity": 2,
@@ -7756,6 +7814,20 @@
     "icon_id": 20011,
     "skill_category": 5
   },
+  "910221": {
+    "name": "Best day ever",
+    "rarity": 1,
+    "group_id": 91022,
+    "grade_value": 180,
+    "need_skill_point": 200,
+    "disable_singlemode": 1,
+    "tags": [
+      401,
+      403
+    ],
+    "icon_id": 20011,
+    "skill_category": 5
+  },
   "910231": {
     "name": "Presents from X",
     "rarity": 1,
@@ -7819,6 +7891,20 @@
     "disable_singlemode": 1,
     "tags": [
       401
+    ],
+    "icon_id": 20011,
+    "skill_category": 5
+  },
+  "910381": {
+    "name": "One True Color",
+    "rarity": 1,
+    "group_id": 91038,
+    "grade_value": 180,
+    "need_skill_point": 200,
+    "disable_singlemode": 1,
+    "tags": [
+      401,
+      403
     ],
     "icon_id": 20011,
     "skill_category": 5

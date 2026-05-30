@@ -1,9 +1,4 @@
-i've made a terrible mistake  
-
-<img width="1080" height="262" alt="image" src="https://github.com/user-attachments/assets/ec2b366c-2ad9-4e2c-852c-384d4ac9ef43" />
-Need I remind you that networking of uma will change eventually, bricking this repo. If this keeps up I assue you that version would not be made public. Should've expected less from low trust societies.  
-
-fuck you
+gonna work on other tools for a bit
 
 
 # Sweepy — /vg/'s Uma Musume Bot (UAT REHASHED)

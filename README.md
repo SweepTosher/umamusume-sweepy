@@ -1,4 +1,4 @@
-gonna work on other tools for a bit
+Thank you cygames :D
 
 
 # Sweepy — /vg/'s Uma Musume Bot (UAT REHASHED)

@@ -1,5 +1,4 @@
-Thank you cygames :D
-
+nvm the fucking retards at cygames didnt port the rolling cipher over. good luck trying to figure out what changed but no those retards didnt fix it..
 
 # Sweepy — /vg/'s Uma Musume Bot (UAT REHASHED)
 

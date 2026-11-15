@@ -1,25 +1,4 @@
-nvm the fucking retards at cygames didnt port the rolling cipher over. good luck trying to figure out what changed but no those retards didnt fix it..
-
-# Sweepy — /vg/'s Uma Musume Bot (UAT REHASHED)
-
-> [!IMPORTANT]
-> **Install Node with `winget install -e --id OpenJS.NodeJS`, then run `npm i` first.**      
-> **Then go install requirements.txt**
-
----
-
-## click this button for comedic effect (8mins mant lmao)
-
-<img width="471" height="53" alt="image" src="https://github.com/user-attachments/assets/a2dbe989-f001-4e41-a5b3-1c01c287b97f" />
-
----
-Looping/ending careers was intentionally removed to prevent another Twitter drama and to avoid aggravating Cygames. I think it’s very clear what “tempt fate” mode + looping can do. I don’t want that to be publicly accessible. Do not ask me for this.     
-
-Furthermore, this takes <3 mins to figure out, so to those who already did: loose lips sink ships. Keep it zipped.    
-
-uses lobotobized/halfported sweepy decision engine, no intention of fully porting/upgrading it as I will be migrating to MCTS soon (ts gonna take months given my hardware [nvm that architecture is straight up not realistic for mant]). 
-
-
+Soon™
 
 <img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/a376b9e0-832e-45ea-add4-499a9f76a284" />
 <img width="190" height="158" alt="image" src="https://github.com/user-attachments/assets/428a7704-0729-4dc3-890f-246fb0a94774" />

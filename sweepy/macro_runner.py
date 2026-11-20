@@ -549,29 +549,6 @@ class MacroCareerRunner:
         material = f"{self._account_salt}:{raw_vid}" if self._account_salt else raw_vid
         self._viewer_id_hash = hashlib.sha256(material.encode("utf-8")).hexdigest()
 
-    def _capture_account_data(self) -> None:
-        if self._stop_event.is_set():
-            return
-        client = self.client
-        if client is None:
-            return
-        try:
-            with self._lock:
-                self._api_calls += 1
-            acct = _unwrap_envelope(client.login(read_info=False))
-        except Exception as exc:
-            self._record_history(
-                self._telemetry_turn,
-                "Cleanup",
-                f"Account snapshot unavailable: {type(exc).__name__}",
-                "snapshot_failed",
-            )
-            return
-        if isinstance(acct, dict):
-            with self._lock:
-                self._latest_account_data = acct
-                self._latest_account_data_version += 1
-
     def _clocks_budget(self, state: dict[str, Any]) -> tuple[int, int]:
         home = state.get("home_info") or {}
         free_clocks = int(home.get("available_free_continue_num") or 0)
@@ -1135,4 +1112,3 @@ class MacroCareerRunner:
                 self._running = False
                 if self._status == "running":
                     self._status = "finished" if self._finished else "idle"
-            self._capture_account_data()

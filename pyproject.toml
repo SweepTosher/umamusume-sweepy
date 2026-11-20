@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sweepy"
+version = "2.0.0"
+requires-python = ">=3.10"
+dependencies = [
+    "curl_cffi==0.17.0",
+    "msgpack==1.2.4",
+    "pycryptodome==4.4.0",
+]
+
+[project.scripts]
+sweepy = "sweepy.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["sweepy*", "uma_headless*"]

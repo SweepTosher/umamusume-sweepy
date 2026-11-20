@@ -1,9 +1,0 @@
-{
-  "turn_delay": {
-    "disabled": false,
-    "max": 5.0,
-    "min": 3.0,
-    "restore_max": 5.0,
-    "restore_min": 3.0
-  }
-}

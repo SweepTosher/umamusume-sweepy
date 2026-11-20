@@ -3,289 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        try {
-            const theme = localStorage.getItem('theme') === 'blue' ? 'blue' : 'pink';
-            document.documentElement.dataset.theme = theme;
-            document.documentElement.classList.toggle('theme-blue', theme === 'blue');
-        } catch (e) {}
-    </script>
-    <title>Sweepy改二</title>
+    <title>SWEEPY改三</title>
+    <link rel="icon" type="image/png" href="/sweepy2.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500&display=swap">
     <link rel="stylesheet" href="styles.css">
-
 </head>
-<body>
-        <div id="loading-screen" class="loading-screen">
-        <div class="loading-shell">
-            <div class="loading-art">
-                <div class="loading-broom-aura"></div>
-                <img class="loading-broom" src="/broom.png" alt="">
-                <img class="loading-sweep" src="/sweep.png" alt="">
-            </div>
-            <div class="loading-text">Girls are preparing<span class="loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+<body class="pre-login">
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-plate">
+            <h1 class="loading-word">Sweepy<span>改三</span></h1>
+            <p class="loading-status">Connecting<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
         </div>
     </div>
+
     <div id="app">
         <header class="navbar">
             <div class="navbar-title">
-                <h1 id="theme-toggle" class="title">SWEEPY<span>改二</span></h1>
+                <h1 class="title">SWEEPY<span>改三</span></h1>
             </div>
 
             <div class="navbar-main">
-                <div id="account-strip" class="account-strip"></div>
-
-                <div id="turn-delay-control" class="turn-delay-control">
+                <div class="turn-delay-control">
                     <div class="delay-group">
-                        <span class="turn-delay-label">DELAY(S)</span>
-                        <input id="turn-delay-min" class="turn-delay-input" type="number" min="0" step="0.1" value="1.6">
+                        <span class="turn-delay-label">DELAY</span>
+                        <input id="turn-delay-min" class="turn-delay-input" type="number" min="0" max="60" step="0.1" value="1.6">
                         <span class="turn-delay-separator">–</span>
-                        <input id="turn-delay-max" class="turn-delay-input" type="number" min="0" step="0.1" value="3.7">
+                        <input id="turn-delay-max" class="turn-delay-input" type="number" min="0" max="60" step="0.1" value="3.7">
                     </div>
                     <div class="control-btns">
                         <button id="tempt-fate-btn" class="btn btn-sm turn-delay-button" type="button">TEMPT FATE</button>
                         <button id="burn-clocks-btn" class="btn btn-sm turn-delay-button" type="button">BURN CLOCKS: OFF</button>
-                        <button id="dev-career-btn" class="btn btn-sm turn-delay-button" type="button" style="display: none;">DEV</button>
                     </div>
                 </div>
             </div>
 
             <div class="navbar-meta">
-                <button id="logout-btn" class="btn btn-sm logout-btn" style="display:none">LOGOUT</button>
+                <button id="logout-btn" class="btn btn-sm logout-btn" type="button">LOGOUT</button>
             </div>
         </header>
+
         <main class="main-container">
-            <div id="login-view" class="login-wrapper">
-                <div class="login-panel">
-                    <form id="login-form" autocomplete="on">
-                        <div id="standard-fields">
-                            <div class="form-group">
-                                <label class="form-label" for="username">STEAM USERNAME</label>
-                                <input id="username" name="username" type="text" class="form-input" placeholder="..." autocomplete="username">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label" for="password">STEAM PASSWORD</label>
-                                <input id="password" name="password" type="password" class="form-input" placeholder="..." autocomplete="current-password">
-                            </div>
-                        </div>
-                        <div id="2fa-fields" style="display:none">
-                            <div class="form-group">
-                                <label class="form-label" for="code">STEAM GUARD CODE</label>
-                                <input id="code" name="code" type="text" class="form-input" placeholder="..." maxlength="5" autocomplete="one-time-code">
-                            </div>
-                        </div>
-                        <div id="error-msg" class="status-msg"></div>
-                        <button id="login-btn" type="submit" class="btn btn-primary">LOGIN</button>
-                    </form>
-                </div>
-            </div>
-            <div id="dashboard-view" class="dashboard-container">
-                <div class="split-left" id="setup-panel">
-                    <div class="panel-header">
-                        <span class="panel-header-title">SETUP</span>
-                    </div>
-                    <div class="panel-body">
-                        <div class="team-slots">
-                            <div class="team-item" id="team-slot-deck">
-                                <span class="team-item-role">Deck</span>
-                                <span class="team-item-empty">select a deck</span>
-                            </div>
-                            <div class="team-item" id="team-slot-friend">
-                                <span class="team-item-role">Friend</span>
-                                <span class="team-item-empty">select a friend support</span>
-                            </div>
-                            <div class="team-item" id="team-slot-trainee">
-                                <span class="team-item-role">Trainee</span>
-                                <span class="team-item-empty">select a trainee</span>
-                            </div>
-                            <div class="team-item" id="team-slot-vet1">
-                                <span class="team-item-role">Parent 1</span>
-                                <span class="team-item-empty">select a parent</span>
-                            </div>
-                            <div class="team-item" id="team-slot-vet2">
-                                <span class="team-item-role">Parent 2</span>
-                                <span class="team-item-empty">select a parent</span>
-                            </div>
-                        </div>
-
-                        <section class="dashboard-section" id="preset-section">
-                            <h2 class="dashboard-section-title">PRESET CONFIGURATION</h2>
-                            <div class="master-data-panel">
-                                <label class="form-label" for="preset-select">ACTIVE PRESET</label>
-                                <div class="preset-control-row preset-control-row-actions">
-                                    <select id="preset-select" class="form-input master-data-input preset-input"></select>
-                                    <button id="preset-add-btn" class="btn btn-sm preset-action-btn" type="button">NEW</button>
-                                    <button id="preset-del-btn" class="btn btn-sm btn-danger preset-action-btn" type="button">DEL</button>
-                                </div>
-                                <div class="preset-control-row preset-control-grid">
-                                    <div class="preset-field">
-                                        <label class="form-label" for="preset-running-style">RUNNING STYLE</label>
-                                        <select id="preset-running-style" class="form-input master-data-input preset-input">
-                                            <option value="1">Front Runner</option>
-                                            <option value="2">Pace Chaser</option>
-                                            <option value="3">Late Surger</option>
-                                            <option value="4">End Closer</option>
-                                        </select>
-                                    </div>
-                                    <div class="preset-field">
-                                        <label class="form-label" for="preset-skill-threshold">MIN SKILL PT</label>
-                                        <input id="preset-skill-threshold" class="form-input master-data-input preset-input" type="number">
-                                    </div>
-                                </div>
-                                <button id="preset-edit-skills-btn" class="btn btn-sm preset-wide-btn" type="button">CONFIGURE SKILLS (PRIORITIES & BLACKLIST)</button>
-                            </div>
-                        </section>
-
-                        <section class="dashboard-section" id="master-data-section">
-                            <h2 class="dashboard-section-title">MASTER DATA</h2>
-                            <div class="master-data-panel">
-                                <label class="form-label" for="master-data-path">MASTER.MDB PATH</label>
-                                <div class="master-data-row">
-                                    <input id="master-data-path" class="form-input master-data-input" type="text" spellcheck="false">
-                                    <button id="master-data-save-btn" class="btn btn-sm" type="button">SAVE</button>
-                                </div>
-                                <div id="master-data-status" class="master-data-status"></div>
-                            </div>
-                        </section>
-
-                        <section class="dashboard-section" id="race-schedule-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="race-toggle">
-                                <span class="collapse-chevron" id="race-chevron">&#9658;</span>
-                                RACE SCHEDULE
-                            </h2>
-                            <div id="race-body" class="collapsible-body">
-                                <div id="race-slot-popup-overlay" class="race-slot-popup-overlay" style="display: none;">
-                                    <div class="race-slot-popup">
-                                        <div class="race-slot-popup-header">
-                                            <div id="race-slot-popup-title" class="race-slot-popup-title">Select Race</div>
-                                            <button id="race-slot-popup-close" class="race-slot-popup-close">&times;</button>
-                                        </div>
-                                        <div id="race-slot-popup-body" class="race-slot-popup-body"></div>
-                                    </div>
-                                </div>
-                                <div class="race-options-content" id="race-options-content"></div>
-                            </div>
-                        </section>
-
-                        <div class="start-panel">
-                            <button id="start-career-btn" class="btn btn-primary" type="button" disabled>RUN CAREER</button>
-                            <div id="start-status" class="start-status"></div>
+            <section id="login-view" class="login-wrapper">
+                <div class="ritual-portal">
+                    <div class="ritual-showcase">
+                        <div class="ritual-art-stage">
+                            <img class="sweep-figure" src="/sweepy3.webp" alt="">
                         </div>
                     </div>
-                </div>
-                <div class="split-right" id="content-panel">
-                    <div class="panel-header">
-                        <span class="panel-header-title">LIBRARY</span>
-                    </div>
-                    <div class="panel-body">
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="decks-toggle">
-                                <span class="collapse-chevron expanded" id="decks-chevron">&#9658;</span>
-                                DECKS
-                            </h2>
-                            <div id="decks-body" class="collapsible-body expanded">
-                                <div id="deck-list"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="friends-toggle">
-                                <span class="collapse-chevron expanded" id="friends-chevron">&#9658;</span>
-                                FRIEND SUPPORTS <span id="friend-count"></span>
-                                <button id="friend-refresh-btn" class="btn btn-sm section-title-action" type="button">REFRESH</button>
-                            </h2>
-                            <div id="friends-body" class="collapsible-body expanded">
-                                <div class="friend-toolbar">
-                                    <div id="friend-status" class="friend-status">Loading friends...</div>
-                                </div>
-                                <div id="friend-grid" class="data-grid"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="trainees-toggle">
-                                <span class="collapse-chevron expanded" id="trainees-chevron">&#9658;</span>
-                                TRAINEES <span id="uma-count"></span>
-                            </h2>
-                            <div id="trainees-body" class="collapsible-body expanded">
-                                <div id="uma-grid" class="data-grid"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="parents-toggle">
-                                <span class="collapse-chevron expanded" id="parents-chevron">&#9658;</span>
-                                PARENTS <span id="parent-count"></span>
-                            </h2>
-                            <div id="parents-body" class="collapsible-body expanded">
-                                <div id="parent-grid" class="data-grid"></div>
-                            </div>
-                        </section>
-                        <section class="dashboard-section">
-                            <h2 class="dashboard-section-title section-title-toggle" id="cards-toggle">
-                                <span class="collapse-chevron" id="cards-chevron">&#9658;</span>
-                                OWNED CARDS <span id="card-count"></span>
-                            </h2>
-                            <div id="card-grid-wrapper" class="collapsible-body">
-                                <div id="card-grid" class="data-grid"></div>
-                            </div>
-                        </section>
+
+                    <div class="login-panel">
+                        <div class="ritual-brand-row">
+                            <h1 class="title portal-title">SWEEPY<span>改三</span></h1>
+                        </div>
+                        <div class="sechead">
+                            <span class="num">01</span>
+                            <span class="lbl">Login</span>
+                            <span class="rule"></span>
+                        </div>
+                        <div class="qr-stage">
+                            <div id="qr-svg-box" class="qr-svg-box"></div>
+                            <p id="qr-hint" class="qr-hint">Login with Steam mobile app</p>
+                            <button id="qr-refresh-btn" class="btn btn-sm qr-refresh-btn" type="button">Refresh</button>
+                        </div>
+                        <div id="auth-error-msg" class="status-msg"></div>
                     </div>
                 </div>
-                <div class="split-gutter-controls" aria-label="Panel controls">
-                    <button class="panel-collapse-btn panel-collapse-btn-left" id="setup-collapse-btn" type="button" data-panel-label="Setup" title="Collapse setup" aria-label="Collapse setup"></button>
-                    <button class="panel-collapse-btn panel-collapse-btn-right" id="content-collapse-btn" type="button" data-panel-label="Library" title="Collapse library" aria-label="Collapse library"></button>
+            </section>
+
+            <section id="dashboard-view" class="dashboard-container">
+                <div class="career-card">
+                    <div class="career-main">
+                        <div class="sechead">
+                            <span class="num">01</span>
+                            <span class="lbl">Grand Live — sprint/mile decks only</span>
+                            <span class="rule"></span>
+                        </div>
+                        <div class="career-body">
+                            <span id="career-name" class="career-name">NO ACTIVE CAREER</span>
+                            <div class="execution-buttons">
+                                <button id="run-career-btn" class="btn btn-primary exec-run-btn" type="button" disabled>RESUME CAREER</button>
+                                <button id="stop-career-btn" class="btn exec-stop-btn" type="button" disabled>STOP</button>
+                            </div>
+                            <div id="exec-status-line" class="exec-status-line"></div>
+                        </div>
+                    </div>
+                    <div class="career-art">
+                        <img class="sweep-figure" src="/sweepy3.webp" alt="">
+                    </div>
+                    <aside class="career-rail">
+                        <div class="rail-head">
+                            <span class="rail-label">Career vitals</span>
+                        </div>
+                        <div id="account-strip" class="account-strip"></div>
+                    </aside>
                 </div>
-            </div>
+
+                <section class="key-section">
+                    <div class="hud-head">
+                        <div class="sechead">
+                            <span class="num">02</span>
+                            <span class="lbl">Api key</span>
+                            <span class="rule"></span>
+                        </div>
+                        <span id="key-status-badge" class="runner-state-badge is-idle">NO KEY</span>
+                    </div>
+
+                    <p class="key-help">Get a key at <a id="key-link" class="key-link" href="https://mayano.top/sweepy" target="_blank" rel="noreferrer">mayano.top/sweepy</a></p>
+
+                    <div class="key-form">
+                        <div class="key-field">
+                            <span class="buckle-frame">
+                                <input id="key-input" class="form-input" type="password" spellcheck="false" autocomplete="off" placeholder="Paste key" aria-label="API key">
+                                <i class="tick tl"></i><i class="tick tr"></i><i class="tick bl"></i><i class="tick br"></i>
+                            </span>
+                        </div>
+                        <button id="key-save-btn" class="btn btn-primary key-save-btn" type="button">SAVE KEY</button>
+                    </div>
+
+                    <div id="key-feedback" class="inline-feedback"></div>
+                </section>
+
+                <section class="telemetry-hud">
+                    <div class="hud-head">
+                        <div class="sechead">
+                            <span class="num">03</span>
+                            <span class="lbl">Status</span>
+                            <span class="rule"></span>
+                        </div>
+                        <div class="hud-meta-pills">
+                            <span id="hud-runner-badge" class="runner-state-badge is-idle">IDLE</span>
+                            <span class="hud-stat-pill">CLOCKS USED <strong id="hud-clocks-used">0</strong></span>
+                        </div>
+                    </div>
+
+                    <div id="hud-result-banner" class="hud-result-banner" style="display:none"></div>
+                    <div id="hud-error-banner" class="hud-error-banner" style="display:none"></div>
+
+                    <div class="hud-vitals-row">
+                        <div class="vital-box">
+                            <span class="vital-label">TURN</span>
+                            <strong id="hud-turn-val" class="vital-num">0 / 78</strong>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-hp-top">
+                                <span class="vital-label">ENERGY</span>
+                                <strong id="hud-hp-text" class="vital-hp-num">100 / 100</strong>
+                            </div>
+                            <div class="hp-track">
+                                <div id="hud-hp-fill" class="hp-fill" style="width: 100%"></div>
+                            </div>
+                            <span id="hud-last-action" class="vital-sub">WAITING</span>
+                        </div>
+                        <div class="vital-box vital-mood">
+                            <span class="vital-label">MOOD</span>
+                            <span id="hud-mood-badge" class="mood-badge mood-normal">NORMAL</span>
+                        </div>
+                    </div>
+
+                    <div class="stats-plate">
+                        <div class="hud-stats-grid">
+                            <div class="stat-cell"><span class="stat-head">SPD</span><strong id="stat-val-spd">0</strong></div>
+                            <div class="stat-cell"><span class="stat-head">STA</span><strong id="stat-val-sta">0</strong></div>
+                            <div class="stat-cell"><span class="stat-head">PWR</span><strong id="stat-val-pwr">0</strong></div>
+                            <div class="stat-cell"><span class="stat-head">GUT</span><strong id="stat-val-gut">0</strong></div>
+                            <div class="stat-cell"><span class="stat-head">WIT</span><strong id="stat-val-wit">0</strong></div>
+                            <div class="stat-cell"><span class="stat-head">SP</span><strong id="stat-val-sp">0</strong></div>
+                            <div class="stat-cell stat-cell-fans"><span class="stat-head">FANS</span><strong id="stat-val-fans">0</strong></div>
+                        </div>
+
+                        <div class="gl-tokens">
+                            <div class="gl-token"><span class="tok-k">DA</span><strong id="tok-val-da">0</strong></div>
+                            <div class="gl-token"><span class="tok-k">PA</span><strong id="tok-val-pa">0</strong></div>
+                            <div class="gl-token"><span class="tok-k">VO</span><strong id="tok-val-vo">0</strong></div>
+                            <div class="gl-token"><span class="tok-k">VI</span><strong id="tok-val-vi">0</strong></div>
+                            <div class="gl-token"><span class="tok-k">ME</span><strong id="tok-val-me">0</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="action-history-wrap" id="turn-log-wrap">
+                        <table class="action-history-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-turn">TURN</th>
+                                    <th class="col-kind">TYPE</th>
+                                    <th class="col-action">ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="turn-log-tbody">
+                                <tr class="log-empty-row">
+                                    <td colspan="3">NO TURNS YET</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
         </main>
-        <div id="career-modal" class="modal-backdrop">
-            <div class="modal-panel">
-                <div class="modal-title">Delete Career?</div>
-                <div id="career-modal-copy" class="modal-copy">This will force-delete the ongoing career.</div>
-                <div class="modal-actions">
-                    <button id="career-cancel-btn" type="button" class="btn btn-sm">CANCEL</button>
-                    <button id="career-delete-btn" type="button" class="btn btn-sm btn-danger">DELETE</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="skill-modal" class="skill-editor-modal">
-            <div class="skill-editor-topbar">
-                <div class="skill-editor-title">SKILL CONFIGURATION</div>
-                <button id="skill-modal-close" class="btn btn-sm skill-editor-action">DONE</button>
-            </div>
-
-            <div class="skill-editor-body">
-                <div class="skill-editor-panel skill-editor-panel-left">
-                    <div class="skill-editor-panel-head">
-                        <div class="skill-editor-section-title">TIERS & BLACKLIST</div>
-                        <button id="skill-add-tier-btn" class="btn btn-sm skill-editor-action">+ TIER</button>
-                    </div>
-
-                    <div class="skill-editor-scroll skill-editor-left-scroll">
-                        <div id="skill-tiers-container" class="skill-tier-stack"></div>
-
-                        <div class="skill-blacklist-header">
-                            <div class="skill-editor-section-title danger">BLACKLIST</div>
-                            <button id="skill-clear-blacklist-btn" class="btn btn-sm btn-danger-soft skill-editor-action">CLEAR</button>
-                        </div>
-                        <div id="skill-blacklist-container" class="skill-blacklist-zone"></div>
-                    </div>
-                </div>
-
-                <div class="skill-editor-panel skill-editor-panel-right">
-                    <div class="skill-editor-panel-head stack">
-                        <div class="skill-editor-controls">
-                            <input type="text" id="skill-search" class="form-input skill-editor-search" placeholder="Search skills...">
-                            <button id="skill-select-all-btn" class="btn btn-sm skill-editor-action">ADD ALL VISIBLE</button>
-                            <button id="skill-blacklist-all-btn" class="btn btn-sm btn-danger-soft skill-editor-action">BLACKLIST ALL VISIBLE</button>
-                            <button id="skill-deselect-all-btn" class="btn btn-sm btn-danger-soft skill-editor-action">REMOVE ALL VISIBLE</button>
-                        </div>
-                        <div id="skill-filters" class="skill-filter-row"></div>
-                    </div>
-
-                    <div id="skill-list" class="skill-editor-scroll skill-list-grid"></div>
-                </div>
-            </div>
-        </div>
     </div>
-    <script src="app.js?v=11"></script>
+
+    <script src="app.js"></script>
 </body>
 </html>
-

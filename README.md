@@ -1,3 +1,5 @@
+Uma bot that's about 70% to mathematical perfection
+
 Serves no real purpose now mainly just a proof of concept that my architecture works and limited to sprint and mile umas for now as it has basically no idea how races work.
 
 Just a taste of what's to come. I need to increase the speed of my race sim before this can be tuned for CMS. (Prob mid GM depends on my working hours/free time)

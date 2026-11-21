@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
     <title>SWEEPY改三</title>
     <link rel="icon" type="image/png" href="/sweepy2.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="pre-login">
-    <div id="loading-screen" class="loading-screen">
+    <div id="loading-screen" class="loading-screen" role="status" aria-label="Loading">
         <div class="loading-plate">
             <h1 class="loading-word">Sweepy<span>改三</span></h1>
             <p class="loading-status">Connecting<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></p>
@@ -19,178 +20,127 @@
     </div>
 
     <div id="app">
-        <header class="navbar">
-            <div class="navbar-title">
-                <h1 class="title">SWEEPY<span>改三</span></h1>
-            </div>
+        <div class="hem" aria-hidden="true"></div>
 
-            <div class="navbar-main">
-                <div class="turn-delay-control">
-                    <div class="delay-group">
-                        <span class="turn-delay-label">DELAY</span>
-                        <input id="turn-delay-min" class="turn-delay-input" type="number" min="0" max="60" step="0.1" value="1.6">
-                        <span class="turn-delay-separator">–</span>
-                        <input id="turn-delay-max" class="turn-delay-input" type="number" min="0" max="60" step="0.1" value="3.7">
-                    </div>
-                    <div class="control-btns">
-                        <button id="tempt-fate-btn" class="btn btn-sm turn-delay-button" type="button">TEMPT FATE</button>
-                        <button id="burn-clocks-btn" class="btn btn-sm turn-delay-button" type="button">BURN CLOCKS: OFF</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="navbar-meta">
-                <button id="logout-btn" class="btn btn-sm logout-btn" type="button">LOGOUT</button>
-            </div>
+        <header class="keybar">
+            <label for="key-input" class="keybar-label">API key</label>
+            <span class="buckle-frame key-buckle">
+                <input id="key-input" class="key-input" type="password" spellcheck="false" autocomplete="off" placeholder="Paste your API key">
+            </span>
+            <button id="key-save-btn" class="btn btn-brass" type="button">SAVE</button>
+            <span id="key-status-badge" class="runner-state is-idle" aria-live="polite">NO KEY</span>
+            <span id="key-feedback" class="inline-feedback" aria-live="polite"></span>
+            <a id="key-link" class="key-link" href="https://mayano.top/sweepy" target="_blank" rel="noreferrer" title="Open mayano.top/sweepy to generate your API key">Get an API key<span class="key-link-arrow" aria-hidden="true">↗</span></a>
+            <span class="keybar-end">
+                <button id="logout-btn" class="btn btn-sm btn-quiet logout-btn" type="button">LOG OUT</button>
+            </span>
         </header>
 
-        <main class="main-container">
-            <section id="login-view" class="login-wrapper">
-                <div class="ritual-portal">
-                    <div class="ritual-showcase">
-                        <div class="ritual-art-stage">
-                            <img class="sweep-figure" src="/sweepy3.webp" alt="">
-                        </div>
-                    </div>
-
-                    <div class="login-panel">
-                        <div class="ritual-brand-row">
-                            <h1 class="title portal-title">SWEEPY<span>改三</span></h1>
-                        </div>
-                        <div class="sechead">
-                            <span class="num">01</span>
-                            <span class="lbl">Login</span>
-                            <span class="rule"></span>
-                        </div>
-                        <div class="qr-stage">
-                            <div id="qr-svg-box" class="qr-svg-box"></div>
-                            <p id="qr-hint" class="qr-hint">Login with Steam mobile app</p>
-                            <button id="qr-refresh-btn" class="btn btn-sm qr-refresh-btn" type="button">Refresh</button>
-                        </div>
-                        <div id="auth-error-msg" class="status-msg"></div>
+        <main class="main">
+            <section id="login-view" class="login" aria-label="Sign in">
+                <div class="login-stage">
+                    <figure class="login-art">
+                        <img src="/sweepy3.webp" alt="Sweep Tosho">
+                    </figure>
+                    <div class="login-card">
+                        <div id="qr-svg-box" class="qr-svg-box"></div>
+                        <p id="qr-hint" class="qr-hint" aria-live="polite"></p>
+                        <button id="qr-refresh-btn" class="btn btn-vermilion" type="button">REFRESH QR</button>
+                        <div id="auth-error-msg" class="banner error status-msg" role="alert"></div>
                     </div>
                 </div>
+                <div class="hem login-hem" aria-hidden="true"></div>
             </section>
 
-            <section id="dashboard-view" class="dashboard-container">
-                <div class="career-card">
+            <section id="dashboard-view" class="dashboard" aria-label="Dashboard">
+                <section class="career" aria-labelledby="career-name">
                     <div class="career-main">
-                        <div class="sechead">
-                            <span class="num">01</span>
-                            <span class="lbl">Grand Live — sprint/mile decks only</span>
-                            <span class="rule"></span>
+                        <div class="live">
+                            <p class="live-cell"><span class="label">Turn</span><strong id="hud-turn-val" class="live-value">— / 78</strong></p>
+                            <span id="hud-runner-badge" class="runner-state" aria-live="polite"></span>
                         </div>
-                        <div class="career-body">
-                            <span id="career-name" class="career-name">NO ACTIVE CAREER</span>
-                            <div class="execution-buttons">
-                                <button id="run-career-btn" class="btn btn-primary exec-run-btn" type="button" disabled>RESUME CAREER</button>
-                                <button id="stop-career-btn" class="btn exec-stop-btn" type="button" disabled>STOP</button>
-                            </div>
-                            <div id="exec-status-line" class="exec-status-line"></div>
-                        </div>
-                    </div>
-                    <div class="career-art">
-                        <img class="sweep-figure" src="/sweepy3.webp" alt="">
-                    </div>
-                    <aside class="career-rail">
-                        <div class="rail-head">
-                            <span class="rail-label">Career vitals</span>
-                        </div>
-                        <div id="account-strip" class="account-strip"></div>
-                    </aside>
-                </div>
-
-                <section class="key-section">
-                    <div class="hud-head">
-                        <div class="sechead">
-                            <span class="num">02</span>
-                            <span class="lbl">Api key</span>
-                            <span class="rule"></span>
-                        </div>
-                        <span id="key-status-badge" class="runner-state-badge is-idle">NO KEY</span>
-                    </div>
-
-                    <p class="key-help">Get a key at <a id="key-link" class="key-link" href="https://mayano.top/sweepy" target="_blank" rel="noreferrer">mayano.top/sweepy</a></p>
-
-                    <div class="key-form">
-                        <div class="key-field">
-                            <span class="buckle-frame">
-                                <input id="key-input" class="form-input" type="password" spellcheck="false" autocomplete="off" placeholder="Paste key" aria-label="API key">
-                                <i class="tick tl"></i><i class="tick tr"></i><i class="tick bl"></i><i class="tick br"></i>
+                        <h1 id="career-name" class="career-name is-placeholder">NO ACTIVE CAREER</h1>
+                        <p id="exec-status-line" class="exec-status-line" aria-live="polite"></p>
+                        <div class="actions">
+                            <button id="run-career-btn" class="btn btn-vermilion" type="button" disabled>RESUME</button>
+                            <button id="stop-career-btn" class="btn btn-quiet" type="button" disabled>STOP</button>
+                            <button id="tempt-fate-btn" class="btn btn-quiet toggle" type="button" role="switch" aria-checked="false">
+                                <span>Tempt fate</span>
+                                <span class="toggle-state" aria-hidden="true">Off</span>
+                            </button>
+                            <button id="burn-clocks-btn" class="btn btn-quiet toggle" type="button" role="switch" aria-checked="false">
+                                <span>Burn clocks</span>
+                                <span class="toggle-state" aria-hidden="true">Off</span>
+                            </button>
+                            <span class="delay">
+                                <span class="label">Delay</span>
+                                <input id="turn-delay-min" class="delay-input" type="number" min="0" max="60" step="0.1" value="1.6" aria-label="Minimum delay in seconds">
+                                <span class="label" aria-hidden="true">–</span>
+                                <input id="turn-delay-max" class="delay-input" type="number" min="0" max="60" step="0.1" value="3.7" aria-label="Maximum delay in seconds">
                             </span>
                         </div>
-                        <button id="key-save-btn" class="btn btn-primary key-save-btn" type="button">SAVE KEY</button>
                     </div>
 
-                    <div id="key-feedback" class="inline-feedback"></div>
+                    <figure class="career-art">
+                        <img src="/sweepy3.webp" alt="Sweep Tosho">
+                    </figure>
+
+                    <div class="ledger" aria-label="Career vitals">
+                        <p class="stat"><span class="label">Speed</span><strong id="stat-val-spd">—</strong></p>
+                        <p class="stat"><span class="label">Stamina</span><strong id="stat-val-sta">—</strong></p>
+                        <p class="stat"><span class="label">Power</span><strong id="stat-val-pwr">—</strong></p>
+                        <p class="stat"><span class="label">Guts</span><strong id="stat-val-gut">—</strong></p>
+                        <p class="stat"><span class="label">Wit</span><strong id="stat-val-wit">—</strong></p>
+                        <p class="stat minor"><span class="label">SP</span><strong id="stat-val-sp">—</strong></p>
+                        <p class="stat minor"><span class="label">Fans</span><strong id="stat-val-fans">—</strong></p>
+                        <div class="hp">
+                            <p class="hp-head"><span class="label">Energy</span><strong id="hud-hp-text">— / —</strong></p>
+                            <div class="bar"><div id="hud-hp-fill" class="bar-fill hp-fill" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="hem career-hem" aria-hidden="true"></div>
                 </section>
 
-                <section class="telemetry-hud">
-                    <div class="hud-head">
+                <section class="grand-live" aria-labelledby="gl-title">
+                    <div class="panel-head">
                         <div class="sechead">
-                            <span class="num">03</span>
-                            <span class="lbl">Status</span>
+                            <span class="num">02</span>
+                            <span class="lbl" id="gl-title">Overview</span>
                             <span class="rule"></span>
                         </div>
-                        <div class="hud-meta-pills">
-                            <span id="hud-runner-badge" class="runner-state-badge is-idle">IDLE</span>
-                            <span class="hud-stat-pill">CLOCKS USED <strong id="hud-clocks-used">0</strong></span>
-                        </div>
+                        <p class="mood"><span class="label">Mood</span><strong id="hud-mood-badge" class="mood-badge mood-normal">—</strong></p>
                     </div>
-
-                    <div id="hud-result-banner" class="hud-result-banner" style="display:none"></div>
-                    <div id="hud-error-banner" class="hud-error-banner" style="display:none"></div>
-
-                    <div class="hud-vitals-row">
-                        <div class="vital-box">
-                            <span class="vital-label">TURN</span>
-                            <strong id="hud-turn-val" class="vital-num">0 / 78</strong>
-                        </div>
-                        <div class="vital-box">
-                            <div class="vital-hp-top">
-                                <span class="vital-label">ENERGY</span>
-                                <strong id="hud-hp-text" class="vital-hp-num">100 / 100</strong>
-                            </div>
-                            <div class="hp-track">
-                                <div id="hud-hp-fill" class="hp-fill" style="width: 100%"></div>
-                            </div>
-                            <span id="hud-last-action" class="vital-sub">WAITING</span>
-                        </div>
-                        <div class="vital-box vital-mood">
-                            <span class="vital-label">MOOD</span>
-                            <span id="hud-mood-badge" class="mood-badge mood-normal">NORMAL</span>
-                        </div>
+                    <div class="points">
+                        <div class="point"><span class="point-code">DA</span><div class="bar"><div id="tok-fill-da" class="bar-fill" style="width: 0%"></div></div><strong id="tok-val-da">—</strong></div>
+                        <div class="point"><span class="point-code">PA</span><div class="bar"><div id="tok-fill-pa" class="bar-fill" style="width: 0%"></div></div><strong id="tok-val-pa">—</strong></div>
+                        <div class="point"><span class="point-code">VO</span><div class="bar"><div id="tok-fill-vo" class="bar-fill" style="width: 0%"></div></div><strong id="tok-val-vo">—</strong></div>
+                        <div class="point"><span class="point-code">VI</span><div class="bar"><div id="tok-fill-vi" class="bar-fill" style="width: 0%"></div></div><strong id="tok-val-vi">—</strong></div>
+                        <div class="point"><span class="point-code">ME</span><div class="bar"><div id="tok-fill-me" class="bar-fill" style="width: 0%"></div></div><strong id="tok-val-me">—</strong></div>
                     </div>
-
-                    <div class="stats-plate">
-                        <div class="hud-stats-grid">
-                            <div class="stat-cell"><span class="stat-head">SPD</span><strong id="stat-val-spd">0</strong></div>
-                            <div class="stat-cell"><span class="stat-head">STA</span><strong id="stat-val-sta">0</strong></div>
-                            <div class="stat-cell"><span class="stat-head">PWR</span><strong id="stat-val-pwr">0</strong></div>
-                            <div class="stat-cell"><span class="stat-head">GUT</span><strong id="stat-val-gut">0</strong></div>
-                            <div class="stat-cell"><span class="stat-head">WIT</span><strong id="stat-val-wit">0</strong></div>
-                            <div class="stat-cell"><span class="stat-head">SP</span><strong id="stat-val-sp">0</strong></div>
-                            <div class="stat-cell stat-cell-fans"><span class="stat-head">FANS</span><strong id="stat-val-fans">0</strong></div>
+                    <div class="career-progress">
+                        <div class="progress-head">
+                            <span class="label">Turn</span>
+                            <strong id="gl-turn" class="progress-count">0 / 78</strong>
                         </div>
-
-                        <div class="gl-tokens">
-                            <div class="gl-token"><span class="tok-k">DA</span><strong id="tok-val-da">0</strong></div>
-                            <div class="gl-token"><span class="tok-k">PA</span><strong id="tok-val-pa">0</strong></div>
-                            <div class="gl-token"><span class="tok-k">VO</span><strong id="tok-val-vo">0</strong></div>
-                            <div class="gl-token"><span class="tok-k">VI</span><strong id="tok-val-vi">0</strong></div>
-                            <div class="gl-token"><span class="tok-k">ME</span><strong id="tok-val-me">0</strong></div>
-                        </div>
+                        <div class="bar"><div id="gl-turn-fill" class="bar-fill" style="width: 0%"></div></div>
                     </div>
+                </section>
 
-                    <div class="action-history-wrap" id="turn-log-wrap">
-                        <table class="action-history-table">
-                            <thead>
-                                <tr>
-                                    <th class="col-turn">TURN</th>
-                                    <th class="col-kind">TYPE</th>
-                                    <th class="col-action">ACTION</th>
-                                </tr>
-                            </thead>
+                <section class="log" aria-labelledby="log-title">
+                    <div class="panel-head">
+                        <div class="sechead">
+                            <span class="num">03</span>
+                            <span class="lbl" id="log-title">Log</span>
+                            <span class="rule"></span>
+                        </div>
+                        <p class="hud-stat-pill">CLOCKS <strong id="hud-clocks-used">0</strong></p>
+                    </div>
+                    <p id="hud-last-action" class="last-action" aria-live="polite"></p>
+                    <div id="hud-result-banner" class="banner result" role="status" style="display:none"></div>
+                    <div id="hud-error-banner" class="banner error" role="alert" style="display:none"></div>
+                    <div id="turn-log-wrap" class="table-wrap" tabindex="0" role="region" aria-label="Turns">
+                        <table class="log-table">
                             <tbody id="turn-log-tbody">
                                 <tr class="log-empty-row">
                                     <td colspan="3">NO TURNS YET</td>
@@ -199,6 +149,8 @@
                         </table>
                     </div>
                 </section>
+
+                <div id="account-strip" class="account-strip" aria-label="Account" style="display:none"></div>
             </section>
         </main>
     </div>

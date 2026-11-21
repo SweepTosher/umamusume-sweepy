@@ -6,13 +6,15 @@ const state = {
     qrActive: false,
     qrRetries: 0,
     qrInterval: 2,
-    sessionTimer: null,
     runnerTimer: null,
     delayTimer: null,
     disconnected: false,
-    recovering: false,
     keyMask: "",
     historySig: "",
+    pendingTempt: null,
+    pendingBurn: null,
+    temptSeq: 0,
+    burnSeq: 0,
 };
 
 const TOTAL_TURNS = 78;
@@ -225,6 +227,21 @@ function hideLoading() {
     }
 }
 
+function setToggle(id, on) {
+    const node = $(id);
+    if (!node) {
+        return;
+    }
+    node.dataset.on = String(on);
+    node.setAttribute("aria-checked", String(on));
+    node.classList.toggle("btn-brass", on);
+    node.classList.toggle("btn-quiet", !on);
+    const stateNode = node.querySelector(".toggle-state");
+    if (stateNode) {
+        stateNode.textContent = on ? "On" : "Off";
+    }
+}
+
 function pill(label, value, tone) {
     const node = make("div", `account-pill ${tone || ""}`.trim());
     node.append(make("span", "label", label));
@@ -263,13 +280,14 @@ function renderKeyStatus(session) {
     const hasKey = Boolean(brain.has_api_key);
     const link = $("key-link");
     if (link && brain.api_url) {
+        const host = String(brain.api_url).replace(/^https?:\/\//, "");
         link.href = brain.api_url;
-        link.textContent = String(brain.api_url).replace(/^https?:\/\//, "");
+        link.title = `Open ${host} to ${hasKey ? "manage" : "generate"} your API key`;
     }
     const badge = $("key-status-badge");
     if (badge) {
         badge.textContent = !hasKey ? "NO KEY" : online ? "ONLINE" : "OFFLINE";
-        badge.className = `runner-state-badge ${hasKey && online ? "is-running" : "is-idle"}`;
+        badge.className = `runner-state ${hasKey && online ? "is-running" : "is-idle"}`;
     }
     const feedback = $("key-feedback");
     const staleUnreachable = Boolean(feedback && feedback.textContent.trim() === "Unreachable.");
@@ -291,6 +309,7 @@ function renderCareer(session) {
     const nameNode = $("career-name");
     if (nameNode) {
         nameNode.textContent = career.active ? String(career.name || "GRAND LIVE CAREER").toUpperCase() : "NO ACTIVE CAREER";
+        nameNode.classList.toggle("is-placeholder", career.active !== true);
     }
 }
 
@@ -309,7 +328,6 @@ function renderAccountStrip(session) {
     const tp = account.tp || {};
     strip.append(pill("TP", `${tp.current ?? 0} / ${tp.max ?? 0}`, "pill-tp"));
     strip.append(pill("CLOCKS", `${account.clocks ?? 0}`, "pill-clk"));
-    strip.append(pill("TRAINER", account.trainer_name || "?", "pill-trainer"));
 }
 
 function renderRunner(runner) {
@@ -376,6 +394,7 @@ function renderRunner(runner) {
             node.textContent = shown(tokens[key] ?? 0);
         }
     }
+    renderGrandLive(runner);
     renderHistory(runner.history || []);
     renderResult(runner.result);
     renderError(runner.error);
@@ -386,6 +405,29 @@ function renderRunner(runner) {
     }
     if (stopBtn) {
         stopBtn.disabled = runner.running !== true;
+    }
+}
+
+function renderGrandLive(runner) {
+    const turn = Math.max(0, Math.min(TOTAL_TURNS, Number(runner.turn ?? 0)));
+    const tokens = runner.tokens || {};
+    const keys = ["da", "pa", "vo", "vi", "me"];
+    const values = keys.map((key) => Number(tokens[key] ?? 0));
+    const scale = Math.max(1, ...values);
+    for (const [i, key] of keys.entries()) {
+        const fill = $(`tok-fill-${key}`);
+        if (!fill) {
+            continue;
+        }
+        fill.style.width = `${Math.min(100, (values[i] / scale) * 100)}%`;
+    }
+    const turnText = $("gl-turn");
+    if (turnText) {
+        turnText.textContent = `${turn} / ${TOTAL_TURNS}`;
+    }
+    const turnFill = $("gl-turn-fill");
+    if (turnFill) {
+        turnFill.style.width = `${(turn / TOTAL_TURNS) * 100}%`;
     }
 }
 
@@ -587,35 +629,72 @@ async function startCareer() {
         const response = await api("/api/career/run", "POST", {
             burn_clocks: Boolean(state.session.burn_clocks),
         });
+        if (state.session) {
+            state.session.runner = response.runner;
+        }
         renderRunner(response.runner);
         startRunnerPolling();
     } catch (error) {
         setStatus(`Run failed: ${error.message}`, "error");
+        refreshSession().catch(() => markDisconnected());
     }
 }
 
 async function stopCareer() {
     try {
         const response = await api("/api/career/runner/stop", "POST", {});
+        if (state.session) {
+            state.session.runner = response.runner;
+        }
         renderRunner(response.runner);
     } catch (error) {
         setStatus(`Stop failed: ${error.message}`, "error");
     }
 }
 
+function paintDelay(delay) {
+    const config = delay || {};
+    const min = $("turn-delay-min");
+    const max = $("turn-delay-max");
+    if (!min || !max) {
+        return;
+    }
+    min.value = Number(config.restore_min ?? config.min ?? 1.6).toFixed(1);
+    max.value = Number(config.restore_max ?? config.max ?? 3.7).toFixed(1);
+    min.disabled = Boolean(config.disabled);
+    max.disabled = Boolean(config.disabled);
+}
+
 async function setTurnDelay() {
+    const current = (state.session && state.session.turn_delay) || {};
+    if (current.disabled) {
+        return;
+    }
     const min = Number($("turn-delay-min").value);
     const max = Number($("turn-delay-max").value);
     try {
-        await api("/api/settings/turn-delay", "POST", { min, max, disabled: false });
+        const saved = await api("/api/settings/turn-delay", "POST", { min, max, disabled: false });
+        if (state.session) {
+            state.session.turn_delay = saved.turn_delay || saved;
+        }
+        paintDelay(state.session && state.session.turn_delay);
     } catch (error) {
         setStatus(`Delay update failed: ${error.message}`, "error");
     }
 }
 
+function paintTemptFate(on) {
+    $("tempt-fate-btn").dataset.enabled = String(on);
+    setToggle("tempt-fate-btn", on);
+}
+
+function paintBurnClocks(on) {
+    setToggle("burn-clocks-btn", on);
+}
+
 async function toggleTemptFate() {
     const button = $("tempt-fate-btn");
-    const next = !button.dataset.enabled || button.dataset.enabled === "false";
+    const next = button.dataset.enabled !== "true";
     const delay = (state.session && state.session.turn_delay) || {};
     const body = next
         ? { min: 0, max: 0, disabled: true }
@@ -624,12 +703,27 @@ async function toggleTemptFate() {
             max: Number(delay.restore_max ?? 3.7),
             disabled: false,
         };
+    const seq = ++state.temptSeq;
+    state.pendingTempt = next;
+    paintTemptFate(next);
     try {
-        await api("/api/settings/turn-delay", "POST", body);
-        button.dataset.enabled = String(next);
-        button.textContent = `TEMPT FATE: ${next ? "ON" : "OFF"}`;
+        const saved = await api("/api/settings/turn-delay", "POST", body);
+        if (seq !== state.temptSeq) {
+            return;
+        }
+        state.pendingTempt = null;
+        const delayCfg = saved.turn_delay || saved;
+        if (state.session) {
+            state.session.turn_delay = delayCfg;
+        }
+        paintTemptFate(Boolean(delayCfg.disabled));
+        paintDelay(delayCfg);
     } catch (error) {
-        setStatus(`Tempt fate: ${error.message}`, "error");
+        if (seq === state.temptSeq) {
+            state.pendingTempt = null;
+            paintTemptFate(!next);
+            setStatus(`Tempt fate: ${error.message}`, "error");
+        }
     }
 }
 
@@ -638,18 +732,36 @@ async function toggleBurnClocks() {
         return;
     }
     const next = !state.session.burn_clocks;
+    const seq = ++state.burnSeq;
+    state.session.burn_clocks = next;
+    state.pendingBurn = next;
+    paintBurnClocks(next);
     try {
         const response = await api("/api/career/runner/burn_clocks", "POST", { burn_clocks: next });
-        state.session.burn_clocks = response.burn_clocks;
-        $("burn-clocks-btn").textContent = `BURN CLOCKS: ${next ? "ON" : "OFF"}`;
+        if (seq === state.burnSeq) {
+            state.pendingBurn = null;
+            state.session.burn_clocks = Boolean(response.burn_clocks);
+            paintBurnClocks(Boolean(response.burn_clocks));
+        }
     } catch (error) {
-        setStatus(`Burn clocks failed: ${error.message}`, "error");
+        if (seq === state.burnSeq) {
+            state.pendingBurn = null;
+            state.session.burn_clocks = !next;
+            paintBurnClocks(!next);
+            setStatus(`Burn clocks failed: ${error.message}`, "error");
+        }
     }
 }
 
 
 function applySession(session) {
     state.session = session;
+    if (state.pendingTempt !== null && session.turn_delay) {
+        session.turn_delay.disabled = state.pendingTempt;
+    }
+    if (state.pendingBurn !== null) {
+        session.burn_clocks = state.pendingBurn;
+    }
     const keySeed = (session.brain || {}).api_key_seed || "";
     if (keySeed && !readBrainKey()) {
         saveBrainKey(keySeed);
@@ -668,11 +780,13 @@ function applySession(session) {
     renderKeyStatus(session);
     if (logged) {
         const delay = session.turn_delay || {};
-        $("turn-delay-min").value = Number(delay.min ?? 1.6).toFixed(1);
-        $("turn-delay-max").value = Number(delay.max ?? 3.7).toFixed(1);
-        $("tempt-fate-btn").textContent = `TEMPT FATE: ${delay.disabled ? "ON" : "OFF"}`;
-        $("tempt-fate-btn").dataset.enabled = String(Boolean(delay.disabled));
-        $("burn-clocks-btn").textContent = `BURN CLOCKS: ${session.burn_clocks ? "ON" : "OFF"}`;
+        if (state.pendingTempt === null) {
+            paintDelay(delay);
+            paintTemptFate(Boolean(delay.disabled));
+        }
+        if (state.pendingBurn === null) {
+            paintBurnClocks(Boolean(session.burn_clocks));
+        }
         renderAccountStrip(session);
         renderCareer(session);
         renderRunner(session.runner);
@@ -697,29 +811,6 @@ function applySession(session) {
     }
 }
 
-async function restoreAfterRestart() {
-    if (state.recovering) {
-        return;
-    }
-    state.recovering = true;
-    try {
-        const restored = await api("/api/auth/restore", "POST", {
-            refresh_token: readSteamToken(),
-            api_key: readBrainKey(),
-            device: readDeviceState(),
-        });
-        adoptDeviceState(restored);
-        const session = await refreshSession();
-        if (!session.logged_in) {
-            await startQr();
-        }
-    } catch (error) {
-        markDisconnected();
-    } finally {
-        state.recovering = false;
-    }
-}
-
 async function refreshSession(fresh) {
     let session;
     try {
@@ -738,15 +829,15 @@ function startRunnerPolling() {
         return;
     }
     state.runnerTimer = setInterval(async () => {
-        if (!state.session || !state.session.logged_in) {
+        const runner = state.session && state.session.runner;
+        if (!state.session || !state.session.logged_in || !runner || runner.running !== true) {
             return;
         }
-        const wasRunning = Boolean(state.session && state.session.runner && state.session.runner.running === true);
         try {
             const response = await api("/api/career/runner");
             markConnected();
             renderRunner(response.runner);
-            if (wasRunning && response.runner && response.runner.running !== true) {
+            if (response.runner && response.runner.running !== true) {
                 await refreshSession(true);
             }
             if (state.session) {
@@ -818,27 +909,12 @@ async function init() {
     } finally {
         hideLoading();
     }
-    state.sessionTimer = setInterval(async () => {
-        const wasLoggedIn = Boolean(state.session && state.session.logged_in);
-        try {
-            const session = await refreshSession();
-            if (wasLoggedIn && !session.logged_in) {
-                if (readSteamToken()) {
-                    await restoreAfterRestart();
-                } else {
-                    await startQr();
-                }
-            }
-        } catch {
-            markDisconnected();
-        }
-    }, 5000);
 }
 
 document.addEventListener("DOMContentLoaded", init);
 
 document.addEventListener("visibilitychange", () => {
     if (!document.hidden && state.session && state.session.logged_in) {
-        refreshSession(true).catch(() => markDisconnected());
+        refreshSession().catch(() => markDisconnected());
     }
 });

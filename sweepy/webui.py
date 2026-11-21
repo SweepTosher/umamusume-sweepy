@@ -27,7 +27,6 @@ _ALLOWED_LOCAL_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
 _HEALTH_TIMEOUT_SECONDS = 3.0
 
-_ACCOUNT_REFRESH_SECONDS = 12.0
 
 _ALLOWED_FETCH_SITES = frozenset({"same-origin", "none"})
 
@@ -134,7 +133,6 @@ class SweepyAppState:
         self._brain_probe_at: float = 0.0
         self._synced_finished_data_id: int | None = None
         self._device_state: dict[str, Any] | None = self._take_legacy_device_state()
-        self._account_refreshed_at: float = 0.0
 
     def _take_legacy_device_state(self) -> dict[str, Any] | None:
         path = self.config.device_file
@@ -228,7 +226,6 @@ class SweepyAppState:
                 self._client = client
                 self._raw_account_data = raw_data
                 self._dashboard = dashboard
-                self._account_refreshed_at = time.monotonic()
                 if isinstance(device_state, dict):
                     self._device_state = device_state
             if old_client is not None and old_client is not client:
@@ -250,7 +247,6 @@ class SweepyAppState:
             self._synced_finished_data_id = marker
             self._raw_account_data = latest
             self._dashboard = self.catalog.format_account_status(latest)
-            self._account_refreshed_at = 0.0
 
     def _account_view(self, runner_snapshot: dict[str, Any]) -> dict[str, Any] | None:
         with self._lock:
@@ -300,10 +296,10 @@ class SweepyAppState:
             self._brain_health = health
 
     def _refresh_account(self, *, force: bool = False) -> None:
+        if not force:
+            return
         with self._lock:
             if self._client is None or self._dashboard is None or self.runner.running:
-                return
-            if not force and time.monotonic() - self._account_refreshed_at < _ACCOUNT_REFRESH_SECONDS:
                 return
         if not self._auth_lock.acquire(blocking=False):
             return
@@ -312,7 +308,6 @@ class SweepyAppState:
                 client = self._client
                 if client is None or self.runner.running:
                     return
-                self._account_refreshed_at = time.monotonic()
             try:
                 raw = client.login(read_info=True)
             except Exception:
@@ -588,7 +583,6 @@ class SweepyAppState:
             brain.on_key_refresh = self._save_rotated_key
             self._apply_delay_to_client(client, settings["turn_delay"])
             self.runner.start(client, brain, burn_clocks=burn_clocks)
-            self._account_refreshed_at = 0.0
             return {
                 "ok": True,
                 "runner": self.runner.snapshot(),
@@ -611,7 +605,6 @@ class SweepyAppState:
 
     def stop_runner(self) -> dict[str, Any]:
         self.runner.stop()
-        self._account_refreshed_at = 0.0
         return {
             "ok": True,
             "runner": self.runner.snapshot(),

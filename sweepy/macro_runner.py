@@ -831,6 +831,30 @@ class MacroCareerRunner:
             self._record_history(turn, "Song", f"Learned song · slot {sq_id}", f"Songs: {self._telemetry_songs['mastered']}")
             return
 
+        if endpoint.endswith("/gain_skills"):
+            raw_arr = payload.get("gain_skill_info_array")
+            if not isinstance(raw_arr, list):
+                raw_arr = payload.get("skill_Select_array") or []
+            skill_items = [
+                {"skill_id": int(item["skill_id"]), "level": int(item.get("level", item.get("skill_level", 1)))}
+                for item in raw_arr
+                if isinstance(item, dict) and item.get("skill_id")
+            ]
+            if not skill_items:
+                raise BrainAPIError("gain_skills missing skill items")
+            req_turn = int(payload.get("current_turn") or turn)
+            res = self.client.gain_skills(skill_items, req_turn)
+            _merge_career_state(state, _unwrap_envelope(res))
+            loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
+            state.clear()
+            state.update(loaded)
+            self._needs_post_square_reload = False
+            self._prev_endpoint_was_master_square = False
+            self._update_telemetry(state)
+            sid0 = skill_items[0]["skill_id"]
+            self._record_history(turn, "Skill", f"Learned skill {sid0}", f"SP left: {(state.get('chara_info') or {}).get('skill_point', 0)}")
+            return
+
         self._prev_endpoint_was_master_square = False
 
         if endpoint.endswith("/load"):

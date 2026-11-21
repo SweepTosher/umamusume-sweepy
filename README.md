@@ -22,6 +22,12 @@ python main.py
 key at   
 https://mayano.top/sweepy  
 
+## Changes    
+
+21/11/26   
+Backend returning 500 sometimes fixed      
+
+
 <img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/a376b9e0-832e-45ea-add4-499a9f76a284" />
 <img width="190" height="158" alt="image" src="https://github.com/user-attachments/assets/428a7704-0729-4dc3-890f-246fb0a94774" />
 <img width="190" height="140" alt="image" src="https://github.com/user-attachments/assets/65edac1a-91c0-4559-8393-7432418afa18" />

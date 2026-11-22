@@ -1,4 +1,4 @@
-someone got into my cloudlfare account dont use for now thx
+cloudflare tunnel compromised on 22nov so keep ur eyes open.
 
 Uma bot that's about 70% to mathematical perfection. High UF with whale decks decent UGS for f2ps.
 

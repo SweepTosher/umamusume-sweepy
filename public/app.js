@@ -335,7 +335,7 @@ function downloadJsonFile(payload, filename) {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = filename || "turn_078_000.json";
+    anchor.download = filename || "umadump.json";
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();

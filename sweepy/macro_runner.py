@@ -281,15 +281,11 @@ class MacroCareerRunner:
         chara = state.get("chara_info") if isinstance(state, dict) else None
         if not is_final_turn(chara):
             return
-        with self._lock:
-            if self._final_turn_payload is not None:
-                return
         payload = build_final_turn_payload(state)
         if payload is None:
             return
         with self._lock:
-            if self._final_turn_payload is None:
-                self._final_turn_payload = payload
+            self._final_turn_payload = payload
 
     def final_turn_export(self) -> dict[str, Any] | None:
         with self._lock:

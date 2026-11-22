@@ -19,6 +19,7 @@ from sweepy.catalog import Catalog
 from sweepy.config import RuntimeConfig
 from sweepy.macro_runner import MacroCareerRunner
 from sweepy.qr_svg import render_qr_svg
+from sweepy.umadump_export import export_filename
 from uma_headless import SteamTicketError
 from uma_headless.device import read_device_state
 
@@ -607,6 +608,11 @@ class SweepyAppState:
         export = self.runner.final_turn_export()
         if export is None:
             raise ValueError("No final-turn career state captured yet")
+        chara = export["json"]["chara_info"]
+        name = self.catalog.chara_name(chara.get("card_id"))
+        if name.startswith("Unknown ("):
+            name = None
+        export["filename"] = export_filename(chara, name)
         return {"ok": True, **export}
 
     def stop_runner(self) -> dict[str, Any]:

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+from datetime import datetime
 from typing import Any, Mapping
 
 REQUIRED_NUMBER_FIELDS = (
@@ -35,6 +37,8 @@ OPTIONAL_NUMBER_FIELDS = (
 SKILL_FIELDS = ("skill_id", "level")
 HINT_FIELDS = ("group_id", "rarity", "level")
 FINAL_CAREER_TURN = 78
+_UNSAFE = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
+_SPACE = re.compile(r"\s+")
 
 
 def _int(value: Any) -> int | None:
@@ -97,6 +101,19 @@ def build_final_turn_payload(state: Mapping[str, Any] | None) -> dict[str, Any] 
     return {"chara_info": info}
 
 
-def export_filename(chara: Mapping[str, Any] | None) -> str:
-    turn = _int((chara or {}).get("turn")) or FINAL_CAREER_TURN
-    return f"turn_{turn:03d}_000.json"
+def _slug(text: Any, fallback: str) -> str:
+    cleaned = _SPACE.sub("_", _UNSAFE.sub("", str(text or "")).strip())
+    return cleaned.strip("._")[:80] or fallback
+
+
+def export_filename(
+    chara: Mapping[str, Any] | None,
+    name: str | None = None,
+    moment: datetime | None = None,
+) -> str:
+    chara = chara or {}
+    label = name or chara.get("name")
+    card_id = _int(chara.get("card_id"))
+    fallback = f"card_{card_id}" if card_id is not None else "umadump"
+    when = moment or datetime.now()
+    return f"{_slug(label, fallback)}_{when:%Y%m%d-%H%M%S}.json"

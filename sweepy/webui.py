@@ -603,6 +603,12 @@ class SweepyAppState:
             "account": self._account_view(snapshot),
         }
 
+    def final_turn_export(self) -> dict[str, Any]:
+        export = self.runner.final_turn_export()
+        if export is None:
+            raise ValueError("No final-turn career state captured yet")
+        return {"ok": True, **export}
+
     def stop_runner(self) -> dict[str, Any]:
         self.runner.stop()
         return {
@@ -731,6 +737,9 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
                     return
                 if path == "/api/career/runner":
                     self._send_json(200, app_state.runner_status())
+                    return
+                if path == "/api/career/final-turn-export":
+                    self._send_json(200, app_state.final_turn_export())
                     return
             except BrainAPIError as exc:
                 self._send_json(502, {"ok": False, "error": str(exc)})

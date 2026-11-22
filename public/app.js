@@ -330,9 +330,61 @@ function renderAccountStrip(session) {
     strip.append(pill("CLOCKS", `${account.clocks ?? 0}`, "pill-clk"));
 }
 
-function renderRunner(runner) {
-    if (!runner) {
+function downloadJsonFile(payload, filename) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename || "turn_078_000.json";
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+async function exportFinalTurn() {
+    const btn = $("final-turn-export-btn");
+    if (!btn) {
         return;
+    }
+    const label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "EXPORTING…";
+    try {
+        const payload = await api("/api/career/final-turn-export");
+        downloadJsonFile(payload.json, payload.filename);
+        btn.textContent = "SAVED";
+        setTimeout(() => {
+            btn.textContent = label;
+            btn.disabled = false;
+        }, 1500);
+    } catch (error) {
+        setStatus(`Export failed: ${error.message}`, "error");
+        btn.textContent = label;
+        btn.disabled = false;
+    }
+}
+
+function bindFinalTurnExport() {
+    const btn = $("final-turn-export-btn");
+    if (!btn || btn.dataset.bound === "1") {
+        return;
+    }
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", exportFinalTurn);
+}
+
+function renderRunner(runner) {
+    const exportBtn = $("final-turn-export-btn");
+    if (!runner) {
+        if (exportBtn) {
+            exportBtn.style.display = "none";
+        }
+        return;
+    }
+    bindFinalTurnExport();
+    if (exportBtn) {
+        exportBtn.style.display = runner.final_turn_export_ready === true ? "" : "none";
     }
     const badge = $("hud-runner-badge");
     if (badge) {

@@ -8,6 +8,11 @@ from typing import Any
 from sweepy.brain_client import BrainAPIError, BrainClient
 from sweepy.race_binary import decode_player_rank
 from sweepy.stripper import strip_career_state
+from sweepy.umadump_export import (
+    build_final_turn_payload,
+    export_filename,
+    is_final_turn,
+)
 
 
 _COMMAND_LABELS: dict[int, str] = {
@@ -170,6 +175,7 @@ class MacroCareerRunner:
         self._result: dict[str, Any] | None = None
         self._latest_account_data: dict[str, Any] | None = None
         self._latest_account_data_version: int = 0
+        self._final_turn_payload: dict[str, Any] | None = None
 
         self._viewer_id_hash: str = ""
         self._pending_drained_stories: list[int] = []
@@ -268,7 +274,34 @@ class MacroCareerRunner:
                 "clocks_used": self._clocks_used,
                 "last_action": self._last_action,
                 "history": [dict(item) for item in self._history],
+                "final_turn_export_ready": self._final_turn_payload is not None,
             }
+
+    def _capture_final_turn_export(self, state: dict[str, Any]) -> None:
+        chara = state.get("chara_info") if isinstance(state, dict) else None
+        if not is_final_turn(chara):
+            return
+        with self._lock:
+            if self._final_turn_payload is not None:
+                return
+        payload = build_final_turn_payload(state)
+        if payload is None:
+            return
+        with self._lock:
+            if self._final_turn_payload is None:
+                self._final_turn_payload = payload
+
+    def final_turn_export(self) -> dict[str, Any] | None:
+        with self._lock:
+            payload = self._final_turn_payload
+        if payload is None:
+            return None
+        chara = payload.get("chara_info") or {}
+        return {
+            "json": payload,
+            "filename": export_filename(chara),
+            "turn": chara.get("turn"),
+        }
 
     def start(
         self,
@@ -338,6 +371,7 @@ class MacroCareerRunner:
         self._error = None
         self._result = None
         self._latest_account_data = None
+        self._final_turn_payload = None
         self._pending_drained_stories = []
         self._pending_settled_races = []
         self._last_command = None
@@ -426,6 +460,7 @@ class MacroCareerRunner:
                 self._history = self._history[-80:]
 
     def _update_telemetry(self, state: dict[str, Any]) -> None:
+        self._capture_final_turn_export(state)
         chara = state.get("chara_info")
         live = state.get("live_data_set")
         with self._lock:

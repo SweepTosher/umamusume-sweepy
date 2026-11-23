@@ -23,12 +23,86 @@ DEFAULT_TURN_DELAY: dict[str, Any] = {
     "disabled": False,
 }
 
-def _disk_payload(settings: dict[str, Any]) -> dict[str, Any]:
+DEFAULT_CM_CONFIG: dict[str, Any] = {
+    "cm_mode": False,
+    "cm_course": "sagittarius",
+    "cm_role": 0,
+    "cm_style": 0,
+    "mate_ids": [None, None],
+    "mate_roles": ["auto", "auto"],
+    "mate_snapshots": [None, None],
+}
+
+
+def _normalize_cm_config(raw: Any) -> dict[str, Any]:
+    src = raw if isinstance(raw, dict) else {}
+    cm_mode = bool(src.get("cm_mode", False))
+    raw_course = src.get("cm_course", "sagittarius")
+    cm_course = str(raw_course or "sagittarius").strip() or "sagittarius"
+    raw_role = src.get("cm_role", 0)
+    if isinstance(raw_role, str):
+        role_map = {
+            "solo": 0, "ace1": 0, "raw": 0, "ace1_raw": 0,
+            "ace": 1, "ace2": 1,
+            "support": 2, "debuffer": 2, "deb": 2,
+            "blocker": 3, "blk": 3,
+        }
+        cm_role = role_map.get(raw_role.strip().lower(), 0)
+    else:
+        try:
+            cm_role = max(0, min(3, int(raw_role or 0)))
+        except (TypeError, ValueError):
+            cm_role = 0
+    try:
+        cm_style = max(0, min(5, int(src.get("cm_style", 0) or 0)))
+    except (TypeError, ValueError):
+        cm_style = 0
+
+    raw_ids = src.get("mate_ids")
+    mate_ids: list[int | None] = [None, None]
+    if isinstance(raw_ids, (list, tuple)):
+        for i in range(min(2, len(raw_ids))):
+            v = raw_ids[i]
+            if v is not None and str(v).strip() != "" and not isinstance(v, bool):
+                try:
+                    mate_ids[i] = int(v)
+                except (TypeError, ValueError):
+                    mate_ids[i] = None
+
+    raw_roles = src.get("mate_roles")
+    mate_roles: list[str] = ["auto", "auto"]
+    if isinstance(raw_roles, (list, tuple)):
+        for i in range(min(2, len(raw_roles))):
+            rv = str(raw_roles[i] or "auto").strip().lower()
+            mate_roles[i] = rv if rv in ("auto", "ace", "debuffer", "blocker") else "auto"
+
+    raw_snaps = src.get("mate_snapshots")
+    mate_snapshots: list[dict[str, Any] | None] = [None, None]
+    if isinstance(raw_snaps, (list, tuple)):
+        for i in range(min(2, len(raw_snaps))):
+            if isinstance(raw_snaps[i], dict):
+                mate_snapshots[i] = dict(raw_snaps[i])
+
     return {
+        "cm_mode": cm_mode,
+        "cm_course": cm_course,
+        "cm_role": cm_role,
+        "cm_style": cm_style,
+        "mate_ids": mate_ids,
+        "mate_roles": mate_roles,
+        "mate_snapshots": mate_snapshots,
+    }
+
+
+def _disk_payload(settings: dict[str, Any]) -> dict[str, Any]:
+    out: dict[str, Any] = {
         "api_url": settings.get("api_url", ""),
         "turn_delay": settings.get("turn_delay"),
         "burn_clocks": bool(settings.get("burn_clocks", False)),
     }
+    if "cm_config" in settings:
+        out["cm_config"] = _normalize_cm_config(settings.get("cm_config"))
+    return out
 
 
 def validate_brain_url(api_url: str) -> str:
@@ -173,6 +247,7 @@ class RuntimeConfig:
             "api_key": api_key,
             "turn_delay": dict(DEFAULT_TURN_DELAY),
             "burn_clocks": False,
+            "cm_config": _normalize_cm_config(DEFAULT_CM_CONFIG),
         }
 
     def _ensure_defaults(self) -> None:
@@ -216,6 +291,7 @@ class RuntimeConfig:
                 "api_key": self._memory_api_key,
                 "turn_delay": _normalize_turn_delay(raw.get("turn_delay")),
                 "burn_clocks": bool(raw.get("burn_clocks", False)),
+                "cm_config": _normalize_cm_config(raw.get("cm_config")),
             }
 
     def save_settings(self, settings: dict[str, Any]) -> dict[str, Any]:
@@ -227,6 +303,7 @@ class RuntimeConfig:
                 "api_key": str(settings.get("api_key") or "").strip(),
                 "turn_delay": _normalize_turn_delay(settings.get("turn_delay")),
                 "burn_clocks": bool(settings.get("burn_clocks", False)),
+                "cm_config": _normalize_cm_config(settings.get("cm_config")),
             }
             self._memory_api_key = normalized["api_key"]
             self._api_key_seed_pending = False
@@ -331,4 +408,8 @@ class RuntimeConfig:
 
     def set_burn_clocks(self, burn_clocks: bool) -> dict[str, Any]:
         return self.update_settings(burn_clocks=bool(burn_clocks))
+
+    def set_cm_config(self, cm_config: dict[str, Any]) -> dict[str, Any]:
+        saved = self.update_settings(cm_config=_normalize_cm_config(cm_config))
+        return saved["cm_config"]
 

@@ -24,15 +24,15 @@ _COMMAND_LABELS: dict[int, str] = {
     301: "Outing",
     302: "Outing",
     303: "Outing",
-    304: "Summer Rest",
+    304: "Summer Outing",
     390: "Pal Outing",
-    401: "Rest",
+    401: "Race",
     601: "Summer Speed",
     602: "Summer Stamina",
     603: "Summer Power",
     604: "Summer Guts",
     605: "Summer Wit",
-    701: "Summer Rest",
+    701: "Rest",
     801: "Infirmary",
 }
 
@@ -166,6 +166,7 @@ class MacroCareerRunner:
         self.client: Any = None
         self.brain: BrainClient | None = None
         self.burn_clocks: bool = False
+        self._cm_options: dict[str, Any] | None = None
 
         self._running: bool = False
         self._finished: bool = False
@@ -184,6 +185,9 @@ class MacroCareerRunner:
         self._needs_post_square_reload: bool = False
         self._rejected_programs: list[list[int]] = []
         self._rejected_commands: list[list[int]] = []
+        self._rejected_squares: list[list[int]] = []
+        self._rejected_square_board: tuple[int, int, tuple[tuple[int, int], ...]] | None = None
+        self._pending_square_attempt: dict[str, Any] | None = None
         self._command_attempts: list[list[int]] = []
         self._prev_endpoint_was_master_square: bool = False
 
@@ -243,6 +247,10 @@ class MacroCareerRunner:
         with self._lock:
             self.burn_clocks = bool(enabled)
 
+    def set_cm_options(self, cm_options: dict[str, Any] | None) -> None:
+        with self._lock:
+            self._cm_options = dict(cm_options) if isinstance(cm_options, dict) else None
+
     def stop(self) -> None:
         self._stop_event.set()
         thread = self._thread
@@ -275,6 +283,7 @@ class MacroCareerRunner:
                 "last_action": self._last_action,
                 "history": [dict(item) for item in self._history],
                 "final_turn_export_ready": self._final_turn_payload is not None,
+                "cm_active": bool(isinstance(self._cm_options, dict) and self._cm_options.get("cm_mode")),
             }
 
     def _capture_final_turn_export(self, state: dict[str, Any]) -> None:
@@ -305,6 +314,7 @@ class MacroCareerRunner:
         brain: BrainClient,
         *,
         burn_clocks: bool = False,
+        cm_options: dict[str, Any] | None = None,
         initial_state: dict[str, Any] | None = None,
         account_data: dict[str, Any] | None = None,
         max_steps: int = 1200,
@@ -314,7 +324,7 @@ class MacroCareerRunner:
         with self._lock:
             if self._running and self._thread is not None and self._thread.is_alive():
                 raise RuntimeError("Runner already running")
-            self._reset_run_state(burn_clocks=burn_clocks)
+            self._reset_run_state(burn_clocks=burn_clocks, cm_options=cm_options)
             self._running = True
             self._status = "running"
             self._thread = threading.Thread(
@@ -337,6 +347,7 @@ class MacroCareerRunner:
         brain: BrainClient,
         *,
         burn_clocks: bool = False,
+        cm_options: dict[str, Any] | None = None,
         initial_state: dict[str, Any] | None = None,
         account_data: dict[str, Any] | None = None,
         max_steps: int = 1200,
@@ -346,7 +357,7 @@ class MacroCareerRunner:
         with self._lock:
             if self._running:
                 raise RuntimeError("Runner already running")
-            self._reset_run_state(burn_clocks=burn_clocks)
+            self._reset_run_state(burn_clocks=burn_clocks, cm_options=cm_options)
             self._running = True
             self._status = "running"
         self._worker_entry(
@@ -359,9 +370,10 @@ class MacroCareerRunner:
         )
         return self.snapshot()
 
-    def _reset_run_state(self, *, burn_clocks: bool) -> None:
+    def _reset_run_state(self, *, burn_clocks: bool, cm_options: dict[str, Any] | None = None) -> None:
         self._stop_event.clear()
         self.burn_clocks = bool(burn_clocks)
+        self._cm_options = dict(cm_options) if isinstance(cm_options, dict) else None
         self._finished = False
         self._stopped = False
         self._error = None
@@ -374,6 +386,9 @@ class MacroCareerRunner:
         self._needs_post_square_reload = False
         self._rejected_programs = []
         self._rejected_commands = []
+        self._rejected_squares = []
+        self._rejected_square_board = None
+        self._pending_square_attempt = None
         self._command_attempts = []
         self._prev_endpoint_was_master_square = False
         self._resume_pending = False
@@ -454,6 +469,103 @@ class MacroCareerRunner:
             self._history.append(entry)
             if len(self._history) > 80:
                 self._history = self._history[-80:]
+
+    def _is_master_square_phase(self, state: dict[str, Any]) -> bool:
+        chara = state.get("chara_info") or {}
+        try:
+            return int(chara.get("playing_state") or 0) == 10
+        except (AttributeError, TypeError, ValueError):
+            return False
+
+    def _square_board_signature(self, state: dict[str, Any]) -> tuple[int, int, tuple[tuple[int, int], ...]]:
+        chara = state.get("chara_info") or {}
+        chara = chara if isinstance(chara, dict) else {}
+        live = state.get("live_data_set") or {}
+        turn = int(chara.get("turn") or self._telemetry_turn or 0)
+        playing_state = int(chara.get("playing_state") or 0)
+        board = live.get("next_square_info_array") if isinstance(live, dict) else None
+        offered = tuple(
+            (int(row.get("square_id") or 0), int(row.get("square_num") or 0))
+            for row in board
+            if isinstance(row, dict)
+        ) if isinstance(board, list) else ()
+        return turn, playing_state, offered
+
+    def _square_state_signature(self, state: dict[str, Any]) -> tuple[Any, ...] | None:
+        chara = state.get("chara_info") or {}
+        chara = chara if isinstance(chara, dict) else {}
+        live = state.get("live_data_set") or {}
+        performance = live.get("live_performance_info") if isinstance(live, dict) else None
+        if not isinstance(performance, dict):
+            return None
+        raw_balances = [performance.get(key) for key in ("dance", "passion", "vocal", "visual", "mental")]
+        if any(value is None for value in raw_balances):
+            return None
+        try:
+            balances = tuple(int(value) for value in raw_balances)
+        except (TypeError, ValueError):
+            return None
+
+        def song_ids(key: str) -> tuple[int, ...]:
+            values = live.get(key) if isinstance(live, dict) else None
+            if not isinstance(values, list):
+                return ()
+            ids = set()
+            for value in values:
+                try:
+                    ids.add(int(value))
+                except (TypeError, ValueError):
+                    continue
+            return tuple(sorted(ids))
+
+        return (
+            int(chara.get("turn") or self._telemetry_turn or 0),
+            int(chara.get("playing_state") or 0),
+            balances,
+            song_ids("master_live_id_array"),
+            song_ids("next_live_id_array"),
+        )
+
+    def _sync_rejected_squares(self, state: dict[str, Any]) -> None:
+        if self._rejected_squares and (
+            not self._is_master_square_phase(state)
+            or self._rejected_square_board != self._square_board_signature(state)
+        ):
+            self._rejected_squares.clear()
+            self._rejected_square_board = None
+
+    def _reconcile_rejected_square(self, exc: BaseException, state: dict[str, Any]) -> None:
+        attempt = self._pending_square_attempt
+        self._pending_square_attempt = None
+        if not isinstance(attempt, dict):
+            return
+        if getattr(exc, "endpoint", None) != "single_mode_live/master_square":
+            return
+        if getattr(exc, "ambiguous", False) or getattr(exc, "code", None) is None:
+            return
+        if attempt.get("playing_state") != 10 or not self._is_master_square_phase(state):
+            return
+        turn = int(attempt.get("turn") or 0)
+        square_id = int(attempt.get("square_id") or 0)
+        if turn <= 0 or square_id <= 0:
+            return
+        board = attempt.get("board")
+        if not isinstance(board, tuple) or len(board) != 3 or not board[2]:
+            return
+        if square_id not in {offered_id for offered_id, _position in board[2]}:
+            return
+        if self._square_board_signature(state) != board:
+            return
+        before_state = attempt.get("state")
+        if before_state is None or self._square_state_signature(state) != before_state:
+            return
+        pair = [turn, square_id]
+        if self._rejected_square_board != board:
+            self._rejected_squares.clear()
+            self._rejected_square_board = board
+        if pair not in self._rejected_squares:
+            self._rejected_squares.append(pair)
+            del self._rejected_squares[:-32]
 
     def _update_telemetry(self, state: dict[str, Any]) -> None:
         self._capture_final_turn_export(state)
@@ -850,7 +962,25 @@ class MacroCareerRunner:
         if endpoint.endswith("/master_square"):
             if self._prev_endpoint_was_master_square:
                 self._sleep_fixed(0.08)
+            self._sync_rejected_squares(state)
+            prev_live = state.get("live_data_set")
+            before_songs = (
+                set(prev_live.get("master_live_id_array") or [])
+                if isinstance(prev_live, dict) and prev_live.get("master_live_id_array") is not None
+                else None
+            )
+            prev_mastered = int(self._telemetry_songs.get("mastered") or 0)
+            self._pending_square_attempt = {
+                "turn": turn,
+                "square_id": int(payload.get("square_id") or 0),
+                "playing_state": 10,
+                "board": self._square_board_signature(state),
+                "state": self._square_state_signature(state),
+            } if self._is_master_square_phase(state) else None
             res = self._rpc(endpoint, payload)
+            self._pending_square_attempt = None
+            self._rejected_squares.clear()
+            self._rejected_square_board = None
             _merge_career_state(state, _unwrap_envelope(res))
             loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
             state.clear()
@@ -859,7 +989,36 @@ class MacroCareerRunner:
             self._prev_endpoint_was_master_square = True
             self._update_telemetry(state)
             sq_id = payload.get("square_id", "")
-            self._record_history(turn, "Song", f"Learned song · slot {sq_id}", f"Songs: {self._telemetry_songs['mastered']}")
+            after_songs = set((state.get("live_data_set") or {}).get("master_live_id_array") or [])
+            gained = sorted(after_songs - before_songs) if before_songs is not None else []
+            is_song = (
+                bool(gained)
+                if before_songs is not None
+                else int(self._telemetry_songs.get("mastered") or 0) > prev_mastered
+            )
+            lesson = params.get("lesson")
+            lesson = lesson if isinstance(lesson, dict) else {}
+            lesson_kind = str(lesson.get("kind") or "").strip().casefold()
+            lesson_label = str(lesson.get("label") or "").strip()
+            lesson_detail = str(lesson.get("detail") or "").strip()
+            if lesson_label:
+                history_kind = "Song" if is_song or lesson_kind == "song" else "Lesson"
+                if history_kind == "Song" and gained:
+                    label = f"{lesson_label} {gained[0]}"
+                else:
+                    label = lesson_label
+                detail = lesson_detail or f"Songs: {self._telemetry_songs['mastered']}"
+                if lesson_detail:
+                    detail = f"{lesson_detail} · Songs: {self._telemetry_songs['mastered']}"
+                action = f"{label} · slot {sq_id}"
+                if lesson_detail:
+                    action = f"{action} · {lesson_detail}"
+                self._record_history(turn, history_kind, action, detail)
+            elif is_song:
+                label = f"Learned song {gained[0]}" if gained else "Learned song"
+                self._record_history(turn, "Song", f"{label} · slot {sq_id}", f"Songs: {self._telemetry_songs['mastered']}")
+            else:
+                self._record_history(turn, "Lesson", f"Technique lesson · slot {sq_id}", f"Songs: {self._telemetry_songs['mastered']}")
             return
 
         if endpoint.endswith("/gain_skills"):
@@ -1005,6 +1164,7 @@ class MacroCareerRunner:
         probe_resets = 0
         stat_resets = 0
         while True:
+            self._sync_rejected_squares(state)
             stripped = strip_career_state(state)
             delta = {
                 "drained_stories": list(self._pending_drained_stories),
@@ -1013,11 +1173,14 @@ class MacroCareerRunner:
                 "needs_post_square_reload": bool(self._needs_post_square_reload),
                 "rejected_programs": [list(item) for item in self._rejected_programs],
                 "rejected_commands": [list(item) for item in self._rejected_commands],
+                "rejected_squares": [list(item) for item in self._rejected_squares],
             }
             options = {
                 "burn_clocks": bool(self.burn_clocks),
                 "resume": self._resume_pending,
             }
+            if isinstance(self._cm_options, dict) and self._cm_options.get("cm_mode"):
+                options.update(self._cm_options)
             self._resume_pending = False
             try:
                 decision = brain.decide(self._viewer_id_hash, stripped, delta, options)
@@ -1144,6 +1307,7 @@ class MacroCareerRunner:
                     reloaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
                     state.clear()
                     state.update(reloaded)
+                    self._reconcile_rejected_square(exc, state)
                     self._needs_post_square_reload = False
                     self._prev_endpoint_was_master_square = False
                     self._update_telemetry(state)

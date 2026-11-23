@@ -19,6 +19,7 @@ from sweepy.catalog import Catalog
 from sweepy.config import RuntimeConfig
 from sweepy.macro_runner import MacroCareerRunner
 from sweepy.qr_svg import render_qr_svg
+from sweepy.stripper import resolve_cm_options_for_account
 from sweepy.umadump_export import export_filename
 from uma_headless import SteamTicketError
 from uma_headless.device import read_device_state
@@ -246,6 +247,14 @@ class SweepyAppState:
             if self._synced_finished_data_id == marker:
                 return
             self._synced_finished_data_id = marker
+            if (
+                isinstance(self._raw_account_data, dict)
+                and self._raw_account_data.get("trained_chara_array")
+                and not latest.get("trained_chara_array")
+            ):
+                merged = dict(latest)
+                merged["trained_chara_array"] = self._raw_account_data["trained_chara_array"]
+                latest = merged
             self._raw_account_data = latest
             self._dashboard = self.catalog.format_account_status(latest)
 
@@ -568,6 +577,7 @@ class SweepyAppState:
         with self._auth_lock:
             with self._lock:
                 client = self._client
+                raw_account = dict(self._raw_account_data) if isinstance(self._raw_account_data, dict) else None
             if client is None:
                 raise RuntimeError("Not logged in")
             if self.runner.running:
@@ -579,11 +589,19 @@ class SweepyAppState:
                 raise BrainAPIError("Add an API key first")
 
             burn_clocks = bool(body.get("burn_clocks", settings["burn_clocks"]))
+            raw_cm = body.get("cm_config") if isinstance(body.get("cm_config"), dict) else settings.get("cm_config")
+            if isinstance(body, dict) and any(k in body for k in ("cm_mode", "cm_course", "cm_role", "cm_style", "mate_ids", "mate_roles", "cm_mates")):
+                merged_cm = dict(raw_cm or {})
+                for k in ("cm_mode", "cm_course", "cm_role", "cm_style", "mate_ids", "mate_roles", "cm_mates"):
+                    if k in body:
+                        merged_cm[k] = body[k]
+                raw_cm = merged_cm
+            cm_options = resolve_cm_options_for_account(raw_cm, raw_account)
 
             brain = self._brain_factory(settings["api_url"], settings["api_key"])
             brain.on_key_refresh = self._save_rotated_key
             self._apply_delay_to_client(client, settings["turn_delay"])
-            self.runner.start(client, brain, burn_clocks=burn_clocks)
+            self.runner.start(client, brain, burn_clocks=burn_clocks, cm_options=cm_options)
             return {
                 "ok": True,
                 "runner": self.runner.snapshot(),

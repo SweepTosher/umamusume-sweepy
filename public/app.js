@@ -504,11 +504,16 @@ function renderHistory(history) {
         body.append(row);
         return;
     }
+    const lessonLabels = new Map([
+        ["Song", "Song learned"],
+        ["Lesson", "Lesson completed"],
+    ]);
     for (const entry of history) {
         const row = document.createElement("tr");
         row.append(make("td", "col-turn", entry.turn ?? ""));
         row.append(make("td", "col-kind", entry.kind ?? ""));
-        row.append(make("td", "col-action", entry.action ?? ""));
+        const action = lessonLabels.get(entry.kind) ?? entry.action ?? "";
+        row.append(make("td", "col-action", action));
         body.append(row);
     }
     if (wrap && pinned) {

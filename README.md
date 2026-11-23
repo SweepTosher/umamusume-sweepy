@@ -1,5 +1,3 @@
-cloudflare tunnel compromised on 22nov so keep ur eyes open.
-
 Uma bot that's about 70% to mathematical perfection. High UF with whale decks decent UGS for f2ps.
 
 Serves no real purpose now mainly just a proof of concept that my architecture works and limited to **SPRINT AND MILE** umas for now as it has basically no idea how races work.

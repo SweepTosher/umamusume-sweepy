@@ -456,7 +456,7 @@ class _CMSession:
         authenticated: bool = False,
     ) -> None:
         if not self.alive:
-            raise SteamTicketError("Steam CM WebSocket session is closed", stage="connect")
+            raise SteamTicketError("Steam CM session is closed", stage="connect")
         if header is None:
             if authenticated:
                 header = CMsgProtoBufHeader(
@@ -470,7 +470,9 @@ class _CMSession:
             self.ws.send_binary(raw)
         except (WebSocketError, OSError) as exc:
             with self._cond:
+                self._reader_error = exc
                 self._alive = False
+                self._wake_all_waiters_locked()
                 self._cond.notify_all()
             raise SteamTicketError(
                 f"Steam CM send failed: {exc}",
@@ -1289,6 +1291,7 @@ class SteamTicketProvider:
                 )
             return self._session
 
+        self._current_ticket = ""
         if self._session is not None:
             self._session.close()
             self._session = None

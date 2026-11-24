@@ -105,6 +105,8 @@ class WebSocketClient:
         self._sock: socket.socket | ssl.SSLSocket | None = None
         self._send_lock = threading.Lock()
         self._read_buf = bytearray()
+        self._fragments: list[bytes] = []
+        self._fragment_bytes = 0
         self._connected = False
         self._close_sent = False
         self._closed = False
@@ -225,6 +227,8 @@ class WebSocketClient:
                 raise WebSocketError("Sec-WebSocket-Accept verification failed")
 
             self._sock = sock
+            self._fragments.clear()
+            self._fragment_bytes = 0
             self._connected = True
             self._closed = False
             self._close_sent = False
@@ -345,8 +349,6 @@ class WebSocketClient:
         return fin, opcode, payload
 
     def recv(self) -> bytes:
-        fragments: list[bytes] | None = None
-        fragment_bytes = 0
         while True:
             fin, opcode, payload = self._read_single_frame()
             if opcode == OPCODE_PING:
@@ -368,24 +370,25 @@ class WebSocketClient:
                 self._force_close_socket()
                 raise WebSocketClosedError("WebSocket closed by peer", code=code)
             if opcode in (OPCODE_BINARY, OPCODE_TEXT):
-                if fragments is not None:
+                if self._fragments:
                     raise WebSocketError("new data frame before continuation finished")
                 if fin:
                     return payload
-                fragments = [payload]
-                fragment_bytes = len(payload)
+                self._fragments.append(payload)
+                self._fragment_bytes = len(payload)
                 continue
             if opcode == OPCODE_CONTINUATION:
-                if fragments is None:
+                if not self._fragments:
                     raise WebSocketError("continuation without initial frame")
-                fragment_bytes += len(payload)
-                if fragment_bytes > MAX_FRAME_PAYLOAD_BYTES:
+                self._fragment_bytes += len(payload)
+                if self._fragment_bytes > MAX_FRAME_PAYLOAD_BYTES:
                     self._force_close_socket()
-                    raise WebSocketError(f"WebSocket message exceeds limit ({fragment_bytes} bytes)")
-                fragments.append(payload)
+                    raise WebSocketError(f"WebSocket message exceeds limit ({self._fragment_bytes} bytes)")
+                self._fragments.append(payload)
                 if fin:
-                    message = b"".join(fragments)
-                    fragments = None
+                    message = b"".join(self._fragments)
+                    self._fragments.clear()
+                    self._fragment_bytes = 0
                     return message
                 continue
             raise WebSocketError(f"Unsupported WebSocket opcode 0x{opcode:x}")

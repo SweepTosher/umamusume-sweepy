@@ -24,7 +24,7 @@ UNIVERSE_PUBLIC_KEY = bytes.fromhex(
 )
 
 
-class CMTransportError(Exception):
+class CMTransportError(OSError):
     pass
 
 
@@ -60,9 +60,7 @@ class CMSocketClient:
         if self._sock is not None:
             self._sock.settimeout(self.timeout)
 
-    def _read_exact(self, length: int) -> bytes:
-        if length <= 0:
-            return b""
+    def _fill_buffer(self, length: int) -> None:
         while len(self._buf) < length:
             sock = self._sock
             if sock is None:
@@ -78,17 +76,18 @@ class CMSocketClient:
                 self._connected = False
                 raise CMTransportError("Steam CM closed the underlying connection")
             self._buf.extend(chunk)
-        out = bytes(self._buf[:length])
-        del self._buf[:length]
-        return out
 
     def _read_frame(self) -> bytes:
-        length = struct.unpack("<I", self._read_exact(4))[0]
+        self._fill_buffer(8)
+        length, magic = struct.unpack_from("<I4s", self._buf)
         if length <= 0 or length > 16 * 1024 * 1024:
             raise CMTransportError(f"Steam CM frame length is invalid ({length})")
-        if self._read_exact(4) != VT01_MAGIC:
+        if magic != VT01_MAGIC:
             raise CMTransportError("Steam CM frame is missing the VT01 magic")
-        payload = self._read_exact(length)
+        frame_length = 8 + length
+        self._fill_buffer(frame_length)
+        payload = bytes(self._buf[8:frame_length])
+        del self._buf[:frame_length]
         if self._key is not None:
             payload = self._decrypt(payload)
         return payload

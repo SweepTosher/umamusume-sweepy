@@ -743,10 +743,21 @@ class UmaClient:
         provider = self._steam_ticket_provider
         if provider is None:
             return self.steam_id, self.steam_ticket
-        if not provider.active:
-            raise StateRecoveryError("Steam ticket lease is not active")
-        self.steam_id = str(provider.steam_id)
-        self.steam_ticket = str(provider.steam_session_ticket)
+        try:
+            if provider.active:
+                self.steam_id = str(provider.steam_id)
+                self.steam_ticket = str(provider.steam_session_ticket)
+                return self.steam_id, self.steam_ticket
+        except SteamTicketError:
+            pass
+
+        try:
+            self.steam_ticket = provider.refresh()
+        except SteamTicketError as exc:
+            raise StateRecoveryError(
+                f"Steam ticket lease recovery failed: {exc}",
+                recovery="refresh_ticket_and_reconcile",
+            ) from exc
         return self.steam_id, self.steam_ticket
 
     def common(self, *, viewer_override: int | None = None) -> dict[str, Any]:

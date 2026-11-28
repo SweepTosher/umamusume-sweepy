@@ -9,9 +9,11 @@ Keys are infinite for now. Might cut back if my laptop gets stressed too much.
 
 
 ## Install
- 
-Requires Python 3.11-3.14.
- 
+
+### PC
+
+Requires Python 3.11–3.14.
+
 ```bash
 git clone https://github.com/SweepTosher/umamusume-sweepy
 cd umamusume-sweepy
@@ -19,8 +21,13 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
-key at   
-https://mayano.top/sweepy  
+### Android
+
+Download the APK from [Releases](https://github.com/SweepTosher/umamusume-sweepy/releases) or build it yourself.
+
+### Access Key
+
+Get your key at https://mayano.top/sweepy
 
 
 

@@ -1,11 +1,4 @@
-<img width="622" height="692" alt="image" src="https://github.com/user-attachments/assets/b88c83cb-e5bb-4059-b444-48b021805ef7" />
-
->Robbed by npc uma
-<img width="237" height="234" alt="image" src="https://github.com/user-attachments/assets/a943057c-d306-47f1-a846-9115f1ce63c8" />
-
-
-
-Uma bot that's about 70% to mathematical perfection. High UF with whale decks decent UGS for f2ps.
+Android and PC Uma bot that's about 70% to mathematical perfection. High UF with whale decks decent UGS for f2ps.
 
 Serves no real purpose now mainly just a proof of concept that my architecture works and limited to **SPRINT AND MILE** umas for now as it has basically no idea how races work.
 

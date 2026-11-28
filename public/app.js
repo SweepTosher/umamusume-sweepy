@@ -1069,24 +1069,8 @@ function renderError(message) {
     banner.textContent = message;
 }
 
-function setQrChallengeUrl(url) {
-    const btn = $("qr-open-steam-btn");
-    if (!btn) {
-        return;
-    }
-    const clean = typeof url === "string" ? url.trim() : "";
-    if (clean.startsWith("https://s.team/q/")) {
-        btn.href = clean;
-        btn.hidden = false;
-    } else {
-        btn.href = "#";
-        btn.hidden = true;
-    }
-}
-
 async function startQr() {
     clearTimeout(state.qrTimer);
-    setQrChallengeUrl("");
     setQrHint(QR_HINT_IDLE);
     const box = $("qr-svg-box");
     if (box) {
@@ -1100,7 +1084,6 @@ async function startQr() {
             box.innerHTML = "";
             box.insertAdjacentHTML("afterbegin", response.qr_svg);
         }
-        setQrChallengeUrl(response.challenge_url);
         setQrHint(QR_HINT_IDLE);
         state.qrActive = true;
         state.qrRetries = 0;
@@ -1108,7 +1091,6 @@ async function startQr() {
         scheduleQrPoll(state.qrInterval);
     } catch (error) {
         state.qrActive = false;
-        setQrChallengeUrl("");
         state.qrRetries += 1;
         setQrHint(QR_HINT_IDLE);
         showAuthError(error.message);
@@ -1141,7 +1123,6 @@ function setAuthConnecting(active, label) {
         }
     }
     if (state.authConnecting) {
-        setQrChallengeUrl("");
         showAuthError("");
         const text = label || "Connecting to Umamusume";
         const qrPanel = $("qr-panel");
@@ -1190,9 +1171,6 @@ async function finalizeApprovedLogin(response) {
     state.credPollActive = false;
     clearTimeout(state.qrTimer);
     clearTimeout(state.credTimer);
-    if (response.refresh_token) {
-        saveSteamToken(response.refresh_token);
-    }
     setAuthConnecting(true, "Connecting to Umamusume");
     try {
         let finalRes = response;
@@ -1216,7 +1194,6 @@ async function completeSteamApproval(response) {
     state.credPollActive = false;
     clearTimeout(state.qrTimer);
     clearTimeout(state.credTimer);
-    setQrChallengeUrl("");
     const passInput = $("steam-pass-input");
     if (passInput) {
         passInput.value = "";
@@ -1491,13 +1468,9 @@ async function pollQr() {
         const qrState = String(response.status || "pending").toLowerCase();
         if (qrState === "expired" || qrState === "refused") {
             state.qrActive = false;
-            setQrChallengeUrl("");
             clearTimeout(state.qrTimer);
             state.qrTimer = setTimeout(startQr, 1200);
             return;
-        }
-        if (response.challenge_url) {
-            setQrChallengeUrl(response.challenge_url);
         }
         if (response.qr_svg) {
             const box = $("qr-svg-box");
@@ -1533,7 +1506,6 @@ async function logout() {
     state.qrPollInFlight = false;
     state.credPollActive = false;
     state.credPollInFlight = false;
-    setQrChallengeUrl("");
     clearTimeout(state.qrTimer);
     clearTimeout(state.credTimer);
     const passInput = $("steam-pass-input");

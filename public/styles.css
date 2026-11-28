@@ -1447,12 +1447,6 @@ body.pre-login .logout-btn {
   }
 }
 
-@media (min-width: 961px) and (pointer: fine) {
-  .qr-open-btn {
-    display: none !important;
-  }
-}
-
 @media (max-width: 1279px) and (min-width: 961px) {
   :root {
     --pad: 2rem;

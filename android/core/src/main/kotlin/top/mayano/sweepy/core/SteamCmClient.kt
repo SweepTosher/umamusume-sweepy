@@ -328,8 +328,14 @@ class SteamTicketProvider(
             throw SteamTicketException("Refresh token size invalid", stage = stage, safeReason = "invalid_token")
         }
         memoryToken = cleaned
-        runCatching { store.saveRefreshToken(cleaned) }
         return sid
+    }
+
+    fun persistRefreshToken() = synchronized(lock) {
+        val tok = memoryToken.trim()
+        if (tok.isNotEmpty()) {
+            runCatching { store.saveRefreshToken(tok) }
+        }
     }
 
     private fun discoverCmUrls(): List<String> {
@@ -607,8 +613,13 @@ class SteamTicketProvider(
                 )
                 val logon = ProtoWire.LogonResponse.decode(respPkt.body)
                 if (logon.eresult != ERESULT_OK) {
+                    val msg = if (logon.eresult == 84) {
+                        "Steam rate-limited sign-in (eresult=84) — wait a few minutes before retrying"
+                    } else {
+                        "Steam ClientLogon failed (eresult=${logon.eresult})"
+                    }
                     throw SteamTicketException(
-                        "Steam ClientLogon failed (eresult=${logon.eresult})",
+                        msg,
                         stage = "logon",
                         resultCode = logon.eresult,
                     )

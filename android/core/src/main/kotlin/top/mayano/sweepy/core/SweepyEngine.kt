@@ -295,6 +295,7 @@ class SweepyEngine(
         val already = synchronized(stateLock) { client != null }
         if (!already) forgetDeviceState()
         val payload = completeUmaLogin(prov)
+        prov.persistRefreshToken()
         runCatching { prov.currentToken() }.getOrNull()?.takeIf { it.isNotEmpty() }?.let {
             payload["refresh_token"] = it
         }

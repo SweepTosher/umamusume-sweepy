@@ -1326,8 +1326,13 @@ class SteamTicketProvider:
             )
             logon_resp = CMsgClientLogonResponse.decode(resp_bytes)
             if logon_resp.eresult != ERESULT_OK:
+                msg = (
+                    "Steam rate-limited sign-in (eresult=84) — wait a few minutes before retrying"
+                    if logon_resp.eresult == 84
+                    else f"Steam ClientLogon failed (eresult={logon_resp.eresult})"
+                )
                 raise SteamTicketError(
-                    f"Steam ClientLogon failed (eresult={logon_resp.eresult})",
+                    msg,
                     stage="logon",
                     result_code=logon_resp.eresult,
                     safe_reason="service_rejected",

@@ -84,7 +84,7 @@ class LocalHttpServerTest {
                     assertEquals("no-referrer", r.header("Referrer-Policy"))
                     assertNotEquals(null, r.header("Content-Security-Policy"))
                     val html = r.body.string()
-                    assertTrue("qr-open-steam-btn" in html)
+                    assertFalse("qr-open-steam-btn" in html)
                     assertTrue("credentials-form" in html)
                     assertTrue("guard-panel" in html)
                     assertTrue("viewport-fit=cover" in html)
@@ -98,7 +98,6 @@ class LocalHttpServerTest {
                 testHttp.newCall(Request.Builder().url("$base/app.js").get().build()).execute().use { r ->
                     assertEquals(200, r.code)
                     val js = r.body.string()
-                    assertTrue("setQrChallengeUrl" in js)
                     assertTrue("submitCredentialsLogin" in js)
                     assertTrue("finalizeApprovedLogin" in js)
                     assertTrue("Approve this sign-in using the Steam Mobile app." in js)

@@ -4,17 +4,31 @@ const state = {
     session: null,
     qrTimer: null,
     qrActive: false,
+    qrPollInFlight: false,
     qrRetries: 0,
     qrInterval: 2,
+    authTab: null,
+    credTimer: null,
+    credPollActive: false,
+    credPollInFlight: false,
+    credRetries: 0,
+    credInterval: 3,
     runnerTimer: null,
+    runnerPollInFlight: false,
     delayTimer: null,
     disconnected: false,
     keyMask: "",
     historySig: "",
     pendingTempt: null,
     pendingBurn: null,
+    pendingCmMode: null,
     temptSeq: 0,
     burnSeq: 0,
+    cmSeq: 0,
+    cmCatalog: null,
+    cmConfig: null,
+    veterans: [],
+    mateQuery: "",
 };
 
 const TOTAL_TURNS = 78;
@@ -153,7 +167,9 @@ async function api(path, method = "GET", body = null, timeoutMs = 40000) {
     }
     if (!response.ok) {
         const detail = payload && (payload.detail || payload.error);
-        throw new Error(detail || `${path} returned HTTP ${response.status}`);
+        const err = new Error(detail || `${path} returned HTTP ${response.status}`);
+        err.status = response.status;
+        throw err;
     }
     if (payload === null) {
         throw new Error(`Empty response from ${path}`);
@@ -247,6 +263,457 @@ function pill(label, value, tone) {
     node.append(make("span", "label", label));
     node.append(make("strong", null, value));
     return node;
+}
+
+const APT_GRADES = ["—", "G", "F", "E", "D", "C", "B", "A", "S"];
+const STYLE_SHORT = ["Auto", "Front", "Pace", "Late", "End", "Runaway"];
+const TURN_SHORT = { 1: "Right", 2: "Left", 4: "Straight" };
+const INOUT_SHORT = { 1: "Inner", 2: "Outer" };
+
+function defaultCmConfig() {
+    return {
+        cm_mode: false,
+        cm_preset: "sagittarius",
+        cm_course: "sagittarius",
+        track: "Nakayama",
+        distance: 2500,
+        ground: 1,
+        ground_condition: 1,
+        weather: 1,
+        season: 4,
+        course_id: 10506,
+        inout: 1,
+        cm_role: 0,
+        cm_target: "carry",
+        cm_style: 0,
+        mate_ids: [null, null],
+        mate_roles: ["auto", "auto"],
+        mate_snapshots: [null, null],
+    };
+}
+
+function getCmConfig(session) {
+    const base = defaultCmConfig();
+    const raw = (state.cmConfig || (session && session.cm_config)) || {};
+    const merged = { ...base, ...raw };
+    if (state.pendingCmMode !== null) {
+        merged.cm_mode = state.pendingCmMode;
+    }
+    return merged;
+}
+
+function isCmSupportBlocked(session) {
+    const activeSession = session || state.session;
+    if (!activeSession || !activeSession.cm_enabled) {
+        return false;
+    }
+    const cfg = getCmConfig(activeSession);
+    if (!cfg.cm_mode) {
+        return false;
+    }
+    const role = Number(cfg.cm_role);
+    const needTwo = role === 2 || role === 3 || (role === 1 && String(cfg.cm_target || "carry") === "debuffer");
+    if (!needTwo) {
+        return false;
+    }
+    const ids = (cfg.mate_ids || []).filter((v) => v !== null && v !== undefined && Number(v) > 0).map(Number);
+    return new Set(ids).size < 2;
+}
+
+function paintCmModeToggle(on) {
+    setToggle("cm-mode-btn", Boolean(on));
+}
+
+function labelForOption(list, id, fallback) {
+    const found = (list || []).find((x) => Number(x.id) === Number(id));
+    return found ? found.label : fallback;
+}
+
+function renderPillGroup(containerId, items, activeId, onPick) {
+    const host = $(containerId);
+    if (!host) {
+        return;
+    }
+    host.innerHTML = "";
+    for (const item of items) {
+        const active = String(item.id) === String(activeId);
+        const btn = make("button", `btn cm-pill ${active ? "btn-brass" : "btn-quiet"}`, item.label);
+        btn.type = "button";
+        btn.disabled = Boolean(item.disabled);
+        btn.setAttribute("aria-pressed", String(active));
+        if (!btn.disabled) {
+            btn.addEventListener("click", () => onPick(item.id));
+        }
+        host.append(btn);
+    }
+}
+
+function coursesForTrackAndGround(courses, track, ground) {
+    return (courses || []).filter((c) => c.track === track && Number(c.ground) === Number(ground));
+}
+
+function findMatchingPreset(presets, cfg) {
+    return (presets || []).find(
+        (p) =>
+            p.track === cfg.track &&
+            Number(p.ground) === Number(cfg.ground) &&
+            Number(p.distance) === Number(cfg.distance) &&
+            Number(p.ground_condition) === Number(cfg.ground_condition) &&
+            Number(p.weather) === Number(cfg.weather) &&
+            Number(p.season) === Number(cfg.season) &&
+            (!p.course_id || !cfg.course_id || Number(p.course_id) === Number(cfg.course_id))
+    );
+}
+
+function formatVeteranOption(v) {
+    const st = STYLE_SHORT[Number(v.running_style || 2)] || "?";
+    const s = v.stats || [0, 0, 0, 0, 0];
+    return `${v.name} · ${v.rank_score} pts · ${st} (${s.join("/")})`;
+}
+
+function formatVeteranSummary(v) {
+    if (!v) {
+        return "None selected";
+    }
+    const st = STYLE_SHORT[Number(v.running_style || 2)] || "?";
+    const s = v.stats || [0, 0, 0, 0, 0];
+    const gr = v.proper_ground || [1, 1];
+    const ds = v.proper_distance || [1, 1, 1, 1];
+    const gTxt = `Turf:${APT_GRADES[gr[0]] || "?"} Dirt:${APT_GRADES[gr[1]] || "?"}`;
+    const dTxt = `S:${APT_GRADES[ds[0]] || "?"} M:${APT_GRADES[ds[1]] || "?"} Md:${APT_GRADES[ds[2]] || "?"} L:${APT_GRADES[ds[3]] || "?"}`;
+    return `Rank ${v.rank_score} · ${st} · Spd ${s[0]} Sta ${s[1]} Pow ${s[2]} Gut ${s[3]} Wit ${s[4]} · ${gTxt} · ${dTxt} · ${v.skill_count} skills`;
+}
+
+async function saveCmConfig(patch) {
+    const prev = getCmConfig(state.session);
+    const next = { ...prev, ...patch };
+    const catalog = state.cmCatalog || {};
+    const matched = findMatchingPreset(catalog.presets || [], next);
+    if (!("cm_preset" in patch)) {
+        next.cm_preset = matched ? matched.slug : "custom";
+    }
+    next.cm_course = {
+        track: next.track,
+        distance: Number(next.distance),
+        ground: Number(next.ground),
+        ground_condition: Number(next.ground_condition),
+        weather: Number(next.weather),
+        season: Number(next.season),
+        course_id: next.course_id ? Number(next.course_id) : null,
+        inout: Number(next.inout || 1),
+    };
+    state.cmConfig = next;
+    if (state.session) {
+        state.session.cm_config = next;
+    }
+    renderCmPanel(state.session);
+    renderRunner((state.session || {}).runner);
+    const seq = ++state.cmSeq;
+    try {
+        const res = await api("/api/settings/cm", "POST", next);
+        if (seq !== state.cmSeq) {
+            return;
+        }
+        state.pendingCmMode = null;
+        if (res && res.cm_config) {
+            state.cmConfig = res.cm_config;
+            if (state.session) {
+                state.session.cm_config = res.cm_config;
+            }
+            renderCmPanel(state.session);
+            renderRunner((state.session || {}).runner);
+        }
+    } catch (error) {
+        if (seq === state.cmSeq) {
+            state.pendingCmMode = null;
+            setStatus(`CM config failed: ${error.message}`, "error");
+        }
+    }
+}
+
+function toggleCmMode() {
+    const cfg = getCmConfig(state.session);
+    const next = !Boolean(cfg.cm_mode);
+    state.pendingCmMode = next;
+    saveCmConfig({ cm_mode: next });
+}
+
+function renderCmPanel(session) {
+    const cmEnabled = Boolean(session && session.cm_enabled);
+    const cmBtn = $("cm-mode-btn");
+    if (cmBtn) {
+        cmBtn.style.display = cmEnabled ? "" : "none";
+    }
+    const panel = $("cm-panel");
+    if (!cmEnabled) {
+        paintCmModeToggle(false);
+        if (panel) {
+            panel.style.display = "none";
+        }
+        return;
+    }
+    const cfg = getCmConfig(session);
+    paintCmModeToggle(cfg.cm_mode);
+    if (!panel) {
+        return;
+    }
+    panel.style.display = cfg.cm_mode ? "" : "none";
+    if (!cfg.cm_mode) {
+        return;
+    }
+
+    const catalog = state.cmCatalog || ((session || {}).cm_catalog) || {};
+    const presets = catalog.presets || [];
+    const courses = catalog.courses || [];
+    const tracks = catalog.tracks || [cfg.track];
+
+    const summaryPill = $("cm-summary-pill");
+    if (summaryPill) {
+        const surfTxt = Number(cfg.ground) === 2 ? "Dirt" : "Turf";
+        const gcTxt = labelForOption(catalog.ground_conditions, cfg.ground_condition, "Firm");
+        const wTxt = labelForOption(catalog.weathers, cfg.weather, "Sunny");
+        const sTxt = labelForOption(catalog.seasons, cfg.season, "Winter");
+        const mTxt = Number(cfg.cm_role) === 1 && String(cfg.cm_target || "carry") === "debuffer"
+            ? "Ace (Debuffer)"
+            : labelForOption(catalog.modes, cfg.cm_role, "Solo");
+        summaryPill.textContent = `${cfg.track} ${cfg.distance}m ${surfTxt} · ${gcTxt} · ${wTxt} · ${sTxt} · ${mTxt}`;
+    }
+
+    const brain = (session && session.brain) || {};
+    const brainBadge = $("cm-brain-badge");
+    const brainWarn = $("cm-brain-warning");
+    const hCm = brain.health && typeof brain.health.cm_mode === "boolean" ? brain.health.cm_mode : null;
+    const hHasCm = brain.health && typeof brain.health.has_cm_model === "boolean" ? brain.health.has_cm_model : hCm;
+    if (brainBadge) {
+        if (!brain.online) {
+            brainBadge.textContent = "OFFLINE";
+            brainBadge.className = "runner-state is-idle";
+        } else if (hCm === true) {
+            brainBadge.textContent = "CM MODEL";
+            brainBadge.className = "runner-state is-finished";
+        } else if (hHasCm === true) {
+            brainBadge.textContent = "CM + SCORE READY";
+            brainBadge.className = "runner-state is-finished";
+        } else {
+            brainBadge.textContent = "SCOREMAXXER";
+            brainBadge.className = "runner-state is-error";
+        }
+    }
+    if (brainWarn) {
+        if (brain.online && hCm === false && hHasCm !== true) {
+            brainWarn.style.display = "block";
+            brainWarn.textContent = "Connected brain server reports cm_mode=false (Scoremaxxer checkpoint). Restart mayano-api with MAYANO_CM_MODE=1 or MAYANO_CM_MODEL_PATH to serve the CM champion.";
+        } else {
+            brainWarn.style.display = "none";
+            brainWarn.textContent = "";
+        }
+    }
+
+    const presetSel = $("cm-preset-select");
+    if (presetSel) {
+        presetSel.innerHTML = "";
+        for (const p of presets) {
+            const opt = document.createElement("option");
+            opt.value = p.slug;
+            opt.textContent = p.name;
+            presetSel.append(opt);
+        }
+        const customOpt = document.createElement("option");
+        customOpt.value = "custom";
+        customOpt.textContent = "Custom (uma.moe)";
+        presetSel.append(customOpt);
+        const matched = findMatchingPreset(presets, cfg);
+        presetSel.value = matched ? matched.slug : "custom";
+    }
+
+    const trackSel = $("cm-track-select");
+    if (trackSel) {
+        trackSel.innerHTML = "";
+        for (const tr of tracks) {
+            const opt = document.createElement("option");
+            opt.value = tr;
+            opt.textContent = tr;
+            trackSel.append(opt);
+        }
+        trackSel.value = tracks.includes(cfg.track) ? cfg.track : tracks[0] || cfg.track;
+    }
+
+    const turfCourses = coursesForTrackAndGround(courses, cfg.track, 1);
+    const dirtCourses = coursesForTrackAndGround(courses, cfg.track, 2);
+    renderPillGroup(
+        "cm-surface-group",
+        [
+            { id: 1, label: "Turf", disabled: turfCourses.length === 0 },
+            { id: 2, label: "Dirt", disabled: dirtCourses.length === 0 },
+        ],
+        cfg.ground,
+        (newGround) => {
+            const avail = coursesForTrackAndGround(courses, cfg.track, newGround);
+            if (!avail.length) {
+                return;
+            }
+            const best = avail.reduce((a, b) => (Math.abs(a.distance - cfg.distance) <= Math.abs(b.distance - cfg.distance) ? a : b));
+            saveCmConfig({ ground: newGround, course_id: best.course_id, distance: best.distance, inout: best.inout });
+        }
+    );
+
+    const courseSel = $("cm-course-select");
+    if (courseSel) {
+        courseSel.innerHTML = "";
+        let avail = coursesForTrackAndGround(courses, cfg.track, cfg.ground);
+        if (!avail.length) {
+            avail = courses.filter((c) => c.track === cfg.track);
+        }
+        for (const c of avail) {
+            const opt = document.createElement("option");
+            opt.value = String(c.course_id);
+            const tLbl = TURN_SHORT[Number(c.turn)] || "";
+            const ioLbl = INOUT_SHORT[Number(c.inout)] || "";
+            const metaParts = [tLbl, ioLbl].filter(Boolean).join(" · ");
+            opt.textContent = `${c.distance}m${metaParts ? ` · ${metaParts}` : ""} (#${c.course_id})`;
+            courseSel.append(opt);
+        }
+        const curMatch = avail.find((c) => Number(c.course_id) === Number(cfg.course_id)) || avail[0];
+        if (curMatch) {
+            courseSel.value = String(curMatch.course_id);
+        }
+    }
+
+    renderPillGroup("cm-gcond-group", catalog.ground_conditions || [], cfg.ground_condition, (id) => saveCmConfig({ ground_condition: id }));
+    renderPillGroup("cm-weather-group", catalog.weathers || [], cfg.weather, (id) => saveCmConfig({ weather: id }));
+    renderPillGroup("cm-season-group", catalog.seasons || [], cfg.season, (id) => saveCmConfig({ season: id }));
+    renderPillGroup("cm-style-group", catalog.styles || [], cfg.cm_style, (id) => saveCmConfig({ cm_style: id }));
+
+    const roleNum = Number(cfg.cm_role || 0);
+    const topMode = roleNum >= 2 ? 2 : roleNum;
+    const topModes = [
+        { id: 0, label: "Solo" },
+        { id: 1, label: "Ace" },
+        { id: 2, label: "Support" },
+    ];
+    renderPillGroup("cm-role-group", topModes, topMode, (id) => {
+        if (Number(id) === 0) {
+            saveCmConfig({ cm_role: 0, cm_target: "carry" });
+        } else if (Number(id) === 1) {
+            saveCmConfig({ cm_role: 1 });
+        } else {
+            saveCmConfig({ cm_role: roleNum === 3 ? 3 : 2 });
+        }
+    });
+
+    const aceWrap = $("cm-ace-target-wrap");
+    if (aceWrap) {
+        aceWrap.style.display = topMode === 1 ? "" : "none";
+        if (topMode === 1) {
+            renderPillGroup(
+                "cm-ace-target-group",
+                catalog.ace_targets || [{ id: "carry", label: "Carry" }, { id: "debuffer", label: "Debuffer" }],
+                String(cfg.cm_target || "carry"),
+                (id) => saveCmConfig({ cm_role: 1, cm_target: String(id) }),
+            );
+        }
+    }
+
+    const supWrap = $("cm-support-subrole-wrap");
+    if (supWrap) {
+        supWrap.style.display = topMode === 2 ? "" : "none";
+        if (topMode === 2) {
+            renderPillGroup(
+                "cm-support-subrole-group",
+                catalog.support_subroles || [{ id: 2, label: "Debuffer" }, { id: 3, label: "Blocker" }],
+                roleNum === 3 ? 3 : 2,
+                (id) => saveCmConfig({ cm_role: Number(id) }),
+            );
+        }
+    }
+
+    const isAceDebuffer = roleNum === 1 && String(cfg.cm_target || "carry") === "debuffer";
+    const needTwoMates = roleNum === 2 || roleNum === 3 || isAceDebuffer;
+
+    const hint = $("cm-role-hint");
+    const roleHints = {
+        0: "Solo: evaluates this Uma's own individual winrate (0 teammates).",
+        1: isAceDebuffer
+            ? "Ace (Debuffer target): select your 2 veteran ace teammates below so the model trains around them."
+            : "Ace: optional 0–2 veteran teammates (blank = auto-supplied mates).",
+        2: "Support (Debuffer): evaluates full 3-Uma team winrate around your 2 selected veterans. Requires 2 distinct veterans.",
+        3: "Support (Blocker): Front-runner blocker serving your 2 selected veterans. Requires 2 distinct veterans.",
+    };
+    if (hint) {
+        hint.textContent = roleHints[roleNum] || "";
+    }
+
+    const matesArea = $("cm-mates-area");
+    if (matesArea) {
+        matesArea.style.display = roleNum === 0 ? "none" : "";
+    }
+
+    const vets = state.veterans || [];
+    const byTid = new Map(vets.map((v) => [Number(v.trained_chara_id), v]));
+    const q = (state.mateQuery || "").trim().toLowerCase();
+    const filtered = q
+        ? vets.filter((v) => `${v.name} ${v.rank_score} ${STYLE_SHORT[v.running_style] || ""} ${(v.stats || []).join(" ")}`.toLowerCase().includes(q))
+        : vets;
+    const countNode = $("cm-vet-count");
+    if (countNode) {
+        countNode.textContent = `${vets.length} veteran${vets.length === 1 ? "" : "s"}`;
+    }
+
+    const mateIds = Array.isArray(cfg.mate_ids) ? cfg.mate_ids : [null, null];
+    const mateRoles = Array.isArray(cfg.mate_roles) ? cfg.mate_roles : ["auto", "auto"];
+
+    for (const slot of [0, 1]) {
+        const sel = $(`cm-mate-${slot}`);
+        const roleSel = $(`cm-mate-role-${slot}`);
+        const info = $(`cm-mate-info-${slot}`);
+        const curTid = mateIds[slot] != null ? Number(mateIds[slot]) : null;
+        const otherTid = mateIds[1 - slot] != null ? Number(mateIds[1 - slot]) : null;
+        if (sel) {
+            sel.innerHTML = "";
+            const blank = document.createElement("option");
+            blank.value = "";
+            blank.textContent = needTwoMates ? "— Select veteran teammate —" : "Auto-supplied / None";
+            sel.append(blank);
+            const listForSlot = [...filtered];
+            if (curTid && byTid.has(curTid) && !listForSlot.some((v) => Number(v.trained_chara_id) === curTid)) {
+                listForSlot.unshift(byTid.get(curTid));
+            }
+            for (const v of listForSlot) {
+                const tid = Number(v.trained_chara_id);
+                const opt = document.createElement("option");
+                opt.value = String(tid);
+                opt.textContent = formatVeteranOption(v);
+                opt.disabled = Boolean(otherTid && tid === otherTid);
+                sel.append(opt);
+            }
+            sel.value = curTid ? String(curTid) : "";
+        }
+        if (roleSel) {
+            roleSel.value = mateRoles[slot] || "auto";
+        }
+        if (info) {
+            if (curTid && byTid.has(curTid)) {
+                info.textContent = formatVeteranSummary(byTid.get(curTid));
+            } else if (curTid) {
+                info.textContent = `Saved veteran #${curTid}`;
+            } else {
+                info.textContent = needTwoMates ? "Required: select a veteran teammate" : "Auto-supplied by model / None";
+            }
+        }
+    }
+
+    const warn = $("cm-warning");
+    if (warn) {
+        if (isCmSupportBlocked(session)) {
+            warn.style.display = "block";
+            warn.textContent = isAceDebuffer
+                ? "Targeting a debuffer build: select your 2 veteran ace teammates below."
+                : "Support mode requires selecting 2 distinct veteran teammates before starting.";
+        } else {
+            warn.style.display = "none";
+            warn.textContent = "";
+        }
+    }
 }
 
 function activeGrandLiveCareer(session) {
@@ -352,7 +819,18 @@ async function exportFinalTurn() {
     btn.textContent = "EXPORTING…";
     try {
         const payload = await api("/api/career/final-turn-export");
-        downloadJsonFile(payload.json, payload.filename);
+        if (window.SweepyAndroid && typeof window.SweepyAndroid.saveJson === "function") {
+            window.SweepyAndroid.saveJson(payload.filename || "umadump.json", JSON.stringify(payload.json, null, 2));
+        } else if (/Android/i.test(navigator.userAgent)) {
+            const anchor = document.createElement("a");
+            anchor.href = "/api/career/final-turn-export?download=1";
+            anchor.download = payload.filename || "umadump.json";
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+        } else {
+            downloadJsonFile(payload.json, payload.filename);
+        }
         btn.textContent = "SAVED";
         setTimeout(() => {
             btn.textContent = label;
@@ -453,7 +931,7 @@ function renderRunner(runner) {
     const runBtn = $("run-career-btn");
     const stopBtn = $("stop-career-btn");
     if (runBtn) {
-        runBtn.disabled = runner.running === true || !state.session || !state.session.logged_in || !activeGrandLiveCareer(state.session);
+        runBtn.disabled = runner.running === true || !state.session || !state.session.logged_in || !activeGrandLiveCareer(state.session) || isCmSupportBlocked(state.session);
     }
     if (stopBtn) {
         stopBtn.disabled = runner.running !== true;
@@ -555,8 +1033,24 @@ function renderError(message) {
     banner.textContent = message;
 }
 
+function setQrChallengeUrl(url) {
+    const btn = $("qr-open-steam-btn");
+    if (!btn) {
+        return;
+    }
+    const clean = typeof url === "string" ? url.trim() : "";
+    if (clean.startsWith("https://s.team/q/")) {
+        btn.href = clean;
+        btn.hidden = false;
+    } else {
+        btn.href = "#";
+        btn.hidden = true;
+    }
+}
+
 async function startQr() {
     clearTimeout(state.qrTimer);
+    setQrChallengeUrl("");
     setQrHint(QR_HINT_IDLE);
     const box = $("qr-svg-box");
     if (box) {
@@ -570,12 +1064,14 @@ async function startQr() {
             box.innerHTML = "";
             box.insertAdjacentHTML("afterbegin", response.qr_svg);
         }
+        setQrChallengeUrl(response.challenge_url);
         state.qrActive = true;
         state.qrRetries = 0;
         state.qrInterval = Number(response.interval) || 2;
         scheduleQrPoll(state.qrInterval);
     } catch (error) {
         state.qrActive = false;
+        setQrChallengeUrl("");
         state.qrRetries += 1;
         setQrHint(QR_HINT_IDLE);
         showAuthError(error.message);
@@ -591,26 +1087,278 @@ function scheduleQrPoll(seconds) {
     state.qrTimer = setTimeout(pollQr, Math.max(1, seconds) * 1000);
 }
 
-async function pollQr() {
-    if (!state.qrActive) {
+async function completeSteamApproval(response) {
+    state.qrActive = false;
+    state.credPollActive = false;
+    clearTimeout(state.qrTimer);
+    clearTimeout(state.credTimer);
+    setQrChallengeUrl("");
+    setQrHint("Signing in");
+    const passInput = $("steam-pass-input");
+    if (passInput) {
+        passInput.value = "";
+    }
+    const guardInput = $("steam-guard-input");
+    if (guardInput) {
+        guardInput.value = "";
+    }
+    saveSteamToken(response.refresh_token || "");
+    adoptDeviceState(response);
+    await refreshSession();
+}
+
+function setAuthTab(tab, triggerQr) {
+    const hasPwd = Boolean(state.session && state.session.password_auth);
+    const chosen = hasPwd && tab === "credentials" ? "credentials" : "qr";
+    state.authTab = chosen;
+    const tabs = $("auth-mode-tabs");
+    const credPanel = $("credentials-panel");
+    const qrPanel = $("qr-panel");
+    const credBtn = $("auth-tab-credentials");
+    const qrBtn = $("auth-tab-qr");
+    if (tabs) {
+        tabs.hidden = !hasPwd;
+    }
+    if (credPanel) {
+        credPanel.hidden = chosen !== "credentials";
+    }
+    if (qrPanel) {
+        qrPanel.hidden = chosen !== "qr";
+    }
+    if (credBtn && qrBtn) {
+        const credOn = chosen === "credentials";
+        credBtn.classList.toggle("btn-brass", credOn);
+        credBtn.classList.toggle("btn-quiet", !credOn);
+        credBtn.setAttribute("aria-pressed", String(credOn));
+        qrBtn.classList.toggle("btn-brass", !credOn);
+        qrBtn.classList.toggle("btn-quiet", credOn);
+        qrBtn.setAttribute("aria-pressed", String(!credOn));
+    }
+    showAuthError("");
+    if (chosen === "credentials") {
+        state.qrActive = false;
+        clearTimeout(state.qrTimer);
+    } else if (triggerQr && !state.qrActive) {
+        startQr();
+    }
+}
+
+function resetCredentialsUi() {
+    state.credPollActive = false;
+    clearTimeout(state.credTimer);
+    const credForm = $("credentials-form");
+    const guardPanel = $("guard-panel");
+    const guardInput = $("steam-guard-input");
+    const guardBtn = $("guard-verify-btn");
+    const loginBtn = $("cred-login-btn");
+    if (credForm) {
+        credForm.hidden = false;
+    }
+    if (guardPanel) {
+        guardPanel.hidden = true;
+    }
+    if (guardInput) {
+        guardInput.value = "";
+    }
+    if (guardBtn) {
+        guardBtn.disabled = false;
+        guardBtn.textContent = "VERIFY";
+    }
+    if (loginBtn) {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "SIGN IN";
+    }
+    showAuthError("");
+}
+
+function renderGuardChallenge(res) {
+    const types = Array.isArray(res.guard_types) ? res.guard_types : [];
+    const hint = res.hint ? String(res.hint) : "";
+    const credForm = $("credentials-form");
+    const guardPanel = $("guard-panel");
+    const codeField = $("guard-code-field");
+    const verifyBtn = $("guard-verify-btn");
+    const promptNode = $("guard-prompt");
+    if (credForm) {
+        credForm.hidden = true;
+    }
+    if (guardPanel) {
+        guardPanel.hidden = false;
+    }
+
+    const allowsPush = types.includes("device_confirm") || types.includes("email_confirm");
+    const needsCode = !allowsPush && (types.includes("email_code") || types.includes("device_code") || types.length === 0);
+    if (codeField) {
+        codeField.hidden = !needsCode;
+    }
+    if (verifyBtn) {
+        verifyBtn.hidden = !needsCode;
+    }
+
+    let text = "Approve this sign-in using the Steam Mobile app.";
+    if (types.includes("device_confirm")) {
+        text = "Approve this sign-in using the Steam Mobile app.";
+    } else if (types.includes("email_confirm")) {
+        text = "Click the confirmation link sent to your Steam email.";
+    } else if (types.includes("email_code")) {
+        text = hint
+            ? `Enter the Steam Guard code sent to ${hint}.`
+            : "Enter the Steam Guard code sent to your email.";
+    } else if (needsCode) {
+        text = "Enter your 5-character Steam Guard code.";
+    }
+    if (promptNode) {
+        promptNode.textContent = text;
+    }
+
+    if (allowsPush) {
+        state.credPollActive = true;
+        state.credRetries = 0;
+        state.credInterval = Math.max(2, Number(res.interval) || 3);
+        scheduleCredPoll(state.credInterval);
+    } else {
+        state.credPollActive = false;
+        clearTimeout(state.credTimer);
+    }
+    if (needsCode) {
+        const input = $("steam-guard-input");
+        if (input) {
+            input.focus();
+        }
+    }
+}
+
+function scheduleCredPoll(seconds) {
+    clearTimeout(state.credTimer);
+    state.credTimer = setTimeout(pollCredentials, Math.max(1, seconds) * 1000);
+}
+
+async function pollCredentials() {
+    if (!state.credPollActive || state.credPollInFlight) {
         return;
     }
+    state.credPollInFlight = true;
+    try {
+        const res = await api("/api/auth/credentials/poll", "POST", {}, 30000);
+        if (res.status === "approved" || res.logged_in === true) {
+            await completeSteamApproval(res);
+            return;
+        }
+        if (String(res.status || "").toLowerCase() === "expired") {
+            resetCredentialsUi();
+            showAuthError("Sign-in session expired — enter your credentials again.");
+            return;
+        }
+        if (Number(res.interval) > 0) {
+            state.credInterval = Math.max(2, Number(res.interval));
+        }
+        state.credRetries = 0;
+        scheduleCredPoll(state.credInterval);
+    } catch (error) {
+        state.credRetries += 1;
+        showAuthError(error.message);
+        if (error.status === 400 || state.credRetries > 3) {
+            state.credPollActive = false;
+            return;
+        }
+        scheduleCredPoll(Math.max(3, state.credInterval * state.credRetries));
+    } finally {
+        state.credPollInFlight = false;
+    }
+}
+
+async function submitCredentialsLogin(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    const userInput = $("steam-user-input");
+    const passInput = $("steam-pass-input");
+    const btn = $("cred-login-btn");
+    const username = userInput ? userInput.value.trim() : "";
+    const password = passInput ? passInput.value : "";
+    if (!username || !password) {
+        showAuthError("Enter both your Steam username and password.");
+        return;
+    }
+    showAuthError("");
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "SIGNING IN…";
+    }
+    try {
+        const res = await api("/api/auth/credentials/start", "POST", { username, password }, 45000);
+        if (res.status === "approved" || res.logged_in === true) {
+            await completeSteamApproval(res);
+            return;
+        }
+        if (passInput) {
+            passInput.value = "";
+        }
+        renderGuardChallenge(res);
+    } catch (error) {
+        showAuthError(error.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "SIGN IN";
+        }
+    }
+}
+
+async function submitGuardCode(event) {
+    if (event) {
+        event.preventDefault();
+    }
+    const input = $("steam-guard-input");
+    const btn = $("guard-verify-btn");
+    const code = input ? input.value.trim() : "";
+    if (!code) {
+        showAuthError("Enter your Steam Guard code.");
+        return;
+    }
+    showAuthError("");
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = "VERIFYING…";
+    }
+    try {
+        const res = await api("/api/auth/credentials/code", "POST", { code }, 45000);
+        if (res.status === "approved" || res.logged_in === true) {
+            await completeSteamApproval(res);
+            return;
+        }
+        showAuthError("Code accepted — waiting for Steam to finalize session...");
+    } catch (error) {
+        showAuthError(error.message);
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = "VERIFY";
+        }
+    }
+}
+
+async function pollQr() {
+    if (!state.qrActive || state.qrPollInFlight) {
+        return;
+    }
+    state.qrPollInFlight = true;
     try {
         const response = await api("/api/auth/qr/poll", "POST", {}, 120000);
         if (response.status === "approved" || response.logged_in === true) {
-            state.qrActive = false;
-            setQrHint("Signing in");
-            saveSteamToken(response.refresh_token || "");
-            adoptDeviceState(response);
-            await refreshSession();
+            await completeSteamApproval(response);
             return;
         }
         const qrState = String(response.status || "pending").toLowerCase();
         if (qrState === "expired" || qrState === "refused") {
             state.qrActive = false;
+            setQrChallengeUrl("");
             clearTimeout(state.qrTimer);
             state.qrTimer = setTimeout(startQr, 1200);
             return;
+        }
+        if (response.challenge_url) {
+            setQrChallengeUrl(response.challenge_url);
         }
         if (response.qr_svg) {
             const box = $("qr-svg-box");
@@ -636,12 +1384,24 @@ async function pollQr() {
         }
         showAuthError(error.message);
         scheduleQrPoll(state.qrInterval * state.qrRetries);
+    } finally {
+        state.qrPollInFlight = false;
     }
 }
 
 async function logout() {
     state.qrActive = false;
+    state.qrPollInFlight = false;
+    state.credPollActive = false;
+    state.credPollInFlight = false;
+    setQrChallengeUrl("");
     clearTimeout(state.qrTimer);
+    clearTimeout(state.credTimer);
+    const passInput = $("steam-pass-input");
+    if (passInput) {
+        passInput.value = "";
+    }
+    resetCredentialsUi();
     saveSteamToken("");
     saveBrainKey("");
     saveDeviceState(null);
@@ -649,7 +1409,11 @@ async function logout() {
         await api("/api/logout", "POST", {});
         const session = await refreshSession();
         if (!session.logged_in) {
-            await startQr();
+            if (session.password_auth) {
+                setAuthTab("credentials", false);
+            } else {
+                await startQr();
+            }
         }
     } catch (error) {
         showAuthError(error.message);
@@ -683,9 +1447,13 @@ async function startCareer() {
         return;
     }
     try {
-        const response = await api("/api/career/run", "POST", {
+        const payload = {
             burn_clocks: Boolean(state.session.burn_clocks),
-        });
+        };
+        if (state.session.cm_enabled) {
+            payload.cm_config = getCmConfig(state.session);
+        }
+        const response = await api("/api/career/run", "POST", payload);
         if (state.session) {
             state.session.runner = response.runner;
         }
@@ -813,6 +1581,11 @@ async function toggleBurnClocks() {
 
 function applySession(session) {
     state.session = session;
+    state.cmCatalog = session.cm_catalog || state.cmCatalog;
+    state.veterans = Array.isArray(session.veterans) ? session.veterans : [];
+    if (session.cm_config && state.pendingCmMode === null) {
+        state.cmConfig = session.cm_config;
+    }
     if (state.pendingTempt !== null && session.turn_delay) {
         session.turn_delay.disabled = state.pendingTempt;
     }
@@ -846,6 +1619,7 @@ function applySession(session) {
         }
         renderAccountStrip(session);
         renderCareer(session);
+        renderCmPanel(session);
         renderRunner(session.runner);
         const career = (session.account || {}).career;
         if (!activeGrandLiveCareer(session)) {
@@ -864,6 +1638,8 @@ function applySession(session) {
             }
         }
     } else {
+        const defaultTab = session.password_auth ? (state.authTab || "credentials") : "qr";
+        setAuthTab(defaultTab, false);
         renderAccountStrip(session);
     }
 }
@@ -886,16 +1662,21 @@ function startRunnerPolling() {
         return;
     }
     state.runnerTimer = setInterval(async () => {
+        if (state.runnerPollInFlight) {
+            return;
+        }
         const runner = state.session && state.session.runner;
         if (!state.session || !state.session.logged_in || !runner || runner.running !== true) {
             return;
         }
+        state.runnerPollInFlight = true;
         try {
             const response = await api("/api/career/runner");
             markConnected();
             renderRunner(response.runner);
             if (response.runner && response.runner.running !== true) {
                 await refreshSession(true);
+                return;
             }
             if (state.session) {
                 state.session.runner = response.runner;
@@ -905,6 +1686,8 @@ function startRunnerPolling() {
             }
         } catch {
             markDisconnected();
+        } finally {
+            state.runnerPollInFlight = false;
         }
     }, 1200);
 }
@@ -912,6 +1695,11 @@ function startRunnerPolling() {
 function bindStatic() {
     $("logout-btn").addEventListener("click", logout);
     $("qr-refresh-btn").addEventListener("click", startQr);
+    $("auth-tab-credentials").addEventListener("click", () => setAuthTab("credentials", false));
+    $("auth-tab-qr").addEventListener("click", () => setAuthTab("qr", true));
+    $("credentials-form").addEventListener("submit", submitCredentialsLogin);
+    $("guard-panel").addEventListener("submit", submitGuardCode);
+    $("guard-reset-btn").addEventListener("click", resetCredentialsUi);
     $("key-save-btn").addEventListener("click", saveKey);
     $("key-input").addEventListener("focus", clearKeyMask);
     $("key-input").addEventListener("blur", () => {
@@ -936,6 +1724,81 @@ function bindStatic() {
     });
     $("tempt-fate-btn").addEventListener("click", toggleTemptFate);
     $("burn-clocks-btn").addEventListener("click", toggleBurnClocks);
+    $("cm-mode-btn").addEventListener("click", toggleCmMode);
+
+    $("cm-preset-select").addEventListener("change", (event) => {
+        const slug = event.target.value;
+        const presets = ((state.cmCatalog || {}).presets) || [];
+        const found = presets.find((p) => p.slug === slug);
+        if (found) {
+            saveCmConfig({
+                cm_preset: found.slug,
+                track: found.track,
+                distance: found.distance,
+                ground: found.ground,
+                ground_condition: found.ground_condition,
+                weather: found.weather,
+                season: found.season,
+                course_id: found.course_id,
+                inout: found.inout || 1,
+            });
+        } else {
+            saveCmConfig({ cm_preset: "custom" });
+        }
+    });
+
+    $("cm-track-select").addEventListener("change", (event) => {
+        const track = event.target.value;
+        const courses = ((state.cmCatalog || {}).courses) || [];
+        const cfg = getCmConfig(state.session);
+        let avail = coursesForTrackAndGround(courses, track, cfg.ground);
+        let nextGround = cfg.ground;
+        if (!avail.length) {
+            avail = courses.filter((c) => c.track === track);
+            nextGround = avail.length ? Number(avail[0].ground) : 1;
+        }
+        const best = avail.length
+            ? avail.reduce((a, b) => (Math.abs(a.distance - cfg.distance) <= Math.abs(b.distance - cfg.distance) ? a : b))
+            : null;
+        if (best) {
+            saveCmConfig({ track, ground: nextGround, course_id: best.course_id, distance: best.distance, inout: best.inout });
+        }
+    });
+
+    $("cm-course-select").addEventListener("change", (event) => {
+        const cid = Number(event.target.value);
+        const courses = ((state.cmCatalog || {}).courses) || [];
+        const found = courses.find((c) => Number(c.course_id) === cid);
+        if (found) {
+            saveCmConfig({ course_id: found.course_id, distance: found.distance, ground: found.ground, inout: found.inout });
+        }
+    });
+
+    $("cm-mate-search").addEventListener("input", (event) => {
+        state.mateQuery = event.target.value || "";
+        renderCmPanel(state.session);
+    });
+
+    for (const slot of [0, 1]) {
+        $(`cm-mate-${slot}`).addEventListener("change", (event) => {
+            const cfg = getCmConfig(state.session);
+            const nextIds = [...(cfg.mate_ids || [null, null])];
+            nextIds[slot] = event.target.value ? Number(event.target.value) : null;
+            saveCmConfig({ mate_ids: nextIds });
+        });
+        $(`cm-mate-role-${slot}`).addEventListener("change", (event) => {
+            const cfg = getCmConfig(state.session);
+            const nextRoles = [...(cfg.mate_roles || ["auto", "auto"])];
+            nextRoles[slot] = event.target.value || "auto";
+            saveCmConfig({ mate_roles: nextRoles });
+        });
+        $(`cm-mate-clear-${slot}`).addEventListener("click", () => {
+            const cfg = getCmConfig(state.session);
+            const nextIds = [...(cfg.mate_ids || [null, null])];
+            nextIds[slot] = null;
+            saveCmConfig({ mate_ids: nextIds });
+        });
+    }
 }
 
 async function init() {
@@ -957,7 +1820,11 @@ async function init() {
         }
         session = await pushBrainKey(session);
         if (!session.logged_in) {
-            startQr();
+            if (session.password_auth) {
+                setAuthTab("credentials", false);
+            } else {
+                setAuthTab("qr", true);
+            }
         }
         startRunnerPolling();
     } catch (error) {
@@ -971,7 +1838,20 @@ async function init() {
 document.addEventListener("DOMContentLoaded", init);
 
 document.addEventListener("visibilitychange", () => {
-    if (!document.hidden && state.session && state.session.logged_in) {
+    if (document.hidden) {
+        return;
+    }
+    if (state.credPollActive && !state.credPollInFlight) {
+        clearTimeout(state.credTimer);
+        pollCredentials();
+        return;
+    }
+    if (state.qrActive && !state.qrPollInFlight) {
+        clearTimeout(state.qrTimer);
+        pollQr();
+        return;
+    }
+    if (state.session && state.session.logged_in) {
         refreshSession().catch(() => markDisconnected());
     }
 });

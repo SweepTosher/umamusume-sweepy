@@ -14,12 +14,18 @@ import time
 from typing import Any
 from urllib.parse import parse_qs, urlsplit
 
+import sweepy.config as sweepy_config
 from sweepy.brain_client import BrainAPIError, BrainClient
 from sweepy.catalog import Catalog
-from sweepy.config import RuntimeConfig
+from sweepy.config import RuntimeConfig, apply_turn_delay
 from sweepy.macro_runner import MacroCareerRunner
 from sweepy.qr_svg import render_qr_svg
-from sweepy.stripper import resolve_cm_options_for_account
+from sweepy.stripper import (
+    resolve_cm_options_for_account,
+    strip_cm_mate,
+    trained_chara_index,
+    unwrap_data,
+)
 from sweepy.umadump_export import export_filename
 from uma_headless import SteamTicketError
 from uma_headless.device import read_device_state
@@ -116,7 +122,10 @@ class SweepyAppState:
         )
         self.public_dir = resolved_public
         self.catalog = Catalog(self.public_dir)
-        self.runner = MacroCareerRunner(account_salt=self.config.account_salt())
+        self.runner = MacroCareerRunner(
+            account_salt=self.config.account_salt(),
+            runtime_dir=self.config.runtime_dir,
+        )
         self.runner.set_burn_clocks(self.config.load_settings()["burn_clocks"])
 
         self._provider_factory = provider_factory
@@ -167,15 +176,6 @@ class SweepyAppState:
                 self._provider = factory(self.config.refresh_file)
             return self._provider
 
-    def _apply_delay_to_client(self, client: Any, delay_cfg: dict[str, Any]) -> None:
-        timing = getattr(client, "timing", None)
-        if timing is None:
-            return
-        timing.disabled = bool(delay_cfg.get("disabled", False))
-        if not timing.disabled:
-            timing.turn_min = float(delay_cfg.get("min", 1.6))
-            timing.turn_max = float(delay_cfg.get("max", 3.7))
-
     def _complete_uma_login(self, provider: Any) -> dict[str, Any]:
         with self._auth_lock:
             with self._lock:
@@ -199,15 +199,14 @@ class SweepyAppState:
             )
             try:
                 settings = self.config.load_settings()
-                self._apply_delay_to_client(client, settings["turn_delay"])
+                apply_turn_delay(client, settings["turn_delay"])
 
-                boot_inner = boot_res.get("data") if isinstance(boot_res, dict) and isinstance(boot_res.get("data"), dict) else boot_res
-                if isinstance(boot_inner, dict) and ("user_info" in boot_inner or "card_list" in boot_inner or "tp_info" in boot_inner):
+                boot_inner = unwrap_data(boot_res)
+                if any(k in boot_inner for k in ("user_info", "card_list", "tp_info")):
                     raw_data = boot_inner
                 else:
-                    login_res = client.login(read_info=True)
-                    raw_data = login_res.get("data") if isinstance(login_res, dict) and isinstance(login_res.get("data"), dict) else login_res
-                if not isinstance(raw_data, dict):
+                    raw_data = unwrap_data(client.login(read_info=True))
+                if not raw_data:
                     raise RuntimeError("Login returned no account data")
 
                 career_res: dict[str, Any] | None = None
@@ -322,8 +321,8 @@ class SweepyAppState:
                 raw = client.login(read_info=True)
             except Exception:
                 return
-            data = raw.get("data") if isinstance(raw, dict) and isinstance(raw.get("data"), dict) else raw
-            if not isinstance(data, dict):
+            data = unwrap_data(raw)
+            if not data:
                 return
             career_res: dict[str, Any] | None = None
             light = data.get("single_mode_chara_light") or data.get("single_mode_chara")
@@ -349,9 +348,14 @@ class SweepyAppState:
             logged_in = self._client is not None and self._dashboard is not None
             brain_online = self._brain_online
             brain_health = dict(self._brain_health) if isinstance(self._brain_health, dict) else None
+            raw_acc = dict(self._raw_account_data) if isinstance(self._raw_account_data, dict) else None
 
         account = self._account_view(runner_snapshot)
 
+        cm_enabled = bool(sweepy_config.CM_ENABLED)
+        cm_cfg = dict(settings["cm_config"])
+        if not cm_enabled:
+            cm_cfg["cm_mode"] = False
         base: dict[str, Any] = {
             "ok": True,
             "logged_in": logged_in,
@@ -367,6 +371,10 @@ class SweepyAppState:
             "has_api_key": bool(settings["api_key"]),
             "turn_delay": settings["turn_delay"],
             "burn_clocks": settings["burn_clocks"],
+            "cm_enabled": cm_enabled,
+            "cm_config": cm_cfg,
+            "cm_catalog": self.catalog.cm_metadata() if cm_enabled else None,
+            "veterans": self.catalog.format_veterans(raw_acc) if cm_enabled and logged_in and raw_acc is not None else [],
             "device_state": dict(self._device_state) if isinstance(self._device_state, dict) else None,
             "runner": runner_snapshot,
             "account": account,
@@ -528,50 +536,92 @@ class SweepyAppState:
         saved_delay = self.config.set_turn_delay(min_val, max_val, disabled=disabled)
         with self._lock:
             if self._client is not None:
-                self._apply_delay_to_client(self._client, saved_delay)
+                apply_turn_delay(self._client, saved_delay)
         return {
             "ok": True,
             **saved_delay,
             "turn_delay": saved_delay,
         }
 
+    def _build_mate_snapshots(
+        self,
+        mate_ids: list[int | None],
+        mate_roles: list[str],
+        existing_snaps: list[dict[str, Any] | None],
+        raw_account: dict[str, Any] | None,
+    ) -> list[dict[str, Any] | None]:
+        by_tid = trained_chara_index(raw_account)
+        snaps: list[dict[str, Any] | None] = [None, None]
+        for idx in range(2):
+            tid = mate_ids[idx] if idx < len(mate_ids) else None
+            if tid is None:
+                continue
+            r_ov = mate_roles[idx] if idx < len(mate_roles) else None
+            role_arg = None if r_ov in (None, "", "auto") else str(r_ov)
+            if tid in by_tid:
+                snap = strip_cm_mate(by_tid[tid], role_override=role_arg)
+                snap["_snap_tid"] = int(tid)
+                snaps[idx] = snap
+            elif idx < len(existing_snaps) and isinstance(existing_snaps[idx], dict):
+                old_snap = existing_snaps[idx]
+                if int(old_snap.get("_snap_tid") or 0) == int(tid):
+                    snap = strip_cm_mate(old_snap, role_override=role_arg)
+                    snap["_snap_tid"] = int(tid)
+                    snaps[idx] = snap
+        return snaps
+
+    def set_cm_config(self, body: dict[str, Any]) -> dict[str, Any]:
+        patch = body.get("cm_config") if isinstance(body.get("cm_config"), dict) else body
+        if not isinstance(patch, dict):
+            raise ValueError("Invalid CM config payload")
+        settings = self.config.load_settings()
+        if not sweepy_config.CM_ENABLED:
+            return {
+                "ok": True,
+                "cm_enabled": False,
+                "cm_config": {**dict(settings.get("cm_config") or {}), "cm_mode": False},
+            }
+        current = dict(settings.get("cm_config") or {})
+        merged = {**current, **patch}
+        with self._lock:
+            raw_account = dict(self._raw_account_data) if isinstance(self._raw_account_data, dict) else None
+        normalized = self.config.set_cm_config(merged)
+        snaps = self._build_mate_snapshots(
+            normalized["mate_ids"],
+            normalized["mate_roles"],
+            normalized["mate_snapshots"],
+            raw_account,
+        )
+        if snaps != normalized["mate_snapshots"]:
+            normalized["mate_snapshots"] = snaps
+            normalized = self.config.set_cm_config(normalized)
+        return {
+            "ok": True,
+            "cm_enabled": True,
+            "cm_config": normalized,
+        }
+
     def set_burn_clocks(self, body: dict[str, Any]) -> dict[str, Any]:
         enabled = bool(body.get("burn_clocks", False))
         self.config.set_burn_clocks(enabled)
         self.runner.set_burn_clocks(enabled)
-        return {            "ok": True,
+        return {
+            "ok": True,
             "burn_clocks": enabled,
             "runner": self.runner.snapshot(),
         }
 
-    def _probe_active_grand_live_career(self, client: Any) -> None:
-        probe = client.login(read_info=False)
-        raw = probe
-        if isinstance(probe, dict) and isinstance(probe.get("data"), dict):
-            inner = probe["data"]
-            if any(
-                key in inner
-                for key in (
-                    "single_mode_chara_light",
-                    "single_mode_chara",
-                    "user_info",
-                    "chara_info",
-                    "single_mode_start_common",
-                )
-            ):
-                raw = inner
-        if not isinstance(raw, dict):
+    def _probe_active_grand_live_career(self, client: Any) -> dict[str, Any]:
+        raw = unwrap_data(client.login(read_info=False))
+        if not raw:
             raise RuntimeError("Account probe returned no data")
         active_light = raw.get("single_mode_chara_light") or raw.get("single_mode_chara")
         if not (isinstance(active_light, dict) and int(active_light.get("single_mode_chara_id") or 0) > 0):
-            raise RuntimeError(
-                "no active career (start one in-game)"
-            )
+            raise RuntimeError("no active career (start one in-game)")
         active_scen = int(active_light.get("scenario_id") or 3)
         if active_scen != 3:
-            raise RuntimeError(
-                f"Career scenario {active_scen}, not Grand Live (3)."
-            )
+            raise RuntimeError(f"Career scenario {active_scen}, not Grand Live (3).")
+        return raw
 
     def start_career_run(self, body: dict[str, Any]) -> dict[str, Any]:
         with self._auth_lock:
@@ -582,26 +632,65 @@ class SweepyAppState:
                 raise RuntimeError("Not logged in")
             if self.runner.running:
                 return {"ok": True, "already_running": True, "runner": self.runner.snapshot()}
-            self._probe_active_grand_live_career(client)
+            probe_data = self._probe_active_grand_live_career(client)
+            if raw_account is not None and raw_account.get("trained_chara_array") and not probe_data.get("trained_chara_array"):
+                probe_data = {**probe_data, "trained_chara_array": raw_account["trained_chara_array"]}
+            raw_account = probe_data
 
             settings = self.config.load_settings()
             if not settings["api_key"]:
                 raise BrainAPIError("Add an API key first")
 
             burn_clocks = bool(body.get("burn_clocks", settings["burn_clocks"]))
-            raw_cm = body.get("cm_config") if isinstance(body.get("cm_config"), dict) else settings.get("cm_config")
-            if isinstance(body, dict) and any(k in body for k in ("cm_mode", "cm_course", "cm_role", "cm_style", "mate_ids", "mate_roles", "cm_mates")):
-                merged_cm = dict(raw_cm or {})
-                for k in ("cm_mode", "cm_course", "cm_role", "cm_style", "mate_ids", "mate_roles", "cm_mates"):
-                    if k in body:
-                        merged_cm[k] = body[k]
-                raw_cm = merged_cm
-            cm_options = resolve_cm_options_for_account(raw_cm, raw_account)
+            cm_keys = (
+                "cm_mode",
+                "cm_preset",
+                "cm_course",
+                "track",
+                "distance",
+                "ground",
+                "surface",
+                "ground_condition",
+                "weather",
+                "season",
+                "course_id",
+                "inout",
+                "cm_role",
+                "cm_target",
+                "cm_style",
+                "mate_ids",
+                "mate_roles",
+                "mate_snapshots",
+                "cm_mates",
+            )
+            cm_options = None
+            if sweepy_config.CM_ENABLED:
+                raw_cm = body.get("cm_config") if isinstance(body.get("cm_config"), dict) else settings.get("cm_config")
+                if isinstance(body, dict) and any(k in body for k in cm_keys):
+                    merged_cm = dict(raw_cm or {})
+                    for k in cm_keys:
+                        if k in body:
+                            merged_cm[k] = body[k]
+                    raw_cm = merged_cm
+                cm_options = resolve_cm_options_for_account(raw_cm, raw_account)
+                if cm_options is not None and int(cm_options.get("cm_role", 0)) in (2, 3):
+                    if len(cm_options.get("cm_mates") or []) < 2:
+                        raise ValueError("Selected CM mode/target requires selecting 2 veteran teammates before starting")
+                    if isinstance(raw_cm, dict) and not raw_cm.get("cm_mates"):
+                        selected_ids = [int(x) for x in (raw_cm.get("mate_ids") or []) if x is not None and not isinstance(x, bool)]
+                        if len(set(selected_ids)) < 2:
+                            raise ValueError("Selected CM mode/target requires selecting 2 distinct veteran teammates")
 
             brain = self._brain_factory(settings["api_url"], settings["api_key"])
             brain.on_key_refresh = self._save_rotated_key
-            self._apply_delay_to_client(client, settings["turn_delay"])
-            self.runner.start(client, brain, burn_clocks=burn_clocks, cm_options=cm_options)
+            apply_turn_delay(client, settings["turn_delay"])
+            self.runner.start(
+                client,
+                brain,
+                burn_clocks=burn_clocks,
+                cm_options=cm_options,
+                account_data=raw_account,
+            )
             return {
                 "ok": True,
                 "runner": self.runner.snapshot(),
@@ -683,13 +772,24 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
                     return self._reject("Cross-site request rejected")
             return True
 
-        def _send_bytes(self, status: int, content_type: str, data: bytes, *, cache_control: str = "no-store") -> None:
+        def _send_bytes(
+            self,
+            status: int,
+            content_type: str,
+            data: bytes,
+            *,
+            cache_control: str = "no-store",
+            extra_headers: dict[str, str] | None = None,
+        ) -> None:
             self.send_response(status)
             self.send_header("Content-Type", content_type)
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", cache_control)
             for name, value in _SECURITY_HEADERS.items():
                 self.send_header(name, value)
+            if extra_headers:
+                for name, value in extra_headers.items():
+                    self.send_header(name, value)
             self.end_headers()
             try:
                 self.wfile.write(data)
@@ -763,7 +863,18 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
                     self._send_json(200, app_state.runner_status())
                     return
                 if path == "/api/career/final-turn-export":
-                    self._send_json(200, app_state.final_turn_export())
+                    export = app_state.final_turn_export()
+                    if parse_qs(target.query).get("download") == ["1"]:
+                        safe_name = str(export.get("filename") or "umadump.json").replace('"', "").replace(";", "")
+                        raw_json = json.dumps(export["json"], indent=2, ensure_ascii=False).encode("utf-8")
+                        self._send_bytes(
+                            200,
+                            "application/json; charset=utf-8",
+                            raw_json,
+                            extra_headers={"Content-Disposition": f'attachment; filename="{safe_name}"'},
+                        )
+                        return
+                    self._send_json(200, export)
                     return
             except BrainAPIError as exc:
                 self._send_json(502, {"ok": False, "error": str(exc)})
@@ -801,6 +912,9 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
                     return
                 if path == "/api/settings/turn-delay":
                     self._send_json(200, app_state.set_turn_delay(body))
+                    return
+                if path == "/api/settings/cm":
+                    self._send_json(200, app_state.set_cm_config(body))
                     return
                 if path == "/api/career/runner/burn_clocks":
                     self._send_json(200, app_state.set_burn_clocks(body))

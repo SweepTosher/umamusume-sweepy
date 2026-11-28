@@ -1,0 +1,98 @@
+name: Android APK Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+  pull_request:
+    paths:
+      - "android/**"
+      - "public/**"
+      - "sweepy/data/**"
+      - ".github/workflows/android-release.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 35 platform and build-tools
+        shell: bash
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Run core parity and server unit tests
+        run: ./gradlew :core:test --no-daemon
+
+      - name: Configure release signing and build APK
+        id: build_apk
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASS: ${{ secrets.ANDROID_KEY_PASS }}
+        run: |
+          GRADLE_ARGS="-PincludeApp=true --no-daemon"
+          if [ -n "$ANDROID_KEYSTORE_B64" ]; then
+            KEYSTORE_FILE="${{ runner.temp }}/release.jks"
+            printf '%s' "$ANDROID_KEYSTORE_B64" | base64 -d > "$KEYSTORE_FILE"
+            export ANDROID_KEYSTORE_PATH="$KEYSTORE_FILE"
+          else
+            GRADLE_ARGS="$GRADLE_ARGS -PfallbackDebugSign=true"
+          fi
+          ./gradlew :app:assembleRelease $GRADLE_ARGS
+          APK_SRC=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          test -f "$APK_SRC"
+          cp "$APK_SRC" ../sweepy.apk
+          (cd .. && sha256sum sweepy.apk > sweepy.apk.sha256)
+          cat ../sweepy.apk.sha256
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sweepy-android-apk
+          path: |
+            sweepy.apk
+            sweepy.apk.sha256
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download built APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sweepy-android-apk
+
+      - name: Publish APK to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            sweepy.apk
+            sweepy.apk.sha256

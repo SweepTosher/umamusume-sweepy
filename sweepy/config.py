@@ -14,6 +14,8 @@ from urllib.parse import urlsplit
 
 _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1"})
 
+CM_ENABLED = False
+
 
 DEFAULT_TURN_DELAY: dict[str, Any] = {
     "min": 1.6,
@@ -25,8 +27,18 @@ DEFAULT_TURN_DELAY: dict[str, Any] = {
 
 DEFAULT_CM_CONFIG: dict[str, Any] = {
     "cm_mode": False,
+    "cm_preset": "sagittarius",
     "cm_course": "sagittarius",
+    "track": "Nakayama",
+    "distance": 2500,
+    "ground": 1,
+    "ground_condition": 1,
+    "weather": 1,
+    "season": 4,
+    "course_id": 10506,
+    "inout": 1,
     "cm_role": 0,
+    "cm_target": "carry",
     "cm_style": 0,
     "mate_ids": [None, None],
     "mate_roles": ["auto", "auto"],
@@ -34,29 +46,152 @@ DEFAULT_CM_CONFIG: dict[str, Any] = {
 }
 
 
+CM_ROLE_ALIASES: dict[str, int] = {
+    "solo": 0,
+    "ace1": 0,
+    "raw": 0,
+    "ace1_raw": 0,
+    "ace": 1,
+    "ace2": 1,
+    "support": 2,
+    "debuffer": 2,
+    "deb": 2,
+    "blocker": 3,
+    "blk": 3,
+}
+
+CM_STYLE_ALIASES: dict[str, int] = {
+    "auto": 0,
+    "front": 1,
+    "nige": 1,
+    "pace": 2,
+    "senko": 2,
+    "late": 3,
+    "sashi": 3,
+    "end": 4,
+    "oikomi": 4,
+    "runaway": 5,
+    "oonige": 5,
+}
+
+
+def parse_cm_int_or_alias(val: Any, aliases: dict[str, int], lo: int, hi: int, default: int) -> int:
+    if val is None or isinstance(val, bool):
+        return default
+    if isinstance(val, str):
+        key = val.strip().lower()
+        if not key:
+            return default
+        if key in aliases:
+            return aliases[key]
+        try:
+            iv = int(key, 10)
+        except ValueError:
+            return default
+    else:
+        try:
+            iv = int(val)
+        except (TypeError, ValueError):
+            return default
+    return max(lo, min(hi, iv))
+
+
+def normalize_cm_role(raw_role: Any, target: Any = None) -> int:
+    role = parse_cm_int_or_alias(raw_role, CM_ROLE_ALIASES, 0, 3, 0)
+    if role == 1 and str(target or "carry").strip().lower() == "debuffer":
+        return 2
+    return role
+
+
+def normalize_cm_style(raw_style: Any) -> int:
+    return parse_cm_int_or_alias(raw_style, CM_STYLE_ALIASES, 0, 5, 0)
+
+
+def apply_turn_delay(client: Any, delay_cfg: dict[str, Any]) -> None:
+    timing = getattr(client, "timing", None)
+    if timing is None:
+        return
+    timing.disabled = bool(delay_cfg.get("disabled", False))
+    if not timing.disabled:
+        timing.turn_min = float(delay_cfg.get("min", 1.6))
+        timing.turn_max = float(delay_cfg.get("max", 3.7))
+
+
 def _normalize_cm_config(raw: Any) -> dict[str, Any]:
     src = raw if isinstance(raw, dict) else {}
     cm_mode = bool(src.get("cm_mode", False))
     raw_course = src.get("cm_course", "sagittarius")
-    cm_course = str(raw_course or "sagittarius").strip() or "sagittarius"
-    raw_role = src.get("cm_role", 0)
-    if isinstance(raw_role, str):
-        role_map = {
-            "solo": 0, "ace1": 0, "raw": 0, "ace1_raw": 0,
-            "ace": 1, "ace2": 1,
-            "support": 2, "debuffer": 2, "deb": 2,
-            "blocker": 3, "blk": 3,
-        }
-        cm_role = role_map.get(raw_role.strip().lower(), 0)
+    course_dict = raw_course if isinstance(raw_course, dict) else {}
+    if isinstance(raw_course, str):
+        cm_course: Any = raw_course.strip() or "sagittarius"
+    elif isinstance(raw_course, dict):
+        cm_course = dict(raw_course)
     else:
+        cm_course = "sagittarius"
+
+    raw_preset = src.get("cm_preset", cm_course if isinstance(cm_course, str) else course_dict.get("slug", "custom"))
+    cm_preset = str(raw_preset or "custom").strip() or "custom"
+
+    raw_track = src.get("track", course_dict.get("track", DEFAULT_CM_CONFIG["track"]))
+    track = str(raw_track or DEFAULT_CM_CONFIG["track"]).strip() or DEFAULT_CM_CONFIG["track"]
+    distance = parse_cm_int_or_alias(
+        src.get("distance", course_dict.get("distance")),
+        {},
+        1000,
+        3600,
+        int(DEFAULT_CM_CONFIG["distance"]),
+    )
+    ground = parse_cm_int_or_alias(
+        src.get("ground", src.get("surface", course_dict.get("ground", course_dict.get("surface")))),
+        {"turf": 1, "grass": 1, "shiba": 1, "dirt": 2, "sand": 2},
+        1,
+        2,
+        int(DEFAULT_CM_CONFIG["ground"]),
+    )
+    ground_condition = parse_cm_int_or_alias(
+        src.get("ground_condition", course_dict.get("ground_condition")),
+        {"firm": 1, "good": 2, "soft": 3, "yielding": 3, "heavy": 4, "bad": 4},
+        1,
+        4,
+        int(DEFAULT_CM_CONFIG["ground_condition"]),
+    )
+    weather = parse_cm_int_or_alias(
+        src.get("weather", course_dict.get("weather")),
+        {"sunny": 1, "clear": 1, "cloudy": 2, "rainy": 3, "rain": 3, "snowy": 4, "snow": 4},
+        1,
+        4,
+        int(DEFAULT_CM_CONFIG["weather"]),
+    )
+    season = parse_cm_int_or_alias(
+        src.get("season", course_dict.get("season")),
+        {"spring": 1, "summer": 2, "autumn": 3, "fall": 3, "winter": 4},
+        1,
+        4,
+        int(DEFAULT_CM_CONFIG["season"]),
+    )
+    raw_cid = src.get("course_id", course_dict.get("course_id"))
+    course_id: int | None = None
+    if raw_cid is not None and not isinstance(raw_cid, bool) and str(raw_cid).strip() != "":
         try:
-            cm_role = max(0, min(3, int(raw_role or 0)))
+            cid_v = int(raw_cid)
+            if cid_v > 0:
+                course_id = cid_v
         except (TypeError, ValueError):
-            cm_role = 0
-    try:
-        cm_style = max(0, min(5, int(src.get("cm_style", 0) or 0)))
-    except (TypeError, ValueError):
-        cm_style = 0
+            course_id = None
+    inout = parse_cm_int_or_alias(
+        src.get("inout", course_dict.get("inout")),
+        {"inner": 1, "in": 1, "outer": 2, "out": 2},
+        1,
+        2,
+        int(DEFAULT_CM_CONFIG["inout"]),
+    )
+
+    cm_role = parse_cm_int_or_alias(src.get("cm_role", 0), CM_ROLE_ALIASES, 0, 3, 0)
+
+    raw_target = str(src.get("cm_target") or "carry").strip().lower()
+    cm_target = raw_target if raw_target in ("carry", "debuffer") else "carry"
+
+    cm_style = normalize_cm_style(src.get("cm_style", 0))
 
     raw_ids = src.get("mate_ids")
     mate_ids: list[int | None] = [None, None]
@@ -85,8 +220,18 @@ def _normalize_cm_config(raw: Any) -> dict[str, Any]:
 
     return {
         "cm_mode": cm_mode,
+        "cm_preset": cm_preset,
         "cm_course": cm_course,
+        "track": track,
+        "distance": distance,
+        "ground": ground,
+        "ground_condition": ground_condition,
+        "weather": weather,
+        "season": season,
+        "course_id": course_id,
+        "inout": inout,
         "cm_role": cm_role,
+        "cm_target": cm_target,
         "cm_style": cm_style,
         "mate_ids": mate_ids,
         "mate_roles": mate_roles,
@@ -257,6 +402,16 @@ class RuntimeConfig:
             elif os.name == "posix":
                 os.chmod(self.settings_path, 0o600)
 
+    def _backup_corrupt_settings(self, reason: str, defaults: dict[str, Any]) -> dict[str, Any]:
+        corrupt = self.settings_path.with_name(self.settings_path.name + ".corrupt")
+        try:
+            os.replace(self.settings_path, corrupt)
+        except OSError:
+            corrupt = None
+        location = f" (saved as {corrupt})" if corrupt is not None else ""
+        print(f"sweepy: settings.json {reason}, using defaults{location}", file=sys.stderr)
+        return defaults
+
     def load_settings(self) -> dict[str, Any]:
         with self._lock:
             defaults = self._default_settings()
@@ -266,23 +421,9 @@ class RuntimeConfig:
             try:
                 raw = json.loads(self.settings_path.read_text(encoding="utf-8"))
             except (OSError, UnicodeDecodeError, json.JSONDecodeError):
-                corrupt = self.settings_path.with_name(self.settings_path.name + ".corrupt")
-                try:
-                    os.replace(self.settings_path, corrupt)
-                except OSError:
-                    corrupt = None
-                location = f" (saved as {corrupt})" if corrupt is not None else ""
-                print(f"sweepy: settings.json unreadable, using defaults{location}", file=sys.stderr)
-                return defaults
+                return self._backup_corrupt_settings("unreadable", defaults)
             if not isinstance(raw, dict):
-                corrupt = self.settings_path.with_name(self.settings_path.name + ".corrupt")
-                try:
-                    os.replace(self.settings_path, corrupt)
-                except OSError:
-                    corrupt = None
-                location = f" (saved as {corrupt})" if corrupt is not None else ""
-                print(f"sweepy: settings.json is not an object, using defaults{location}", file=sys.stderr)
-                return defaults
+                return self._backup_corrupt_settings("is not an object", defaults)
             api_url = str(raw.get("api_url") or defaults["api_url"]).strip().rstrip("/")
             if not api_url:
                 api_url = defaults["api_url"]

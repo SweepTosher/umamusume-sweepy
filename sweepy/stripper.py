@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from sweepy.config import normalize_cm_role, normalize_cm_style
+
 
 _ALLOWED_TOP_KEYS = frozenset({
     "chara_info",
@@ -191,6 +193,25 @@ def strip_cm_mate(
     return _scrub_private(cleaned)
 
 
+def unwrap_data(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, dict):
+        return {}
+    inner = raw.get("data")
+    return inner if isinstance(inner, dict) else raw
+
+
+def trained_chara_index(raw_account_data: dict[str, Any] | None) -> dict[int, dict[str, Any]]:
+    data = unwrap_data(raw_account_data)
+    by_tid: dict[int, dict[str, Any]] = {}
+    for tc in data.get("trained_chara_array") or []:
+        if isinstance(tc, dict) and tc.get("trained_chara_id") is not None:
+            try:
+                by_tid[int(tc["trained_chara_id"])] = tc
+            except (TypeError, ValueError):
+                continue
+    return by_tid
+
+
 def resolve_cm_options_for_account(
     cm_cfg: dict[str, Any] | None,
     raw_account_data: dict[str, Any] | None = None,
@@ -198,19 +219,7 @@ def resolve_cm_options_for_account(
     if not isinstance(cm_cfg, dict) or not bool(cm_cfg.get("cm_mode")):
         return None
 
-    data = (
-        raw_account_data.get("data")
-        if isinstance(raw_account_data, dict) and isinstance(raw_account_data.get("data"), dict)
-        else raw_account_data
-    )
-    by_tid: dict[int, dict[str, Any]] = {}
-    if isinstance(data, dict):
-        for tc in data.get("trained_chara_array") or []:
-            if isinstance(tc, dict) and tc.get("trained_chara_id") is not None:
-                try:
-                    by_tid[int(tc["trained_chara_id"])] = tc
-                except (TypeError, ValueError):
-                    continue
+    by_tid = trained_chara_index(raw_account_data)
 
     raw_explicit = cm_cfg.get("cm_mates")
     resolved_mates: list[dict[str, Any]] = []
@@ -240,23 +249,37 @@ def resolve_cm_options_for_account(
                 else:
                     raise ValueError(f"Selected teammate veteran {tid} not found in account veterans")
 
-    raw_role = cm_cfg.get("cm_role", 0)
-    if isinstance(raw_role, str):
-        role_map = {
-            "solo": 0, "ace1": 0, "raw": 0, "ace1_raw": 0,
-            "ace": 1, "ace2": 1,
-            "support": 2, "debuffer": 2, "deb": 2,
-            "blocker": 3, "blk": 3,
-        }
-        cm_role = role_map.get(raw_role.strip().lower(), 0)
+    cm_role = normalize_cm_role(cm_cfg.get("cm_role", 0), cm_cfg.get("cm_target"))
+    cm_style = normalize_cm_style(cm_cfg.get("cm_style", 0))
+    env_keys = ("track", "distance", "ground", "surface", "ground_condition", "weather", "season", "course_id", "inout")
+    raw_course = cm_cfg.get("cm_course")
+    has_env_fields = isinstance(raw_course, dict) or any(cm_cfg.get(k) is not None for k in env_keys)
+    if has_env_fields:
+        if isinstance(raw_course, dict):
+            course_payload: dict[str, Any] = dict(raw_course)
+        elif isinstance(raw_course, str) and raw_course.strip():
+            course_payload = {"slug": raw_course.strip()}
+        else:
+            course_payload = {}
+        if "surface" in course_payload and "ground" not in course_payload:
+            course_payload["ground"] = course_payload.pop("surface")
+        if cm_cfg.get("course_id") is not None:
+            course_payload["course_id"] = int(cm_cfg["course_id"])
+        for k in ("track", "inout", "ground_condition", "weather", "season"):
+            if cm_cfg.get(k) is not None:
+                course_payload[k] = cm_cfg[k]
+        if cm_cfg.get("distance") is not None:
+            course_payload["distance"] = int(cm_cfg["distance"])
+        if cm_cfg.get("ground") is not None:
+            course_payload["ground"] = cm_cfg["ground"]
+        elif cm_cfg.get("surface") is not None:
+            course_payload["ground"] = cm_cfg["surface"]
+        cm_course_out: Any = _scrub_private(course_payload)
     else:
-        cm_role = max(0, min(3, int(raw_role or 0)))
-
-    cm_style = max(0, min(5, int(cm_cfg.get("cm_style", 0) or 0)))
-    cm_course = cm_cfg.get("cm_course") or "sagittarius"
+        cm_course_out = raw_course or "sagittarius"
     return {
         "cm_mode": True,
-        "cm_course": cm_course,
+        "cm_course": cm_course_out,
         "cm_role": cm_role,
         "cm_style": cm_style,
         "cm_mates": resolved_mates,

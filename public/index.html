@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="color-scheme" content="dark">
     <title>SWEEPY改三</title>
     <link rel="icon" type="image/png" href="/sweepy2.png">
@@ -43,9 +43,52 @@
                         <img src="/sweepy3.webp" alt="Sweep Tosho">
                     </figure>
                     <div class="login-card">
-                        <div id="qr-svg-box" class="qr-svg-box"></div>
-                        <p id="qr-hint" class="qr-hint" aria-live="polite"></p>
-                        <button id="qr-refresh-btn" class="btn btn-vermilion" type="button">REFRESH QR</button>
+                        <div id="auth-mode-tabs" class="auth-tabs" hidden>
+                            <button id="auth-tab-credentials" class="btn cm-pill btn-brass" type="button" aria-pressed="true">PASSWORD</button>
+                            <button id="auth-tab-qr" class="btn cm-pill btn-quiet" type="button" aria-pressed="false">QR CODE</button>
+                        </div>
+
+                        <div id="credentials-panel" class="auth-panel" hidden>
+                            <form id="credentials-form" class="auth-form" autocomplete="on">
+                                <label class="auth-field">
+                                    <span class="label">Steam username</span>
+                                    <span class="buckle-frame">
+                                        <input id="steam-user-input" class="auth-input" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Account name">
+                                    </span>
+                                </label>
+                                <label class="auth-field">
+                                    <span class="label">Password</span>
+                                    <span class="buckle-frame">
+                                        <input id="steam-pass-input" class="auth-input" type="password" autocomplete="current-password" placeholder="Password">
+                                    </span>
+                                </label>
+                                <button id="cred-login-btn" class="btn btn-vermilion auth-submit" type="submit">SIGN IN</button>
+                            </form>
+
+                            <form id="guard-panel" class="auth-form" hidden>
+                                <p id="guard-prompt" class="guard-prompt" aria-live="polite"></p>
+                                <label id="guard-code-field" class="auth-field">
+                                    <span class="label">Steam Guard code</span>
+                                    <span class="buckle-frame">
+                                        <input id="steam-guard-input" class="auth-input guard-code-input" type="text" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" maxlength="10" placeholder="5-char code">
+                                    </span>
+                                </label>
+                                <div class="qr-actions">
+                                    <button id="guard-verify-btn" class="btn btn-brass auth-submit" type="submit">VERIFY</button>
+                                    <button id="guard-reset-btn" class="btn btn-quiet auth-submit" type="button">BACK</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div id="qr-panel" class="auth-panel">
+                            <div id="qr-svg-box" class="qr-svg-box"></div>
+                            <p id="qr-hint" class="qr-hint" aria-live="polite"></p>
+                            <div class="qr-actions">
+                                <a id="qr-open-steam-btn" class="btn btn-brass qr-open-btn" href="#" target="_blank" rel="noreferrer" hidden>OPEN IN STEAM APP</a>
+                                <button id="qr-refresh-btn" class="btn btn-vermilion" type="button">REFRESH QR</button>
+                            </div>
+                        </div>
+
                         <div id="auth-error-msg" class="banner error status-msg" role="alert"></div>
                     </div>
                 </div>
@@ -71,6 +114,10 @@
                             </button>
                             <button id="burn-clocks-btn" class="btn btn-quiet toggle" type="button" role="switch" aria-checked="false">
                                 <span>Burn clocks</span>
+                                <span class="toggle-state" aria-hidden="true">Off</span>
+                            </button>
+                            <button id="cm-mode-btn" class="btn btn-quiet toggle" type="button" role="switch" aria-checked="false" style="display:none">
+                                <span>CM Mode</span>
                                 <span class="toggle-state" aria-hidden="true">Off</span>
                             </button>
                             <span class="delay">
@@ -101,6 +148,131 @@
                     </div>
 
                     <div class="hem career-hem" aria-hidden="true"></div>
+                </section>
+
+                <section id="cm-panel" class="cm-panel" aria-labelledby="cm-title" style="display:none">
+                    <div class="panel-head">
+                        <div class="sechead">
+                            <span class="num">01·CM</span>
+                            <span class="lbl" id="cm-title">Champions Meeting Setup</span>
+                            <span class="rule"></span>
+                        </div>
+                        <div class="cm-head-meta">
+                            <span id="cm-summary-pill" class="cm-summary-pill">Nakayama 2500m Turf</span>
+                            <span id="cm-brain-badge" class="runner-state is-idle" aria-live="polite">CM</span>
+                        </div>
+                    </div>
+
+                    <div id="cm-brain-warning" class="banner error" role="alert" style="display:none"></div>
+
+                    <div class="cm-grid">
+                        <div class="cm-block">
+                            <div class="cm-block-head">
+                                <span class="label">Race Setup (uma.moe)</span>
+                            </div>
+                            <div class="cm-row cm-row-top">
+                                <label class="cm-field">
+                                    <span class="label">CM Preset</span>
+                                    <select id="cm-preset-select" class="cm-select"></select>
+                                </label>
+                                <label class="cm-field">
+                                    <span class="label">Track</span>
+                                    <select id="cm-track-select" class="cm-select"></select>
+                                </label>
+                                <div class="cm-field">
+                                    <span class="label">Surface</span>
+                                    <div id="cm-surface-group" class="cm-pills"></div>
+                                </div>
+                                <label class="cm-field cm-field-wide">
+                                    <span class="label">Distance / Course</span>
+                                    <select id="cm-course-select" class="cm-select"></select>
+                                </label>
+                            </div>
+                            <div class="cm-row">
+                                <div class="cm-field">
+                                    <span class="label">Ground Condition</span>
+                                    <div id="cm-gcond-group" class="cm-pills"></div>
+                                </div>
+                                <div class="cm-field">
+                                    <span class="label">Weather</span>
+                                    <div id="cm-weather-group" class="cm-pills"></div>
+                                </div>
+                                <div class="cm-field">
+                                    <span class="label">Season</span>
+                                    <div id="cm-season-group" class="cm-pills"></div>
+                                </div>
+                                <div class="cm-field">
+                                    <span class="label">Target Style</span>
+                                    <div id="cm-style-group" class="cm-pills"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cm-block">
+                            <div class="cm-block-head">
+                                <span class="label">Role &amp; Teammates (Same Model)</span>
+                                <span id="cm-role-hint" class="cm-role-hint"></span>
+                            </div>
+                            <div class="cm-row">
+                                <div class="cm-field cm-field-wide">
+                                    <span class="label">Build Mode</span>
+                                    <div id="cm-role-group" class="cm-pills"></div>
+                                </div>
+                                <div id="cm-ace-target-wrap" class="cm-field" style="display:none">
+                                    <span class="label">Ace Target</span>
+                                    <div id="cm-ace-target-group" class="cm-pills"></div>
+                                </div>
+                                <div id="cm-support-subrole-wrap" class="cm-field" style="display:none">
+                                    <span class="label">Support Role</span>
+                                    <div id="cm-support-subrole-group" class="cm-pills"></div>
+                                </div>
+                            </div>
+                            <div id="cm-warning" class="banner error" role="alert" style="display:none"></div>
+                            <div id="cm-mates-area" class="cm-mates-area">
+                                <div class="cm-mate-toolbar">
+                                    <label class="cm-field cm-field-search">
+                                        <span class="label">Filter Veterans</span>
+                                        <input id="cm-mate-search" class="cm-input" type="search" spellcheck="false" autocomplete="off" placeholder="Search veteran name, style, or rank...">
+                                    </label>
+                                    <span id="cm-vet-count" class="cm-vet-count">0 veterans</span>
+                                </div>
+                                <div class="cm-mates-grid">
+                                    <div class="cm-mate-card" data-slot="0">
+                                        <div class="cm-mate-head">
+                                            <span class="label">Teammate 1</span>
+                                            <button id="cm-mate-clear-0" class="btn btn-sm btn-quiet" type="button">Clear</button>
+                                        </div>
+                                        <div class="cm-mate-controls">
+                                            <select id="cm-mate-0" class="cm-select"></select>
+                                            <select id="cm-mate-role-0" class="cm-select cm-select-sm" aria-label="Teammate 1 role">
+                                                <option value="auto">Role: Auto</option>
+                                                <option value="ace">Ace</option>
+                                                <option value="debuffer">Debuffer</option>
+                                                <option value="blocker">Blocker</option>
+                                            </select>
+                                        </div>
+                                        <p id="cm-mate-info-0" class="cm-mate-info">Auto-supplied / None</p>
+                                    </div>
+                                    <div class="cm-mate-card" data-slot="1">
+                                        <div class="cm-mate-head">
+                                            <span class="label">Teammate 2</span>
+                                            <button id="cm-mate-clear-1" class="btn btn-sm btn-quiet" type="button">Clear</button>
+                                        </div>
+                                        <div class="cm-mate-controls">
+                                            <select id="cm-mate-1" class="cm-select"></select>
+                                            <select id="cm-mate-role-1" class="cm-select cm-select-sm" aria-label="Teammate 2 role">
+                                                <option value="auto">Role: Auto</option>
+                                                <option value="ace">Ace</option>
+                                                <option value="debuffer">Debuffer</option>
+                                                <option value="blocker">Blocker</option>
+                                            </select>
+                                        </div>
+                                        <p id="cm-mate-info-1" class="cm-mate-info">Auto-supplied / None</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="grand-live" aria-labelledby="gl-title">

@@ -10,10 +10,11 @@ import threading
 import webbrowser
 from typing import Sequence
 
+import sweepy.config as sweepy_config
 from sweepy.brain_client import BrainClient, verify_contract
-from sweepy.config import RuntimeConfig
+from sweepy.config import RuntimeConfig, apply_turn_delay, normalize_cm_style
 from sweepy.macro_runner import MacroCareerRunner
-from sweepy.stripper import resolve_cm_options_for_account
+from sweepy.stripper import resolve_cm_options_for_account, unwrap_data
 from sweepy.webui import SweepyWebServer
 
 
@@ -26,7 +27,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--runtime-dir", type=str, default=None)
     parser.add_argument("--cm", type=str, default=None, help="Target CM preset/course for headless CM career")
     parser.add_argument("--cm-role", type=str, default=None, help="CM role (solo, ace, support, ace1_raw, ace2, debuffer, blocker)")
-    parser.add_argument("--cm-style", type=int, default=0, help="Target running style 0..5")
+    parser.add_argument("--cm-style", type=str, default="0", help="Target running style 0..5 or auto/front/pace/late/end/runaway")
+    parser.add_argument("--cm-track", type=str, default=None, help="Target CM track name or ID")
+    parser.add_argument("--cm-distance", type=int, default=None, help="Target CM distance in meters")
+    parser.add_argument("--cm-ground", type=str, default=None, help="Target CM surface (turf/dirt or 1/2)")
+    parser.add_argument("--cm-ground-condition", type=str, default=None, help="Ground condition (firm/good/soft/heavy or 1..4)")
+    parser.add_argument("--cm-weather", type=str, default=None, help="Weather (sunny/cloudy/rainy/snowy or 1..4)")
+    parser.add_argument("--cm-season", type=str, default=None, help="Season (spring/summer/autumn/winter or 1..4)")
+    parser.add_argument("--cm-course-id", type=int, default=None, help="Exact CM course_id")
     parser.add_argument("--cm-mates", type=str, default=None, help="Comma-separated trained_chara_ids or JSON path")
     return parser
 
@@ -41,13 +49,7 @@ def _bootstrap_cli_client(config: RuntimeConfig):
         raise RuntimeError("no Steam token (SWEEPY_STEAM_TOKEN or web UI login)")
     provider.ensure_lease()
     client, boot_res = bootstrap_headless_auth(config.runtime_dir, provider)
-    delay = config.load_settings()["turn_delay"]
-    timing = getattr(client, "timing", None)
-    if timing is not None:
-        timing.disabled = bool(delay.get("disabled", False))
-        if not timing.disabled:
-            timing.turn_min = float(delay.get("min", 1.6))
-            timing.turn_max = float(delay.get("max", 3.7))
+    apply_turn_delay(client, config.load_settings()["turn_delay"])
     return client, provider, boot_res
 
 
@@ -56,15 +58,40 @@ def _build_cli_cm_options(
     settings: dict,
     raw_data: dict | None,
 ) -> dict | None:
-    if not any([args.cm, args.cm_role is not None, args.cm_mates]):
+    env_args = [
+        getattr(args, "cm_track", None),
+        getattr(args, "cm_distance", None),
+        getattr(args, "cm_ground", None),
+        getattr(args, "cm_ground_condition", None),
+        getattr(args, "cm_weather", None),
+        getattr(args, "cm_season", None),
+        getattr(args, "cm_course_id", None),
+    ]
+    if not any([args.cm, args.cm_role is not None, args.cm_mates, *env_args]):
+        if not sweepy_config.CM_ENABLED:
+            return None
         return resolve_cm_options_for_account(settings.get("cm_config"), raw_data)
 
     cm_cfg: dict = {
         "cm_mode": True,
         "cm_course": args.cm or (settings.get("cm_config") or {}).get("cm_course") or "sagittarius",
         "cm_role": args.cm_role if args.cm_role is not None else (0 if not args.cm_mates else 1),
-        "cm_style": int(args.cm_style or 0),
+        "cm_style": normalize_cm_style(args.cm_style),
     }
+    if getattr(args, "cm_track", None) is not None:
+        cm_cfg["track"] = args.cm_track
+    if getattr(args, "cm_distance", None) is not None:
+        cm_cfg["distance"] = int(args.cm_distance)
+    if getattr(args, "cm_ground", None) is not None:
+        cm_cfg["ground"] = args.cm_ground
+    if getattr(args, "cm_ground_condition", None) is not None:
+        cm_cfg["ground_condition"] = args.cm_ground_condition
+    if getattr(args, "cm_weather", None) is not None:
+        cm_cfg["weather"] = args.cm_weather
+    if getattr(args, "cm_season", None) is not None:
+        cm_cfg["season"] = args.cm_season
+    if getattr(args, "cm_course_id", None) is not None:
+        cm_cfg["course_id"] = int(args.cm_course_id)
     mates_arg = (args.cm_mates or "").strip()
     if mates_arg:
         p = Path(mates_arg)
@@ -104,18 +131,17 @@ def _run_headless_once_cli(config: RuntimeConfig, args: argparse.Namespace | Non
         brain.close()
         raise
     try:
-        raw_data = boot_res.get("data") if isinstance(boot_res, dict) and isinstance(boot_res.get("data"), dict) else boot_res
-        if not isinstance(raw_data, dict) or "user_info" not in raw_data:
-            login_res = client.login(read_info=True)
-            raw_data = login_res.get("data") if isinstance(login_res, dict) and isinstance(login_res.get("data"), dict) else login_res
-        cm_options = _build_cli_cm_options(args, settings, raw_data if isinstance(raw_data, dict) else None) if args is not None else resolve_cm_options_for_account(settings.get("cm_config"), raw_data if isinstance(raw_data, dict) else None)
-        runner = MacroCareerRunner(account_salt=config.account_salt())
+        raw_data = unwrap_data(boot_res)
+        if "user_info" not in raw_data:
+            raw_data = unwrap_data(client.login(read_info=True))
+        cm_options = _build_cli_cm_options(args, settings, raw_data or None) if args is not None else resolve_cm_options_for_account(settings.get("cm_config"), raw_data or None)
+        runner = MacroCareerRunner(account_salt=config.account_salt(), runtime_dir=config.runtime_dir)
         snap = runner.run_sync(
             client,
             brain,
             burn_clocks=bool(settings["burn_clocks"]),
             cm_options=cm_options,
-            account_data=raw_data if isinstance(raw_data, dict) else None,
+            account_data=raw_data or None,
         )
         print(json.dumps(snap, ensure_ascii=False), flush=True)
         return 0 if snap.get("finished") else 1

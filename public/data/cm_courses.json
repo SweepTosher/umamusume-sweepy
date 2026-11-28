@@ -1,0 +1,1207 @@
+{
+  "presets": [
+    {
+      "slug": "capricorn",
+      "name": "Capricorn (Chukyo 1200m Turf)",
+      "course_id": 10701,
+      "track": "Chukyo",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1,
+      "ground_condition": 1,
+      "weather": 1,
+      "season": 4
+    },
+    {
+      "slug": "aquarius",
+      "name": "Aquarius (Tokyo 1600m Dirt)",
+      "course_id": 10611,
+      "track": "Tokyo",
+      "distance": 1600,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1,
+      "ground_condition": 2,
+      "weather": 1,
+      "season": 4
+    },
+    {
+      "slug": "cancer",
+      "name": "Cancer (Tokyo 1600m Turf)",
+      "course_id": 10602,
+      "track": "Tokyo",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1,
+      "ground_condition": 1,
+      "weather": 2,
+      "season": 2
+    },
+    {
+      "slug": "scorpio",
+      "name": "Scorpio (Tokyo 2000m Turf)",
+      "course_id": 10604,
+      "track": "Tokyo",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1,
+      "ground_condition": 3,
+      "weather": 3,
+      "season": 3
+    },
+    {
+      "slug": "aries",
+      "name": "Aries (Nakayama 2000m Turf)",
+      "course_id": 10504,
+      "track": "Nakayama",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 2,
+      "ground_condition": 1,
+      "weather": 1,
+      "season": 1
+    },
+    {
+      "slug": "taurus",
+      "name": "Taurus (Tokyo 2400m Turf)",
+      "course_id": 10606,
+      "track": "Tokyo",
+      "distance": 2400,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1,
+      "ground_condition": 1,
+      "weather": 1,
+      "season": 1
+    },
+    {
+      "slug": "sagittarius",
+      "name": "Sagittarius (Nakayama 2500m Turf)",
+      "course_id": 10506,
+      "track": "Nakayama",
+      "distance": 2500,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 2,
+      "ground_condition": 1,
+      "weather": 1,
+      "season": 4
+    },
+    {
+      "slug": "pisces",
+      "name": "Pisces (Hanshin 3200m Turf)",
+      "course_id": 10914,
+      "track": "Hanshin",
+      "distance": 3200,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 4,
+      "ground_condition": 4,
+      "weather": 3,
+      "season": 1
+    }
+  ],
+  "courses": [
+    {
+      "course_id": 10101,
+      "track": "Sapporo",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10102,
+      "track": "Sapporo",
+      "distance": 1500,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10103,
+      "track": "Sapporo",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10104,
+      "track": "Sapporo",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10105,
+      "track": "Sapporo",
+      "distance": 2600,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10106,
+      "track": "Sapporo",
+      "distance": 1000,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10107,
+      "track": "Sapporo",
+      "distance": 1700,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10108,
+      "track": "Sapporo",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10201,
+      "track": "Hakodate",
+      "distance": 1000,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10202,
+      "track": "Hakodate",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10203,
+      "track": "Hakodate",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10204,
+      "track": "Hakodate",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10205,
+      "track": "Hakodate",
+      "distance": 2600,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10206,
+      "track": "Hakodate",
+      "distance": 1000,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10207,
+      "track": "Hakodate",
+      "distance": 1700,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10208,
+      "track": "Hakodate",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10301,
+      "track": "Niigata",
+      "distance": 1000,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 4,
+      "inout": 1
+    },
+    {
+      "course_id": 10302,
+      "track": "Niigata",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 2
+    },
+    {
+      "course_id": 10303,
+      "track": "Niigata",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 2
+    },
+    {
+      "course_id": 10304,
+      "track": "Niigata",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 3
+    },
+    {
+      "course_id": 10305,
+      "track": "Niigata",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 3
+    },
+    {
+      "course_id": 10306,
+      "track": "Niigata",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 2
+    },
+    {
+      "course_id": 10307,
+      "track": "Niigata",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 3
+    },
+    {
+      "course_id": 10308,
+      "track": "Niigata",
+      "distance": 2200,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 2
+    },
+    {
+      "course_id": 10309,
+      "track": "Niigata",
+      "distance": 2400,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 2
+    },
+    {
+      "course_id": 10310,
+      "track": "Niigata",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10311,
+      "track": "Niigata",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10312,
+      "track": "Niigata",
+      "distance": 2500,
+      "ground": 2,
+      "distance_type": 4,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10401,
+      "track": "Fukushima",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10402,
+      "track": "Fukushima",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10403,
+      "track": "Fukushima",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10404,
+      "track": "Fukushima",
+      "distance": 2600,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10405,
+      "track": "Fukushima",
+      "distance": 1150,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10406,
+      "track": "Fukushima",
+      "distance": 1700,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10407,
+      "track": "Fukushima",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10501,
+      "track": "Nakayama",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10502,
+      "track": "Nakayama",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10503,
+      "track": "Nakayama",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10504,
+      "track": "Nakayama",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10505,
+      "track": "Nakayama",
+      "distance": 2200,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10506,
+      "track": "Nakayama",
+      "distance": 2500,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10507,
+      "track": "Nakayama",
+      "distance": 3600,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10508,
+      "track": "Nakayama",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10509,
+      "track": "Nakayama",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10510,
+      "track": "Nakayama",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10511,
+      "track": "Nakayama",
+      "distance": 2500,
+      "ground": 2,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10601,
+      "track": "Tokyo",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10602,
+      "track": "Tokyo",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10603,
+      "track": "Tokyo",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10604,
+      "track": "Tokyo",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10605,
+      "track": "Tokyo",
+      "distance": 2300,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10606,
+      "track": "Tokyo",
+      "distance": 2400,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10607,
+      "track": "Tokyo",
+      "distance": 2500,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10608,
+      "track": "Tokyo",
+      "distance": 3400,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10609,
+      "track": "Tokyo",
+      "distance": 1300,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10610,
+      "track": "Tokyo",
+      "distance": 1400,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10611,
+      "track": "Tokyo",
+      "distance": 1600,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10612,
+      "track": "Tokyo",
+      "distance": 2100,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10613,
+      "track": "Tokyo",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10701,
+      "track": "Chukyo",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10702,
+      "track": "Chukyo",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10703,
+      "track": "Chukyo",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10704,
+      "track": "Chukyo",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10705,
+      "track": "Chukyo",
+      "distance": 2200,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10706,
+      "track": "Chukyo",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10707,
+      "track": "Chukyo",
+      "distance": 1400,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10708,
+      "track": "Chukyo",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10709,
+      "track": "Chukyo",
+      "distance": 1900,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 10801,
+      "track": "Kyoto",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10802,
+      "track": "Kyoto",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10803,
+      "track": "Kyoto",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10804,
+      "track": "Kyoto",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10805,
+      "track": "Kyoto",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10806,
+      "track": "Kyoto",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10807,
+      "track": "Kyoto",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10808,
+      "track": "Kyoto",
+      "distance": 2200,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10809,
+      "track": "Kyoto",
+      "distance": 2400,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10810,
+      "track": "Kyoto",
+      "distance": 3000,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10811,
+      "track": "Kyoto",
+      "distance": 3200,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10812,
+      "track": "Kyoto",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10813,
+      "track": "Kyoto",
+      "distance": 1400,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10814,
+      "track": "Kyoto",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10815,
+      "track": "Kyoto",
+      "distance": 1900,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10901,
+      "track": "Hanshin",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10902,
+      "track": "Hanshin",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10903,
+      "track": "Hanshin",
+      "distance": 1600,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10904,
+      "track": "Hanshin",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10905,
+      "track": "Hanshin",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10906,
+      "track": "Hanshin",
+      "distance": 2200,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10907,
+      "track": "Hanshin",
+      "distance": 2400,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10908,
+      "track": "Hanshin",
+      "distance": 2600,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 3
+    },
+    {
+      "course_id": 10909,
+      "track": "Hanshin",
+      "distance": 3000,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 2
+    },
+    {
+      "course_id": 10910,
+      "track": "Hanshin",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10911,
+      "track": "Hanshin",
+      "distance": 1400,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10912,
+      "track": "Hanshin",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10913,
+      "track": "Hanshin",
+      "distance": 2000,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 10914,
+      "track": "Hanshin",
+      "distance": 3200,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 4
+    },
+    {
+      "course_id": 11001,
+      "track": "Kokura",
+      "distance": 1200,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11002,
+      "track": "Kokura",
+      "distance": 1800,
+      "ground": 1,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11003,
+      "track": "Kokura",
+      "distance": 2000,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11004,
+      "track": "Kokura",
+      "distance": 2600,
+      "ground": 1,
+      "distance_type": 4,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11005,
+      "track": "Kokura",
+      "distance": 1000,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11006,
+      "track": "Kokura",
+      "distance": 1700,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11007,
+      "track": "Kokura",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11101,
+      "track": "Oi",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11102,
+      "track": "Oi",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11103,
+      "track": "Oi",
+      "distance": 2000,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11201,
+      "track": "Longchamp",
+      "distance": 1000,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 4,
+      "inout": 1
+    },
+    {
+      "course_id": 11202,
+      "track": "Longchamp",
+      "distance": 1400,
+      "ground": 1,
+      "distance_type": 1,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11203,
+      "track": "Longchamp",
+      "distance": 2400,
+      "ground": 1,
+      "distance_type": 3,
+      "turn": 1,
+      "inout": 1
+    },
+    {
+      "course_id": 11301,
+      "track": "Kawasaki",
+      "distance": 1400,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11302,
+      "track": "Kawasaki",
+      "distance": 1600,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11303,
+      "track": "Kawasaki",
+      "distance": 2100,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11401,
+      "track": "Funabashi",
+      "distance": 1000,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11402,
+      "track": "Funabashi",
+      "distance": 1600,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11403,
+      "track": "Funabashi",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11404,
+      "track": "Funabashi",
+      "distance": 2400,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11501,
+      "track": "Morioka",
+      "distance": 1200,
+      "ground": 2,
+      "distance_type": 1,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11502,
+      "track": "Morioka",
+      "distance": 1600,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11503,
+      "track": "Morioka",
+      "distance": 1800,
+      "ground": 2,
+      "distance_type": 2,
+      "turn": 2,
+      "inout": 1
+    },
+    {
+      "course_id": 11504,
+      "track": "Morioka",
+      "distance": 2000,
+      "ground": 2,
+      "distance_type": 3,
+      "turn": 2,
+      "inout": 1
+    }
+  ]
+}

@@ -749,7 +749,7 @@ class UmaClient:
                 self.steam_ticket = str(provider.steam_session_ticket)
                 return self.steam_id, self.steam_ticket
         except SteamTicketError:
-            pass
+            self.steam_ticket = ""
 
         try:
             self.steam_ticket = provider.refresh()
@@ -795,18 +795,8 @@ class UmaClient:
                         self.item_map[int(iid)] = int(num)
 
     @staticmethod
-    def _endpoint_operation(ep: str) -> str:
-        return str(ep or "").rstrip("/").rsplit("/", 1)[-1]
-
-    @classmethod
-    def _is_state_changing_endpoint(cls, ep: str) -> bool:
-        clean = str(ep or "").rstrip("/")
-        if clean in READ_ONLY_RETRY_ENDPOINTS:
-            return False
-        op = cls._endpoint_operation(clean)
-        if op in STATE_CHANGING_OPERATIONS:
-            return True
-        return clean not in READ_ONLY_RETRY_ENDPOINTS
+    def _is_state_changing_endpoint(ep: str) -> bool:
+        return str(ep or "").rstrip("/") not in READ_ONLY_RETRY_ENDPOINTS
 
     @staticmethod
     def _response_sid(res: Any) -> bytes | str | None:

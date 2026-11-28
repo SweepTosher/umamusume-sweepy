@@ -1,18 +1,45 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import threading
 import time
+from pathlib import Path
 from typing import Any
 
 from sweepy.brain_client import BrainAPIError, BrainClient
+from sweepy.catalog import item_count
+from sweepy.config import default_runtime_dir
 from sweepy.race_binary import decode_player_rank
+from sweepy.skill_shop import terminal_skill_bundle
 from sweepy.stripper import strip_career_state
 from sweepy.umadump_export import (
+    FINAL_CAREER_TURN,
     build_final_turn_payload,
     export_filename,
     is_final_turn,
 )
+
+
+_AUTOBUY_SKILLS_ENV = "SWEEPY_AUTOBUY_SKILLS"
+_AUTOBUY_SKILLS_FLAG = "autobuy_skills"
+_ON_VALUES = frozenset({"1", "true", "on", "yes", "enabled"})
+
+
+def _autobuy_skills_flag_path(runtime_dir: Path | str | None = None) -> Path:
+    if runtime_dir is not None:
+        return Path(runtime_dir).expanduser().resolve() / _AUTOBUY_SKILLS_FLAG
+    root = os.environ.get("UMA_RUNTIME_DIR", "").strip()
+    base = Path(root).expanduser().resolve() if root else default_runtime_dir()
+    return base / _AUTOBUY_SKILLS_FLAG
+
+
+def _autobuy_skills_enabled(runtime_dir: Path | str | None = None) -> bool:
+    try:
+        raw = _autobuy_skills_flag_path(runtime_dir).read_text(encoding="utf-8").strip().casefold()
+        return raw in _ON_VALUES
+    except OSError:
+        return os.environ.get(_AUTOBUY_SKILLS_ENV, "0").strip().casefold() in _ON_VALUES
 
 
 _COMMAND_LABELS: dict[int, str] = {
@@ -71,9 +98,12 @@ def _unwrap_envelope(resp: Any) -> dict[str, Any]:
     return dict(resp)
 
 
+_COMMON_WRAPPERS = ("single_mode_start_common", "single_mode_load_common")
+
+
 def _normalize_career_state(raw: dict[str, Any]) -> dict[str, Any]:
     state = dict(raw)
-    for wrapper_key in ("single_mode_start_common", "single_mode_load_common"):
+    for wrapper_key in _COMMON_WRAPPERS:
         common = state.get(wrapper_key)
         if isinstance(common, dict):
             for lift_key in (
@@ -97,6 +127,7 @@ def _normalize_career_state(raw: dict[str, Any]) -> dict[str, Any]:
 
 def _merge_career_state(state: dict[str, Any], update_raw: dict[str, Any], *, clear_race: bool = False) -> None:
     update = _normalize_career_state(update_raw)
+    has_wrapper = any(isinstance(update_raw.get(k), dict) for k in _COMMON_WRAPPERS)
     for key in (
         "chara_info",
         "home_info",
@@ -113,22 +144,25 @@ def _merge_career_state(state: dict[str, Any], update_raw: dict[str, Any], *, cl
                 state[key] = merged
             else:
                 state[key] = val
-    if "unchecked_event_array" in update_raw or "single_mode_start_common" in update_raw:
+    if "unchecked_event_array" in update_raw or has_wrapper:
         evs = update.get("unchecked_event_array")
         if isinstance(evs, list):
             state["unchecked_event_array"] = evs
-    if "race_condition_array" in update_raw or "single_mode_start_common" in update_raw:
+    if "race_condition_array" in update_raw or has_wrapper:
         rca = update.get("race_condition_array")
         if isinstance(rca, list):
             state["race_condition_array"] = rca
-    if "race_history" in update_raw and isinstance(update_raw.get("race_history"), list):
-        state["race_history"] = update_raw["race_history"]
+    if "race_history" in update_raw or has_wrapper:
+        rh = update.get("race_history")
+        if isinstance(rh, list):
+            state["race_history"] = rh
     if clear_race:
         state["race_start_info"] = None
         state["race_scenario"] = None
     else:
-        if "race_start_info" in update_raw and update_raw.get("race_start_info") is not None:
-            state["race_start_info"] = update_raw["race_start_info"]
+        rsi = update.get("race_start_info")
+        if ("race_start_info" in update_raw or has_wrapper) and rsi is not None:
+            state["race_start_info"] = rsi
         if "race_scenario" in update_raw and update_raw.get("race_scenario") is not None:
             state["race_scenario"] = update_raw["race_scenario"]
 
@@ -145,23 +179,20 @@ def _event_choices(event: dict[str, Any]) -> list[Any]:
     return []
 
 
-def _extract_item_count(data: dict[str, Any], item_id: int) -> int:
-    items = data.get("item_list") or data.get("user_item_array") or []
-    if not isinstance(items, list):
-        return 0
-    for row in items:
-        if isinstance(row, dict) and int(row.get("item_id") or 0) == item_id:
-            return int(row.get("number") or 0)
-    return 0
-
-
 class MacroCareerRunner:
-    def __init__(self, *, fast_sleep: bool = False, account_salt: str = "") -> None:
+    def __init__(
+        self,
+        *,
+        fast_sleep: bool = False,
+        account_salt: str = "",
+        runtime_dir: Path | str | None = None,
+    ) -> None:
         self._lock = threading.RLock()
         self._stop_event = threading.Event()
         self._thread: threading.Thread | None = None
         self._fast_sleep = bool(fast_sleep)
         self._account_salt = str(account_salt or "").strip()
+        self._runtime_dir = Path(runtime_dir).expanduser().resolve() if runtime_dir is not None else None
 
         self.client: Any = None
         self.brain: BrainClient | None = None
@@ -177,12 +208,12 @@ class MacroCareerRunner:
         self._latest_account_data: dict[str, Any] | None = None
         self._latest_account_data_version: int = 0
         self._final_turn_payload: dict[str, Any] | None = None
+        self._terminal_skills_bought: bool = False
 
         self._viewer_id_hash: str = ""
         self._pending_drained_stories: list[int] = []
         self._pending_settled_races: list[dict[str, int]] = []
         self._last_command: dict[str, Any] | None = None
-        self._needs_post_square_reload: bool = False
         self._rejected_programs: list[list[int]] = []
         self._rejected_commands: list[list[int]] = []
         self._rejected_squares: list[list[int]] = []
@@ -380,10 +411,10 @@ class MacroCareerRunner:
         self._result = None
         self._latest_account_data = None
         self._final_turn_payload = None
+        self._terminal_skills_bought = False
         self._pending_drained_stories = []
         self._pending_settled_races = []
         self._last_command = None
-        self._needs_post_square_reload = False
         self._rejected_programs = []
         self._rejected_commands = []
         self._rejected_squares = []
@@ -439,7 +470,13 @@ class MacroCareerRunner:
         if self._fast_sleep:
             return
         timing = getattr(self.client, "timing", None)
-        if timing is not None and callable(getattr(timing, "sleep_turn", None)):
+        if timing is None:
+            return
+        if callable(getattr(timing, "sample_turn_delay", None)):
+            if not bool(getattr(timing, "disabled", False)):
+                self._sleep_fixed(float(timing.sample_turn_delay()))
+            return
+        if callable(getattr(timing, "sleep_turn", None)):
             timing.sleep_turn()
 
     def _rpc(self, endpoint: str, payload: dict[str, Any] | None = None, **kwargs: Any) -> dict[str, Any]:
@@ -567,6 +604,32 @@ class MacroCareerRunner:
             self._rejected_squares.append(pair)
             del self._rejected_squares[:-32]
 
+    def _buy_terminal_skills(self, state: dict[str, Any]) -> None:
+        chara = state.get("chara_info")
+        if not isinstance(chara, dict):
+            return
+        if int(chara.get("skill_point") or 0) <= 0:
+            return
+        finished = isinstance(state.get("single_mode_finish_common"), dict)
+        turn = int(chara.get("turn") or 0)
+        playing_state = int(chara.get("playing_state") or 0)
+        pending_events = bool(state.get("unchecked_event_array") or [])
+        at_finish_screen = turn >= FINAL_CAREER_TURN and playing_state == 5 and not pending_events
+        if not finished and not at_finish_screen and turn <= FINAL_CAREER_TURN:
+            return
+        bundle = terminal_skill_bundle(chara)
+        if not bundle:
+            self._terminal_skills_bought = True
+            return
+        self._execute_rpc_step(
+            {
+                "endpoint": "single_mode_live/gain_skills",
+                "payload": {"gain_skill_info_array": bundle, "current_turn": turn},
+            },
+            state,
+        )
+        self._terminal_skills_bought = True
+
     def _update_telemetry(self, state: dict[str, Any]) -> None:
         self._capture_final_turn_export(state)
         chara = state.get("chara_info")
@@ -626,7 +689,10 @@ class MacroCareerRunner:
                 self._latest_account_data = acct
                 self._latest_account_data_version += 1
 
-        self._alarm_clock_inventory = _extract_item_count(acct, 95)
+        self._alarm_clock_inventory = item_count(
+            acct.get("item_list") or acct.get("user_item_array") or [],
+            95,
+        )
         active_light = acct.get("single_mode_chara_light") or acct.get("single_mode_chara")
         if isinstance(active_light, dict) and int(active_light.get("single_mode_chara_id") or 0) > 0:
             active_scen = int(active_light.get("scenario_id") or 3)
@@ -702,6 +768,31 @@ class MacroCareerRunner:
             total_avail = max(0, free_clocks + self._alarm_clock_inventory)
         return total_avail, max(0, free_clocks)
 
+    def _reload_career_state(
+        self,
+        state: dict[str, Any],
+        *,
+        clear_reward: bool = False,
+        reset_master_square: bool = True,
+        update_telemetry: bool = True,
+    ) -> dict[str, Any]:
+        loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
+        state.clear()
+        state.update(loaded)
+        if clear_reward:
+            state.pop("race_reward_info", None)
+        if reset_master_square:
+            self._prev_endpoint_was_master_square = False
+        if update_telemetry:
+            self._update_telemetry(state)
+        return loaded
+
+    def _record_rejected_program(self, turn: int, pid: int) -> None:
+        pair = [turn, pid]
+        if pid > 0 and pair not in self._rejected_programs:
+            self._rejected_programs.append(pair)
+            del self._rejected_programs[:-32]
+
     def _execute_race_macro(
         self,
         op: str,
@@ -709,7 +800,7 @@ class MacroCareerRunner:
         state: dict[str, Any],
     ) -> None:
         chara = state.get("chara_info") or {}
-        turn = int(params.get("current_turn") or chara.get("turn") or 1)
+        turn = int(chara.get("turn") or params.get("current_turn") or 1)
         pid = int(
             params.get("program_id")
             or (state.get("race_start_info") or {}).get("program_id")
@@ -773,24 +864,14 @@ class MacroCareerRunner:
             except rec_err_cls as exc:
                 code = getattr(exc, "code", None)
                 if code == 102:
-                    loaded = _unwrap_envelope(self._load_career(3))
-                    state.clear()
-                    state.update(_normalize_career_state(loaded))
-                    self._needs_post_square_reload = False
-                    self._update_telemetry(state)
+                    loaded = self._reload_career_state(state)
                     start_res = {"data": loaded}
                 elif code != 205:
                     raise
                 else:
-                    reloaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                    state.clear()
-                    state.update(reloaded)
-                    self._needs_post_square_reload = False
-                    self._update_telemetry(state)
+                    self._reload_career_state(state)
                     cur_turn = int((state.get("chara_info") or {}).get("turn") or turn)
-                    pair = [cur_turn, pid]
-                    if pair not in self._rejected_programs:
-                        self._rejected_programs.append(pair)
+                    self._record_rejected_program(cur_turn, pid)
                     self._record_history(cur_turn, "Race", f"Program {pid} refused to start (205)", "Reloaded")
                     return
             start_data = _unwrap_envelope(start_res)
@@ -803,12 +884,12 @@ class MacroCareerRunner:
             if isinstance(scenario_b64, str) and isinstance(horses, list) and sm_cid > 0:
                 rank = decode_player_rank(scenario_b64, horses, sm_cid)
 
-            if (mandatory or self.burn_clocks) and self._clocks_budget(state)[0] > 0:
+            clock_limit = 1 if self.burn_clocks else target_rank
+            if (mandatory or self.burn_clocks) and rank > clock_limit and self._clocks_budget(state)[0] > 0:
                 fresh = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
                 if isinstance(fresh.get("home_info"), dict):
                     state["home_info"] = fresh["home_info"]
             clocks_available, free_clocks = self._clocks_budget(state)
-            clock_limit = 1 if self.burn_clocks else target_rank
             refused_once = False
             while (mandatory or self.burn_clocks) and rank > clock_limit and clocks_available > 0:
                 cont_type = 1 if free_clocks > 0 else 2
@@ -820,15 +901,9 @@ class MacroCareerRunner:
                 except rec_err_cls as exc:
                     if getattr(exc, "code", None) != 205:
                         raise
-                    loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                    state.clear()
-                    state.update(loaded)
-                    self._needs_post_square_reload = False
-                    self._update_telemetry(state)
+                    self._reload_career_state(state)
                     cur_turn = int((state.get("chara_info") or {}).get("turn") or turn)
-                    pair = [cur_turn, pid]
-                    if pid > 0 and pair not in self._rejected_programs:
-                        self._rejected_programs.append(pair)
+                    self._record_rejected_program(cur_turn, pid)
                     turn = cur_turn
                     if not state.get("race_start_info"):
                         return
@@ -884,16 +959,10 @@ class MacroCareerRunner:
             except rec_err_cls as exc:
                 if getattr(exc, "code", None) != 102:
                     raise
-                loaded = _unwrap_envelope(self._load_career(3))
-                state.clear()
-                state.update(_normalize_career_state(loaded))
-                self._needs_post_square_reload = False
-                self._update_telemetry(state)
+                loaded = self._reload_career_state(state)
                 if not state.get("race_start_info") and not state.get("race_reward_info"):
                     cur_turn = int((state.get("chara_info") or {}).get("turn") or turn)
-                    pair = [cur_turn, pid]
-                    if pid > 0 and pair not in self._rejected_programs:
-                        self._rejected_programs.append(pair)
+                    self._record_rejected_program(cur_turn, pid)
                     self._record_history(cur_turn, "Race", f"Program {pid} already settled (102)", "Skipped")
                     return
                 end_res = {"data": loaded}
@@ -913,15 +982,9 @@ class MacroCareerRunner:
             except rec_err_cls as exc:
                 if getattr(exc, "code", None) not in (102, 205):
                     raise
-                loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                state.clear()
-                state.update(loaded)
-                state.pop("race_reward_info", None)
-                self._update_telemetry(state)
+                self._reload_career_state(state, clear_reward=True)
                 cur_turn = int((state.get("chara_info") or {}).get("turn") or turn)
-                pair = [cur_turn, pid]
-                if pid > 0 and pair not in self._rejected_programs:
-                    self._rejected_programs.append(pair)
+                self._record_rejected_program(cur_turn, pid)
                 self._record_history(cur_turn, "Race", f"Program {pid} already out", "Reloaded")
                 return
             _merge_career_state(state, _unwrap_envelope(out_res), clear_race=True)
@@ -929,14 +992,7 @@ class MacroCareerRunner:
             if isinstance(reward_info, dict) and reward_info.get("result_rank") is not None:
                 result_rank = int(reward_info["result_rank"])
             state.pop("race_reward_info", None)
-            if int((state.get("chara_info") or {}).get("turn") or 0) <= turn:
-                loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                state.clear()
-                state.update(loaded)
-                state.pop("race_reward_info", None)
-            self._update_telemetry(state)
-            if pid > 0 and [turn, pid] not in self._rejected_programs:
-                self._rejected_programs.append([turn, pid])
+            self._record_rejected_program(turn, pid)
             if pid > 0:
                 self._pending_settled_races.append({
                     "turn": turn,
@@ -949,7 +1005,11 @@ class MacroCareerRunner:
                 f"Program {pid} finished P{result_rank}",
                 f"Rank {result_rank}",
             )
-            self._drain_single_choice_events(state)
+            has_multi = self._drain_single_choice_events(state)
+            if not has_multi and int((state.get("chara_info") or {}).get("turn") or 0) <= turn:
+                self._reload_career_state(state, clear_reward=True)
+            else:
+                self._update_telemetry(state)
 
     def _execute_rpc_step(self, params: dict[str, Any], state: dict[str, Any]) -> None:
         endpoint = str(params.get("endpoint") or "").strip()
@@ -982,12 +1042,8 @@ class MacroCareerRunner:
             self._rejected_squares.clear()
             self._rejected_square_board = None
             _merge_career_state(state, _unwrap_envelope(res))
-            loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-            state.clear()
-            state.update(loaded)
-            self._needs_post_square_reload = False
+            self._reload_career_state(state, reset_master_square=False)
             self._prev_endpoint_was_master_square = True
-            self._update_telemetry(state)
             sq_id = payload.get("square_id", "")
             after_songs = set((state.get("live_data_set") or {}).get("master_live_id_array") or [])
             gained = sorted(after_songs - before_songs) if before_songs is not None else []
@@ -1024,7 +1080,7 @@ class MacroCareerRunner:
         if endpoint.endswith("/gain_skills"):
             raw_arr = payload.get("gain_skill_info_array")
             if not isinstance(raw_arr, list):
-                raw_arr = payload.get("skill_Select_array") or []
+                raw_arr = payload.get("skill_select_array") or payload.get("skill_Select_array") or []
             skill_items = [
                 {"skill_id": int(item["skill_id"]), "level": int(item.get("level", item.get("skill_level", 1)))}
                 for item in raw_arr
@@ -1035,24 +1091,16 @@ class MacroCareerRunner:
             req_turn = int(payload.get("current_turn") or turn)
             res = self.client.gain_skills(skill_items, req_turn)
             _merge_career_state(state, _unwrap_envelope(res))
-            loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-            state.clear()
-            state.update(loaded)
-            self._needs_post_square_reload = False
-            self._prev_endpoint_was_master_square = False
-            self._update_telemetry(state)
-            sid0 = skill_items[0]["skill_id"]
-            self._record_history(turn, "Skill", f"Learned skill {sid0}", f"SP left: {(state.get('chara_info') or {}).get('skill_point', 0)}")
+            self._reload_career_state(state)
+            sids_str = ", ".join(str(it["skill_id"]) for it in skill_items)
+            label = f"Learned skill {sids_str}" if len(skill_items) == 1 else f"Learned {len(skill_items)} skills ({sids_str})"
+            self._record_history(turn, "Skill", label, f"SP left: {(state.get('chara_info') or {}).get('skill_point', 0)}")
             return
 
         self._prev_endpoint_was_master_square = False
 
         if endpoint.endswith("/load"):
-            loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-            state.clear()
-            state.update(loaded)
-            self._needs_post_square_reload = False
-            self._update_telemetry(state)
+            self._reload_career_state(state, reset_master_square=False)
             return
 
         if endpoint.endswith("/exec_command"):
@@ -1081,12 +1129,7 @@ class MacroCareerRunner:
                     raise
                 self._command_attempts.append([turn, eff_cmd_id])
                 del self._command_attempts[:-64]
-                loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                state.clear()
-                state.update(loaded)
-                self._needs_post_square_reload = False
-                self._prev_endpoint_was_master_square = False
-                self._update_telemetry(state)
+                self._reload_career_state(state)
                 pair = [turn, eff_cmd_id]
                 if pair not in self._rejected_commands:
                     self._rejected_commands.append(pair)
@@ -1104,14 +1147,8 @@ class MacroCareerRunner:
                 "partners": partners,
             }
             _merge_career_state(state, res_data)
-            try:
-                loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-            except Exception:
-                loaded = None
-            if loaded is not None:
-                state.clear()
-                state.update(loaded)
-            self._needs_post_square_reload = False
+            if not isinstance(state.get("home_info"), dict) or not isinstance(state.get("chara_info"), dict):
+                self._reload_career_state(state, update_telemetry=False)
             self._prev_endpoint_was_master_square = False
             self._update_telemetry(state)
             label = _COMMAND_LABELS.get(eff_cmd_id, f"Command {eff_cmd_id}")
@@ -1170,7 +1207,7 @@ class MacroCareerRunner:
                 "drained_stories": list(self._pending_drained_stories),
                 "settled_races": list(self._pending_settled_races),
                 "last_command": dict(self._last_command) if isinstance(self._last_command, dict) else None,
-                "needs_post_square_reload": bool(self._needs_post_square_reload),
+                "needs_post_square_reload": False,
                 "rejected_programs": [list(item) for item in self._rejected_programs],
                 "rejected_commands": [list(item) for item in self._rejected_commands],
                 "rejected_squares": [list(item) for item in self._rejected_squares],
@@ -1199,12 +1236,7 @@ class MacroCareerRunner:
                 self._close_brain_career(brain)
                 self._resume_pending = True
                 self._sleep_fixed(1.0)
-                loaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                state.clear()
-                state.update(loaded)
-                self._needs_post_square_reload = False
-                self._prev_endpoint_was_master_square = False
-                self._update_telemetry(state)
+                self._reload_career_state(state)
                 turn = self._telemetry_turn
                 continue
             self._pending_drained_stories.clear()
@@ -1251,6 +1283,8 @@ class MacroCareerRunner:
                 try:
                     self._drain_single_choice_events(state)
                     self._check_stop()
+                    if _autobuy_skills_enabled(self._runtime_dir) and not self._terminal_skills_bought:
+                        self._buy_terminal_skills(state)
 
                     decision = self._decide_recovering(brain, state)
 
@@ -1263,7 +1297,23 @@ class MacroCareerRunner:
                         self._prev_endpoint_was_master_square = False
                         self._execute_race_macro(op, params, state)
                     elif op == "terminal_skills":
-                        raise BrainAPIError("Skill purchases are disabled")
+                        if not _autobuy_skills_enabled(self._runtime_dir):
+                            raise BrainAPIError("Skill purchases are disabled")
+                        skill_arr = (
+                            params.get("gain_skill_info_array")
+                            or params.get("skill_select_array")
+                            or params.get("skill_Select_array")
+                            or []
+                        )
+                        if not skill_arr:
+                            skill_arr = terminal_skill_bundle(state.get("chara_info"))
+                        step_payload: dict[str, Any] = {"gain_skill_info_array": skill_arr}
+                        if params.get("current_turn") is not None:
+                            step_payload["current_turn"] = params.get("current_turn")
+                        self._execute_rpc_step(
+                            {"endpoint": "single_mode_live/gain_skills", "payload": step_payload},
+                            state,
+                        )
                     elif op == "terminal_finish":
                         raise BrainAPIError("Career ending is disabled")
                     else:
@@ -1304,12 +1354,8 @@ class MacroCareerRunner:
                             self._api_calls += 1
                         self.client.login(read_info=False)
                         self._set_viewer_hash(self.client)
-                    reloaded = _normalize_career_state(_unwrap_envelope(self._load_career(3)))
-                    state.clear()
-                    state.update(reloaded)
+                    self._reload_career_state(state, update_telemetry=False)
                     self._reconcile_rejected_square(exc, state)
-                    self._needs_post_square_reload = False
-                    self._prev_endpoint_was_master_square = False
                     self._update_telemetry(state)
                     turn = int((state.get("chara_info") or {}).get("turn") or 0)
                     self._record_history(turn, "Recovery", f"State reconciled ({consecutive_recoveries}/4)", mode)

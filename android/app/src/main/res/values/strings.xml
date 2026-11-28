@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sweepy</string>
+    <string name="notif_channel_name">Career Automation</string>
+    <string name="notif_channel_desc">Keeps active career runs alive while Sweepy is in the background.</string>
+    <string name="notif_stop_action">Stop Run</string>
+    <string name="msg_export_saved">Saved %1$s</string>
+    <string name="msg_export_failed">Failed to save export</string>
+    <string name="err_no_external_app">No app installed to open this link</string>
+</resources>

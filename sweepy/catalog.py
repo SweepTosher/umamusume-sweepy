@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
+
+from sweepy.stripper import unwrap_data
 
 
 CM_PRESETS: tuple[dict[str, Any], ...] = (
@@ -50,7 +53,7 @@ def _as_int(raw: Any, default: int = 0) -> int:
     return default
 
 
-def _item_count(items: Any, item_id: int) -> int:
+def item_count(items: Any, item_id: int) -> int:
     if not isinstance(items, list):
         return 0
     for row in items:
@@ -70,6 +73,110 @@ class Catalog:
         self.chara_names: dict[str, str] = {
             str(k): str(v) for k, v in _load_json_dict(data_dir / "chara_names.json").items()
         }
+        cm_raw = _load_json_dict(data_dir / "cm_courses.json")
+        raw_presets = cm_raw.get("presets")
+        raw_courses = cm_raw.get("courses")
+        self.cm_presets: list[dict[str, Any]] = (
+            [dict(p) for p in raw_presets if isinstance(p, dict)]
+            if isinstance(raw_presets, list) and raw_presets
+            else [
+                {
+                    "slug": str(p["slug"]),
+                    "name": str(p["name"]),
+                    "course_id": int(p["course_id"]),
+                    "track": str(p["name"]).split("(")[1].split()[0] if "(" in str(p["name"]) else "Tokyo",
+                    "distance": int(p["distance"]),
+                    "ground": int(p["surface"]),
+                    "distance_type": int(p["distance_type"]),
+                    "turn": 1,
+                    "inout": 1,
+                    "ground_condition": 1,
+                    "weather": 1,
+                    "season": 1,
+                }
+                for p in CM_PRESETS
+            ]
+        )
+        self.cm_courses: list[dict[str, Any]] = (
+            [dict(c) for c in raw_courses if isinstance(c, dict)]
+            if isinstance(raw_courses, list) and raw_courses
+            else list(self.cm_presets)
+        )
+        self._hydrate_master_pack()
+
+    def _hydrate_master_pack(self) -> None:
+        pack_env = os.environ.get("UMA_MASTER_PACK_DIR", "").strip()
+        if not pack_env:
+            return
+        pack_dir = Path(pack_env).expanduser()
+        if not pack_dir.is_dir():
+            return
+        try:
+            cn_path = pack_dir / "chara_names.json"
+            if cn_path.is_file():
+                for k, v in _load_json_dict(cn_path).items():
+                    self.chara_names.setdefault(str(k), str(v))
+            cr_path = pack_dir / "courses.json"
+            if cr_path.is_file():
+                p_courses = _load_json_dict(cr_path).get("courses")
+                if isinstance(p_courses, list):
+                    existing = {int(c["course_id"]) for c in self.cm_courses if c.get("course_id") is not None}
+                    for crow in p_courses:
+                        if isinstance(crow, dict) and crow.get("course_id") is not None:
+                            cid = int(crow["course_id"])
+                            if cid not in existing:
+                                self.cm_courses.append(dict(crow))
+                                existing.add(cid)
+        except (OSError, ValueError, TypeError, KeyError):
+            return
+
+    def cm_metadata(self) -> dict[str, Any]:
+        tracks = sorted({str(c.get("track") or "") for c in self.cm_courses if c.get("track")})
+        return {
+            "presets": list(self.cm_presets),
+            "courses": list(self.cm_courses),
+            "tracks": tracks,
+            "ground_conditions": [
+                {"id": 1, "label": "Firm"},
+                {"id": 2, "label": "Good"},
+                {"id": 3, "label": "Soft"},
+                {"id": 4, "label": "Heavy"},
+            ],
+            "weathers": [
+                {"id": 1, "label": "Sunny"},
+                {"id": 2, "label": "Cloudy"},
+                {"id": 3, "label": "Rainy"},
+                {"id": 4, "label": "Snowy"},
+            ],
+            "seasons": [
+                {"id": 1, "label": "Spring"},
+                {"id": 2, "label": "Summer"},
+                {"id": 3, "label": "Autumn"},
+                {"id": 4, "label": "Winter"},
+            ],
+            "styles": [
+                {"id": 0, "label": "Auto"},
+                {"id": 1, "label": "Front"},
+                {"id": 2, "label": "Pace"},
+                {"id": 3, "label": "Late"},
+                {"id": 4, "label": "End"},
+                {"id": 5, "label": "Runaway"},
+            ],
+            "modes": [
+                {"id": 0, "slug": "solo", "label": "Solo", "mates_required": 0, "mates_max": 0},
+                {"id": 1, "slug": "ace", "label": "Ace", "mates_required": 0, "mates_max": 2},
+                {"id": 2, "slug": "support", "label": "Support (Debuffer)", "mates_required": 2, "mates_max": 2},
+                {"id": 3, "slug": "blocker", "label": "Support (Blocker)", "mates_required": 2, "mates_max": 2},
+            ],
+            "ace_targets": [
+                {"id": "carry", "label": "Carry"},
+                {"id": "debuffer", "label": "Debuffer"},
+            ],
+            "support_subroles": [
+                {"id": 2, "label": "Debuffer"},
+                {"id": 3, "label": "Blocker"},
+            ],
+        }
 
     def chara_name(self, card_id: int | str) -> str:
         cid = str(card_id or "")
@@ -80,14 +187,14 @@ class Catalog:
         raw_data: dict[str, Any],
         career_data: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
-        data = raw_data.get("data") if isinstance(raw_data.get("data"), dict) else raw_data
+        data = unwrap_data(raw_data)
         user_info = data.get("user_info") if isinstance(data.get("user_info"), dict) else {}
         tp_info = data.get("tp_info") if isinstance(data.get("tp_info"), dict) else {}
         items = data.get("item_list") or data.get("user_item_array") or []
 
         career_src = data.get("single_mode_chara_light") or data.get("single_mode_chara")
         if isinstance(career_data, dict):
-            inner = career_data.get("data") if isinstance(career_data.get("data"), dict) else career_data
+            inner = unwrap_data(career_data)
             if isinstance(inner.get("chara_info"), dict):
                 career_src = inner["chara_info"]
 
@@ -109,14 +216,14 @@ class Catalog:
                 "current": int(tp_info.get("current_tp") or 0),
                 "max": int(tp_info.get("max_tp") or 100),
             },
-            "clocks": _item_count(items, 95),
+            "clocks": item_count(items, 95),
             "career": career_out,
         }
 
     def format_veterans(self, raw_data: dict[str, Any] | None) -> list[dict[str, Any]]:
         if not isinstance(raw_data, dict):
             return []
-        data = raw_data.get("data") if isinstance(raw_data.get("data"), dict) else raw_data
+        data = unwrap_data(raw_data)
         raw_vets = data.get("trained_chara_array")
         if not isinstance(raw_vets, list):
             return []

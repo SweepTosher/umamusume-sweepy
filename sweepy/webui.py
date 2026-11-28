@@ -96,6 +96,15 @@ def _mask_api_key(api_key: str) -> str:
 
 def _steam_error_payload(exc: Exception) -> dict[str, Any]:
     retryable = bool(getattr(exc, "transport", False))
+    stage = str(getattr(exc, "stage", "") or "")
+    if stage.startswith("credential") and not retryable:
+        return {
+            "ok": False,
+            "error": str(exc) or "Steam sign-in failed",
+            "state": "steam_auth_failed",
+            "result_code": getattr(exc, "result_code", None),
+            "retryable": False,
+        }
     return {
         "ok": False,
         "error": "steam_unavailable",
@@ -359,6 +368,7 @@ class SweepyAppState:
         base: dict[str, Any] = {
             "ok": True,
             "logged_in": logged_in,
+            "password_auth": True,
             "brain": {
                 "api_url": settings["api_url"],
                 "has_api_key": bool(settings["api_key"]),
@@ -437,6 +447,60 @@ class SweepyAppState:
                 "interval": info.get("interval", 2),
             }
 
+    def _finish_steam_approval(self, provider: Any) -> dict[str, Any]:
+        provider.ensure_lease()
+        with self._lock:
+            already_logged_in = self._client is not None
+        if not already_logged_in:
+            self._forget_device_state()
+        payload = self._complete_uma_login(provider)
+        try:
+            token = provider.current_token()
+        except Exception:
+            token = ""
+        if token:
+            payload["refresh_token"] = token
+        payload["status"] = "approved"
+        payload["logged_in"] = True
+        return payload
+
+    def credentials_start(self, body: dict[str, Any]) -> dict[str, Any]:
+        with self._auth_lock:
+            if self.runner.running:
+                raise RuntimeError("Stop the run before signing in")
+            with self._lock:
+                if self._client is not None:
+                    raise RuntimeError("Log out before signing in with another account")
+            username = str(body.get("username") or "")
+            password = str(body.get("password") or "")
+            provider = self._get_provider()
+            try:
+                res = provider.start_credentials_session(username, password)
+                if str(res.get("status") or "") == "approved":
+                    return self._finish_steam_approval(provider)
+            except SteamTicketError as exc:
+                return _steam_error_payload(exc)
+            return {"ok": True, **res}
+
+    def credentials_submit_code(self, body: dict[str, Any]) -> dict[str, Any]:
+        with self._auth_lock:
+            if self.runner.running:
+                raise RuntimeError("Stop the run before verifying Steam Guard")
+            with self._lock:
+                if self._client is not None:
+                    raise RuntimeError("Log out before verifying another account")
+            code = str(body.get("code") or "")
+            raw_code_type = body.get("code_type")
+            code_type = int(raw_code_type) if isinstance(raw_code_type, (int, float)) else None
+            provider = self._get_provider()
+            try:
+                res = provider.submit_steam_guard_code(code, code_type_override=code_type)
+                if str(res.get("status") or "") == "approved":
+                    return self._finish_steam_approval(provider)
+            except SteamTicketError as exc:
+                return _steam_error_payload(exc)
+            return {"ok": True, **res}
+
     def qr_poll(self) -> dict[str, Any]:
         with self._auth_lock:
             provider = self._get_provider()
@@ -447,23 +511,9 @@ class SweepyAppState:
             status = str(res.get("status") or "pending")
             if status == "approved":
                 try:
-                    provider.ensure_lease()
+                    return self._finish_steam_approval(provider)
                 except SteamTicketError as exc:
                     return _steam_error_payload(exc)
-                with self._lock:
-                    already_logged_in = self._client is not None
-                if not already_logged_in:
-                    self._forget_device_state()
-                payload = self._complete_uma_login(provider)
-                try:
-                    token = provider.current_token()
-                except Exception:
-                    token = ""
-                if token:
-                    payload["refresh_token"] = token
-                payload["status"] = "approved"
-                payload["logged_in"] = True
-                return payload
             challenge_url = str(res.get("challenge_url") or "")
             payload: dict[str, Any] = {
                 "ok": True,
@@ -471,6 +521,7 @@ class SweepyAppState:
                 "challenge_url": challenge_url,
                 "steam_id": res.get("steam_id"),
                 "interval": res.get("interval"),
+                "had_remote_interaction": bool(res.get("had_remote_interaction", False)),
             }
             if challenge_url:
                 with self._lock:
@@ -886,7 +937,12 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
             self._send_json(404, {"ok": False, "error": f"Unknown route: {path}"})
 
         def _send_auth_payload(self, payload: dict[str, Any]) -> None:
-            status = 503 if payload.get("error") == "steam_unavailable" else 200
+            if payload.get("error") == "steam_unavailable":
+                status = 503
+            elif payload.get("ok") is False:
+                status = 400
+            else:
+                status = 200
             self._send_json(status, payload)
 
         def do_POST(self) -> None:
@@ -897,6 +953,15 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
                 body = self._read_json_body()
                 if path == "/api/config/brain":
                     self._send_json(200, app_state.configure_brain(body))
+                    return
+                if path == "/api/auth/credentials/start":
+                    self._send_auth_payload(app_state.credentials_start(body))
+                    return
+                if path == "/api/auth/credentials/code":
+                    self._send_auth_payload(app_state.credentials_submit_code(body))
+                    return
+                if path == "/api/auth/credentials/poll":
+                    self._send_auth_payload(app_state.qr_poll())
                     return
                 if path == "/api/auth/qr/start":
                     self._send_auth_payload(app_state.qr_start())

@@ -177,7 +177,18 @@ async function api(path, method = "GET", body = null, timeoutMs = 40000) {
     return payload;
 }
 
-const QR_HINT_IDLE = "Login with Steam mobile app";
+const QR_HINT_IDLE = "Scan with Steam Mobile app";
+
+function isAndroidBrowser() {
+    return /Android/i.test(navigator.userAgent || "");
+}
+
+function defaultAuthTab(session) {
+    if (!session || !session.password_auth) {
+        return "qr";
+    }
+    return isAndroidBrowser() ? "credentials" : "qr";
+}
 
 function setQrHint(text) {
     const node = $("qr-hint");
@@ -1065,6 +1076,7 @@ async function startQr() {
             box.insertAdjacentHTML("afterbegin", response.qr_svg);
         }
         setQrChallengeUrl(response.challenge_url);
+        setQrHint(QR_HINT_IDLE);
         state.qrActive = true;
         state.qrRetries = 0;
         state.qrInterval = Number(response.interval) || 2;
@@ -1366,9 +1378,11 @@ async function pollQr() {
                 box.innerHTML = "";
                 box.insertAdjacentHTML("afterbegin", response.qr_svg);
             }
-            setQrHint("Code refreshed, scan the new one");
-        } else {
+            setQrHint(`Code refreshed · ${QR_HINT_IDLE}`);
+        } else if (response.had_remote_interaction === true) {
             setQrHint("Waiting for Steam approval");
+        } else {
+            setQrHint(QR_HINT_IDLE);
         }
         if (Number(response.interval) > 0) {
             state.qrInterval = Number(response.interval);
@@ -1406,14 +1420,12 @@ async function logout() {
     saveBrainKey("");
     saveDeviceState(null);
     try {
+        state.authTab = "";
         await api("/api/logout", "POST", {});
         const session = await refreshSession();
         if (!session.logged_in) {
-            if (session.password_auth) {
-                setAuthTab("credentials", false);
-            } else {
-                await startQr();
-            }
+            const nextTab = defaultAuthTab(session);
+            setAuthTab(nextTab, nextTab === "qr");
         }
     } catch (error) {
         showAuthError(error.message);
@@ -1638,7 +1650,7 @@ function applySession(session) {
             }
         }
     } else {
-        const defaultTab = session.password_auth ? (state.authTab || "credentials") : "qr";
+        const defaultTab = state.authTab || defaultAuthTab(session);
         setAuthTab(defaultTab, false);
         renderAccountStrip(session);
     }
@@ -1820,11 +1832,8 @@ async function init() {
         }
         session = await pushBrainKey(session);
         if (!session.logged_in) {
-            if (session.password_auth) {
-                setAuthTab("credentials", false);
-            } else {
-                setAuthTab("qr", true);
-            }
+            const nextTab = defaultAuthTab(session);
+            setAuthTab(nextTab, nextTab === "qr");
         }
         startRunnerPolling();
     } catch (error) {

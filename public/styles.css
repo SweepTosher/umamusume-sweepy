@@ -479,6 +479,7 @@ body.pre-login .logout-btn {
   font: 400 .66rem/1.5 var(--font-mono);
   letter-spacing: .18em;
   text-transform: uppercase;
+  text-align: center;
   color: var(--mauve-ink);
 }
 

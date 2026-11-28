@@ -83,8 +83,33 @@ ERESULT_OK = 1
 ERESULT_EXPIRED = 27
 ERESULT_TRY_ANOTHER_CM = 48
 
+AUTH_GUARD_NONE = 1
 AUTH_GUARD_EMAIL_CODE = 2
 AUTH_GUARD_DEVICE_CODE = 3
+AUTH_GUARD_DEVICE_CONFIRMATION = 4
+AUTH_GUARD_EMAIL_CONFIRMATION = 5
+
+_GUARD_SLUGS = {
+    AUTH_GUARD_EMAIL_CODE: "email_code",
+    AUTH_GUARD_DEVICE_CODE: "device_code",
+    AUTH_GUARD_DEVICE_CONFIRMATION: "device_confirm",
+    AUTH_GUARD_EMAIL_CONFIRMATION: "email_confirm",
+}
+
+_FRIENDLY_ERESULTS = {
+    5: "Incorrect Steam username or password",
+    65: "Incorrect email Steam Guard code",
+    84: "Too many Steam login attempts — wait before retrying",
+    88: "Incorrect Steam Guard authenticator code",
+    89: "Incorrect Steam Guard authenticator code",
+}
+
+
+def _friendly_eresult_message(method_name: str, eresult: int) -> str:
+    return _FRIENDLY_ERESULTS.get(
+        eresult,
+        f"Steam authentication service rejected {method_name} (eresult={eresult})",
+    )
 
 CM_DISCOVERY_URL = (
     "https://api.steampowered.com/ISteamDirectory/GetCMListForConnect/v1/"
@@ -567,7 +592,7 @@ class _CMSession:
             er = got_hdr.eresult if got_hdr.eresult is not None else 0
             if er != ERESULT_OK:
                 raise SteamTicketError(
-                    f"Steam authentication service rejected {method_name} (eresult={er})",
+                    _friendly_eresult_message(method_name, er),
                     stage=stage,
                     result_code=er,
                     safe_reason="service_rejected",
@@ -857,17 +882,19 @@ class SteamTicketProvider:
             client_id = int(self._qr_state["client_id"])
             request_id = bytes(self._qr_state["request_id"])
             challenge_url = str(self._qr_state["challenge_url"])
+            poll_stage = "qr_bootstrap" if challenge_url else "credentials_poll"
 
             poll_req = PollAuthSessionStatus_Request(client_id=client_id, request_id=request_id)
             try:
                 resp_bytes = self._call_non_authed_retry(
                     METHOD_POLL_STATUS,
                     poll_req.encode(),
-                    stage="qr_bootstrap",
+                    stage=poll_stage,
                 )
             except SteamTicketError as exc:
                 if exc.result_code == ERESULT_EXPIRED:
                     self._qr_state = None
+                    self._cred_state = None
                     self._close_auth_cm()
                     return {
                         "status": "expired",
@@ -880,6 +907,8 @@ class SteamTicketProvider:
             if status.new_client_id > 0:
                 client_id = int(status.new_client_id)
                 self._qr_state["client_id"] = client_id
+                if self._cred_state is not None:
+                    self._cred_state["client_id"] = client_id
             if status.new_challenge_url.strip():
                 new_url = status.new_challenge_url.strip()
                 if not new_url.startswith("https://s.team/q/"):
@@ -893,10 +922,11 @@ class SteamTicketProvider:
 
             candidate = status.refresh_token.strip()
             if candidate:
-                steam_id = self._adopt_token(candidate, stage="qr_bootstrap")
+                steam_id = self._adopt_token(candidate, stage=poll_stage)
                 if status.new_guard_data:
                     self.last_guard_data = status.new_guard_data
                 self._qr_state = None
+                self._cred_state = None
                 self._close_auth_cm()
                 return {
                     "status": "approved",
@@ -906,11 +936,182 @@ class SteamTicketProvider:
                 }
             return {
                 "status": "pending",
-                "challenge_url": challenge_url,
+                "challenge_url": challenge_url or None,
                 "steam_id": None,
                 "interval": float(self._qr_state["interval"]),
                 "had_remote_interaction": bool(status.had_remote_interaction),
             }
+
+    def _begin_credentials_session(
+        self,
+        username: str,
+        password: str,
+        machine_token: str = "",
+        *,
+        stage: str,
+    ) -> tuple[BeginAuthSessionViaCredentials_Response, str]:
+        account_name = str(username or "").strip()
+        secret_pw = str(password or "")
+        guard_data = str(machine_token or "").strip()
+        if not account_name or not secret_pw:
+            raise SteamTicketError(
+                "Steam username and password are required",
+                stage=stage,
+                safe_reason="credentials_unavailable",
+            )
+
+        self._qr_state = None
+        self._cred_state = None
+        self._close_auth_cm()
+
+        rsa_bytes = self._call_non_authed_retry(
+            METHOD_GET_RSA_KEY,
+            GetPasswordRSAPublicKey_Request(account_name=account_name).encode(),
+            stage=stage,
+        )
+        rsa_resp = GetPasswordRSAPublicKey_Response.decode(rsa_bytes)
+        if not rsa_resp.publickey_mod or not rsa_resp.publickey_exp or int(rsa_resp.timestamp) <= 0:
+            raise SteamTicketError(
+                "Steam returned invalid RSA key",
+                stage=stage,
+                safe_reason="service_rejected",
+            )
+        try:
+            modulus = int(rsa_resp.publickey_mod, 16)
+            exponent = int(rsa_resp.publickey_exp, 16)
+            pub_key = RSA.construct((modulus, exponent))
+            cipher = PKCS1_v1_5.new(pub_key)
+            encrypted_pw = base64.b64encode(cipher.encrypt(secret_pw.encode("utf-8"))).decode("ascii")
+        except Exception as exc:
+            raise SteamTicketError(
+                "RSA password encryption failed",
+                stage=stage,
+                safe_reason="service_rejected",
+            ) from exc
+
+        begin_req = BeginAuthSessionViaCredentials_Request(
+            device_friendly_name="Python Headless Client",
+            account_name=account_name,
+            encrypted_password=encrypted_pw,
+            encryption_timestamp=int(rsa_resp.timestamp),
+            remember_login=True,
+            platform_type=1,
+            persistence=1,
+            website_id="Client",
+            device_details=CAuthentication_DeviceDetails(
+                device_friendly_name="Python Headless Client",
+                platform_type=1,
+                os_type=-700,
+                gaming_device_type=1,
+            ),
+            guard_data=guard_data,
+        )
+        sess_bytes = self._call_non_authed_retry(
+            METHOD_BEGIN_CREDENTIALS,
+            begin_req.encode(),
+            stage=stage,
+        )
+        sess = BeginAuthSessionViaCredentials_Response.decode(sess_bytes)
+        steam_id = str(sess.steamid)
+        if (
+            sess.client_id <= 0
+            or not sess.request_id
+            or len(steam_id) != 17
+            or not steam_id.isdigit()
+        ):
+            raise SteamTicketError(
+                "Steam rejected account credentials",
+                stage=stage,
+                safe_reason="service_rejected",
+            )
+        return sess, steam_id
+
+    def start_credentials_session(self, username: str, password: str) -> dict[str, object]:
+        stage = "credentials_login"
+        with self._lock:
+            sess, steam_id = self._begin_credentials_session(
+                username,
+                password,
+                stage=stage,
+            )
+            interval = float(sess.interval or 3.0)
+            self._qr_state = {
+                "client_id": int(sess.client_id),
+                "request_id": bytes(sess.request_id),
+                "challenge_url": "",
+                "interval": interval,
+            }
+            self._cred_state = {
+                "client_id": int(sess.client_id),
+                "request_id": bytes(sess.request_id),
+                "steam_id": steam_id,
+                "code_type": AUTH_GUARD_DEVICE_CODE,
+                "guard_type": None,
+                "allowed_confirmations": list(sess.allowed_confirmations),
+                "interval": interval,
+            }
+            types = [c.confirmation_type for c in sess.allowed_confirmations]
+            if AUTH_GUARD_NONE in types:
+                polled = self.poll_qr_session()
+                if polled.get("status") == "approved":
+                    return polled
+            guard_types = list(dict.fromkeys(_GUARD_SLUGS[t] for t in types if t in _GUARD_SLUGS))
+            hint = next(
+                (c.associated_message for c in sess.allowed_confirmations if c.associated_message.strip()),
+                "",
+            )
+            return {
+                "status": "guard_required",
+                "guard_types": guard_types,
+                "hint": hint,
+                "interval": interval,
+                "steam_id": steam_id,
+            }
+
+    def submit_steam_guard_code(
+        self,
+        code: str,
+        code_type_override: int | None = None,
+    ) -> dict[str, object]:
+        stage = "credentials_guard"
+        cleaned_code = str(code or "").strip().upper()
+        if not cleaned_code:
+            raise SteamTicketError(
+                "Enter your Steam Guard code",
+                stage=stage,
+                safe_reason="confirmation_required",
+            )
+        with self._lock:
+            if self._cred_state is None or self._qr_state is None:
+                raise SteamTicketError(
+                    "Steam login session expired — sign in again",
+                    stage=stage,
+                    result_code=ERESULT_EXPIRED,
+                )
+            client_id = int(self._qr_state["client_id"])
+            steam_id = str(self._cred_state["steam_id"])
+            confs = self._cred_state.get("allowed_confirmations") or []
+            conf_types = {getattr(c, "confirmation_type", 0) for c in confs}
+            if code_type_override is not None:
+                target_type = int(code_type_override)
+            elif AUTH_GUARD_DEVICE_CODE in conf_types:
+                target_type = AUTH_GUARD_DEVICE_CODE
+            elif AUTH_GUARD_EMAIL_CODE in conf_types:
+                target_type = AUTH_GUARD_EMAIL_CODE
+            else:
+                target_type = int(self._cred_state.get("code_type") or AUTH_GUARD_DEVICE_CODE)
+            guard_req = UpdateAuthSessionWithSteamGuardCode_Request(
+                client_id=client_id,
+                steamid=int(steam_id),
+                code=cleaned_code,
+                code_type=target_type,
+            )
+            self._call_non_authed_retry(
+                METHOD_UPDATE_GUARD,
+                guard_req.encode(),
+                stage=stage,
+            )
+            return self.poll_qr_session()
 
     def login_with_credentials(
         self,
@@ -920,76 +1121,14 @@ class SteamTicketProvider:
         machine_token: str = "",
     ) -> dict[str, object]:
         stage = "credential_bootstrap"
-        account_name = str(username or "").strip()
-        secret_pw = str(password or "")
         code_str = str(guard_code or "").strip()
-        guard_data = str(machine_token or "").strip()
-        if not account_name or not secret_pw:
-            raise SteamTicketError(
-                "Steam username and password are required",
-                stage=stage,
-                safe_reason="credentials_unavailable",
-            )
-
         with self._lock:
-            self._qr_state = None
-            self._cred_state = None
-            cm = self._ensure_auth_cm(stage=stage)
-
-            _, rsa_bytes = cm.call_service_non_authed(
-                METHOD_GET_RSA_KEY,
-                GetPasswordRSAPublicKey_Request(account_name=account_name).encode(),
+            sess, steam_id = self._begin_credentials_session(
+                username,
+                password,
+                machine_token=machine_token,
                 stage=stage,
             )
-            rsa_resp = GetPasswordRSAPublicKey_Response.decode(rsa_bytes)
-            try:
-                modulus = int(rsa_resp.publickey_mod, 16)
-                exponent = int(rsa_resp.publickey_exp, 16)
-                pub_key = RSA.construct((modulus, exponent))
-                cipher = PKCS1_v1_5.new(pub_key)
-                encrypted_pw = base64.b64encode(cipher.encrypt(secret_pw.encode("utf-8"))).decode("ascii")
-            except Exception as exc:
-                raise SteamTicketError(
-                    "RSA password encryption failed",
-                    stage=stage,
-                    safe_reason="service_rejected",
-                ) from exc
-
-            begin_req = BeginAuthSessionViaCredentials_Request(
-                device_friendly_name="Python Headless Client",
-                account_name=account_name,
-                encrypted_password=encrypted_pw,
-                encryption_timestamp=int(rsa_resp.timestamp),
-                remember_login=True,
-                platform_type=1,
-                persistence=1,
-                website_id="Client",
-                device_details=CAuthentication_DeviceDetails(
-                    device_friendly_name="Python Headless Client",
-                    platform_type=1,
-                    os_type=-700,
-                    gaming_device_type=1,
-                ),
-                guard_data=guard_data,
-            )
-            _, sess_bytes = cm.call_service_non_authed(
-                METHOD_BEGIN_CREDENTIALS,
-                begin_req.encode(),
-                stage=stage,
-            )
-            sess = BeginAuthSessionViaCredentials_Response.decode(sess_bytes)
-            steam_id = str(sess.steamid)
-            if (
-                sess.client_id <= 0
-                or not sess.request_id
-                or len(steam_id) != 17
-                or not steam_id.isdigit()
-            ):
-                raise SteamTicketError(
-                    "Steam rejected account credentials",
-                    stage=stage,
-                    safe_reason="service_rejected",
-                )
 
             conf_types = {c.confirmation_type for c in sess.allowed_confirmations}
             code_type: int | None = None
@@ -1023,7 +1162,7 @@ class SteamTicketProvider:
                     code=code_str,
                     code_type=code_type,
                 )
-                cm.call_service_non_authed(
+                self._call_non_authed_retry(
                     METHOD_UPDATE_GUARD,
                     guard_req.encode(),
                     stage=stage,

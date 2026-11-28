@@ -608,7 +608,9 @@ class SweepyEngine(
             return linkedMapOf(
                 "ok" to false,
                 "error" to "steam_unavailable",
+                "detail" to (exc.message ?: "steam_unavailable"),
                 "state" to "steam_unavailable",
+                "result_code" to exc.resultCode,
                 "retryable" to exc.transport,
             )
         }

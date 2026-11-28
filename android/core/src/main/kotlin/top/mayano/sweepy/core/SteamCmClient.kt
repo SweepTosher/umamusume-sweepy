@@ -148,7 +148,7 @@ private class CmWebSocketSession(
         header: ProtoWire.ProtoBufHeader? = null,
         authenticated: Boolean = false,
     ) {
-        if (!alive) throw SteamTicketException("Steam CM session is closed", stage = "connect")
+        if (!alive) throw SteamTicketException("Steam CM session is closed", stage = "connect", transport = true)
         val hdr = header ?: if (authenticated) {
             ProtoWire.ProtoBufHeader(steamid = steamId64, clientSessionid = clientSessionId)
         } else {
@@ -371,10 +371,12 @@ class SteamTicketProvider(
         return ordered
     }
 
-    private fun connectCmHello(stage: String): CmWebSocketSession {
+    private fun connectCmHello(stage: String, startOffset: Int = 0): CmWebSocketSession {
         val urls = discoverCmUrls()
+        val shift = ((startOffset % urls.size) + urls.size) % urls.size
+        val ordered = if (shift == 0) urls else urls.drop(shift) + urls.take(shift)
         var lastErr: Throwable? = null
-        for (wsUrl in urls.take(6)) {
+        for (wsUrl in ordered.take(6)) {
             var sess: CmWebSocketSession? = null
             try {
                 sess = CmWebSocketSession(http, wsUrl)
@@ -393,21 +395,27 @@ class SteamTicketProvider(
         authCm = null
     }
 
-    private fun ensureAuthCm(stage: String): CmWebSocketSession {
+    private fun ensureAuthCm(stage: String, attempt: Int = 0): CmWebSocketSession {
         authCm?.takeIf { it.alive }?.let { return it }
         closeAuthCm()
-        return connectCmHello(stage).also { authCm = it }
+        return connectCmHello(stage, startOffset = attempt).also { authCm = it }
     }
 
     private fun callNonAuthedRetry(method: String, body: ByteArray, stage: String): ProtoWire.SteamPacket {
         var lastExc: SteamTicketException? = null
         for (attempt in 0..2) {
-            val cm = ensureAuthCm(stage)
+            val cm = ensureAuthCm(stage, attempt)
             try {
                 return cm.callServiceNonAuthed(method, body, stage = stage)
             } catch (exc: SteamTicketException) {
                 lastExc = exc
-                val retryable = exc.resultCode == ERESULT_TRY_ANOTHER_CM || exc.safeReason == "timeout" || exc.transport
+                val msg = (exc.message ?: "").lowercase()
+                val retryable = exc.resultCode == ERESULT_TRY_ANOTHER_CM ||
+                    exc.safeReason == "timeout" ||
+                    exc.transport ||
+                    "session is closed" in msg ||
+                    "connection closed" in msg ||
+                    "disconnected" in msg
                 closeAuthCm()
                 if (!retryable || attempt >= 2) throw exc
             }
@@ -423,7 +431,7 @@ class SteamTicketProvider(
         val respPkt = callNonAuthedRetry(METHOD_BEGIN_QR, ProtoWire.encodeBeginQrRequest(), stage = "qr_bootstrap")
         val resp = ProtoWire.BeginQrResponse.decode(respPkt.body)
         val url = resp.challengeUrl.trim()
-        if (resp.clientId <= 0L || resp.requestId.isEmpty() || !url.startsWith("https://s.team/q/")) {
+        if (resp.clientId == 0L || resp.requestId.isEmpty() || !url.startsWith("https://s.team/q/")) {
             throw SteamTicketException("bad QR challenge", stage = "qr_bootstrap", safeReason = "invalid_challenge")
         }
         val iv = if (resp.interval > 0f) resp.interval.toDouble() else 5.0
@@ -454,7 +462,7 @@ class SteamTicketProvider(
             stage = "credentials_rsa",
         )
         val rsaKey = ProtoWire.PasswordRsaKeyResponse.decode(rsaPkt.body)
-        if (rsaKey.modHex.isEmpty() || rsaKey.expHex.isEmpty() || rsaKey.timestamp <= 0L) {
+        if (rsaKey.modHex.isEmpty() || rsaKey.expHex.isEmpty() || rsaKey.timestamp == 0L) {
             throw SteamTicketException("Steam returned invalid RSA key", stage = "credentials_rsa")
         }
 
@@ -469,7 +477,7 @@ class SteamTicketProvider(
             stage = "credentials_login",
         )
         val resp = ProtoWire.BeginCredentialsResponse.decode(credPkt.body)
-        if (resp.clientId <= 0L || resp.requestId.isEmpty() || resp.steamId <= 0L) {
+        if (resp.clientId == 0L || resp.requestId.isEmpty() || resp.steamId == 0L) {
             val extra = resp.extendedErrorMessage.takeIf { it.isNotBlank() }
             throw SteamTicketException(
                 extra ?: "Steam rejected username or password",
@@ -503,12 +511,12 @@ class SteamTicketProvider(
             "guard_types" to guardNames,
             "hint" to hint,
             "interval" to iv,
-            "steam_id" to resp.steamId.toString(),
+            "steam_id" to java.lang.Long.toUnsignedString(resp.steamId),
         )
     }
 
     fun submitSteamGuardCode(code: String, codeTypeOverride: Int? = null): Map<String, Any?> = synchronized(lock) {
-        if (!hasQrState || credSteamId <= 0L) {
+        if (!hasQrState || credSteamId == 0L) {
             throw SteamTicketException("Steam login session expired — sign in again", stage = "credentials_guard", resultCode = ERESULT_EXPIRED)
         }
         val cleanCode = code.trim().uppercase()
@@ -550,7 +558,7 @@ class SteamTicketProvider(
             throw exc
         }
         val status = ProtoWire.PollStatusResponse.decode(respPkt.body)
-        if (status.newClientId > 0L) qrClientId = status.newClientId
+        if (status.newClientId != 0L) qrClientId = status.newClientId
         val newUrl = status.newChallengeUrl.trim()
         if (newUrl.isNotEmpty()) {
             if (!newUrl.startsWith("https://s.team/q/")) {
@@ -577,43 +585,60 @@ class SteamTicketProvider(
     }
 
     private fun openAuthenticatedCm(token: String, expectedSteamId: String): CmWebSocketSession {
-        val cm = connectCmHello("connect")
-        try {
-            val hdr = ProtoWire.ProtoBufHeader(
-                steamid = expectedSteamId.toLong(),
-                clientSessionid = 0,
-                jobidSource = NO_JOB_ID,
-                jobidTarget = NO_JOB_ID,
-            )
-            val respPkt = cm.sendAndWaitEmsg(
-                ProtoWire.EMSG_CLIENT_LOGON,
-                ProtoWire.encodeClientLogon(token, expectedSteamId),
-                ProtoWire.EMSG_CLIENT_LOGON_RESPONSE,
-                header = hdr,
-                authenticated = false,
-                timeoutSec = 30L,
-                stage = "logon",
-            )
-            val logon = ProtoWire.LogonResponse.decode(respPkt.body)
-            if (logon.eresult != ERESULT_OK) {
-                throw SteamTicketException("Steam ClientLogon failed (eresult=${logon.eresult})", stage = "logon", resultCode = logon.eresult)
+        val parsedSid = java.lang.Long.parseUnsignedLong(expectedSteamId)
+        var lastExc: Throwable? = null
+        for (attempt in 0..2) {
+            val cm = connectCmHello("connect", startOffset = attempt)
+            try {
+                val hdr = ProtoWire.ProtoBufHeader(
+                    steamid = parsedSid,
+                    clientSessionid = 0,
+                    jobidSource = NO_JOB_ID,
+                    jobidTarget = NO_JOB_ID,
+                )
+                val respPkt = cm.sendAndWaitEmsg(
+                    ProtoWire.EMSG_CLIENT_LOGON,
+                    ProtoWire.encodeClientLogon(token, expectedSteamId),
+                    ProtoWire.EMSG_CLIENT_LOGON_RESPONSE,
+                    header = hdr,
+                    authenticated = false,
+                    timeoutSec = 30L,
+                    stage = "logon",
+                )
+                val logon = ProtoWire.LogonResponse.decode(respPkt.body)
+                if (logon.eresult != ERESULT_OK) {
+                    throw SteamTicketException(
+                        "Steam ClientLogon failed (eresult=${logon.eresult})",
+                        stage = "logon",
+                        resultCode = logon.eresult,
+                    )
+                }
+                val hdrSid = respPkt.header.steamid
+                if (hdrSid != null && hdrSid != 0L && java.lang.Long.toUnsignedString(hdrSid) != expectedSteamId) {
+                    throw SteamTicketException("Steam CM logged on with unexpected SteamID64", stage = "logon")
+                }
+                cm.steamId64 = parsedSid
+                cm.loggedOn = true
+                cm.startHeartbeat(if (logon.heartbeatSeconds > 0) logon.heartbeatSeconds else 15)
+                connectNano = System.nanoTime()
+                authListSeq = 0
+                lastServerSeq = 0
+                ticketSeq = 0
+                appOwnershipTicket = fetchOwnershipTicket(cm)
+                return cm
+            } catch (t: Throwable) {
+                cm.close()
+                lastExc = t
+                val ste = t as? SteamTicketException
+                val retryable = ste != null && (
+                    ste.resultCode == ERESULT_TRY_ANOTHER_CM ||
+                        ste.safeReason == "timeout" ||
+                        ste.transport
+                    )
+                if (!retryable || attempt >= 2) throw t
             }
-            if (respPkt.header.steamid != null && respPkt.header.steamid != 0L && respPkt.header.steamid.toString() != expectedSteamId) {
-                throw SteamTicketException("Steam CM logged on with unexpected SteamID64", stage = "logon")
-            }
-            cm.steamId64 = expectedSteamId.toLong()
-            cm.loggedOn = true
-            cm.startHeartbeat(if (logon.heartbeatSeconds > 0) logon.heartbeatSeconds else 15)
-            connectNano = System.nanoTime()
-            authListSeq = 0
-            lastServerSeq = 0
-            ticketSeq = 0
-            appOwnershipTicket = fetchOwnershipTicket(cm)
-            return cm
-        } catch (t: Throwable) {
-            cm.close()
-            throw t
         }
+        throw lastExc!!
     }
 
     private fun fetchOwnershipTicket(cm: CmWebSocketSession): ByteArray {

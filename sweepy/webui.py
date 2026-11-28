@@ -108,7 +108,9 @@ def _steam_error_payload(exc: Exception) -> dict[str, Any]:
     return {
         "ok": False,
         "error": "steam_unavailable",
+        "detail": str(exc) or "steam_unavailable",
         "state": "steam_unavailable",
+        "result_code": getattr(exc, "result_code", None),
         "retryable": retryable,
     }
 

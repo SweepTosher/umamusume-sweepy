@@ -268,5 +268,20 @@ class ParityVectorsTest {
         assertEquals(76561198000000001L, ProtoWire.lastFixed64(guardReq[2]))
         assertEquals("AB12C", ProtoWire.lastStr(guardReq[3]))
         assertEquals(3L, ProtoWire.lastVarint(guardReq[4]))
+
+        val highBitClientId = java.lang.Long.parseUnsignedLong("11785782808063874333")
+        assertTrue(highBitClientId < 0L)
+        val highCredResp = ByteArrayOutputStream().apply {
+            ProtoWire.writeVarintField(1, highBitClientId, this)
+            ProtoWire.writeBytesField(2, byteArrayOf(9, 8, 7), this)
+            ProtoWire.writeFloatField(3, 5.0f, this)
+            ProtoWire.writeVarintField(5, 76561198000000001L, this)
+        }.toByteArray()
+        val decodedHighCred = ProtoWire.BeginCredentialsResponse.decode(highCredResp)
+        assertEquals(highBitClientId, decodedHighCred.clientId)
+        val pollEncoded = ProtoWire.decodeFields(
+            ProtoWire.encodePollStatusRequest(highBitClientId, byteArrayOf(9, 8, 7))
+        )
+        assertEquals(highBitClientId, ProtoWire.lastVarint(pollEncoded[1]))
     }
 }

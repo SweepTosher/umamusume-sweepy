@@ -464,6 +464,44 @@ class SweepyAppState:
         payload["logged_in"] = True
         return payload
 
+    def _resolve_steam_approval(
+        self,
+        provider: Any,
+        res: dict[str, Any],
+        body: dict[str, Any] | None,
+    ) -> dict[str, Any]:
+        if bool((body or {}).get("defer_login")):
+            try:
+                token = provider.current_token()
+            except Exception:
+                token = ""
+            out: dict[str, Any] = {
+                "ok": True,
+                "status": "steam_approved",
+                "logged_in": False,
+                "steam_id": res.get("steam_id"),
+            }
+            if token:
+                out["refresh_token"] = token
+            return out
+        return self._finish_steam_approval(provider)
+
+    def finalize_steam_login(self) -> dict[str, Any]:
+        with self._auth_lock:
+            with self._lock:
+                if self._client is not None and self._dashboard is not None:
+                    out = self.session_payload()
+                    out["status"] = "approved"
+                    out["logged_in"] = True
+                    return out
+            provider = self._get_provider()
+            try:
+                if not provider.has_refresh_token():
+                    raise RuntimeError("No approved Steam session to finalize")
+                return self._finish_steam_approval(provider)
+            except SteamTicketError as exc:
+                return _steam_error_payload(exc)
+
     def credentials_start(self, body: dict[str, Any]) -> dict[str, Any]:
         with self._auth_lock:
             if self.runner.running:
@@ -477,7 +515,7 @@ class SweepyAppState:
             try:
                 res = provider.start_credentials_session(username, password)
                 if str(res.get("status") or "") == "approved":
-                    return self._finish_steam_approval(provider)
+                    return self._resolve_steam_approval(provider, res, body)
             except SteamTicketError as exc:
                 return _steam_error_payload(exc)
             return {"ok": True, **res}
@@ -496,12 +534,12 @@ class SweepyAppState:
             try:
                 res = provider.submit_steam_guard_code(code, code_type_override=code_type)
                 if str(res.get("status") or "") == "approved":
-                    return self._finish_steam_approval(provider)
+                    return self._resolve_steam_approval(provider, res, body)
             except SteamTicketError as exc:
                 return _steam_error_payload(exc)
             return {"ok": True, **res}
 
-    def qr_poll(self) -> dict[str, Any]:
+    def qr_poll(self, body: dict[str, Any] | None = None) -> dict[str, Any]:
         with self._auth_lock:
             provider = self._get_provider()
             try:
@@ -511,7 +549,7 @@ class SweepyAppState:
             status = str(res.get("status") or "pending")
             if status == "approved":
                 try:
-                    return self._finish_steam_approval(provider)
+                    return self._resolve_steam_approval(provider, res, body)
                 except SteamTicketError as exc:
                     return _steam_error_payload(exc)
             challenge_url = str(res.get("challenge_url") or "")
@@ -859,7 +897,7 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
             ext = target.suffix.lower()
             ctype = _MIME_OVERRIDES.get(ext) or mimetypes.guess_type(str(target))[0] or "application/octet-stream"
             data = target.read_bytes()
-            cache = "public, max-age=300" if ext in (".png", ".webp") else "no-cache"
+            cache = "public, max-age=300" if ext in (".png", ".webp") else "no-store"
             self._send_bytes(200, ctype, data, cache_control=cache)
 
         def _read_json_body(self) -> dict[str, Any]:
@@ -961,13 +999,16 @@ def _make_handler_class(app_state: SweepyAppState) -> type[BaseHTTPRequestHandle
                     self._send_auth_payload(app_state.credentials_submit_code(body))
                     return
                 if path == "/api/auth/credentials/poll":
-                    self._send_auth_payload(app_state.qr_poll())
+                    self._send_auth_payload(app_state.qr_poll(body))
                     return
                 if path == "/api/auth/qr/start":
                     self._send_auth_payload(app_state.qr_start())
                     return
                 if path == "/api/auth/qr/poll":
-                    self._send_auth_payload(app_state.qr_poll())
+                    self._send_auth_payload(app_state.qr_poll(body))
+                    return
+                if path == "/api/auth/finalize":
+                    self._send_auth_payload(app_state.finalize_steam_login())
                     return
                 if path == "/api/auth/restore":
                     self._send_auth_payload(app_state.restore_session(body))

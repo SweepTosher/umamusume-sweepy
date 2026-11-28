@@ -8,6 +8,7 @@ const state = {
     qrRetries: 0,
     qrInterval: 2,
     authTab: null,
+    authConnecting: false,
     credTimer: null,
     credPollActive: false,
     credPollInFlight: false,
@@ -190,11 +191,35 @@ function defaultAuthTab(session) {
     return isAndroidBrowser() ? "credentials" : "qr";
 }
 
-function setQrHint(text) {
-    const node = $("qr-hint");
-    if (node) {
-        node.textContent = text;
+function setStatusDots(node, label, options) {
+    if (!node) {
+        return;
     }
+    const opts = options || {};
+    const visible = opts.visible !== undefined ? Boolean(opts.visible) : true;
+    const clean = label ? String(label) : "";
+    node.hidden = !visible;
+    node.classList.toggle("is-connecting", Boolean(opts.connecting));
+    node.textContent = clean;
+    if (clean && opts.animated) {
+        for (let i = 0; i < 3; i += 1) {
+            node.append(make("span", "dot", "."));
+        }
+    }
+}
+
+function setQrHint(text, options) {
+    setStatusDots($("qr-hint"), text, options);
+}
+
+function setGuardStatus(text, options) {
+    setStatusDots($("guard-status"), text, options);
+}
+
+function nextPollDelaySec(interval, interacted) {
+    const parsed = Number(interval);
+    const base = parsed > 0 ? parsed : 2;
+    return interacted ? 1 : Math.min(2, Math.max(1.5, base));
 }
 
 function showAuthError(message) {
@@ -1079,7 +1104,7 @@ async function startQr() {
         setQrHint(QR_HINT_IDLE);
         state.qrActive = true;
         state.qrRetries = 0;
-        state.qrInterval = Number(response.interval) || 2;
+        state.qrInterval = nextPollDelaySec(response.interval, false);
         scheduleQrPoll(state.qrInterval);
     } catch (error) {
         state.qrActive = false;
@@ -1099,13 +1124,99 @@ function scheduleQrPoll(seconds) {
     state.qrTimer = setTimeout(pollQr, Math.max(1, seconds) * 1000);
 }
 
+function setAuthConnecting(active, label) {
+    state.authConnecting = Boolean(active);
+    const ids = [
+        "auth-tab-credentials",
+        "auth-tab-qr",
+        "qr-refresh-btn",
+        "guard-reset-btn",
+        "cred-login-btn",
+        "guard-verify-btn",
+    ];
+    for (const id of ids) {
+        const el = $(id);
+        if (el) {
+            el.disabled = state.authConnecting;
+        }
+    }
+    if (state.authConnecting) {
+        setQrChallengeUrl("");
+        showAuthError("");
+        const text = label || "Connecting to Umamusume";
+        const qrPanel = $("qr-panel");
+        const guardPanel = $("guard-panel");
+        if (qrPanel && !qrPanel.hidden) {
+            setQrHint(text, { animated: true, connecting: true });
+        } else if (guardPanel && !guardPanel.hidden) {
+            const promptNode = $("guard-prompt");
+            const codeField = $("guard-code-field");
+            const verifyBtn = $("guard-verify-btn");
+            if (promptNode) {
+                promptNode.textContent = "Steam approved.";
+            }
+            if (codeField) {
+                codeField.hidden = true;
+            }
+            if (verifyBtn) {
+                verifyBtn.hidden = true;
+            }
+            setGuardStatus(text, { animated: true, connecting: true, visible: true });
+        } else {
+            const loginBtn = $("cred-login-btn");
+            if (loginBtn) {
+                loginBtn.textContent = "CONNECTING…";
+            }
+        }
+    } else {
+        const qrPanel = $("qr-panel");
+        if (qrPanel && !qrPanel.hidden) {
+            setQrHint(QR_HINT_IDLE);
+        }
+        setGuardStatus("", { visible: false });
+        const loginBtn = $("cred-login-btn");
+        if (loginBtn) {
+            loginBtn.textContent = "SIGN IN";
+        }
+        const verifyBtn = $("guard-verify-btn");
+        if (verifyBtn) {
+            verifyBtn.textContent = "VERIFY";
+        }
+    }
+}
+
+async function finalizeApprovedLogin(response) {
+    state.qrActive = false;
+    state.credPollActive = false;
+    clearTimeout(state.qrTimer);
+    clearTimeout(state.credTimer);
+    if (response.refresh_token) {
+        saveSteamToken(response.refresh_token);
+    }
+    setAuthConnecting(true, "Connecting to Umamusume");
+    try {
+        let finalRes = response;
+        if (response.status === "steam_approved") {
+            finalRes = await api("/api/auth/finalize", "POST", {}, 60000);
+        }
+        await completeSteamApproval(finalRes);
+    } catch (error) {
+        const credPanel = $("credentials-panel");
+        if (credPanel && !credPanel.hidden) {
+            resetCredentialsUi();
+        } else {
+            setAuthConnecting(false);
+        }
+        showAuthError(error.message);
+    }
+}
+
 async function completeSteamApproval(response) {
     state.qrActive = false;
     state.credPollActive = false;
     clearTimeout(state.qrTimer);
     clearTimeout(state.credTimer);
     setQrChallengeUrl("");
-    setQrHint("Signing in");
     const passInput = $("steam-pass-input");
     if (passInput) {
         passInput.value = "";
@@ -1116,10 +1227,17 @@ async function completeSteamApproval(response) {
     }
     saveSteamToken(response.refresh_token || "");
     adoptDeviceState(response);
-    await refreshSession();
+    try {
+        await refreshSession();
+    } finally {
+        setAuthConnecting(false);
+    }
 }
 
 function setAuthTab(tab, triggerQr) {
+    if (state.authConnecting) {
+        return;
+    }
     const hasPwd = Boolean(state.session && state.session.password_auth);
     const chosen = hasPwd && tab === "credentials" ? "credentials" : "qr";
     state.authTab = chosen;
@@ -1157,7 +1275,9 @@ function setAuthTab(tab, triggerQr) {
 
 function resetCredentialsUi() {
     state.credPollActive = false;
+    state.authConnecting = false;
     clearTimeout(state.credTimer);
+    setAuthConnecting(false);
     const credForm = $("credentials-form");
     const guardPanel = $("guard-panel");
     const guardInput = $("steam-guard-input");
@@ -1172,6 +1292,7 @@ function resetCredentialsUi() {
     if (guardInput) {
         guardInput.value = "";
     }
+    setGuardStatus("", { visible: false });
     if (guardBtn) {
         guardBtn.disabled = false;
         guardBtn.textContent = "VERIFY";
@@ -1224,11 +1345,13 @@ function renderGuardChallenge(res) {
     }
 
     if (allowsPush) {
+        setGuardStatus("Waiting for approval", { animated: true, visible: true });
         state.credPollActive = true;
         state.credRetries = 0;
-        state.credInterval = Math.max(2, Number(res.interval) || 3);
+        state.credInterval = nextPollDelaySec(res.interval, false);
         scheduleCredPoll(state.credInterval);
     } else {
+        setGuardStatus("", { visible: false });
         state.credPollActive = false;
         clearTimeout(state.credTimer);
     }
@@ -1251,9 +1374,9 @@ async function pollCredentials() {
     }
     state.credPollInFlight = true;
     try {
-        const res = await api("/api/auth/credentials/poll", "POST", {}, 30000);
-        if (res.status === "approved" || res.logged_in === true) {
-            await completeSteamApproval(res);
+        const res = await api("/api/auth/credentials/poll", "POST", { defer_login: true }, 30000);
+        if (res.status === "steam_approved" || res.status === "approved" || res.logged_in === true) {
+            await finalizeApprovedLogin(res);
             return;
         }
         if (String(res.status || "").toLowerCase() === "expired") {
@@ -1261,9 +1384,10 @@ async function pollCredentials() {
             showAuthError("Sign-in session expired — enter your credentials again.");
             return;
         }
-        if (Number(res.interval) > 0) {
-            state.credInterval = Math.max(2, Number(res.interval));
+        if (res.had_remote_interaction === true) {
+            setGuardStatus("Confirming sign-in", { animated: true, visible: true });
         }
+        state.credInterval = nextPollDelaySec(res.interval, res.had_remote_interaction === true);
         state.credRetries = 0;
         scheduleCredPoll(state.credInterval);
     } catch (error) {
@@ -1298,9 +1422,9 @@ async function submitCredentialsLogin(event) {
         btn.textContent = "SIGNING IN…";
     }
     try {
-        const res = await api("/api/auth/credentials/start", "POST", { username, password }, 45000);
-        if (res.status === "approved" || res.logged_in === true) {
-            await completeSteamApproval(res);
+        const res = await api("/api/auth/credentials/start", "POST", { username, password, defer_login: true }, 45000);
+        if (res.status === "steam_approved" || res.status === "approved" || res.logged_in === true) {
+            await finalizeApprovedLogin(res);
             return;
         }
         if (passInput) {
@@ -1310,7 +1434,7 @@ async function submitCredentialsLogin(event) {
     } catch (error) {
         showAuthError(error.message);
     } finally {
-        if (btn) {
+        if (btn && !state.authConnecting) {
             btn.disabled = false;
             btn.textContent = "SIGN IN";
         }
@@ -1334,16 +1458,19 @@ async function submitGuardCode(event) {
         btn.textContent = "VERIFYING…";
     }
     try {
-        const res = await api("/api/auth/credentials/code", "POST", { code }, 45000);
-        if (res.status === "approved" || res.logged_in === true) {
-            await completeSteamApproval(res);
+        const res = await api("/api/auth/credentials/code", "POST", { code, defer_login: true }, 45000);
+        if (res.status === "steam_approved" || res.status === "approved" || res.logged_in === true) {
+            await finalizeApprovedLogin(res);
             return;
         }
-        showAuthError("Code accepted — waiting for Steam to finalize session...");
+        setGuardStatus("Verifying with Steam", { animated: true, connecting: true, visible: true });
+        state.credPollActive = true;
+        state.credRetries = 0;
+        scheduleCredPoll(1);
     } catch (error) {
         showAuthError(error.message);
     } finally {
-        if (btn) {
+        if (btn && !state.authConnecting) {
             btn.disabled = false;
             btn.textContent = "VERIFY";
         }
@@ -1356,9 +1483,9 @@ async function pollQr() {
     }
     state.qrPollInFlight = true;
     try {
-        const response = await api("/api/auth/qr/poll", "POST", {}, 120000);
-        if (response.status === "approved" || response.logged_in === true) {
-            await completeSteamApproval(response);
+        const response = await api("/api/auth/qr/poll", "POST", { defer_login: true }, 120000);
+        if (response.status === "steam_approved" || response.status === "approved" || response.logged_in === true) {
+            await finalizeApprovedLogin(response);
             return;
         }
         const qrState = String(response.status || "pending").toLowerCase();
@@ -1380,13 +1507,11 @@ async function pollQr() {
             }
             setQrHint(`Code refreshed · ${QR_HINT_IDLE}`);
         } else if (response.had_remote_interaction === true) {
-            setQrHint("Waiting for Steam approval");
+            setQrHint("Waiting for Steam approval", { animated: true });
         } else {
             setQrHint(QR_HINT_IDLE);
         }
-        if (Number(response.interval) > 0) {
-            state.qrInterval = Number(response.interval);
-        }
+        state.qrInterval = nextPollDelaySec(response.interval, response.had_remote_interaction === true);
         state.qrRetries = 0;
         scheduleQrPoll(state.qrInterval);
     } catch (error) {
@@ -1847,7 +1972,7 @@ async function init() {
 document.addEventListener("DOMContentLoaded", init);
 
 document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
+    if (document.hidden || state.authConnecting) {
         return;
     }
     if (state.credPollActive && !state.credPollInFlight) {

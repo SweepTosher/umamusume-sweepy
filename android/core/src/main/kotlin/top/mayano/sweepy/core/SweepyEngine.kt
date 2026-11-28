@@ -330,6 +330,43 @@ class SweepyEngine(
         )
     }
 
+    private fun resolveSteamApproval(
+        prov: SteamTicketProvider,
+        res: Map<String, Any?>,
+        body: Map<String, Any?> = emptyMap(),
+    ): LinkedHashMap<String, Any?> {
+        if (body["defer_login"] == true) {
+            val out = linkedMapOf<String, Any?>(
+                "ok" to true,
+                "status" to "steam_approved",
+                "logged_in" to false,
+                "steam_id" to res["steam_id"],
+            )
+            runCatching { prov.currentToken() }.getOrNull()?.takeIf { it.isNotEmpty() }?.let {
+                out["refresh_token"] = it
+            }
+            return out
+        }
+        return finishSteamApproval(prov)
+    }
+
+    fun finalizeSteamLogin(): LinkedHashMap<String, Any?> = authLock.withLock {
+        val already = synchronized(stateLock) { client != null && dashboard != null }
+        if (already) {
+            return sessionPayload().apply {
+                put("status", "approved")
+                put("logged_in", true)
+            }
+        }
+        val prov = getProvider()
+        return try {
+            check(prov.hasRefreshToken()) { "No approved Steam session to finalize" }
+            finishSteamApproval(prov)
+        } catch (exc: SteamTicketException) {
+            steamErrorPayload(exc)
+        }
+    }
+
     fun credentialsStart(body: Map<String, Any?>): LinkedHashMap<String, Any?> = authLock.withLock {
         requireLoggedOutForAuth("signing in")
         val username = (body["username"] ?: "").toString()
@@ -341,7 +378,7 @@ class SweepyEngine(
             return steamErrorPayload(exc)
         }
         if ((res["status"] ?: "").toString() == "approved") {
-            return finishSteamApproval(prov)
+            return resolveSteamApproval(prov, res, body)
         }
         return LinkedHashMap(res).apply { put("ok", true) }
     }
@@ -357,12 +394,12 @@ class SweepyEngine(
             return steamErrorPayload(exc)
         }
         if ((res["status"] ?: "").toString() == "approved") {
-            return finishSteamApproval(prov)
+            return resolveSteamApproval(prov, res, body)
         }
         return LinkedHashMap(res).apply { put("ok", true) }
     }
 
-    fun qrPoll(): LinkedHashMap<String, Any?> = authLock.withLock {
+    fun qrPoll(body: Map<String, Any?> = emptyMap()): LinkedHashMap<String, Any?> = authLock.withLock {
         val prov = getProvider()
         val res = try {
             prov.pollQrSession()
@@ -371,7 +408,7 @@ class SweepyEngine(
         }
         val st = (res["status"] ?: "pending").toString()
         if (st == "approved") {
-            return finishSteamApproval(prov)
+            return resolveSteamApproval(prov, res, body)
         }
         val challengeUrl = (res["challenge_url"] ?: "").toString()
         val out = linkedMapOf<String, Any?>(
@@ -380,6 +417,7 @@ class SweepyEngine(
             "challenge_url" to challengeUrl,
             "steam_id" to res["steam_id"],
             "interval" to res["interval"],
+            "had_remote_interaction" to (res["had_remote_interaction"] == true),
         )
         if (challengeUrl.isNotEmpty()) {
             val changed = synchronized(stateLock) {
@@ -715,7 +753,7 @@ class LocalHttpServer(
             if (staticFile != null) {
                 val data = engine.assets.readBytes(staticFile.first)
                     ?: return jsonResponse(404, mapOf("ok" to false, "error" to "Not found"))
-                val cache = if (staticFile.first.endsWith(".png") || staticFile.first.endsWith(".webp")) "public, max-age=300" else "no-cache"
+                val cache = if (staticFile.first.endsWith(".png") || staticFile.first.endsWith(".webp")) "public, max-age=300" else "no-store"
                 return buildHttpResponse(200, "OK", staticFile.second, data, cacheControl = cache)
             }
             return try {
@@ -762,10 +800,11 @@ class LocalHttpServer(
                 when (path) {
                     "/api/config/brain" -> jsonResponse(200, engine.configureBrain(body))
                     "/api/auth/qr/start" -> authPayloadResponse(engine.qrStart())
-                    "/api/auth/qr/poll" -> authPayloadResponse(engine.qrPoll())
+                    "/api/auth/qr/poll" -> authPayloadResponse(engine.qrPoll(body))
                     "/api/auth/credentials/start" -> authPayloadResponse(engine.credentialsStart(body))
                     "/api/auth/credentials/code" -> authPayloadResponse(engine.credentialsSubmitCode(body))
-                    "/api/auth/credentials/poll" -> authPayloadResponse(engine.qrPoll())
+                    "/api/auth/credentials/poll" -> authPayloadResponse(engine.qrPoll(body))
+                    "/api/auth/finalize" -> authPayloadResponse(engine.finalizeSteamLogin())
                     "/api/auth/restore" -> authPayloadResponse(engine.restoreSession(body))
                     "/api/logout" -> jsonResponse(200, engine.logout())
                     "/api/settings/turn-delay" -> jsonResponse(200, engine.setTurnDelay(body))

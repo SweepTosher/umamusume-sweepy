@@ -100,6 +100,7 @@ class LocalHttpServerTest {
                     val js = r.body.string()
                     assertTrue("setQrChallengeUrl" in js)
                     assertTrue("submitCredentialsLogin" in js)
+                    assertTrue("finalizeApprovedLogin" in js)
                     assertTrue("Approve this sign-in using the Steam Mobile app." in js)
                 }
 
@@ -181,6 +182,15 @@ class LocalHttpServerTest {
                     Request.Builder()
                         .url("$base/api/auth/credentials/code")
                         .post("""{"code":"ABCDE"}""".toRequestBody("application/json".toMediaType()))
+                        .build()
+                ).execute().use { r ->
+                    assertEquals(400, r.code)
+                }
+
+                testHttp.newCall(
+                    Request.Builder()
+                        .url("$base/api/auth/finalize")
+                        .post("{}".toRequestBody("application/json".toMediaType()))
                         .build()
                 ).execute().use { r ->
                     assertEquals(400, r.code)
